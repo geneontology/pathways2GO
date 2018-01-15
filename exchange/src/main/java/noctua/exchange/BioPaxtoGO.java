@@ -29,6 +29,7 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
@@ -48,7 +49,8 @@ public class BioPaxtoGO {
 	public static final IRI noctua_test_iri = IRI.create("http://noctua.berkeleybop.org/download/gomodel:59dc728000000287/owl");
 	public static final IRI go_lego_iri = IRI.create("http://purl.obolibrary.org/obo/go/extensions/go-lego.owl");
 	public static final IRI obo_iri = IRI.create("http://purl.obolibrary.org/obo/");
-
+	public static final IRI uniprot_iri = IRI.create("http://identifiers.org/uniprot/");
+	public static final IRI biopax_iri = IRI.create("http://www.biopax.org/release/biopax-level3.owl#");
 
 	/**
 	 * @param args
@@ -57,29 +59,53 @@ public class BioPaxtoGO {
 	 * @throws OWLOntologyStorageException 
 	 */
 	public static void main(String[] args) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException {
-		//BioPaxtoGO bp = new BioPaxtoGO();
+		BioPaxtoGO bp2g = new BioPaxtoGO();
+		String input_biopax = "src/main/resources/reactome/reactome-input-109581.owl";
+		String converted = "src/main/resources/reactome/reactome-output-109581.owl";
+		bp2g.convert(input_biopax, converted);
+	}
 
+	public void convert(String input_biopax, String converted) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException  {
 		//set up ontology 
 		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();
 		OWLOntology go_cam_ont = ontman.createOntology();
 		//Will add classes and relations as we need them now. 
 		//TODO Work on using imports later to ensure we don't produce incorrect ids..
 		OWLDataFactory df = OWLManager.getOWLDataFactory();
+		//biological process
 		OWLClass bp_class = df.getOWLClass(IRI.create(obo_iri + "GO_0008150")); 
-		OWLLiteral lbl = df.getOWLLiteral("Biological Process");
-		OWLAnnotation label = df.getOWLAnnotation(df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI()), lbl);
-		OWLAxiom labelaxiom = df.getOWLAnnotationAssertionAxiom(bp_class.getIRI(), label);
-		ontman.applyChange(new AddAxiom(go_cam_ont, labelaxiom));
+		addLabel(ontman, go_cam_ont, df, bp_class, "Biological Process");
+		//continuant 
+		OWLClass continuant_class = df.getOWLClass(IRI.create(obo_iri + "BFO_0000002")); 
+		addLabel(ontman, go_cam_ont, df, continuant_class, "Continuant");
+		//protein
+		OWLClass protein_class = df.getOWLClass(IRI.create(biopax_iri + "Protein")); 
+		addLabel(ontman, go_cam_ont, df, protein_class, "Protein");
+		//reaction
+		OWLClass reaction_class = df.getOWLClass(IRI.create(biopax_iri + "Reaction")); 
+		addLabel(ontman, go_cam_ont, df, reaction_class, "Reaction");
 
+		//tmp for viewing while debugging
+		OWLSubClassOfAxiom prot = df.getOWLSubClassOfAxiom(protein_class, continuant_class);
+		ontman.addAxiom(go_cam_ont, prot);
+		ontman.applyChanges();
+
+		//part of
 		OWLObjectProperty part_of = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000050"));
-		OWLLiteral lbl2 = df.getOWLLiteral("Part Of");
-		OWLAnnotation label2 = df.getOWLAnnotation(df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI()), lbl2);
-		OWLAxiom labelaxiom2 = df.getOWLAnnotationAssertionAxiom(part_of.getIRI(), label2);
-		ontman.applyChange(new AddAxiom(go_cam_ont, labelaxiom2));
+		addLabel(ontman, go_cam_ont, df, part_of, "part of");
+		//has input 
+		OWLObjectProperty has_input = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002233"));
+		addLabel(ontman, go_cam_ont, df, has_input, "has input");
+		//has output 
+		OWLObjectProperty has_output = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002234"));
+		addLabel(ontman, go_cam_ont, df, has_output, "has output");
+		//directly provides input for (process to process)
+		OWLObjectProperty provides_direct_input_for = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002413"));
+		addLabel(ontman, go_cam_ont, df, provides_direct_input_for, "directly provides input for (process to process)");
 
 		//read biopax pathway(s)
 		BioPAXIOHandler handler = new SimpleIOHandler();
-		FileInputStream f = new FileInputStream("src/main/resources/reactome/reactome-input-109581.owl");
+		FileInputStream f = new FileInputStream(input_biopax);
 		Model model = handler.convertFromOWL(f);
 		//list pathways
 		for (Pathway currentPathway : model.getObjects(Pathway.class)){
@@ -87,6 +113,10 @@ public class BioPaxtoGO {
 			String uri = currentPathway.getUri();
 			//make the OWL individual
 			OWLNamedIndividual p = df.getOWLNamedIndividual(IRI.create(uri));
+			//label it
+			for(String pathway_name : currentPathway.getName()) {
+				addLabel(ontman, go_cam_ont, df, p, pathway_name);
+			}		
 			//set a default type of biological process
 			OWLClassAssertionAxiom isa_bp = df.getOWLClassAssertionAxiom(bp_class, p);
 			ontman.addAxiom(go_cam_ont, isa_bp);
@@ -112,8 +142,7 @@ public class BioPaxtoGO {
 				}
 
 			}
-
-			//get any part of relationships
+			//get any pathway-part of relationships
 			for(Pathway parent_pathway : currentPathway.getPathwayComponentOf()) {
 				System.out.println("Component of Pathway:"+parent_pathway.getName()); 
 				OWLNamedIndividual parent = df.getOWLNamedIndividual(IRI.create(parent_pathway.getUri()));
@@ -123,151 +152,193 @@ public class BioPaxtoGO {
 			}
 			//get the pieces of the pathway
 			//Process subsumes Pathway and Reaction.  A pathway may have either or both reaction or pathway components.  
-			//			for(Process process : currentPathway.getPathwayComponent()) {
-			//				System.out.println("Process of Pathway:"+process.getName()+" "+process.getModelInterface()); 
-			//				//Reaction if process.getModelInterface()==org.biopax.paxtools.model.level3.BiochemicalReaction
-			//				//Pathway if equals org.biopax.paxtools.model.level3.Pathway
-			//			}
+			for(Process process : currentPathway.getPathwayComponent()) {
+				System.out.println("Process of Pathway:"+process.getName()+" "+process.getModelInterface()); 
+				//Reaction if process.getModelInterface()==org.biopax.paxtools.model.level3.BiochemicalReaction
+				if(process.getModelInterface().equals(BiochemicalReaction.class)) {
+					BiochemicalReaction reaction = (BiochemicalReaction)process;
+					String reaction_name = reaction.getDisplayName();
+					String reaction_uri = reaction.getUri();
+					//label reaction
+					OWLNamedIndividual r = df.getOWLNamedIndividual(IRI.create(reaction_uri));
+					addLabel(ontman, go_cam_ont, df, r, reaction_name);
+					//type it
+					OWLClassAssertionAxiom isa_reaction = df.getOWLClassAssertionAxiom(reaction_class, r);
+					ontman.addAxiom(go_cam_ont, isa_reaction);
+					ontman.applyChanges();				
+					//connect reaction to pathway via part of
+					OWLObjectPropertyAssertionAxiom add_partof_axiom = df.getOWLObjectPropertyAssertionAxiom(part_of, r, p);
+					AddAxiom addAxiom = new AddAxiom(go_cam_ont, add_partof_axiom);
+					ontman.applyChanges(addAxiom);
+
+					//Create entities for reaction components
+					Set<Entity> entities = reaction.getParticipant();
+					for(Entity entity : entities) {
+						//add participant
+						OWLNamedIndividual e = df.getOWLNamedIndividual(IRI.create(entity.getUri()));
+						String entity_name = entity.getDisplayName();
+						addLabel(ontman, go_cam_ont, df, e, entity_name);
+
+						//either a Complex or a Protein or a SmallMolecule or Dna DnaRegion Rna RnaRegion 
+						//set a type of continuant to start
+						//set a default type of biological process
+						OWLClassAssertionAxiom isa_continuant = df.getOWLClassAssertionAxiom(continuant_class, e);
+						ontman.addAxiom(go_cam_ont, isa_continuant);
+						ontman.applyChanges();
+						//Protein	
+						if(entity.getModelInterface().equals(Protein.class)) {
+							Protein protein = (Protein)entity;
+							EntityReference entity_ref = protein.getEntityReference();	
+							if(entity_ref!=null) {
+								Set<Xref> p_xrefs = entity_ref.getXref();
+								for(Xref xref : p_xrefs) {
+									if(xref.getModelInterface().equals(UnificationXref.class)) {
+										UnificationXref uref = (UnificationXref)xref;	
+										if(uref.getDb().equals("UniProt")) {
+											String id = uref.getId();
+											//going from original conversion results here, the uri for uniprot proteins is like http://identifiers.org/uniprot/P09848
+											//recent output from prolog converter produces &UniProtIsoform;Q14790 but not sure what the namespace is that is referred to
+											//create the specific protein class
+											OWLClass uniprotein_class = df.getOWLClass(IRI.create(uniprot_iri + id)); 
+											OWLSubClassOfAxiom prot_instance = df.getOWLSubClassOfAxiom(uniprotein_class, protein_class);
+											ontman.addAxiom(go_cam_ont, prot_instance);
+											ontman.applyChanges();											
+											//name the class with the uniprot id for now..
+											//NOTE different protein versions are grouped together into the same root class by the conversion
+											//e.g. Q9UKV3 gets the uniproteins ACIN1, ACIN1(1-1093), ACIN1(1094-1341)
+											addLabel(ontman, go_cam_ont, df, uniprotein_class, id);
+											//until something is imported that understands the uniprot entities, assert that they are proteins
+											OWLClassAssertionAxiom isa_uniprotein = df.getOWLClassAssertionAxiom(uniprotein_class, e);
+											ontman.addAxiom(go_cam_ont, isa_uniprotein);
+											ontman.applyChanges();
+										}
+									}
+								}
+							}
+						}
+						//Dna (gene)
+						if(entity.getModelInterface().equals(Dna.class)) {
+							Dna dna = (Dna)entity;
+							EntityReference entity_ref = dna.getEntityReference();	
+							if(entity_ref!=null) {
+								Set<Xref> p_xrefs = entity_ref.getXref();
+								for(Xref xref : p_xrefs) {
+									if(xref.getModelInterface().equals(UnificationXref.class)) {
+										UnificationXref uref = (UnificationXref)xref;	
+										if(uref.getDb().equals("ENSEMBL")) {
+											String id = uref.getId();
+											//recent output from prolog converter produces 
+//											<obo:BFO_0000002 rdf:about="http://www.reactome.org/biopax/63/109581#Dna1"
+//												    rdfs:label="NOXA Gene">
+//												  <rdf:type rdf:resource="&obo;ENSEMBL_ENSG00000141682"/>
+//												</obo:BFO_0000002>
+											OWLClass dna_class = df.getOWLClass(IRI.create(obo_iri + id)); 
+											OWLSubClassOfAxiom dna_instance = df.getOWLSubClassOfAxiom(dna_class, continuant_class);
+											ontman.addAxiom(go_cam_ont, dna_instance);
+											ontman.applyChanges();											
+											//name the class with the gene id
+											addLabel(ontman, go_cam_ont, df, dna_class, id);
+											//assert a continuant
+											OWLClassAssertionAxiom isa_dna = df.getOWLClassAssertionAxiom(dna_class, e);
+											ontman.addAxiom(go_cam_ont, isa_dna);
+											ontman.applyChanges();
+										}
+									}
+								}
+							}
+						}
+						//SmallMolecule
+						if(entity.getModelInterface().equals(SmallMolecule.class)) {
+							SmallMolecule mlc = (SmallMolecule)entity;
+							EntityReference entity_ref = mlc.getEntityReference();	
+							if(entity_ref!=null) {
+								Set<Xref> p_xrefs = entity_ref.getXref();
+								for(Xref xref : p_xrefs) {
+									if(xref.getModelInterface().equals(UnificationXref.class)) {
+										UnificationXref uref = (UnificationXref)xref;	
+										if(uref.getDb().equals("ChEBI")) {
+											String id = uref.getId().replace(":", "_");
+											OWLClass mlc_class = df.getOWLClass(IRI.create(obo_iri + id)); 
+											OWLSubClassOfAxiom mlc_instance = df.getOWLSubClassOfAxiom(mlc_class, continuant_class);
+											ontman.addAxiom(go_cam_ont, mlc_instance);
+											ontman.applyChanges();											
+											//name the class with the chebi id
+											addLabel(ontman, go_cam_ont, df, mlc_class, id);
+											//assert its a chemical instance
+											OWLClassAssertionAxiom isa_mlc = df.getOWLClassAssertionAxiom(mlc_class, e);
+											ontman.addAxiom(go_cam_ont, isa_mlc);
+											ontman.applyChanges();
+										}
+									}
+								}
+							}
+						}
+						//Complex 
+						if(entity.getModelInterface().equals(Complex.class)) {
+							Complex complex = (Complex)entity;
+							//TODO
+//							<obo:BFO_0000002 rdf:about="http://www.reactome.org/biopax/63/109581#Complex14"
+//								    rdfs:label="TRAF2:TRADD:RIP1(325-671)">
+//								  <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein10"/>
+//								  <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein11"/>
+//								  <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein12"/>
+//								  <rdf:type rdf:resource="&obo;GO_0032991"/>
+//								</obo:BFO_0000002>
+							
+						}
+						
+						//link to participants in reaction
+						//biopax#left -> obo:input , biopax#right -> obo:output
+						Set<PhysicalEntity> inputs = reaction.getLeft();
+						for(PhysicalEntity input : inputs) {
+							OWLNamedIndividual input_entity = df.getOWLNamedIndividual(IRI.create(input.getUri()));
+							OWLObjectPropertyAssertionAxiom add_input_axiom = df.getOWLObjectPropertyAssertionAxiom(has_input, r, input_entity);
+							AddAxiom addInputAxiom = new AddAxiom(go_cam_ont, add_input_axiom);
+							ontman.applyChanges(addInputAxiom);
+						}
+						Set<PhysicalEntity> outputs = reaction.getRight();
+						for(PhysicalEntity output : outputs) {
+							OWLNamedIndividual output_entity = df.getOWLNamedIndividual(IRI.create(output.getUri()));
+							OWLObjectPropertyAssertionAxiom add_output_axiom = df.getOWLObjectPropertyAssertionAxiom(has_output, r, output_entity);
+							AddAxiom addOutputAxiom = new AddAxiom(go_cam_ont, add_output_axiom);
+							ontman.applyChanges(addOutputAxiom);
+						}
+						//TODO how to link to other reactions.. 
+						//e.g. connection between reaction 2 and 4 below.  
+//						<owl:NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction2"
+//							    rdfs:label="TRAIL-mediated dimerization of procaspase-8">
+//							  <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex7"/>
+//							  <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein4"/>
+//							  <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway4"/>
+//							  <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex11"/>
+//							  <obo:RO_0002334 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein5"/>
+//							  <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction4"/>
+//							</owl:NamedIndividual>
+					}
+				}
+				//Pathway if equals org.biopax.paxtools.model.level3.Pathway
+				//ignore subpathways - assume they come on their own
+			}
 		}	
 		//export
-		FileDocumentTarget outfile = new FileDocumentTarget(new File("src/main/resources/reactome/test.owl"));
+		FileDocumentTarget outfile = new FileDocumentTarget(new File(converted));
 		ontman.saveOntology(go_cam_ont,outfile);
 	}
 
 
-	public final void tutorial() throws FileNotFoundException {
-		// Read a BioPAX pathway in using PaxTools
-
-		//read biopax pathway(s)
-		BioPAXIOHandler handler = new SimpleIOHandler();
-		FileInputStream f = new FileInputStream("src/main/resources/reactome/reactome-input-109581.owl");
-		Model model = handler.convertFromOWL(f);
-		// Iterate through all BioPAX Elements and print basic info
-		//		 Set<BioPAXElement> elementSet = model.getObjects();
-		//		 for (BioPAXElement currentElement : elementSet)
-		//		 {
-		//		  String rdfId = currentElement.getUri();
-		//		  String className =	 currentElement.getClass().getName();
-		//		  System.out.println("Element: " + rdfId + ": " + className);
-		//		 }
-		//Just get proteins
-		//		Set<Protein> proteinSet = model.getObjects(Protein.class);
-		//		for (Protein currentProtein : proteinSet){
-		//			System.out.println(currentProtein.getName() +": " + currentProtein.getDisplayName());
-		//		}
-		//Just get Pathways
-		//		Set<Pathway> pathwaySet = model.getObjects(Pathway.class);
-		//		for(Pathway pathway : pathwaySet) {
-		//			System.out.println(pathway.getDisplayName());
-		//		}
-
-		// Set up the Path Accessor
-		//				PathAccessor pathAccessor = new PathAccessor(
-		//					    "ProteinReference/xref:UnificationXref", BioPAXLevel.L3);
-
-		PathAccessor proteinIDAccessor = new PathAccessor("Pathway/pathwayComponent*/participant*:Protein/entityReference/xref:UnificationXref", BioPAXLevel.L3);
-
-		// Iterate through all proteins in the model
-		for (Pathway currentPathway : model.getObjects(Pathway.class))
-		{
-			System.out.println("Pathway:"+currentPathway.getName()); 
-			for(Pathway compOf : currentPathway.getPathwayComponentOf()) {
-				System.out.println("Component of Pathway:"+compOf.getName()); 
-			}
-			//Process subsumes Pathway and Reaction.  A pathway may have either or both reaction or pathway components.  
-			for(Process process : currentPathway.getPathwayComponent()) {
-				System.out.println("Process of Pathway:"+process.getName()+" "+process.getModelInterface()); 
-				//Reaction if process.getModelInterface()==org.biopax.paxtools.model.level3.BiochemicalReaction
-				//Pathway if equals org.biopax.paxtools.model.level3.Pathway
-			}
-
-			//					Set<Xref> unificationXrefs = proteinIDAccessor.getValueFromBean(currentPathway);
-			//					for (Xref currentRef : unificationXrefs){
-			//						System.out.println(
-			//								"Unification XRef: " + currentRef.getDb() + ": " + currentRef.getId());
-			//					}
-		}
+	public OWLOntology addLabel(OWLOntologyManager ontman, OWLOntology go_cam_ont, OWLDataFactory df, OWLEntity entity, String label) {
+		OWLLiteral lbl = df.getOWLLiteral(label);
+		OWLAnnotation label_anno = df.getOWLAnnotation(df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI()), lbl);
+		OWLAxiom labelaxiom = df.getOWLAnnotationAssertionAxiom(entity.getIRI(), label_anno);
+		ontman.addAxiom(go_cam_ont, labelaxiom);
+		ontman.applyChanges();
+		return go_cam_ont;
 	}
 
-	public final void testBioPAXDocument()
-	{
-
-		String ID_COMPARTMENT_1 = "compartment_1";
-		String ID_PROTEIN_1 = "PROTEIN_1";
-		String ID_PROTEIN_2 = "PROTEIN_2";
-		String ID_PROTEIN_3 = "PROTEIN_3";
-
-		String ID_PROTEIN_REFERENCE_1 = "PROTEIN_REFERENCE_1";
-		String ID_PROTEIN_REFERENCE_2 = "PROTEIN_REFERENCE_2";
-		String ID_PROTEIN_REFERENCE_3 = "PROTEIN_REFERENCE_3";
-
-		BioPAXFactory level3Factory = BioPAXLevel.L3.getDefaultFactory();
-		Model biopaxModel = level3Factory.createModel();
-
-		// Create a compartment
-		CellularLocationVocabulary clv =
-				biopaxModel.addNew(CellularLocationVocabulary.class, ID_COMPARTMENT_1);
-		String compartmentName = "golgi";
-		clv.addTerm(compartmentName);
 
 
-		// Create three proteins in golgi
-		Protein p1 = biopaxModel.addNew(Protein.class, ID_PROTEIN_1);
-		p1.setDisplayName("PE-Pro-BACE-1");
-		Protein p2 = biopaxModel.addNew(Protein.class, ID_PROTEIN_2);
-		p2.setDisplayName("PE-BACE-1");
-		Protein p3 = biopaxModel.addNew(Protein.class, ID_PROTEIN_3);
-		p3.setDisplayName("Furin");
-		p1.setCellularLocation(clv);
-		p2.setCellularLocation(clv);
-		p3.setCellularLocation(clv);
-
-		// Create entity references for the proteins
-		ProteinReference pr1 = biopaxModel.addNew(ProteinReference.class, ID_PROTEIN_REFERENCE_1);
-		pr1.setStandardName("Pro-BACE-1");
-		p1.setEntityReference(pr1);
-		Stoichiometry stoichiometry1 = biopaxModel.addNew(Stoichiometry.class, "ST1");
-		stoichiometry1.setPhysicalEntity(p1);
-		stoichiometry1.setStoichiometricCoefficient(1);
-
-		ProteinReference pr2 = biopaxModel.addNew(ProteinReference.class, ID_PROTEIN_REFERENCE_2);
-		pr2.setStandardName("BACE-1");
-		p2.setEntityReference(pr2);
-		Stoichiometry stoichiometry2 = biopaxModel.addNew(Stoichiometry.class, "ST2");
-		stoichiometry2.setPhysicalEntity(p2);
-		stoichiometry2.setStoichiometricCoefficient(1);
-
-		ProteinReference pr3 = biopaxModel.addNew(ProteinReference.class, ID_PROTEIN_REFERENCE_3);
-		pr3.setStandardName("Furin");
-		p3.setEntityReference(pr3);
-		Stoichiometry stoichiometry3 = biopaxModel.addNew(Stoichiometry.class, "ST3");
-		stoichiometry3.setPhysicalEntity(p3);
-		stoichiometry3.setStoichiometricCoefficient(1);
-
-		// Create a reaction involving the three proteins
-		BiochemicalReaction r = biopaxModel.addNew(BiochemicalReaction.class, "r1");
-		r.addLeft(p1);
-		r.addRight(p2);
-
-		Control c = biopaxModel.addNew(Catalysis.class, "cat1"); 
-		c.setControlType(ControlType.ACTIVATION);
-		c.addControlled(r);
 
 
-		// Write out the owl file
-		try
-		{
-			System.out.println("test");
-			File f = new File(getClass().getClassLoader()
-					.getResource("").getPath() + File.separator + "test.owl");
-			FileOutputStream anOutputStream = new FileOutputStream(f);
-			outputModel(biopaxModel, anOutputStream);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
 
 	private void outputModel(Model m, OutputStream out) {
 		(new SimpleIOHandler()).convertToOWL(m, out);
