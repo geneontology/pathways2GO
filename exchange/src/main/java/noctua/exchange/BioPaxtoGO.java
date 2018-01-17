@@ -168,7 +168,6 @@ public class BioPaxtoGO {
 						ontman.applyChanges();
 					}
 				}
-
 			}
 			//get any pathway-part of relationships
 			for(Pathway parent_pathway : currentPathway.getPathwayComponentOf()) {
@@ -432,6 +431,27 @@ public class BioPaxtoGO {
 				ControlType ctype = controller.getControlType();
 				Set<Controller> controller_entities = controller.getController();
 				for(Controller controller_entity : controller_entities) {
+					CellularLocationVocabulary loc = ((PhysicalEntity) controller_entity).getCellularLocation();
+					OWLNamedIndividual loc_e = df.getOWLNamedIndividual(loc.getUri());
+					//hook up the location
+					OWLObjectPropertyAssertionAxiom add_loc_axiom = df.getOWLObjectPropertyAssertionAxiom(occurs_in, e, loc_e);
+					AddAxiom addLocAxiom = new AddAxiom(go_cam_ont, add_loc_axiom);
+					ontman.applyChanges(addLocAxiom);
+					//dig out the GO cellular location for the controller and create an individual for it
+					Set<Xref> xrefs = loc.getXref();
+					for(Xref xref : xrefs) {
+						if(xref.getModelInterface().equals(UnificationXref.class)) {
+							UnificationXref uref = (UnificationXref)xref;	    			
+							//here we add the referenced GO class as a type.  
+							if(uref.getDb().equals("GENE ONTOLOGY")) {
+								OWLClass xref_go_loc = df.getOWLClass(IRI.create(obo_iri + uref.getId().replaceAll(":", "_")));
+								OWLClassAssertionAxiom isa_loc = df.getOWLClassAssertionAxiom(xref_go_loc, loc_e);
+								ontman.addAxiom(go_cam_ont, isa_loc);
+								ontman.applyChanges();
+							}
+						}
+					}
+					
 					OWLNamedIndividual c_e = df.getOWLNamedIndividual(IRI.create(controller_entity.getUri()));
 					//make an individual of the class molecular function
 					//TODO likely need to come up with a pseudo-random URI here instead???

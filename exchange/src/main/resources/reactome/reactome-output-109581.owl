@@ -41,6 +41,15 @@
     
 
 
+    <!-- http://purl.obolibrary.org/obo/BFO_0000066 -->
+
+
+    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/BFO_0000066">
+        <rdfs:label>occurs in</rdfs:label>
+    </ObjectProperty>
+    
+
+
     <!-- http://purl.obolibrary.org/obo/RO_0002233 -->
 
 
@@ -1285,6 +1294,41 @@
     
 
 
+    <!-- http://purl.obolibrary.org/obo/GO_0005654 -->
+
+
+    <Class rdf:about="http://purl.obolibrary.org/obo/GO_0005654"/>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/GO_0005741 -->
+
+
+    <Class rdf:about="http://purl.obolibrary.org/obo/GO_0005741"/>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/GO_0005743 -->
+
+
+    <Class rdf:about="http://purl.obolibrary.org/obo/GO_0005743"/>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/GO_0005829 -->
+
+
+    <Class rdf:about="http://purl.obolibrary.org/obo/GO_0005829"/>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/GO_0005886 -->
+
+
+    <Class rdf:about="http://purl.obolibrary.org/obo/GO_0005886"/>
+    
+
+
     <!-- http://purl.obolibrary.org/obo/GO_0006309 -->
 
 
@@ -1327,6 +1371,13 @@
     <Class rdf:about="http://purl.obolibrary.org/obo/GO_0008635">
         <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/GO_0008150"/>
     </Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/GO_0010008 -->
+
+
+    <Class rdf:about="http://purl.obolibrary.org/obo/GO_0010008"/>
     
 
 
@@ -1475,6 +1526,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction1">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway4"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex1"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein4"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex5"/>
@@ -1490,6 +1542,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction10">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway6"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein28"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein29"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein30"/>
@@ -1563,6 +1616,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction104">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway32"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary7"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex103"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex107"/>
         <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction105"/>
@@ -1577,6 +1631,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction105">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway32"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary7"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex107"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex108"/>
         <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction106"/>
@@ -1666,6 +1721,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction110">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway32"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary7"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex111"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex113"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#PhysicalEntity9"/>
@@ -1680,6 +1736,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction111">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway33"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein249"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein250"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein251"/>
@@ -1695,6 +1752,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction112">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway33"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein251"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#SmallMolecule2"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein252"/>
@@ -1726,6 +1784,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction114">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway33"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein254"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#SmallMolecule2"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein249"/>
@@ -1782,6 +1841,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction118">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway35"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein252"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein258"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein273"/>
@@ -1797,6 +1857,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction119">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway35"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein273"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein258"/>
         <rdfs:label>Proteasome mediated degradation of PAK-2p34</rdfs:label>
@@ -1853,6 +1914,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction122">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway34"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary11"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein320"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#SmallMolecule6"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein321"/>
@@ -1868,6 +1930,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction13">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway6"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary1"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex39"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#SmallMolecule2"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
@@ -1885,6 +1948,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction14">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway6"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein37"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein38"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein39"/>
@@ -1914,6 +1978,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction16">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway6"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein44"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein45"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein46"/>
@@ -1943,6 +2008,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction18">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway8"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein48"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein49"/>
         <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction20"/>
@@ -1958,6 +2024,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction19">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway8"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein48"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein49"/>
         <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction20"/>
@@ -1973,6 +2040,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction2">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway4"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex7"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein4"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex11"/>
@@ -1988,6 +2056,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction20">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway8"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein49"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein51"/>
         <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction21"/>
@@ -2021,6 +2090,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction22">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway10"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein54"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#SmallMolecule2"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein55"/>
@@ -2052,6 +2122,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction24">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway10"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex50"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#SmallMolecule4"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex42"/>
@@ -2115,6 +2186,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction28">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway11"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary7"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Dna1"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein72"/>
         <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction31"/>
@@ -2144,6 +2216,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction3">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway4"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex12"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein4"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex15"/>
@@ -2159,6 +2232,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction30">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway11"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary7"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Dna1"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein72"/>
         <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction31"/>
@@ -2203,6 +2277,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction33">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway12"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary7"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Dna2"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein83"/>
         <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction36"/>
@@ -2232,6 +2307,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction35">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway12"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary7"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Dna2"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein83"/>
         <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction36"/>
@@ -2261,6 +2337,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction37">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway13"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex64"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex65"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein87"/>
@@ -2291,6 +2368,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction39">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway14"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex66"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex67"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein92"/>
@@ -2306,6 +2384,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction4">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway3"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex18"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex19"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex20"/>
@@ -2470,6 +2549,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction5">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway3"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary4"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex22"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex20"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex27"/>
@@ -2500,6 +2580,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction51">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway18"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein102"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein103"/>
         <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction53"/>
@@ -2514,6 +2595,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction52">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway18"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein104"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein105"/>
         <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction58"/>
@@ -2561,6 +2643,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction55">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway21"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex76"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex77"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#SmallMolecule3"/>
@@ -2577,6 +2660,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction56">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway22"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex39"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#SmallMolecule2"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
@@ -2610,6 +2694,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction57">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway22"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex78"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#SmallMolecule2"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex79"/>
@@ -2747,6 +2832,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction64">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway28"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein112"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein113"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein114"/>
@@ -2761,6 +2847,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction65">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway28"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein115"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein116"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein117"/>
@@ -2775,6 +2862,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction66">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway28"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein118"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein119"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein120"/>
@@ -2789,6 +2877,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction67">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway28"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein121"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein122"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein123"/>
@@ -2803,6 +2892,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction68">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway28"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein124"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein125"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein126"/>
@@ -2817,6 +2907,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction69">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway28"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein124"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein127"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein128"/>
@@ -2846,6 +2937,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction70">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway28"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein124"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein129"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein130"/>
@@ -2860,6 +2952,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction71">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway28"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein133"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein134"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein135"/>
@@ -2874,6 +2967,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction72">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway28"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein136"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein137"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein138"/>
@@ -2888,6 +2982,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction73">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway28"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein139"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein140"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein141"/>
@@ -2902,6 +2997,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction74">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway29"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary1"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein142"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein143"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein144"/>
@@ -2916,6 +3012,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction75">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway29"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein147"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein149"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein150"/>
@@ -2930,6 +3027,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction76">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway29"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary1"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein151"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein152"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein153"/>
@@ -2944,6 +3042,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction77">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway29"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary1"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein154"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein155"/>
         <rdfs:label>Caspase-mediated cleavage of Desmoglein 2</rdfs:label>
@@ -2957,6 +3056,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction78">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway29"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary1"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein156"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein157"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein158"/>
@@ -2971,6 +3071,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction79">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway29"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary1"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein159"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein160"/>
         <rdfs:label>Caspase-mediated cleavage of Desmoplakin</rdfs:label>
@@ -2999,6 +3100,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction80">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway29"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary1"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein161"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein162"/>
         <rdfs:label>Caspase-mediated cleavage of plakophilin-1</rdfs:label>
@@ -3012,6 +3114,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction81">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway29"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary1"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein163"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein164"/>
         <rdfs:label>Caspase-mediated cleavage of TJP1</rdfs:label>
@@ -3025,6 +3128,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction82">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway29"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary1"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein165"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein166"/>
         <rdfs:label>Caspase-mediated cleavage of Z0-2</rdfs:label>
@@ -3038,6 +3142,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction83">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway29"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary1"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein167"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein168"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein169"/>
@@ -3052,6 +3157,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction84">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway30"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary7"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein170"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein171"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein172"/>
@@ -3066,6 +3172,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction85">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway30"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary7"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein175"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein176"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein177"/>
@@ -3080,6 +3187,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction86">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway27"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein178"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein179"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein180"/>
@@ -3094,6 +3202,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction87">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway27"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein181"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein182"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein183"/>
@@ -3108,6 +3217,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction88">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway27"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein184"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein185"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein186"/>
@@ -3122,6 +3232,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction89">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway27"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein187"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein188"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein189"/>
@@ -3136,6 +3247,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction9">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway5"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex31"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex33"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein27"/>
@@ -3150,6 +3262,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction90">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway27"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein190"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein191"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein192"/>
@@ -3164,6 +3277,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction91">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway27"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein193"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein194"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein195"/>
@@ -3178,6 +3292,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction92">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway27"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein196"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein197"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein198"/>
@@ -3192,6 +3307,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction93">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway27"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein199"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein200"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein201"/>
@@ -3206,6 +3322,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction94">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway27"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein202"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein203"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein204"/>
@@ -3222,6 +3339,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction95">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway27"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein208"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein209"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein210"/>
@@ -3236,6 +3354,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction96">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway27"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein211"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein212"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein213"/>
@@ -3250,6 +3369,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction97">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway27"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein214"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein215"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein216"/>
@@ -3265,6 +3385,7 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction98">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway27"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary7"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein217"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein218"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein219"/>
@@ -3279,10 +3400,65 @@
     <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction99">
         <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
         <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway27"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary7"/>
         <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein222"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein223"/>
         <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein224"/>
         <rdfs:label>Cleavage of Satb1</rdfs:label>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary1 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary1">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0005886"/>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary11 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary11">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0005743"/>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0005829"/>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary4 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary4">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0010008"/>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0005741"/>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary7 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary7">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0005654"/>
     </NamedIndividual>
     
 
@@ -3382,24 +3558,24 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex105_function_0.3833866790579158 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex105_function_0.7695432700011594 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex105_function_0.3833866790579158">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex105_function_0.7695432700011594">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex105"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction104"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction105"/>
     </NamedIndividual>
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex105_function_0.5957744209187829 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex105_function_0.7857657973456695 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex105_function_0.5957744209187829">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex105_function_0.7857657973456695">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex105"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction105"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction104"/>
     </NamedIndividual>
     
 
@@ -3490,10 +3666,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex111_function_0.9502793416626 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex111_function_0.20549815860822118 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex111_function_0.9502793416626">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex111_function_0.20549815860822118">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex111"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction110"/>
@@ -3513,10 +3689,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex112_function_0.6150983615311335 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex112_function_0.24823972960242258 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex112_function_0.6150983615311335">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex112_function_0.24823972960242258">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex112"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction110"/>
@@ -3543,10 +3719,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex114_function_0.4294891437166143 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex114_function_0.341660295852264 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex114_function_0.4294891437166143">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex114_function_0.341660295852264">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex114"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction119"/>
@@ -3701,10 +3877,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex20_function_0.15361303611195287 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex20_function_0.007581240048260995 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex20_function_0.15361303611195287">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex20_function_0.007581240048260995">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex20"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction72"/>
@@ -3712,21 +3888,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex20_function_0.1999724780492793 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex20_function_0.14564007525020362 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex20_function_0.1999724780492793">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
-        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex20"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction9"/>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex20_function_0.4061997892807938 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex20_function_0.4061997892807938">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex20_function_0.14564007525020362">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex20"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction69"/>
@@ -3734,10 +3899,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex20_function_0.8908692303018063 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex20_function_0.3793105817181007 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex20_function_0.8908692303018063">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex20_function_0.3793105817181007">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex20"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction4"/>
@@ -3745,13 +3910,24 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex20_function_0.9989757570288805 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex20_function_0.5456360307890155 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex20_function_0.9989757570288805">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex20_function_0.5456360307890155">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex20"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction18"/>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Complex20_function_0.706513996626769 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex20_function_0.706513996626769">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
+        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex20"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction9"/>
     </NamedIndividual>
     
 
@@ -3782,10 +3958,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex22_function_0.0887949008907929 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex22_function_0.19059823043984092 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex22_function_0.0887949008907929">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex22_function_0.19059823043984092">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex22"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction5"/>
@@ -3953,32 +4129,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.028000153512382164 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.040518741125905366 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.028000153512382164">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
-        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction10"/>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.07622299989581482 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.07622299989581482">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
-        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction65"/>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.15500489990741673 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.15500489990741673">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.040518741125905366">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction16"/>
@@ -3986,65 +4140,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.21145584168422304 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.04309773583676557 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.21145584168422304">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
-        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction93"/>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.2383519256137201 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.2383519256137201">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
-        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction90"/>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.27069023680247584 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.27069023680247584">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
-        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction92"/>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.30154337682365506 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.30154337682365506">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
-        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction73"/>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.342941323619939 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.342941323619939">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
-        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction71"/>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.4165994500806989 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.4165994500806989">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.04309773583676557">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction87"/>
@@ -4052,43 +4151,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.47514071189426443 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.05044923062853768 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.47514071189426443">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
-        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction64"/>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.6064985776759091 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.6064985776759091">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
-        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction89"/>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.6725917699435541 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.6725917699435541">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
-        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction95"/>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.7002741147167307 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.7002741147167307">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.05044923062853768">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction86"/>
@@ -4096,32 +4162,65 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.7489564854891783 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.07024282960582529 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.7489564854891783">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.07024282960582529">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction111"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction71"/>
     </NamedIndividual>
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.8039547852944845 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.24904892069056972 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.8039547852944845">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.24904892069056972">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction91"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction89"/>
     </NamedIndividual>
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.8045022833059178 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.33920805633647766 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.8045022833059178">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.33920805633647766">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
+        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction95"/>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.3769135407555575 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.3769135407555575">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
+        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction10"/>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.43064947558800193 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.43064947558800193">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
+        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction65"/>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.43733233218404854 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.43733233218404854">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction67"/>
@@ -4129,21 +4228,21 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.892117084462453 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.45236366787723126 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.892117084462453">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.45236366787723126">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction14"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction73"/>
     </NamedIndividual>
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.9789887630068683 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.47205315858135344 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.9789887630068683">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.47205315858135344">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction96"/>
@@ -4151,13 +4250,90 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.9941072780849962 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.49487008294132695 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.9941072780849962">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.49487008294132695">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
+        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction93"/>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.5561551458692928 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.5561551458692928">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
+        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction90"/>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.6320254000447041 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.6320254000447041">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
+        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction111"/>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.6611003356578076 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.6611003356578076">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction75"/>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.6682054447896786 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.6682054447896786">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
+        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction92"/>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.7494841805155641 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.7494841805155641">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
+        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction14"/>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.9315885861556124 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.9315885861556124">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
+        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction64"/>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Complex34_function_0.9708847602006605 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex34_function_0.9708847602006605">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
+        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex34"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction91"/>
     </NamedIndividual>
     
 
@@ -4210,10 +4386,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex38_function_0.4521004671847312 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex38_function_0.5696176172441376 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex38_function_0.4521004671847312">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex38_function_0.5696176172441376">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex38"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction13"/>
@@ -4393,10 +4569,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex51_function_0.11959690414942803 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex51_function_0.06074320388723253 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex51_function_0.11959690414942803">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex51_function_0.06074320388723253">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex51"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction24"/>
@@ -4451,10 +4627,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex55_function_0.6806006330996894 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex55_function_0.8973172102158034 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex55_function_0.6806006330996894">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex55_function_0.8973172102158034">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex55"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction28"/>
@@ -4486,10 +4662,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex57_function_0.44037030287511303 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex57_function_0.300859516113374 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex57_function_0.44037030287511303">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex57_function_0.300859516113374">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex57"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction30"/>
@@ -4567,10 +4743,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex62_function_0.95522936674212 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex62_function_0.42203552869741057 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex62_function_0.95522936674212">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex62_function_0.42203552869741057">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex62"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction33"/>
@@ -4590,10 +4766,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex63_function_0.8471065863192592 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex63_function_0.186299438634017 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex63_function_0.8471065863192592">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex63_function_0.186299438634017">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex63"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction35"/>
@@ -4740,10 +4916,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex74_function_0.183644660511177 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex74_function_0.16660202817928071 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex74_function_0.183644660511177">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex74_function_0.16660202817928071">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex74"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction52"/>
@@ -4751,10 +4927,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex74_function_0.4478478918336257 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex74_function_0.506069000495995 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex74_function_0.4478478918336257">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex74_function_0.506069000495995">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex74"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction51"/>
@@ -4787,10 +4963,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex76_function_0.07785807841692993 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex76_function_0.8623874188018665 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex76_function_0.07785807841692993">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex76_function_0.8623874188018665">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex76"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction55"/>
@@ -4810,24 +4986,24 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex77_function_0.47056058748322016 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex77_function_0.18334303886343462 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex77_function_0.47056058748322016">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex77_function_0.18334303886343462">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex77"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction57"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction56"/>
     </NamedIndividual>
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex77_function_0.587715585780715 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex77_function_0.7076243898182273 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex77_function_0.587715585780715">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex77_function_0.7076243898182273">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex77"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction56"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction57"/>
     </NamedIndividual>
     
 
@@ -4854,10 +5030,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex79_function_0.9352237290141145 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex79_function_0.3111580513398481 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex79_function_0.9352237290141145">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex79_function_0.3111580513398481">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex79"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction88"/>
@@ -4980,24 +5156,24 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex88_function_0.13223484408336927 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex88_function_0.0663336411482901 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex88_function_0.13223484408336927">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex88_function_0.0663336411482901">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex88"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction66"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction68"/>
     </NamedIndividual>
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex88_function_0.3337595227385809 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex88_function_0.6161920889954667 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex88_function_0.3337595227385809">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex88_function_0.6161920889954667">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex88"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction68"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction66"/>
     </NamedIndividual>
     
 
@@ -5009,10 +5185,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex89_function_0.27821476788373534 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex89_function_0.05630619494730604 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex89_function_0.27821476788373534">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex89_function_0.05630619494730604">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex89"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction70"/>
@@ -5038,10 +5214,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex91_function_0.02905980346059478 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex91_function_0.2503526591818408 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex91_function_0.02905980346059478">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex91_function_0.2503526591818408">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex91"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction78"/>
@@ -5049,10 +5225,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex91_function_0.43200123246035704 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex91_function_0.4209301018304188 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex91_function_0.43200123246035704">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex91_function_0.4209301018304188">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex91"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction76"/>
@@ -5060,24 +5236,24 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex91_function_0.7218440574798247 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex91_function_0.6740791081046934 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex91_function_0.7218440574798247">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex91_function_0.6740791081046934">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex91"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction74"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction77"/>
     </NamedIndividual>
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex91_function_0.9411499979813366 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex91_function_0.8404215751637303 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex91_function_0.9411499979813366">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex91_function_0.8404215751637303">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex91"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction77"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction74"/>
     </NamedIndividual>
     
 
@@ -5089,10 +5265,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex93_function_0.019115480989825295 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex93_function_0.5754728100947227 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex93_function_0.019115480989825295">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex93_function_0.5754728100947227">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex93"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction85"/>
@@ -5100,24 +5276,24 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex93_function_0.188175651332102 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex93_function_0.5839641220580345 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex93_function_0.188175651332102">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex93_function_0.5839641220580345">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex93"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction99"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction84"/>
     </NamedIndividual>
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex93_function_0.9791408894790558 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex93_function_0.730277658852758 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex93_function_0.9791408894790558">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex93_function_0.730277658852758">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex93"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction84"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction99"/>
     </NamedIndividual>
     
 
@@ -5133,10 +5309,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex95_function_0.39722674100180033 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex95_function_0.6191935147889926 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex95_function_0.39722674100180033">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex95_function_0.6191935147889926">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex95"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction94"/>
@@ -5163,10 +5339,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex97_function_0.7957712391914613 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Complex97_function_0.6656212663733884 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex97_function_0.7957712391914613">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex97_function_0.6656212663733884">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex97"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction98"/>
@@ -5650,10 +5826,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#PhysicalEntity12_function_0.8543393123958788 -->
+    <!-- http://www.reactome.org/biopax/63/109581#PhysicalEntity12_function_0.8636847540023833 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#PhysicalEntity12_function_0.8543393123958788">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#PhysicalEntity12_function_0.8636847540023833">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#PhysicalEntity12"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction118"/>
@@ -5668,10 +5844,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#PhysicalEntity2_function_0.5257845759555672 -->
+    <!-- http://www.reactome.org/biopax/63/109581#PhysicalEntity2_function_0.1635573207820521 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#PhysicalEntity2_function_0.5257845759555672">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#PhysicalEntity2_function_0.1635573207820521">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#PhysicalEntity2"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction79"/>
@@ -5686,10 +5862,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#PhysicalEntity3_function_0.885405453082354 -->
+    <!-- http://www.reactome.org/biopax/63/109581#PhysicalEntity3_function_0.7827764427164773 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#PhysicalEntity3_function_0.885405453082354">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#PhysicalEntity3_function_0.7827764427164773">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#PhysicalEntity3"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction80"/>
@@ -5704,10 +5880,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#PhysicalEntity4_function_0.5261251769309134 -->
+    <!-- http://www.reactome.org/biopax/63/109581#PhysicalEntity4_function_0.580712925134857 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#PhysicalEntity4_function_0.5261251769309134">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#PhysicalEntity4_function_0.580712925134857">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#PhysicalEntity4"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction81"/>
@@ -5722,10 +5898,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#PhysicalEntity5_function_0.5181288383197542 -->
+    <!-- http://www.reactome.org/biopax/63/109581#PhysicalEntity5_function_0.23129823109682401 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#PhysicalEntity5_function_0.5181288383197542">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#PhysicalEntity5_function_0.23129823109682401">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#PhysicalEntity5"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction82"/>
@@ -5740,10 +5916,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#PhysicalEntity6_function_0.5530172490179903 -->
+    <!-- http://www.reactome.org/biopax/63/109581#PhysicalEntity6_function_0.004200640203828265 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#PhysicalEntity6_function_0.5530172490179903">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#PhysicalEntity6_function_0.004200640203828265">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#PhysicalEntity6"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction83"/>
@@ -5758,10 +5934,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#PhysicalEntity7_function_0.320530231016679 -->
+    <!-- http://www.reactome.org/biopax/63/109581#PhysicalEntity7_function_0.48978110971598354 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#PhysicalEntity7_function_0.320530231016679">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#PhysicalEntity7_function_0.48978110971598354">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#PhysicalEntity7"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction97"/>
@@ -6521,10 +6697,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Protein16_function_0.7605743937671344 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Protein16_function_0.24823689254595438 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein16_function_0.7605743937671344">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein16_function_0.24823689254595438">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein16"/>
         <obo:RO_0002408 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction4"/>
@@ -7393,10 +7569,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Protein251_function_0.3658858855552587 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Protein251_function_0.5755857643524163 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein251_function_0.3658858855552587">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein251_function_0.5755857643524163">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein251"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction112"/>
@@ -7434,10 +7610,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Protein254_function_0.3418388428909568 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Protein254_function_0.5803116096140144 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein254_function_0.3418388428909568">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein254_function_0.5803116096140144">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein254"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction114"/>
@@ -7774,10 +7950,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Protein323_function_0.8913890505945198 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Protein323_function_0.49534046105721685 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein323_function_0.8913890505945198">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein323_function_0.49534046105721685">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein323"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction122"/>
@@ -7981,10 +8157,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Protein50_function_0.9415337863220307 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Protein50_function_0.6828504348579688 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein50_function_0.9415337863220307">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein50_function_0.6828504348579688">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein50"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction19"/>
@@ -8009,10 +8185,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Protein52_function_0.16448680888708245 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Protein52_function_0.08738963846404679 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein52_function_0.16448680888708245">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein52_function_0.08738963846404679">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein52"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction20"/>
@@ -8057,10 +8233,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Protein56_function_0.6840185162277033 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Protein56_function_0.943964552852058 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein56_function_0.6840185162277033">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein56_function_0.943964552852058">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein56"/>
         <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction22"/>
@@ -8068,10 +8244,10 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Protein5_function_0.05742148830505289 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Protein5_function_0.3806790561128697 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein5_function_0.05742148830505289">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein5_function_0.3806790561128697">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein5"/>
         <obo:RO_0002408 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction2"/>
@@ -8079,24 +8255,24 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Protein5_function_0.6594690265822629 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Protein5_function_0.5793034899923809 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein5_function_0.6594690265822629">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein5_function_0.5793034899923809">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein5"/>
-        <obo:RO_0002408 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction3"/>
+        <obo:RO_0002408 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction1"/>
     </NamedIndividual>
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Protein5_function_0.7288234927299916 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Protein5_function_0.9680625152934464 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein5_function_0.7288234927299916">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein5_function_0.9680625152934464">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein5"/>
-        <obo:RO_0002408 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction1"/>
+        <obo:RO_0002408 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction3"/>
     </NamedIndividual>
     
 
@@ -8401,24 +8577,24 @@
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Protein88_function_0.4977137006708018 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Protein88_function_0.39203343575187133 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein88_function_0.4977137006708018">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein88_function_0.39203343575187133">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein88"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction37"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction39"/>
     </NamedIndividual>
     
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Protein88_function_0.9241023825508248 -->
+    <!-- http://www.reactome.org/biopax/63/109581#Protein88_function_0.5504008604235018 -->
 
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein88_function_0.9241023825508248">
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein88_function_0.5504008604235018">
         <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
         <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein88"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction39"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction37"/>
     </NamedIndividual>
     
 
@@ -8621,9 +8797,6 @@
      -->
 
 
-    <rdf:Description rdf:about="http://purl.obolibrary.org/obo/BFO_0000066">
-        <rdfs:label>occurs in</rdfs:label>
-    </rdf:Description>
     <rdf:Description rdf:about="http://purl.obolibrary.org/obo/RO_0002334">
         <rdfs:label>regulated by</rdfs:label>
     </rdf:Description>
