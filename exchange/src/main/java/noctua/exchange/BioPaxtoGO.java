@@ -30,6 +30,7 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
@@ -54,7 +55,7 @@ public class BioPaxtoGO {
 	OWLObjectProperty part_of, has_part, has_input, has_output, 
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, regulated_by;
 
-	OWLClass bp_class, continuant_class, protein_class, reaction_class, go_complex;
+	OWLClass bp_class, continuant_class, protein_class, reaction_class, go_complex, molecular_function;
 	/**
 	 * @param args
 	 * @throws FileNotFoundException 
@@ -78,6 +79,9 @@ public class BioPaxtoGO {
 		//biological process
 		bp_class = df.getOWLClass(IRI.create(obo_iri + "GO_0008150")); 
 		addLabel(ontman, go_cam_ont, df, bp_class, "Biological Process");
+		//molecular function GO:0003674
+		molecular_function = df.getOWLClass(IRI.create(obo_iri + "GO_0003674")); 
+		addLabel(ontman, go_cam_ont, df, molecular_function, "Molecular Function");
 		//continuant 
 		continuant_class = df.getOWLClass(IRI.create(obo_iri + "BFO_0000002")); 
 		addLabel(ontman, go_cam_ont, df, continuant_class, "Continuant");
@@ -429,15 +433,25 @@ public class BioPaxtoGO {
 				Set<Controller> controller_entities = controller.getController();
 				for(Controller controller_entity : controller_entities) {
 					OWLNamedIndividual c_e = df.getOWLNamedIndividual(IRI.create(controller_entity.getUri()));
+					//make an individual of the class molecular function
+					//TODO likely need to come up with a pseudo-random URI here instead???
+					OWLIndividual a_mf = df.getOWLNamedIndividual(controller_entity.getUri()+"_function_"+Math.random()); 
+					OWLClassAssertionAxiom isa_function = df.getOWLClassAssertionAxiom(molecular_function, a_mf);
+					ontman.addAxiom(go_cam_ont, isa_function);
+					ontman.applyChanges();
+					//the controller enables that function
+					OWLObjectPropertyAssertionAxiom add_func_axiom = df.getOWLObjectPropertyAssertionAxiom(enabled_by, a_mf, c_e);
+					AddAxiom addFuncAxiom = new AddAxiom(go_cam_ont, add_func_axiom);
+					ontman.applyChanges(addFuncAxiom);					
 					if(ctype.toString().startsWith("INHIBITION")){
 						// Event directly_inhibits NextEvent 
-						OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(directly_inhibits, c_e, e);
+						OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(directly_inhibits, a_mf, e);
 						AddAxiom addStepAxiom = new AddAxiom(go_cam_ont, add_step_axiom);
 						ontman.applyChanges(addStepAxiom);
 						System.out.println(c_e +" inhibits "+e);
 					}else if(ctype.toString().startsWith("ACTIVATION")){
 						// Event directly_ACTIVATES NextEvent 
-						OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(directly_activates, c_e, e);
+						OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(directly_activates, a_mf, e);
 						AddAxiom addStepAxiom = new AddAxiom(go_cam_ont, add_step_axiom);
 						ontman.applyChanges(addStepAxiom);
 						System.out.println(c_e +" activates "+e);
