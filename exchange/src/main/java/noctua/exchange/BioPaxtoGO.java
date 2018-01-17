@@ -51,7 +51,9 @@ public class BioPaxtoGO {
 	public static final IRI obo_iri = IRI.create("http://purl.obolibrary.org/obo/");
 	public static final IRI uniprot_iri = IRI.create("http://identifiers.org/uniprot/");
 	public static final IRI biopax_iri = IRI.create("http://www.biopax.org/release/biopax-level3.owl#");
-	OWLObjectProperty part_of, has_part, has_input, has_output, provides_direct_input_for;
+	OWLObjectProperty part_of, has_part, has_input, has_output, 
+	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, regulated_by;
+
 	OWLClass bp_class, continuant_class, protein_class, reaction_class, go_complex;
 	/**
 	 * @param args
@@ -100,7 +102,6 @@ public class BioPaxtoGO {
 		//has part
 		has_part = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000051"));
 		addLabel(ontman, go_cam_ont, df, has_part, "has part");
-
 		//has input 
 		has_input = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002233"));
 		addLabel(ontman, go_cam_ont, df, has_input, "has input");
@@ -110,6 +111,21 @@ public class BioPaxtoGO {
 		//directly provides input for (process to process)
 		provides_direct_input_for = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002413"));
 		addLabel(ontman, go_cam_ont, df, provides_direct_input_for, "directly provides input for (process to process)");
+		//RO_0002408 directly inhibits (process to process)
+		directly_inhibits = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002408"));
+		addLabel(ontman, go_cam_ont, df, directly_inhibits, "directly inhibits (process to process)");
+		//RO_0002406 directly activates (process to process)
+		directly_activates = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002406"));
+		addLabel(ontman, go_cam_ont, df, directly_activates, "directly activates (process to process)");
+		//BFO_0000066 occurs in
+		occurs_in = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000066"));
+		addLabel(ontman, go_cam_ont, df, occurs_in, "occurs in");
+		//RO_0002333 enabled by
+		enabled_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002333"));
+		addLabel(ontman, go_cam_ont, df, enabled_by, "enabled by");
+		//RO_0002334 regulated by (processual) 
+		regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002334"));
+		addLabel(ontman, go_cam_ont, df, regulated_by, "regulated by");
 
 		//read biopax pathway(s)
 		BioPAXIOHandler handler = new SimpleIOHandler();
@@ -159,20 +175,11 @@ public class BioPaxtoGO {
 				ontman.applyChanges(addAxiom);
 			}
 
-			//get the steps of the pathway 
-			//from prolog			
-			//			% ========================================
-			//					% Steps
-			//					% ========================================
-			//
-			//					Event directly_provides_input_for NextEvent
-			//					   <==
-			//					   Step stepProcess Event,
-			//					   Step nextStep NextStep,
-			//					   NextStep stepProcess NextEvent,
-			//					   biochemicalReaction(Event),
-			//					   biochemicalReaction(NextEvent).
+			//below mapped from Chris Mungall's
+			//prolog rules https://github.com/cmungall/pl-sysbio/blob/master/prolog/sysbio/bp2lego.pl
+			//looking at this, prolog/graph solution seems much more elegant... 
 
+			//get the steps of the pathway 			
 			Set<PathwayStep> steps = currentPathway.getPathwayOrder();
 			for(PathwayStep step1 : steps) {
 				Set<Process> events = step1.getStepProcess();
@@ -181,26 +188,25 @@ public class BioPaxtoGO {
 					Set<Process> nextEvents = step2.getStepProcess();
 					for(Process event : events) {
 						for(Process nextEvent : nextEvents) {
+							OWLNamedIndividual e1 = df.getOWLNamedIndividual(IRI.create(event.getUri()));
+							OWLNamedIndividual e2 = df.getOWLNamedIndividual(IRI.create(nextEvent.getUri()));
+							//	Event directly_provides_input_for NextEvent
+							//	 <==
+							//		Step stepProcess Event,
+							//		Step nextStep NextStep,
+							//		NextStep stepProcess NextEvent,
+							//		biochemicalReaction(Event),
+							//		biochemicalReaction(NextEvent).
 							if((event.getModelInterface().equals(BiochemicalReaction.class))&&
 									(nextEvent.getModelInterface().equals(BiochemicalReaction.class))) {
-								OWLNamedIndividual e1 = df.getOWLNamedIndividual(IRI.create(event.getUri()));
-								OWLNamedIndividual e2 = df.getOWLNamedIndividual(IRI.create(nextEvent.getUri()));
 								OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(provides_direct_input_for, e1, e2);
 								AddAxiom addStepAxiom = new AddAxiom(go_cam_ont, add_step_axiom);
 								ontman.applyChanges(addStepAxiom);
 							}
-
 						}
 					}
 				}
 			}
-
-			//
-			//			Event directly_inhibits NextEvent
-			//			   <==
-			//			   control(Event),
-			//			   controlled(Event,NextEvent),
-			//			   controlType(Event,literal(type(_,'INHIBITION'))).
 
 			//get the pieces of the pathway
 			//Process subsumes Pathway and Reaction.  A pathway may have either or both reaction or pathway components.  
@@ -409,6 +415,33 @@ public class BioPaxtoGO {
 					OWLObjectPropertyAssertionAxiom add_output_axiom = df.getOWLObjectPropertyAssertionAxiom(has_output, e, output_entity);
 					AddAxiom addOutputAxiom = new AddAxiom(go_cam_ont, add_output_axiom);
 					ontman.applyChanges(addOutputAxiom);
+				}
+			}
+			//find controllers 
+			//			Event directly_inhibits NextEvent
+			//			   <==
+			//			   control(Event),
+			//			   controlled(Event,NextEvent),
+			//			   controlType(Event,literal(type(_,'INHIBITION'))).
+			Set<Control> controllers = reaction.getControlledOf();
+			for(Control controller : controllers) {
+				ControlType ctype = controller.getControlType();
+				Set<Controller> controller_entities = controller.getController();
+				for(Controller controller_entity : controller_entities) {
+					OWLNamedIndividual c_e = df.getOWLNamedIndividual(IRI.create(controller_entity.getUri()));
+					if(ctype.toString().startsWith("INHIBITION")){
+						// Event directly_inhibits NextEvent 
+						OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(directly_inhibits, c_e, e);
+						AddAxiom addStepAxiom = new AddAxiom(go_cam_ont, add_step_axiom);
+						ontman.applyChanges(addStepAxiom);
+						System.out.println(c_e +" inhibits "+e);
+					}else if(ctype.toString().startsWith("ACTIVATION")){
+						// Event directly_ACTIVATES NextEvent 
+						OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(directly_activates, c_e, e);
+						AddAxiom addStepAxiom = new AddAxiom(go_cam_ont, add_step_axiom);
+						ontman.applyChanges(addStepAxiom);
+						System.out.println(c_e +" activates "+e);
+					}
 				}
 			}
 		}
