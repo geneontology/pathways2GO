@@ -20,8 +20,10 @@ import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.paxtools.model.level3.Process;
+import org.coode.owlapi.turtle.TurtleOntologyFormat;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.FileDocumentTarget;
+import org.semanticweb.owlapi.io.StreamDocumentTarget;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
@@ -29,6 +31,7 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLDocumentFormat;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLLiteral;
@@ -40,6 +43,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
+import org.semanticweb.owlapi.model.OntologyConfigurator;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 /**
@@ -67,8 +71,8 @@ public class BioPaxtoGO {
 		String input_biopax = "src/main/resources/reactome/reactome-input-109581.owl";
 		String converted_split = "src/main/resources/reactome/output/reactome-output-109581-";
 		String converted_full = "src/main/resources/reactome/reactome-output-109581";
-		boolean split_by_pathway = false;
-		bp2g.convert(input_biopax, converted_full, split_by_pathway);
+		boolean split_by_pathway = true;
+		bp2g.convert(input_biopax, converted_split, split_by_pathway);
 	}
 
 	public OWLOntology initGOCAMOntology() throws OWLOntologyCreationException {
@@ -249,6 +253,7 @@ public class BioPaxtoGO {
 				n = n.replaceAll(" ", "_");
 				String outfilename = converted+n+".owl";	
 				FileDocumentTarget outfile = new FileDocumentTarget(new File(outfilename));
+				ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());
 				ontman.saveOntology(go_cam_ont,outfile);
 				ontman.clearOntologies();
 			} 
@@ -256,6 +261,8 @@ public class BioPaxtoGO {
 		//export all
 		if(!split_by_pathway) {
 			FileDocumentTarget outfile = new FileDocumentTarget(new File(converted+".owl"));
+			//TODO - figure out how to set format with OntologyConfigurator (per undocumented 5.0 )
+			ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());
 			ontman.saveOntology(go_cam_ont,outfile);
 		}
 	}

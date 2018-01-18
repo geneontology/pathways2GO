@@ -1,990 +1,602 @@
-<?xml version="1.0"?>
-<rdf:RDF xmlns="http://www.w3.org/2002/07/owl#"
-     xml:base="http://www.w3.org/2002/07/owl"
-     xmlns:obo="http://purl.obolibrary.org/obo/"
-     xmlns:owl="http://www.w3.org/2002/07/owl#"
-     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-     xmlns:xml="http://www.w3.org/XML/1998/namespace"
-     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
-     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
-    <Ontology/>
-    
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://www.w3.org/2002/07/owl#> .
 
+[ rdf:type owl:Ontology
+ ] .
 
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Object Properties
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
+#################################################################
+#    Object Properties
+#################################################################
 
+###  http://purl.obolibrary.org/obo/BFO_0000050
+<http://purl.obolibrary.org/obo/BFO_0000050> rdf:type owl:ObjectProperty ;
+                                             rdfs:label "part of" .
 
-    
 
+###  http://purl.obolibrary.org/obo/BFO_0000051
+<http://purl.obolibrary.org/obo/BFO_0000051> rdf:type owl:ObjectProperty ;
+                                             rdfs:label "has part" .
 
-    <!-- http://purl.obolibrary.org/obo/BFO_0000050 -->
 
+###  http://purl.obolibrary.org/obo/BFO_0000066
+<http://purl.obolibrary.org/obo/BFO_0000066> rdf:type owl:ObjectProperty ;
+                                             rdfs:label "occurs in" .
 
-    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/BFO_0000050">
-        <rdfs:label>part of</rdfs:label>
-    </ObjectProperty>
-    
 
+###  http://purl.obolibrary.org/obo/RO_0002233
+<http://purl.obolibrary.org/obo/RO_0002233> rdf:type owl:ObjectProperty ;
+                                            rdfs:label "has input" .
 
-    <!-- http://purl.obolibrary.org/obo/BFO_0000051 -->
 
+###  http://purl.obolibrary.org/obo/RO_0002234
+<http://purl.obolibrary.org/obo/RO_0002234> rdf:type owl:ObjectProperty ;
+                                            rdfs:label "has output" .
 
-    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/BFO_0000051">
-        <rdfs:label>has part</rdfs:label>
-    </ObjectProperty>
-    
 
+###  http://purl.obolibrary.org/obo/RO_0002333
+<http://purl.obolibrary.org/obo/RO_0002333> rdf:type owl:ObjectProperty ;
+                                            rdfs:label "enabled by" .
 
-    <!-- http://purl.obolibrary.org/obo/BFO_0000066 -->
 
+###  http://purl.obolibrary.org/obo/RO_0002406
+<http://purl.obolibrary.org/obo/RO_0002406> rdf:type owl:ObjectProperty ;
+                                            rdfs:label "directly activates (process to process)" .
 
-    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/BFO_0000066">
-        <rdfs:label>occurs in</rdfs:label>
-    </ObjectProperty>
-    
 
+###  http://purl.obolibrary.org/obo/RO_0002408
+<http://purl.obolibrary.org/obo/RO_0002408> rdf:type owl:ObjectProperty ;
+                                            rdfs:label "directly inhibits (process to process)" .
 
-    <!-- http://purl.obolibrary.org/obo/RO_0002233 -->
 
+###  http://purl.obolibrary.org/obo/RO_0002413
+<http://purl.obolibrary.org/obo/RO_0002413> rdf:type owl:ObjectProperty ;
+                                            rdfs:label "directly provides input for (process to process)" .
 
-    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/RO_0002233">
-        <rdfs:label>has input</rdfs:label>
-    </ObjectProperty>
-    
 
+#################################################################
+#    Classes
+#################################################################
 
-    <!-- http://purl.obolibrary.org/obo/RO_0002234 -->
+###  http://identifiers.org/uniprot/O00206
+<http://identifiers.org/uniprot/O00206> rdf:type owl:Class ;
+                                        rdfs:subClassOf <http://www.biopax.org/release/biopax-level3.owl#Protein> ;
+                                        rdfs:label "O00206" .
 
 
-    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/RO_0002234">
-        <rdfs:label>has output</rdfs:label>
-    </ObjectProperty>
-    
+###  http://identifiers.org/uniprot/O00220
+<http://identifiers.org/uniprot/O00220> rdf:type owl:Class ;
+                                        rdfs:subClassOf <http://www.biopax.org/release/biopax-level3.owl#Protein> ;
+                                        rdfs:label "O00220" .
 
 
-    <!-- http://purl.obolibrary.org/obo/RO_0002333 -->
+###  http://identifiers.org/uniprot/O14763
+<http://identifiers.org/uniprot/O14763> rdf:type owl:Class ;
+                                        rdfs:subClassOf <http://www.biopax.org/release/biopax-level3.owl#Protein> ;
+                                        rdfs:label "O14763" .
 
 
-    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/RO_0002333">
-        <rdfs:label>enabled by</rdfs:label>
-    </ObjectProperty>
-    
+###  http://identifiers.org/uniprot/P08571
+<http://identifiers.org/uniprot/P08571> rdf:type owl:Class ;
+                                        rdfs:subClassOf <http://www.biopax.org/release/biopax-level3.owl#Protein> ;
+                                        rdfs:label "P08571" .
 
 
-    <!-- http://purl.obolibrary.org/obo/RO_0002406 -->
+###  http://identifiers.org/uniprot/P25445
+<http://identifiers.org/uniprot/P25445> rdf:type owl:Class ;
+                                        rdfs:subClassOf <http://www.biopax.org/release/biopax-level3.owl#Protein> ;
+                                        rdfs:label "P25445" .
 
 
-    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/RO_0002406">
-        <rdfs:label>directly activates (process to process)</rdfs:label>
-    </ObjectProperty>
-    
+###  http://identifiers.org/uniprot/P48023
+<http://identifiers.org/uniprot/P48023> rdf:type owl:Class ;
+                                        rdfs:subClassOf <http://www.biopax.org/release/biopax-level3.owl#Protein> ;
+                                        rdfs:label "P48023" .
 
 
-    <!-- http://purl.obolibrary.org/obo/RO_0002408 -->
+###  http://identifiers.org/uniprot/P50591
+<http://identifiers.org/uniprot/P50591> rdf:type owl:Class ;
+                                        rdfs:subClassOf <http://www.biopax.org/release/biopax-level3.owl#Protein> ;
+                                        rdfs:label "P50591" .
 
 
-    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/RO_0002408">
-        <rdfs:label>directly inhibits (process to process)</rdfs:label>
-    </ObjectProperty>
-    
+###  http://identifiers.org/uniprot/Q12933
+<http://identifiers.org/uniprot/Q12933> rdf:type owl:Class ;
+                                        rdfs:subClassOf <http://www.biopax.org/release/biopax-level3.owl#Protein> ;
+                                        rdfs:label "Q12933" .
 
 
-    <!-- http://purl.obolibrary.org/obo/RO_0002413 -->
+###  http://identifiers.org/uniprot/Q13158
+<http://identifiers.org/uniprot/Q13158> rdf:type owl:Class ;
+                                        rdfs:subClassOf <http://www.biopax.org/release/biopax-level3.owl#Protein> ;
+                                        rdfs:label "Q13158" .
 
 
-    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/RO_0002413">
-        <rdfs:label>directly provides input for (process to process)</rdfs:label>
-    </ObjectProperty>
-    
+###  http://identifiers.org/uniprot/Q13546
+<http://identifiers.org/uniprot/Q13546> rdf:type owl:Class ;
+                                        rdfs:subClassOf <http://www.biopax.org/release/biopax-level3.owl#Protein> ;
+                                        rdfs:label "Q13546" .
 
 
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Classes
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
+###  http://identifiers.org/uniprot/Q14790
+<http://identifiers.org/uniprot/Q14790> rdf:type owl:Class ;
+                                        rdfs:subClassOf <http://www.biopax.org/release/biopax-level3.owl#Protein> ;
+                                        rdfs:label "Q14790" .
 
 
-    
+###  http://identifiers.org/uniprot/Q15628
+<http://identifiers.org/uniprot/Q15628> rdf:type owl:Class ;
+                                        rdfs:subClassOf <http://www.biopax.org/release/biopax-level3.owl#Protein> ;
+                                        rdfs:label "Q15628" .
 
 
-    <!-- http://identifiers.org/uniprot/O00206 -->
+###  http://identifiers.org/uniprot/Q86XR7
+<http://identifiers.org/uniprot/Q86XR7> rdf:type owl:Class ;
+                                        rdfs:subClassOf <http://www.biopax.org/release/biopax-level3.owl#Protein> ;
+                                        rdfs:label "Q86XR7" .
 
 
-    <Class rdf:about="http://identifiers.org/uniprot/O00206">
-        <rdfs:subClassOf rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Protein"/>
-        <rdfs:label>O00206</rdfs:label>
-    </Class>
-    
+###  http://identifiers.org/uniprot/Q8IUC6
+<http://identifiers.org/uniprot/Q8IUC6> rdf:type owl:Class ;
+                                        rdfs:subClassOf <http://www.biopax.org/release/biopax-level3.owl#Protein> ;
+                                        rdfs:label "Q8IUC6" .
 
 
-    <!-- http://identifiers.org/uniprot/O00220 -->
+###  http://identifiers.org/uniprot/Q9Y6Y9
+<http://identifiers.org/uniprot/Q9Y6Y9> rdf:type owl:Class ;
+                                        rdfs:subClassOf <http://www.biopax.org/release/biopax-level3.owl#Protein> ;
+                                        rdfs:label "Q9Y6Y9" .
 
 
-    <Class rdf:about="http://identifiers.org/uniprot/O00220">
-        <rdfs:subClassOf rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Protein"/>
-        <rdfs:label>O00220</rdfs:label>
-    </Class>
-    
+###  http://purl.obolibrary.org/obo/BFO_0000002
+<http://purl.obolibrary.org/obo/BFO_0000002> rdf:type owl:Class ;
+                                             rdfs:label "Continuant" .
 
 
-    <!-- http://identifiers.org/uniprot/O14763 -->
+###  http://purl.obolibrary.org/obo/CHEBI_16412
+<http://purl.obolibrary.org/obo/CHEBI_16412> rdf:type owl:Class ;
+                                             rdfs:subClassOf <http://purl.obolibrary.org/obo/BFO_0000002> ;
+                                             rdfs:label "CHEBI_16412" .
 
 
-    <Class rdf:about="http://identifiers.org/uniprot/O14763">
-        <rdfs:subClassOf rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Protein"/>
-        <rdfs:label>O14763</rdfs:label>
-    </Class>
-    
+###  http://purl.obolibrary.org/obo/GO_0003674
+<http://purl.obolibrary.org/obo/GO_0003674> rdf:type owl:Class ;
+                                            rdfs:label "Molecular Function" .
 
 
-    <!-- http://identifiers.org/uniprot/P08571 -->
+###  http://purl.obolibrary.org/obo/GO_0005829
+<http://purl.obolibrary.org/obo/GO_0005829> rdf:type owl:Class ;
+                                            rdfs:label "cytosol" .
 
 
-    <Class rdf:about="http://identifiers.org/uniprot/P08571">
-        <rdfs:subClassOf rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Protein"/>
-        <rdfs:label>P08571</rdfs:label>
-    </Class>
-    
+###  http://purl.obolibrary.org/obo/GO_0008150
+<http://purl.obolibrary.org/obo/GO_0008150> rdf:type owl:Class ;
+                                            rdfs:label "Biological Process" .
 
 
-    <!-- http://identifiers.org/uniprot/P25445 -->
+###  http://purl.obolibrary.org/obo/GO_0010008
+<http://purl.obolibrary.org/obo/GO_0010008> rdf:type owl:Class ;
+                                            rdfs:label "endosome membrane" .
 
 
-    <Class rdf:about="http://identifiers.org/uniprot/P25445">
-        <rdfs:subClassOf rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Protein"/>
-        <rdfs:label>P25445</rdfs:label>
-    </Class>
-    
+###  http://purl.obolibrary.org/obo/GO_0032991
+<http://purl.obolibrary.org/obo/GO_0032991> rdf:type owl:Class ;
+                                            rdfs:subClassOf <http://purl.obolibrary.org/obo/BFO_0000002> ;
+                                            rdfs:label "Macromolecular Complex" .
 
 
-    <!-- http://identifiers.org/uniprot/P48023 -->
+###  http://purl.obolibrary.org/obo/GO_0097296
+<http://purl.obolibrary.org/obo/GO_0097296> rdf:type owl:Class ;
+                                            rdfs:subClassOf <http://purl.obolibrary.org/obo/GO_0008150> .
 
 
-    <Class rdf:about="http://identifiers.org/uniprot/P48023">
-        <rdfs:subClassOf rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Protein"/>
-        <rdfs:label>P48023</rdfs:label>
-    </Class>
-    
+###  http://www.biopax.org/release/biopax-level3.owl#Protein
+<http://www.biopax.org/release/biopax-level3.owl#Protein> rdf:type owl:Class ;
+                                                          rdfs:subClassOf <http://purl.obolibrary.org/obo/BFO_0000002> ;
+                                                          rdfs:label "Protein" .
 
 
-    <!-- http://identifiers.org/uniprot/P50591 -->
+###  http://www.biopax.org/release/biopax-level3.owl#Reaction
+<http://www.biopax.org/release/biopax-level3.owl#Reaction> rdf:type owl:Class ;
+                                                           rdfs:label "Reaction" .
 
 
-    <Class rdf:about="http://identifiers.org/uniprot/P50591">
-        <rdfs:subClassOf rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Protein"/>
-        <rdfs:label>P50591</rdfs:label>
-    </Class>
-    
+#################################################################
+#    Individuals
+#################################################################
 
+###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction115
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction115> rdf:type owl:NamedIndividual .
 
-    <!-- http://identifiers.org/uniprot/Q12933 -->
 
+###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction18
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction18> rdf:type owl:NamedIndividual .
 
-    <Class rdf:about="http://identifiers.org/uniprot/Q12933">
-        <rdfs:subClassOf rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Protein"/>
-        <rdfs:label>Q12933</rdfs:label>
-    </Class>
-    
 
+###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction4
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction4> rdf:type owl:NamedIndividual ,
+                                                                         <http://www.biopax.org/release/biopax-level3.owl#Reaction> ;
+                                                                <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway3> ;
+                                                                <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3> ;
+                                                                <http://purl.obolibrary.org/obo/RO_0002233> <http://www.reactome.org/biopax/63/109581#Complex18> ;
+                                                                <http://purl.obolibrary.org/obo/RO_0002234> <http://www.reactome.org/biopax/63/109581#Complex19> ,
+                                                                                                            <http://www.reactome.org/biopax/63/109581#Complex20> ;
+                                                                <http://purl.obolibrary.org/obo/RO_0002413> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction115> ,
+                                                                                                            <http://www.reactome.org/biopax/63/109581#BiochemicalReaction18> ,
+                                                                                                            <http://www.reactome.org/biopax/63/109581#BiochemicalReaction69> ,
+                                                                                                            <http://www.reactome.org/biopax/63/109581#BiochemicalReaction72> ;
+                                                                rdfs:label "Caspase-8 processing in the DISC" .
 
-    <!-- http://identifiers.org/uniprot/Q13158 -->
 
+###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction5
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction5> rdf:type owl:NamedIndividual ,
+                                                                         <http://www.biopax.org/release/biopax-level3.owl#Reaction> ;
+                                                                <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway3> ;
+                                                                <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary4> ;
+                                                                <http://purl.obolibrary.org/obo/RO_0002233> <http://www.reactome.org/biopax/63/109581#Complex22> ;
+                                                                <http://purl.obolibrary.org/obo/RO_0002234> <http://www.reactome.org/biopax/63/109581#Complex20> ,
+                                                                                                            <http://www.reactome.org/biopax/63/109581#Complex27> ;
+                                                                <http://purl.obolibrary.org/obo/RO_0002413> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction115> ;
+                                                                rdfs:label "Caspase-8 processing within TLR4 complex" .
 
-    <Class rdf:about="http://identifiers.org/uniprot/Q13158">
-        <rdfs:subClassOf rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Protein"/>
-        <rdfs:label>Q13158</rdfs:label>
-    </Class>
-    
 
+###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction69
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction69> rdf:type owl:NamedIndividual .
 
-    <!-- http://identifiers.org/uniprot/Q13546 -->
 
+###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction72
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction72> rdf:type owl:NamedIndividual .
 
-    <Class rdf:about="http://identifiers.org/uniprot/Q13546">
-        <rdfs:subClassOf rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Protein"/>
-        <rdfs:label>Q13546</rdfs:label>
-    </Class>
-    
 
+###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3
+<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3> rdf:type owl:NamedIndividual ,
+                                                                                <http://purl.obolibrary.org/obo/GO_0005829> .
 
-    <!-- http://identifiers.org/uniprot/Q14790 -->
 
+###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary4
+<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary4> rdf:type owl:NamedIndividual ,
+                                                                                <http://purl.obolibrary.org/obo/GO_0010008> .
 
-    <Class rdf:about="http://identifiers.org/uniprot/Q14790">
-        <rdfs:subClassOf rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Protein"/>
-        <rdfs:label>Q14790</rdfs:label>
-    </Class>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Complex10
+<http://www.reactome.org/biopax/63/109581#Complex10> rdf:type owl:NamedIndividual ,
+                                                              <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                     <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein6> ,
+                                                                                                  <http://www.reactome.org/biopax/63/109581#Protein9> ;
+                                                     rdfs:label "TRAIL:DR4,5" .
 
-    <!-- http://identifiers.org/uniprot/Q15628 -->
 
+###  http://www.reactome.org/biopax/63/109581#Complex11
+<http://www.reactome.org/biopax/63/109581#Complex11> rdf:type owl:NamedIndividual ,
+                                                              <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                     <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Complex6> ,
+                                                                                                  <http://www.reactome.org/biopax/63/109581#Complex8> ;
+                                                     rdfs:label "TNFSF10:TNFRSF10A,B:FADD:2xCASP8(1-479)" .
 
-    <Class rdf:about="http://identifiers.org/uniprot/Q15628">
-        <rdfs:subClassOf rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Protein"/>
-        <rdfs:label>Q15628</rdfs:label>
-    </Class>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Complex15
+<http://www.reactome.org/biopax/63/109581#Complex15> rdf:type owl:NamedIndividual ,
+                                                              <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                     <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Complex16> ,
+                                                                                                  <http://www.reactome.org/biopax/63/109581#Complex6> ;
+                                                     rdfs:label "TRAF2:TRADD:RIP1:FADD:2xCASP8(1-479)" .
 
-    <!-- http://identifiers.org/uniprot/Q86XR7 -->
 
+###  http://www.reactome.org/biopax/63/109581#Complex16
+<http://www.reactome.org/biopax/63/109581#Complex16> rdf:type owl:NamedIndividual ,
+                                                              <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                     <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Complex17> ,
+                                                                                                  <http://www.reactome.org/biopax/63/109581#Protein3> ;
+                                                     rdfs:label "TRADD:TRAF2:RIP1:FADD" .
 
-    <Class rdf:about="http://identifiers.org/uniprot/Q86XR7">
-        <rdfs:subClassOf rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Protein"/>
-        <rdfs:label>Q86XR7</rdfs:label>
-    </Class>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Complex17
+<http://www.reactome.org/biopax/63/109581#Complex17> rdf:type owl:NamedIndividual ,
+                                                              <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                     <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein10> ,
+                                                                                                  <http://www.reactome.org/biopax/63/109581#Protein12> ,
+                                                                                                  <http://www.reactome.org/biopax/63/109581#Protein13> ;
+                                                     rdfs:label "TRAF2:TRADD:RIPK1" .
 
-    <!-- http://identifiers.org/uniprot/Q8IUC6 -->
 
+###  http://www.reactome.org/biopax/63/109581#Complex18
+<http://www.reactome.org/biopax/63/109581#Complex18> rdf:type owl:NamedIndividual ,
+                                                              <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                     <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Complex11> ,
+                                                                                                  <http://www.reactome.org/biopax/63/109581#Complex15> ,
+                                                                                                  <http://www.reactome.org/biopax/63/109581#Complex5> ;
+                                                     rdfs:label "DISC:procaspase-8-dimer" .
 
-    <Class rdf:about="http://identifiers.org/uniprot/Q8IUC6">
-        <rdfs:subClassOf rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Protein"/>
-        <rdfs:label>Q8IUC6</rdfs:label>
-    </Class>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Complex19
+<http://www.reactome.org/biopax/63/109581#Complex19> rdf:type owl:NamedIndividual ,
+                                                              <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                     <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Complex16> ,
+                                                                                                  <http://www.reactome.org/biopax/63/109581#Complex2> ,
+                                                                                                  <http://www.reactome.org/biopax/63/109581#Complex8> ;
+                                                     rdfs:label "DISC" .
 
-    <!-- http://identifiers.org/uniprot/Q9Y6Y9 -->
 
+###  http://www.reactome.org/biopax/63/109581#Complex2
+<http://www.reactome.org/biopax/63/109581#Complex2> rdf:type owl:NamedIndividual ,
+                                                             <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                    <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Complex3> ,
+                                                                                                 <http://www.reactome.org/biopax/63/109581#Protein3> ;
+                                                    rdfs:label "FASL:FAS Receptor Trimer:FADD" .
 
-    <Class rdf:about="http://identifiers.org/uniprot/Q9Y6Y9">
-        <rdfs:subClassOf rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Protein"/>
-        <rdfs:label>Q9Y6Y9</rdfs:label>
-    </Class>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Complex20
+<http://www.reactome.org/biopax/63/109581#Complex20> rdf:type owl:NamedIndividual ,
+                                                              <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                     <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Complex21> ;
+                                                     rdfs:label "active caspase-8 " .
 
-    <!-- http://purl.obolibrary.org/obo/BFO_0000002 -->
 
+###  http://www.reactome.org/biopax/63/109581#Complex20_function_0.0680250458438324
+<http://www.reactome.org/biopax/63/109581#Complex20_function_0.0680250458438324> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0003674> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex20> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction4> .
 
-    <Class rdf:about="http://purl.obolibrary.org/obo/BFO_0000002">
-        <rdfs:label>Continuant</rdfs:label>
-    </Class>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Complex21
+<http://www.reactome.org/biopax/63/109581#Complex21> rdf:type owl:NamedIndividual ,
+                                                              <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                     <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein14> ,
+                                                                                                  <http://www.reactome.org/biopax/63/109581#Protein15> ;
+                                                     rdfs:label "Caspase-8 dimer" .
 
-    <!-- http://purl.obolibrary.org/obo/CHEBI_16412 -->
 
+###  http://www.reactome.org/biopax/63/109581#Complex22
+<http://www.reactome.org/biopax/63/109581#Complex22> rdf:type owl:NamedIndividual ,
+                                                              <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                     <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Complex23> ,
+                                                                                                  <http://www.reactome.org/biopax/63/109581#Protein13> ,
+                                                                                                  <http://www.reactome.org/biopax/63/109581#Protein3> ,
+                                                                                                  <http://www.reactome.org/biopax/63/109581#Protein4> ;
+                                                     rdfs:label "activated TLR4:TRIF:RIP1:FADD:pro-caspase-8" .
 
-    <Class rdf:about="http://purl.obolibrary.org/obo/CHEBI_16412">
-        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/BFO_0000002"/>
-        <rdfs:label>CHEBI_16412</rdfs:label>
-    </Class>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Complex22_function_0.6270178231737105
+<http://www.reactome.org/biopax/63/109581#Complex22_function_0.6270178231737105> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0003674> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex22> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction5> .
 
-    <!-- http://purl.obolibrary.org/obo/GO_0003674 -->
 
+###  http://www.reactome.org/biopax/63/109581#Complex23
+<http://www.reactome.org/biopax/63/109581#Complex23> rdf:type owl:NamedIndividual ,
+                                                              <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                     <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Complex24> ,
+                                                                                                  <http://www.reactome.org/biopax/63/109581#Protein19> ;
+                                                     rdfs:label "TRIF:TRAM:TLR4:LY96:LPS:CD14" .
 
-    <Class rdf:about="http://purl.obolibrary.org/obo/GO_0003674">
-        <rdfs:label>Molecular Function</rdfs:label>
-    </Class>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Complex24
+<http://www.reactome.org/biopax/63/109581#Complex24> rdf:type owl:NamedIndividual ,
+                                                              <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                     <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Complex25> ,
+                                                                                                  <http://www.reactome.org/biopax/63/109581#Protein20> ;
+                                                     rdfs:label "TRAM:TLR4:LY96:LPS:CD14" .
 
-    <!-- http://purl.obolibrary.org/obo/GO_0005829 -->
 
+###  http://www.reactome.org/biopax/63/109581#Complex25
+<http://www.reactome.org/biopax/63/109581#Complex25> rdf:type owl:NamedIndividual ,
+                                                              <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                     <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Complex26> ,
+                                                                                                  <http://www.reactome.org/biopax/63/109581#Protein21> ,
+                                                                                                  <http://www.reactome.org/biopax/63/109581#SmallMolecule1> ;
+                                                     rdfs:label "TLR4:LY96:LPS:CD14" .
 
-    <Class rdf:about="http://purl.obolibrary.org/obo/GO_0005829">
-        <rdfs:label>cytosol</rdfs:label>
-    </Class>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Complex26
+<http://www.reactome.org/biopax/63/109581#Complex26> rdf:type owl:NamedIndividual ,
+                                                              <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                     <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein22> ,
+                                                                                                  <http://www.reactome.org/biopax/63/109581#Protein23> ;
+                                                     rdfs:label "TLR4:LY96" .
 
-    <!-- http://purl.obolibrary.org/obo/GO_0008150 -->
 
+###  http://www.reactome.org/biopax/63/109581#Complex27
+<http://www.reactome.org/biopax/63/109581#Complex27> rdf:type owl:NamedIndividual ,
+                                                              <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                     <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Complex23> ,
+                                                                                                  <http://www.reactome.org/biopax/63/109581#Protein13> ,
+                                                                                                  <http://www.reactome.org/biopax/63/109581#Protein3> ;
+                                                     rdfs:label "activated TLR4:TRIF:RIP1:FADD" .
 
-    <Class rdf:about="http://purl.obolibrary.org/obo/GO_0008150">
-        <rdfs:label>Biological Process</rdfs:label>
-    </Class>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Complex3
+<http://www.reactome.org/biopax/63/109581#Complex3> rdf:type owl:NamedIndividual ,
+                                                             <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                    <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Complex4> ;
+                                                    rdfs:label "FASL:FAS Receptor Trimer" .
 
-    <!-- http://purl.obolibrary.org/obo/GO_0010008 -->
 
+###  http://www.reactome.org/biopax/63/109581#Complex4
+<http://www.reactome.org/biopax/63/109581#Complex4> rdf:type owl:NamedIndividual ,
+                                                             <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                    <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein1> ,
+                                                                                                 <http://www.reactome.org/biopax/63/109581#Protein2> ;
+                                                    rdfs:label "FASL:FAS Receptor monomer" .
 
-    <Class rdf:about="http://purl.obolibrary.org/obo/GO_0010008">
-        <rdfs:label>endosome membrane</rdfs:label>
-    </Class>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Complex5
+<http://www.reactome.org/biopax/63/109581#Complex5> rdf:type owl:NamedIndividual ,
+                                                             <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                    <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Complex2> ,
+                                                                                                 <http://www.reactome.org/biopax/63/109581#Complex6> ;
+                                                    rdfs:label "FASL:FAS receptor trimer:FADD:procaspase-8-dimer " .
 
-    <!-- http://purl.obolibrary.org/obo/GO_0032991 -->
 
+###  http://www.reactome.org/biopax/63/109581#Complex6
+<http://www.reactome.org/biopax/63/109581#Complex6> rdf:type owl:NamedIndividual ,
+                                                             <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                    <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein4> ;
+                                                    rdfs:label "procaspase-8 dimer" .
 
-    <Class rdf:about="http://purl.obolibrary.org/obo/GO_0032991">
-        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/BFO_0000002"/>
-        <rdfs:label>Macromolecular Complex</rdfs:label>
-    </Class>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Complex8
+<http://www.reactome.org/biopax/63/109581#Complex8> rdf:type owl:NamedIndividual ,
+                                                             <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                    <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Complex9> ,
+                                                                                                 <http://www.reactome.org/biopax/63/109581#Protein3> ;
+                                                    rdfs:label "TNFSF10:TNFRSF10A,B:FADD" .
 
-    <!-- http://purl.obolibrary.org/obo/GO_0097296 -->
 
+###  http://www.reactome.org/biopax/63/109581#Complex9
+<http://www.reactome.org/biopax/63/109581#Complex9> rdf:type owl:NamedIndividual ,
+                                                             <http://purl.obolibrary.org/obo/GO_0032991> ;
+                                                    <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Complex10> ;
+                                                    rdfs:label "TNFSF10:TNFRSF10A,B Trimer" .
 
-    <Class rdf:about="http://purl.obolibrary.org/obo/GO_0097296">
-        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/GO_0008150"/>
-    </Class>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Pathway2
+<http://www.reactome.org/biopax/63/109581#Pathway2> rdf:type owl:NamedIndividual .
 
-    <!-- http://www.biopax.org/release/biopax-level3.owl#Protein -->
 
+###  http://www.reactome.org/biopax/63/109581#Pathway3
+<http://www.reactome.org/biopax/63/109581#Pathway3> rdf:type owl:NamedIndividual ,
+                                                             <http://purl.obolibrary.org/obo/GO_0008150> ,
+                                                             <http://purl.obolibrary.org/obo/GO_0097296> ;
+                                                    <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway2> ;
+                                                    rdfs:label "Ligand-dependent caspase activation" .
 
-    <Class rdf:about="http://www.biopax.org/release/biopax-level3.owl#Protein">
-        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/BFO_0000002"/>
-        <rdfs:label>Protein</rdfs:label>
-    </Class>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Protein1
+<http://www.reactome.org/biopax/63/109581#Protein1> rdf:type owl:NamedIndividual ,
+                                                             <http://identifiers.org/uniprot/P25445> ;
+                                                    rdfs:label "FAS" .
 
-    <!-- http://www.biopax.org/release/biopax-level3.owl#Reaction -->
 
+###  http://www.reactome.org/biopax/63/109581#Protein10
+<http://www.reactome.org/biopax/63/109581#Protein10> rdf:type owl:NamedIndividual ,
+                                                              <http://identifiers.org/uniprot/Q12933> ;
+                                                     rdfs:label "TRAF2" .
 
-    <Class rdf:about="http://www.biopax.org/release/biopax-level3.owl#Reaction">
-        <rdfs:label>Reaction</rdfs:label>
-    </Class>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Protein12
+<http://www.reactome.org/biopax/63/109581#Protein12> rdf:type owl:NamedIndividual ,
+                                                              <http://identifiers.org/uniprot/Q15628> ;
+                                                     rdfs:label "TRADD" .
 
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Individuals
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
 
+###  http://www.reactome.org/biopax/63/109581#Protein13
+<http://www.reactome.org/biopax/63/109581#Protein13> rdf:type owl:NamedIndividual ,
+                                                              <http://identifiers.org/uniprot/Q13546> ;
+                                                     rdfs:label "RIP1" .
 
-    
 
+###  http://www.reactome.org/biopax/63/109581#Protein14
+<http://www.reactome.org/biopax/63/109581#Protein14> rdf:type owl:NamedIndividual ,
+                                                              <http://identifiers.org/uniprot/Q14790> ;
+                                                     rdfs:label "CASP8(385-479)" .
 
-    <!-- http://www.reactome.org/biopax/63/109581#BiochemicalReaction115 -->
 
+###  http://www.reactome.org/biopax/63/109581#Protein15
+<http://www.reactome.org/biopax/63/109581#Protein15> rdf:type owl:NamedIndividual ,
+                                                              <http://identifiers.org/uniprot/Q14790> ;
+                                                     rdfs:label "CASP8" .
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction115"/>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Protein16
+<http://www.reactome.org/biopax/63/109581#Protein16> rdf:type owl:NamedIndividual .
 
-    <!-- http://www.reactome.org/biopax/63/109581#BiochemicalReaction18 -->
 
+###  http://www.reactome.org/biopax/63/109581#Protein16_function_0.8933821818781571
+<http://www.reactome.org/biopax/63/109581#Protein16_function_0.8933821818781571> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0003674> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Protein16> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002408> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction4> .
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction18"/>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Protein19
+<http://www.reactome.org/biopax/63/109581#Protein19> rdf:type owl:NamedIndividual ,
+                                                              <http://identifiers.org/uniprot/Q8IUC6> ;
+                                                     rdfs:label "TRIF" .
 
-    <!-- http://www.reactome.org/biopax/63/109581#BiochemicalReaction4 -->
 
+###  http://www.reactome.org/biopax/63/109581#Protein2
+<http://www.reactome.org/biopax/63/109581#Protein2> rdf:type owl:NamedIndividual ,
+                                                             <http://identifiers.org/uniprot/P48023> ;
+                                                    rdfs:label "FASL" .
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction4">
-        <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
-        <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway3"/>
-        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3"/>
-        <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex18"/>
-        <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex19"/>
-        <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex20"/>
-        <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction115"/>
-        <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction18"/>
-        <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction69"/>
-        <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction72"/>
-        <rdfs:label>Caspase-8 processing in the DISC</rdfs:label>
-    </NamedIndividual>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Protein20
+<http://www.reactome.org/biopax/63/109581#Protein20> rdf:type owl:NamedIndividual ,
+                                                              <http://identifiers.org/uniprot/Q86XR7> ;
+                                                     rdfs:label "TRAM" .
 
-    <!-- http://www.reactome.org/biopax/63/109581#BiochemicalReaction5 -->
 
+###  http://www.reactome.org/biopax/63/109581#Protein21
+<http://www.reactome.org/biopax/63/109581#Protein21> rdf:type owl:NamedIndividual ,
+                                                              <http://identifiers.org/uniprot/P08571> ;
+                                                     rdfs:label "GPI-N345-CD14" .
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction5">
-        <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
-        <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway3"/>
-        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary4"/>
-        <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex22"/>
-        <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex20"/>
-        <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex27"/>
-        <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction115"/>
-        <rdfs:label>Caspase-8 processing within TLR4 complex</rdfs:label>
-    </NamedIndividual>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Protein22
+<http://www.reactome.org/biopax/63/109581#Protein22> rdf:type owl:NamedIndividual ,
+                                                              <http://identifiers.org/uniprot/O00206> ;
+                                                     rdfs:label "TLR4" .
 
-    <!-- http://www.reactome.org/biopax/63/109581#BiochemicalReaction69 -->
 
+###  http://www.reactome.org/biopax/63/109581#Protein23
+<http://www.reactome.org/biopax/63/109581#Protein23> rdf:type owl:NamedIndividual ,
+                                                              <http://identifiers.org/uniprot/Q9Y6Y9> ;
+                                                     rdfs:label "MD2" .
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction69"/>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Protein3
+<http://www.reactome.org/biopax/63/109581#Protein3> rdf:type owl:NamedIndividual ,
+                                                             <http://identifiers.org/uniprot/Q13158> ;
+                                                    rdfs:label "FADD" .
 
-    <!-- http://www.reactome.org/biopax/63/109581#BiochemicalReaction72 -->
 
+###  http://www.reactome.org/biopax/63/109581#Protein4
+<http://www.reactome.org/biopax/63/109581#Protein4> rdf:type owl:NamedIndividual ,
+                                                             <http://identifiers.org/uniprot/Q14790> ;
+                                                    rdfs:label "MACH" .
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction72"/>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Protein6
+<http://www.reactome.org/biopax/63/109581#Protein6> rdf:type owl:NamedIndividual ;
+                                                    <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein7> ,
+                                                                                                 <http://www.reactome.org/biopax/63/109581#Protein8> ;
+                                                    rdfs:label "DR4,DR5" .
 
-    <!-- http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3 -->
 
+###  http://www.reactome.org/biopax/63/109581#Protein7
+<http://www.reactome.org/biopax/63/109581#Protein7> rdf:type owl:NamedIndividual ,
+                                                             <http://identifiers.org/uniprot/O00220> ;
+                                                    rdfs:label "DR4" .
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0005829"/>
-    </NamedIndividual>
-    
 
+###  http://www.reactome.org/biopax/63/109581#Protein8
+<http://www.reactome.org/biopax/63/109581#Protein8> rdf:type owl:NamedIndividual ,
+                                                             <http://identifiers.org/uniprot/O14763> ;
+                                                    rdfs:label "TRAIL-R2" .
 
-    <!-- http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary4 -->
 
+###  http://www.reactome.org/biopax/63/109581#Protein9
+<http://www.reactome.org/biopax/63/109581#Protein9> rdf:type owl:NamedIndividual ,
+                                                             <http://identifiers.org/uniprot/P50591> ;
+                                                    rdfs:label "TRAIL" .
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary4">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0010008"/>
-    </NamedIndividual>
-    
 
+###  http://www.reactome.org/biopax/63/109581#SmallMolecule1
+<http://www.reactome.org/biopax/63/109581#SmallMolecule1> rdf:type owl:NamedIndividual ,
+                                                                   <http://purl.obolibrary.org/obo/CHEBI_16412> ;
+                                                          rdfs:label "LPS" .
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex10 -->
 
+#################################################################
+#    Annotations
+#################################################################
 
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex10">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein6"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein9"/>
-        <rdfs:label>TRAIL:DR4,5</rdfs:label>
-    </NamedIndividual>
-    
+<http://purl.obolibrary.org/obo/RO_0002334> rdfs:label "regulated by" .
 
 
-    <!-- http://www.reactome.org/biopax/63/109581#Complex11 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex11">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex6"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex8"/>
-        <rdfs:label>TNFSF10:TNFRSF10A,B:FADD:2xCASP8(1-479)</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex15 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex15">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex16"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex6"/>
-        <rdfs:label>TRAF2:TRADD:RIP1:FADD:2xCASP8(1-479)</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex16 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex16">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex17"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein3"/>
-        <rdfs:label>TRADD:TRAF2:RIP1:FADD</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex17 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex17">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein10"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein12"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein13"/>
-        <rdfs:label>TRAF2:TRADD:RIPK1</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex18 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex18">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex11"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex15"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex5"/>
-        <rdfs:label>DISC:procaspase-8-dimer</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex19 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex19">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex16"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex2"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex8"/>
-        <rdfs:label>DISC</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex2 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex2">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex3"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein3"/>
-        <rdfs:label>FASL:FAS Receptor Trimer:FADD</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex20 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex20">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex21"/>
-        <rdfs:label>active caspase-8 </rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex20_function_0.2014731243315263 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex20_function_0.2014731243315263">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
-        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex20"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction4"/>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex21 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex21">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein14"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein15"/>
-        <rdfs:label>Caspase-8 dimer</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex22 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex22">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex23"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein13"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein3"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein4"/>
-        <rdfs:label>activated TLR4:TRIF:RIP1:FADD:pro-caspase-8</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex22_function_0.27736035174094 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex22_function_0.27736035174094">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
-        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex22"/>
-        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction5"/>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex23 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex23">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex24"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein19"/>
-        <rdfs:label>TRIF:TRAM:TLR4:LY96:LPS:CD14</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex24 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex24">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex25"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein20"/>
-        <rdfs:label>TRAM:TLR4:LY96:LPS:CD14</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex25 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex25">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex26"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein21"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#SmallMolecule1"/>
-        <rdfs:label>TLR4:LY96:LPS:CD14</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex26 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex26">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein22"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein23"/>
-        <rdfs:label>TLR4:LY96</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex27 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex27">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex23"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein13"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein3"/>
-        <rdfs:label>activated TLR4:TRIF:RIP1:FADD</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex3 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex3">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex4"/>
-        <rdfs:label>FASL:FAS Receptor Trimer</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex4 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex4">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein1"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein2"/>
-        <rdfs:label>FASL:FAS Receptor monomer</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex5 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex5">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex2"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex6"/>
-        <rdfs:label>FASL:FAS receptor trimer:FADD:procaspase-8-dimer </rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex6 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex6">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein4"/>
-        <rdfs:label>procaspase-8 dimer</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex8 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex8">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex9"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein3"/>
-        <rdfs:label>TNFSF10:TNFRSF10A,B:FADD</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Complex9 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex9">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex10"/>
-        <rdfs:label>TNFSF10:TNFRSF10A,B Trimer</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Pathway2 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Pathway2"/>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Pathway3 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Pathway3">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0008150"/>
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0097296"/>
-        <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway2"/>
-        <rdfs:label>Ligand-dependent caspase activation</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Protein1 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein1">
-        <rdf:type rdf:resource="http://identifiers.org/uniprot/P25445"/>
-        <rdfs:label>FAS</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Protein10 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein10">
-        <rdf:type rdf:resource="http://identifiers.org/uniprot/Q12933"/>
-        <rdfs:label>TRAF2</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Protein12 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein12">
-        <rdf:type rdf:resource="http://identifiers.org/uniprot/Q15628"/>
-        <rdfs:label>TRADD</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Protein13 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein13">
-        <rdf:type rdf:resource="http://identifiers.org/uniprot/Q13546"/>
-        <rdfs:label>RIP1</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Protein14 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein14">
-        <rdf:type rdf:resource="http://identifiers.org/uniprot/Q14790"/>
-        <rdfs:label>CASP8(385-479)</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Protein15 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein15">
-        <rdf:type rdf:resource="http://identifiers.org/uniprot/Q14790"/>
-        <rdfs:label>CASP8</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Protein16 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein16"/>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Protein16_function_0.5976494510997823 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein16_function_0.5976494510997823">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
-        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein16"/>
-        <obo:RO_0002408 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction4"/>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Protein19 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein19">
-        <rdf:type rdf:resource="http://identifiers.org/uniprot/Q8IUC6"/>
-        <rdfs:label>TRIF</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Protein2 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein2">
-        <rdf:type rdf:resource="http://identifiers.org/uniprot/P48023"/>
-        <rdfs:label>FASL</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Protein20 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein20">
-        <rdf:type rdf:resource="http://identifiers.org/uniprot/Q86XR7"/>
-        <rdfs:label>TRAM</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Protein21 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein21">
-        <rdf:type rdf:resource="http://identifiers.org/uniprot/P08571"/>
-        <rdfs:label>GPI-N345-CD14</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Protein22 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein22">
-        <rdf:type rdf:resource="http://identifiers.org/uniprot/O00206"/>
-        <rdfs:label>TLR4</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Protein23 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein23">
-        <rdf:type rdf:resource="http://identifiers.org/uniprot/Q9Y6Y9"/>
-        <rdfs:label>MD2</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Protein3 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein3">
-        <rdf:type rdf:resource="http://identifiers.org/uniprot/Q13158"/>
-        <rdfs:label>FADD</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Protein4 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein4">
-        <rdf:type rdf:resource="http://identifiers.org/uniprot/Q14790"/>
-        <rdfs:label>MACH</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Protein6 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein6">
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein7"/>
-        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein8"/>
-        <rdfs:label>DR4,DR5</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Protein7 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein7">
-        <rdf:type rdf:resource="http://identifiers.org/uniprot/O00220"/>
-        <rdfs:label>DR4</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Protein8 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein8">
-        <rdf:type rdf:resource="http://identifiers.org/uniprot/O14763"/>
-        <rdfs:label>TRAIL-R2</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#Protein9 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein9">
-        <rdf:type rdf:resource="http://identifiers.org/uniprot/P50591"/>
-        <rdfs:label>TRAIL</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- http://www.reactome.org/biopax/63/109581#SmallMolecule1 -->
-
-
-    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#SmallMolecule1">
-        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/CHEBI_16412"/>
-        <rdfs:label>LPS</rdfs:label>
-    </NamedIndividual>
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Annotations
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-
-    <rdf:Description rdf:about="http://purl.obolibrary.org/obo/RO_0002334">
-        <rdfs:label>regulated by</rdfs:label>
-    </rdf:Description>
-</rdf:RDF>
-
-
-
-<!-- Generated by the OWL API (version 5.1.3) https://github.com/owlcs/owlapi/ -->
-
-
+###  Generated by the OWL API (version 5.1.3) https://github.com/owlcs/owlapi/
