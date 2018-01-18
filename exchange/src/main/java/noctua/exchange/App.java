@@ -32,6 +32,10 @@ public class App
         //make an ontology
         OWLOntologyManager m = OWLManager.createOWLOntologyManager();
         OWLOntology o = m.createOntology();
+        // <http://model.geneontology.org/5993df9e00000054> a <http://www.w3.org/2002/07/owl#Ontology> .
+        //give the ontology an IRI
+        IRI ont_iri = IRI.create("http://model.geneontology.org/helloworld");
+        m.setOntologyDocumentIRI(o, ont_iri);
         System.out.println("Created empty ontology");
         //add a class
         OWLDataFactory df = OWLManager.getOWLDataFactory();

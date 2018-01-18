@@ -1,12 +1,12 @@
+@prefix : <http://model.geneontology.org/helloworld0.9422158557119477#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@base <http://www.w3.org/2002/07/owl#> .
+@base <http://model.geneontology.org/helloworld0.9422158557119477> .
 
-[ rdf:type owl:Ontology
- ] .
+<http://model.geneontology.org/helloworld0.9422158557119477> rdf:type owl:Ontology .
 
 #################################################################
 #    Object Properties
@@ -406,22 +406,22 @@
 <http://www.reactome.org/biopax/63/109581#Protein5> rdf:type owl:NamedIndividual .
 
 
-###  http://www.reactome.org/biopax/63/109581#Protein5_function_0.35300234215634274
-<http://www.reactome.org/biopax/63/109581#Protein5_function_0.35300234215634274> rdf:type owl:NamedIndividual ,
-                                                                                          <http://purl.obolibrary.org/obo/GO_0003674> ;
-                                                                                 <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Protein5> ;
-                                                                                 <http://purl.obolibrary.org/obo/RO_0002408> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction1> .
+###  http://www.reactome.org/biopax/63/109581#Protein5_function_0.7241556790520123
+<http://www.reactome.org/biopax/63/109581#Protein5_function_0.7241556790520123> rdf:type owl:NamedIndividual ,
+                                                                                         <http://purl.obolibrary.org/obo/GO_0003674> ;
+                                                                                <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Protein5> ;
+                                                                                <http://purl.obolibrary.org/obo/RO_0002408> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction3> .
 
 
-###  http://www.reactome.org/biopax/63/109581#Protein5_function_0.45386444634377765
-<http://www.reactome.org/biopax/63/109581#Protein5_function_0.45386444634377765> rdf:type owl:NamedIndividual ,
-                                                                                          <http://purl.obolibrary.org/obo/GO_0003674> ;
-                                                                                 <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Protein5> ;
-                                                                                 <http://purl.obolibrary.org/obo/RO_0002408> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction3> .
+###  http://www.reactome.org/biopax/63/109581#Protein5_function_0.8172916602085797
+<http://www.reactome.org/biopax/63/109581#Protein5_function_0.8172916602085797> rdf:type owl:NamedIndividual ,
+                                                                                         <http://purl.obolibrary.org/obo/GO_0003674> ;
+                                                                                <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Protein5> ;
+                                                                                <http://purl.obolibrary.org/obo/RO_0002408> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction1> .
 
 
-###  http://www.reactome.org/biopax/63/109581#Protein5_function_0.9613010266678111
-<http://www.reactome.org/biopax/63/109581#Protein5_function_0.9613010266678111> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#Protein5_function_0.8241189256179636
+<http://www.reactome.org/biopax/63/109581#Protein5_function_0.8241189256179636> rdf:type owl:NamedIndividual ,
                                                                                          <http://purl.obolibrary.org/obo/GO_0003674> ;
                                                                                 <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Protein5> ;
                                                                                 <http://purl.obolibrary.org/obo/RO_0002408> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction2> .

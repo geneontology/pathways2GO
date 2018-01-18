@@ -77,7 +77,9 @@ public class BioPaxtoGO {
 
 	public OWLOntology initGOCAMOntology() throws OWLOntologyCreationException {
 		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();
-		OWLOntology go_cam_ont = ontman.createOntology();
+		IRI ont_iri = IRI.create("http://model.geneontology.org/helloworld"+Math.random());
+		OWLOntology go_cam_ont = ontman.createOntology(ont_iri);
+        
 		//Will add classes and relations as we need them now. 
 		//TODO Work on using imports later to ensure we don't produce incorrect ids..
 		OWLDataFactory df = OWLManager.getOWLDataFactory();
