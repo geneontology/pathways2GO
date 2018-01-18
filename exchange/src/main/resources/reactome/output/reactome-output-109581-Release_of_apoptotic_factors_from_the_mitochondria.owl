@@ -1,0 +1,378 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.w3.org/2002/07/owl#"
+     xml:base="http://www.w3.org/2002/07/owl"
+     xmlns:obo="http://purl.obolibrary.org/obo/"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <Ontology/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/BFO_0000050 -->
+
+
+    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/BFO_0000050">
+        <rdfs:label>part of</rdfs:label>
+    </ObjectProperty>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/BFO_0000066 -->
+
+
+    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/BFO_0000066">
+        <rdfs:label>occurs in</rdfs:label>
+    </ObjectProperty>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/RO_0002233 -->
+
+
+    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/RO_0002233">
+        <rdfs:label>has input</rdfs:label>
+    </ObjectProperty>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/RO_0002234 -->
+
+
+    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/RO_0002234">
+        <rdfs:label>has output</rdfs:label>
+    </ObjectProperty>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/RO_0002333 -->
+
+
+    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/RO_0002333">
+        <rdfs:label>enabled by</rdfs:label>
+    </ObjectProperty>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/RO_0002406 -->
+
+
+    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/RO_0002406">
+        <rdfs:label>directly activates (process to process)</rdfs:label>
+    </ObjectProperty>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/RO_0002413 -->
+
+
+    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/RO_0002413">
+        <rdfs:label>directly provides input for (process to process)</rdfs:label>
+    </ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+    
+
+
+    <!-- http://identifiers.org/uniprot/P99999 -->
+
+
+    <Class rdf:about="http://identifiers.org/uniprot/P99999">
+        <rdfs:subClassOf rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Protein"/>
+        <rdfs:label>P99999</rdfs:label>
+    </Class>
+    
+
+
+    <!-- http://identifiers.org/uniprot/Q9NR28 -->
+
+
+    <Class rdf:about="http://identifiers.org/uniprot/Q9NR28">
+        <rdfs:subClassOf rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Protein"/>
+        <rdfs:label>Q9NR28</rdfs:label>
+    </Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/BFO_0000002 -->
+
+
+    <Class rdf:about="http://purl.obolibrary.org/obo/BFO_0000002">
+        <rdfs:label>Continuant</rdfs:label>
+    </Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/GO_0003674 -->
+
+
+    <Class rdf:about="http://purl.obolibrary.org/obo/GO_0003674">
+        <rdfs:label>Molecular Function</rdfs:label>
+    </Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/GO_0005741 -->
+
+
+    <Class rdf:about="http://purl.obolibrary.org/obo/GO_0005741">
+        <rdfs:label>mitochondrial outer membrane</rdfs:label>
+    </Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/GO_0008150 -->
+
+
+    <Class rdf:about="http://purl.obolibrary.org/obo/GO_0008150">
+        <rdfs:label>Biological Process</rdfs:label>
+    </Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/GO_0032991 -->
+
+
+    <Class rdf:about="http://purl.obolibrary.org/obo/GO_0032991">
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/BFO_0000002"/>
+        <rdfs:label>Macromolecular Complex</rdfs:label>
+    </Class>
+    
+
+
+    <!-- http://www.biopax.org/release/biopax-level3.owl#Protein -->
+
+
+    <Class rdf:about="http://www.biopax.org/release/biopax-level3.owl#Protein">
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/BFO_0000002"/>
+        <rdfs:label>Protein</rdfs:label>
+    </Class>
+    
+
+
+    <!-- http://www.biopax.org/release/biopax-level3.owl#Reaction -->
+
+
+    <Class rdf:about="http://www.biopax.org/release/biopax-level3.owl#Reaction">
+        <rdfs:label>Reaction</rdfs:label>
+    </Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#BiochemicalReaction51 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction51">
+        <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
+        <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway18"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6"/>
+        <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein102"/>
+        <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein103"/>
+        <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction53"/>
+        <rdfs:label>Release of Cytochrome c from mitochondria</rdfs:label>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#BiochemicalReaction52 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction52">
+        <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
+        <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway18"/>
+        <obo:BFO_0000066 rdf:resource="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6"/>
+        <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein104"/>
+        <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein105"/>
+        <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction58"/>
+        <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction59"/>
+        <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction60"/>
+        <rdfs:label>Release of SMAC from mitochondria</rdfs:label>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#BiochemicalReaction53 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction53"/>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#BiochemicalReaction58 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction58"/>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#BiochemicalReaction59 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction59"/>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#BiochemicalReaction60 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction60"/>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0005741"/>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Complex74 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex74"/>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Complex74_function_0.1991637058020872 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex74_function_0.1991637058020872">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
+        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex74"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction52"/>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Complex74_function_0.7913759555295256 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex74_function_0.7913759555295256">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0003674"/>
+        <obo:RO_0002333 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex74"/>
+        <obo:RO_0002406 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction51"/>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Pathway18 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Pathway18">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0008150"/>
+        <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway7"/>
+        <rdfs:label>Release of apoptotic factors from the mitochondria</rdfs:label>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Pathway7 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Pathway7"/>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Protein102 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein102">
+        <rdf:type rdf:resource="http://identifiers.org/uniprot/P99999"/>
+        <rdfs:label>CYCS</rdfs:label>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Protein103 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein103">
+        <rdf:type rdf:resource="http://identifiers.org/uniprot/P99999"/>
+        <rdfs:label>CYCS</rdfs:label>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Protein104 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein104">
+        <rdf:type rdf:resource="http://identifiers.org/uniprot/Q9NR28"/>
+        <rdfs:label>DIABLO</rdfs:label>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Protein105 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein105">
+        <rdf:type rdf:resource="http://identifiers.org/uniprot/Q9NR28"/>
+        <rdfs:label>SMAC</rdfs:label>
+    </NamedIndividual>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotations
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+    <rdf:Description rdf:about="http://purl.obolibrary.org/obo/BFO_0000051">
+        <rdfs:label>has part</rdfs:label>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://purl.obolibrary.org/obo/RO_0002334">
+        <rdfs:label>regulated by</rdfs:label>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://purl.obolibrary.org/obo/RO_0002408">
+        <rdfs:label>directly inhibits (process to process)</rdfs:label>
+    </rdf:Description>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 5.1.3) https://github.com/owlcs/owlapi/ -->
+
+

@@ -1,0 +1,359 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.w3.org/2002/07/owl#"
+     xml:base="http://www.w3.org/2002/07/owl"
+     xmlns:obo="http://purl.obolibrary.org/obo/"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <Ontology/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/BFO_0000050 -->
+
+
+    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/BFO_0000050">
+        <rdfs:label>part of</rdfs:label>
+    </ObjectProperty>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/BFO_0000051 -->
+
+
+    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/BFO_0000051">
+        <rdfs:label>has part</rdfs:label>
+    </ObjectProperty>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/RO_0002233 -->
+
+
+    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/RO_0002233">
+        <rdfs:label>has input</rdfs:label>
+    </ObjectProperty>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/RO_0002234 -->
+
+
+    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/RO_0002234">
+        <rdfs:label>has output</rdfs:label>
+    </ObjectProperty>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/RO_0002413 -->
+
+
+    <ObjectProperty rdf:about="http://purl.obolibrary.org/obo/RO_0002413">
+        <rdfs:label>directly provides input for (process to process)</rdfs:label>
+    </ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+    
+
+
+    <!-- http://identifiers.org/uniprot/P55957 -->
+
+
+    <Class rdf:about="http://identifiers.org/uniprot/P55957">
+        <rdfs:subClassOf rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Protein"/>
+        <rdfs:label>P55957</rdfs:label>
+    </Class>
+    
+
+
+    <!-- http://identifiers.org/uniprot/Q07812 -->
+
+
+    <Class rdf:about="http://identifiers.org/uniprot/Q07812">
+        <rdfs:subClassOf rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Protein"/>
+        <rdfs:label>Q07812</rdfs:label>
+    </Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/BFO_0000002 -->
+
+
+    <Class rdf:about="http://purl.obolibrary.org/obo/BFO_0000002">
+        <rdfs:label>Continuant</rdfs:label>
+    </Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/GO_0008150 -->
+
+
+    <Class rdf:about="http://purl.obolibrary.org/obo/GO_0008150">
+        <rdfs:label>Biological Process</rdfs:label>
+    </Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/GO_0032991 -->
+
+
+    <Class rdf:about="http://purl.obolibrary.org/obo/GO_0032991">
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/BFO_0000002"/>
+        <rdfs:label>Macromolecular Complex</rdfs:label>
+    </Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/GO_1901030 -->
+
+
+    <Class rdf:about="http://purl.obolibrary.org/obo/GO_1901030">
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/GO_0008150"/>
+    </Class>
+    
+
+
+    <!-- http://www.biopax.org/release/biopax-level3.owl#Protein -->
+
+
+    <Class rdf:about="http://www.biopax.org/release/biopax-level3.owl#Protein">
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/BFO_0000002"/>
+        <rdfs:label>Protein</rdfs:label>
+    </Class>
+    
+
+
+    <!-- http://www.biopax.org/release/biopax-level3.owl#Reaction -->
+
+
+    <Class rdf:about="http://www.biopax.org/release/biopax-level3.owl#Reaction">
+        <rdfs:label>Reaction</rdfs:label>
+    </Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#BiochemicalReaction44 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction44">
+        <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
+        <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway16"/>
+        <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein49"/>
+        <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein97"/>
+        <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex70"/>
+        <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction45"/>
+        <rdfs:label>tBID binds to inactive BAX protein</rdfs:label>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#BiochemicalReaction45 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction45">
+        <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
+        <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway16"/>
+        <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex70"/>
+        <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein49"/>
+        <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein98"/>
+        <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction46"/>
+        <rdfs:label>tBID activates BAX protein</rdfs:label>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#BiochemicalReaction46 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction46">
+        <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
+        <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway16"/>
+        <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein98"/>
+        <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein99"/>
+        <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction47"/>
+        <rdfs:label>Translocation of activated BAX to the mitochondria</rdfs:label>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#BiochemicalReaction47 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction47">
+        <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#Reaction"/>
+        <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway16"/>
+        <obo:RO_0002233 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein99"/>
+        <obo:RO_0002234 rdf:resource="http://www.reactome.org/biopax/63/109581#Complex71"/>
+        <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction51"/>
+        <obo:RO_0002413 rdf:resource="http://www.reactome.org/biopax/63/109581#BiochemicalReaction52"/>
+        <rdfs:label>Oligomerization of BAX at the mitochondrial membrane</rdfs:label>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#BiochemicalReaction51 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction51"/>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#BiochemicalReaction52 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#BiochemicalReaction52"/>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Complex70 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex70">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
+        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein49"/>
+        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein97"/>
+        <rdfs:label>tBID bound to inactive BAX</rdfs:label>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Complex71 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Complex71">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0032991"/>
+        <obo:BFO_0000051 rdf:resource="http://www.reactome.org/biopax/63/109581#Protein99"/>
+        <rdfs:label>Activated BAX</rdfs:label>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Pathway16 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Pathway16">
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_0008150"/>
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/GO_1901030"/>
+        <obo:BFO_0000050 rdf:resource="http://www.reactome.org/biopax/63/109581#Pathway7"/>
+        <rdfs:label>Activation, translocation and oligomerization of BAX</rdfs:label>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Pathway7 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Pathway7"/>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Protein49 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein49">
+        <rdf:type rdf:resource="http://identifiers.org/uniprot/P55957"/>
+        <rdfs:label>BID</rdfs:label>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Protein97 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein97">
+        <rdf:type rdf:resource="http://identifiers.org/uniprot/Q07812"/>
+        <rdfs:label>BAX</rdfs:label>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Protein98 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein98">
+        <rdf:type rdf:resource="http://identifiers.org/uniprot/Q07812"/>
+        <rdfs:label>BAX activated</rdfs:label>
+    </NamedIndividual>
+    
+
+
+    <!-- http://www.reactome.org/biopax/63/109581#Protein99 -->
+
+
+    <NamedIndividual rdf:about="http://www.reactome.org/biopax/63/109581#Protein99">
+        <rdf:type rdf:resource="http://identifiers.org/uniprot/Q07812"/>
+        <rdfs:label>BAX</rdfs:label>
+    </NamedIndividual>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotations
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+    <rdf:Description rdf:about="http://purl.obolibrary.org/obo/BFO_0000066">
+        <rdfs:label>occurs in</rdfs:label>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://purl.obolibrary.org/obo/GO_0003674">
+        <rdfs:label>Molecular Function</rdfs:label>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://purl.obolibrary.org/obo/RO_0002333">
+        <rdfs:label>enabled by</rdfs:label>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://purl.obolibrary.org/obo/RO_0002334">
+        <rdfs:label>regulated by</rdfs:label>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://purl.obolibrary.org/obo/RO_0002406">
+        <rdfs:label>directly activates (process to process)</rdfs:label>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://purl.obolibrary.org/obo/RO_0002408">
+        <rdfs:label>directly inhibits (process to process)</rdfs:label>
+    </rdf:Description>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 5.1.3) https://github.com/owlcs/owlapi/ -->
+
+

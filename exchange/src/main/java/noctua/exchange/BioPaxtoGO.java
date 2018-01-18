@@ -54,8 +54,8 @@ public class BioPaxtoGO {
 	public static final IRI biopax_iri = IRI.create("http://www.biopax.org/release/biopax-level3.owl#");
 	OWLObjectProperty part_of, has_part, has_input, has_output, 
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, regulated_by;
-
 	OWLClass bp_class, continuant_class, protein_class, reaction_class, go_complex, molecular_function;
+
 	/**
 	 * @param args
 	 * @throws FileNotFoundException 
@@ -65,12 +65,13 @@ public class BioPaxtoGO {
 	public static void main(String[] args) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException {
 		BioPaxtoGO bp2g = new BioPaxtoGO();
 		String input_biopax = "src/main/resources/reactome/reactome-input-109581.owl";
-		String converted = "src/main/resources/reactome/reactome-output-109581.owl";
-		bp2g.convert(input_biopax, converted);
+		String converted_split = "src/main/resources/reactome/output/reactome-output-109581-";
+		String converted_full = "src/main/resources/reactome/reactome-output-109581";
+		boolean split_by_pathway = false;
+		bp2g.convert(input_biopax, converted_full, split_by_pathway);
 	}
 
-	public void convert(String input_biopax, String converted) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException  {
-		//set up ontology 
+	public OWLOntology initGOCAMOntology() throws OWLOntologyCreationException {
 		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();
 		OWLOntology go_cam_ont = ontman.createOntology();
 		//Will add classes and relations as we need them now. 
@@ -133,14 +134,30 @@ public class BioPaxtoGO {
 		//RO_0002334 regulated by (processual) 
 		regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002334"));
 		addLabel(ontman, go_cam_ont, df, regulated_by, "regulated by");
+		return go_cam_ont;
+	}
 
+	public void convert(String input_biopax, String converted, boolean split_by_pathway) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException  {
 		//read biopax pathway(s)
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileInputStream f = new FileInputStream(input_biopax);
 		Model model = handler.convertFromOWL(f);
+
+		//set up ontology (used if not split)
+		OWLOntology go_cam_ont = initGOCAMOntology();
+		OWLOntologyManager ontman = go_cam_ont.getOWLOntologyManager();
+		OWLDataFactory df = OWLManager.getOWLDataFactory();
+
 		//list pathways
 		for (Pathway currentPathway : model.getObjects(Pathway.class)){
 			System.out.println("Pathway:"+currentPathway.getName()); 
+			if(split_by_pathway) {
+				//re initialize for each pathway
+				go_cam_ont = initGOCAMOntology();
+				ontman = go_cam_ont.getOWLOntologyManager();
+				df = OWLManager.getOWLDataFactory();
+			}
+
 			String uri = currentPathway.getUri();
 			//make the OWL individual
 			OWLNamedIndividual p = df.getOWLNamedIndividual(IRI.create(uri));
@@ -226,10 +243,21 @@ public class BioPaxtoGO {
 					defineReactionEntity(ontman, go_cam_ont, df, reaction);
 				}
 			}
+			if(split_by_pathway) {
+				String n = currentPathway.getDisplayName();
+				n = n.replaceAll("/", "-");	
+				n = n.replaceAll(" ", "_");
+				String outfilename = converted+n+".owl";	
+				FileDocumentTarget outfile = new FileDocumentTarget(new File(outfilename));
+				ontman.saveOntology(go_cam_ont,outfile);
+				ontman.clearOntologies();
+			} 
 		}	
-		//export
-		FileDocumentTarget outfile = new FileDocumentTarget(new File(converted));
-		ontman.saveOntology(go_cam_ont,outfile);
+		//export all
+		if(!split_by_pathway) {
+			FileDocumentTarget outfile = new FileDocumentTarget(new File(converted+".owl"));
+			ontman.saveOntology(go_cam_ont,outfile);
+		}
 	}
 
 
@@ -429,9 +457,9 @@ public class BioPaxtoGO {
 			//			   control(Event),
 			//			   controlled(Event,NextEvent),
 			//			   controlType(Event,literal(type(_,'INHIBITION'))).
-			
 
-			
+
+
 			Set<Control> controllers = reaction.getControlledOf();
 			for(Control controller : controllers) {
 				ControlType ctype = controller.getControlType();
