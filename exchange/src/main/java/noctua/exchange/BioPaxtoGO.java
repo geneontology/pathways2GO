@@ -26,6 +26,7 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.FileDocumentTarget;
 import org.semanticweb.owlapi.io.StreamDocumentTarget;
 import org.semanticweb.owlapi.model.AddAxiom;
+import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
@@ -35,6 +36,7 @@ import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDocumentFormat;
 import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
@@ -74,15 +76,30 @@ public class BioPaxtoGO {
 		String converted_split = "src/main/resources/reactome/output/reactome-output-109581-";
 		String converted_full = "src/main/resources/reactome/reactome-output-109581";
 		boolean split_by_pathway = true;
-		bp2g.convert(input_biopax, converted_split, split_by_pathway);
+		boolean add_lego_import = false;
+		bp2g.convert(input_biopax, converted_split, split_by_pathway, add_lego_import);
 	}
 
-	public OWLOntology initGOCAMOntology(String ont_title, String contributor_uri) throws OWLOntologyCreationException {
+	/**
+	 * 
+	 * @param pathway_title
+	 * @param contributor_uri
+	 * @param add_lego_import
+	 * @return
+	 * @throws OWLOntologyCreationException
+	 */
+	public OWLOntology initGOCAMOntology(String pathway_title, String contributor_uri, boolean add_lego_import) throws OWLOntologyCreationException {
 		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();
 		IRI ont_iri = IRI.create("http://model.geneontology.org/helloworld"+Math.random());
 		OWLOntology go_cam_ont = ontman.createOntology(ont_iri);
 		OWLDataFactory df = OWLManager.getOWLDataFactory();
-/*
+
+		if(add_lego_import) {
+			String lego_iri = "http://purl.obolibrary.org/obo/go/extensions/go-lego.owl";
+			OWLImportsDeclaration legoImportDeclaration = df.getOWLImportsDeclaration(IRI.create(lego_iri));
+			ontman.applyChange(new AddImport(go_cam_ont, legoImportDeclaration));
+		}
+		/*
  <http://model.geneontology.org/5a5fd3de00000008> rdf:type owl:Ontology ;
                                                   owl:versionIRI <http://model.geneontology.org/5a5fd3de00000008> ;
                                                   owl:imports <http://purl.obolibrary.org/obo/go/extensions/go-lego.owl> ;
@@ -90,16 +107,16 @@ public class BioPaxtoGO {
                                                   <http://purl.org/dc/elements/1.1/contributor> "http://orcid.org/0000-0002-2874-6934"^^xsd:string ;
                                                   <http://purl.org/dc/elements/1.1/title> "Tre test"^^xsd:string ;
                                                   <http://purl.org/dc/elements/1.1/date> "2018-01-18"^^xsd:string .		
- */
+		 */
 		OWLAnnotationProperty title_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/title"));
 		OWLAnnotationProperty contributor_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/contributor"));
 		OWLAnnotationProperty date_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/date"));
-		
-		OWLAnnotation title_anno = df.getOWLAnnotation(title_prop, df.getOWLLiteral(ont_title));
+
+		OWLAnnotation title_anno = df.getOWLAnnotation(title_prop, df.getOWLLiteral("Reactome:"+pathway_title));
 		OWLAxiom titleaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, title_anno);
 		ontman.addAxiom(go_cam_ont, titleaxiom);
 		ontman.applyChanges();
-		
+
 		//Will add classes and relations as we need them now. 
 		//TODO Work on using imports later to ensure we don't produce incorrect ids..
 
@@ -163,14 +180,14 @@ public class BioPaxtoGO {
 		return go_cam_ont;
 	}
 
-	public void convert(String input_biopax, String converted, boolean split_by_pathway) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException  {
+	public void convert(String input_biopax, String converted, boolean split_by_pathway, boolean add_lego_import) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException  {
 		//read biopax pathway(s)
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileInputStream f = new FileInputStream(input_biopax);
 		Model model = handler.convertFromOWL(f);
 
 		//set up ontology (used if not split)
-		OWLOntology go_cam_ont = initGOCAMOntology("Meta Pathway Ontology", "put creator here");
+		OWLOntology go_cam_ont = initGOCAMOntology("Meta Pathway Ontology", "put creator here", add_lego_import);
 		OWLOntologyManager ontman = go_cam_ont.getOWLOntologyManager();
 		OWLDataFactory df = OWLManager.getOWLDataFactory();
 
@@ -179,23 +196,23 @@ public class BioPaxtoGO {
 			System.out.println("Pathway:"+currentPathway.getName()); 
 			if(split_by_pathway) {
 				//re initialize for each pathway
-				go_cam_ont = initGOCAMOntology(currentPathway.getDisplayName(), "put creator here");
+				go_cam_ont = initGOCAMOntology(currentPathway.getDisplayName(), "put creator here", add_lego_import);
 				ontman = go_cam_ont.getOWLOntologyManager();
 				df = OWLManager.getOWLDataFactory();
 			}
 
 			String uri = currentPathway.getUri();
-			//make the OWL individual
+			//make the OWL individual representing the pathway
 			OWLNamedIndividual p = df.getOWLNamedIndividual(IRI.create(uri));
 			//label it
 			for(String pathway_name : currentPathway.getName()) {
 				addLabel(ontman, go_cam_ont, df, p, pathway_name);
-			}		
+			}	
 			//set a default type of biological process
 			OWLClassAssertionAxiom isa_bp = df.getOWLClassAssertionAxiom(bp_class, p);
 			ontman.addAxiom(go_cam_ont, isa_bp);
 			ontman.applyChanges();
-			//dig out any xreferenced GO processes 
+			//dig out any xreferenced GO processes and assign them as types
 			Set<Xref> xrefs = currentPathway.getXref();
 			for(Xref xref : xrefs) {
 				if(xref.getModelInterface().equals(RelationshipXref.class)) {
@@ -222,6 +239,33 @@ public class BioPaxtoGO {
 				OWLObjectPropertyAssertionAxiom add_partof_axiom = df.getOWLObjectPropertyAssertionAxiom(part_of, p, parent);
 				AddAxiom addAxiom = new AddAxiom(go_cam_ont, add_partof_axiom);
 				ontman.applyChanges(addAxiom);
+				//TODO pull this out into its own method so not repeating.
+				addLabel(ontman, go_cam_ont, df, parent, parent_pathway.getDisplayName());
+				//set a default type of biological process
+				OWLClassAssertionAxiom p_isa_bp = df.getOWLClassAssertionAxiom(bp_class, parent);
+				ontman.addAxiom(go_cam_ont, p_isa_bp);
+				ontman.applyChanges();
+				//dig out any xreferenced GO processes and assign them as types
+				xrefs = parent_pathway.getXref();
+				for(Xref xref : xrefs) {
+					if(xref.getModelInterface().equals(RelationshipXref.class)) {
+						RelationshipXref r = (RelationshipXref)xref;	    			
+						//System.out.println(xref.getDb()+" "+xref.getId()+" "+xref.getUri()+"----"+r.getRelationshipType());
+						//note that relationship types are not defined beyond text strings like RelationshipTypeVocabulary_gene ontology term for cellular process
+						//you just have to know what to do.
+						//here we add the referenced GO class as a type.  
+						if(r.getDb().equals("GENE ONTOLOGY")) {
+							OWLClass xref_go_parent = df.getOWLClass(IRI.create(obo_iri + r.getId().replaceAll(":", "_")));
+							//add it into local hierarchy (temp pre inport)
+							OWLSubClassOfAxiom tmp = df.getOWLSubClassOfAxiom(xref_go_parent, bp_class);
+							ontman.addAxiom(go_cam_ont, tmp);
+							OWLClassAssertionAxiom isa_xrefedbp = df.getOWLClassAssertionAxiom(xref_go_parent, parent);
+							ontman.addAxiom(go_cam_ont, isa_xrefedbp);
+							ontman.applyChanges();
+						}
+					}
+				}
+
 			}
 
 			//below mapped from Chris Mungall's
@@ -238,7 +282,9 @@ public class BioPaxtoGO {
 					for(Process event : events) {
 						for(Process nextEvent : nextEvents) {
 							OWLNamedIndividual e1 = df.getOWLNamedIndividual(IRI.create(event.getUri()));
+							addLabel(ontman, go_cam_ont, df, e1, event.getDisplayName());
 							OWLNamedIndividual e2 = df.getOWLNamedIndividual(IRI.create(nextEvent.getUri()));
+							addLabel(ontman, go_cam_ont, df, e2, nextEvent.getDisplayName());
 							//	Event directly_provides_input_for NextEvent
 							//	 <==
 							//		Step stepProcess Event,
@@ -291,11 +337,25 @@ public class BioPaxtoGO {
 
 
 	public OWLOntology addLabel(OWLOntologyManager ontman, OWLOntology go_cam_ont, OWLDataFactory df, OWLEntity entity, String label) {
+		if(label==null) {
+			return go_cam_ont;
+		}
 		OWLLiteral lbl = df.getOWLLiteral(label);
 		OWLAnnotation label_anno = df.getOWLAnnotation(df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI()), lbl);
 		OWLAxiom labelaxiom = df.getOWLAnnotationAssertionAxiom(entity.getIRI(), label_anno);
 		ontman.addAxiom(go_cam_ont, labelaxiom);
 		ontman.applyChanges();
+
+		//to get things to display in Noctua, they need to be classes.  labels on individuals are not shown
+		//so for now so we can see what is happening we make a class for each reactome thing.
+		//when we label an individual we add that thing as one of its types
+		if(entity.isIndividual()) {
+			OWLClass biopax_thing = df.getOWLClass(IRI.create(entity.getIRI().getIRIString() + "_class"));
+			OWLAxiom classlabelaxiom = df.getOWLAnnotationAssertionAxiom(biopax_thing.getIRI(), label_anno);
+			ontman.addAxiom(go_cam_ont, classlabelaxiom);
+			OWLClassAssertionAxiom isa_biopaxthing = df.getOWLClassAssertionAxiom(biopax_thing, (OWLIndividual) entity);
+			ontman.addAxiom(go_cam_ont, isa_biopaxthing);
+		}
 		return go_cam_ont;
 	}
 
@@ -424,7 +484,7 @@ public class BioPaxtoGO {
 
 			//get parts of the complex - allows nesting of complexes
 			Set<PhysicalEntity> complex_parts = complex.getComponent();
-			//note that biopx doc suggests not to use this.. but its there in reactome in sime places
+			//note that biopx doc suggests not to use this.. but its there in reactome in some places
 			Set<PhysicalEntity> members = complex.getMemberPhysicalEntity();
 			if(members!=null&&members.size()>0) {
 				complex_parts.addAll(members);
