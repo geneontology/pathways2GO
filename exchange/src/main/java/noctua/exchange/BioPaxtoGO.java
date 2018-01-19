@@ -21,12 +21,14 @@ import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.*;
 import org.biopax.paxtools.model.level3.Process;
 import org.coode.owlapi.turtle.TurtleOntologyFormat;
+import org.eclipse.rdf4j.model.vocabulary.DC;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.FileDocumentTarget;
 import org.semanticweb.owlapi.io.StreamDocumentTarget;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
@@ -75,14 +77,32 @@ public class BioPaxtoGO {
 		bp2g.convert(input_biopax, converted_split, split_by_pathway);
 	}
 
-	public OWLOntology initGOCAMOntology() throws OWLOntologyCreationException {
+	public OWLOntology initGOCAMOntology(String ont_title, String contributor_uri) throws OWLOntologyCreationException {
 		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();
 		IRI ont_iri = IRI.create("http://model.geneontology.org/helloworld"+Math.random());
 		OWLOntology go_cam_ont = ontman.createOntology(ont_iri);
-        
+		OWLDataFactory df = OWLManager.getOWLDataFactory();
+/*
+ <http://model.geneontology.org/5a5fd3de00000008> rdf:type owl:Ontology ;
+                                                  owl:versionIRI <http://model.geneontology.org/5a5fd3de00000008> ;
+                                                  owl:imports <http://purl.obolibrary.org/obo/go/extensions/go-lego.owl> ;
+                                                  <http://geneontology.org/lego/modelstate> "development"^^xsd:string ;
+                                                  <http://purl.org/dc/elements/1.1/contributor> "http://orcid.org/0000-0002-2874-6934"^^xsd:string ;
+                                                  <http://purl.org/dc/elements/1.1/title> "Tre test"^^xsd:string ;
+                                                  <http://purl.org/dc/elements/1.1/date> "2018-01-18"^^xsd:string .		
+ */
+		OWLAnnotationProperty title_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/title"));
+		OWLAnnotationProperty contributor_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/contributor"));
+		OWLAnnotationProperty date_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/date"));
+		
+		OWLAnnotation title_anno = df.getOWLAnnotation(title_prop, df.getOWLLiteral(ont_title));
+		OWLAxiom titleaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, title_anno);
+		ontman.addAxiom(go_cam_ont, titleaxiom);
+		ontman.applyChanges();
+		
 		//Will add classes and relations as we need them now. 
 		//TODO Work on using imports later to ensure we don't produce incorrect ids..
-		OWLDataFactory df = OWLManager.getOWLDataFactory();
+
 		//biological process
 		bp_class = df.getOWLClass(IRI.create(obo_iri + "GO_0008150")); 
 		addLabel(ontman, go_cam_ont, df, bp_class, "Biological Process");
@@ -150,7 +170,7 @@ public class BioPaxtoGO {
 		Model model = handler.convertFromOWL(f);
 
 		//set up ontology (used if not split)
-		OWLOntology go_cam_ont = initGOCAMOntology();
+		OWLOntology go_cam_ont = initGOCAMOntology("Meta Pathway Ontology", "put creator here");
 		OWLOntologyManager ontman = go_cam_ont.getOWLOntologyManager();
 		OWLDataFactory df = OWLManager.getOWLDataFactory();
 
@@ -159,7 +179,7 @@ public class BioPaxtoGO {
 			System.out.println("Pathway:"+currentPathway.getName()); 
 			if(split_by_pathway) {
 				//re initialize for each pathway
-				go_cam_ont = initGOCAMOntology();
+				go_cam_ont = initGOCAMOntology(currentPathway.getDisplayName(), "put creator here");
 				ontman = go_cam_ont.getOWLOntologyManager();
 				df = OWLManager.getOWLDataFactory();
 			}

@@ -1,12 +1,20 @@
-@prefix : <http://model.geneontology.org/helloworld0.9955669614571269#> .
+@prefix : <http://model.geneontology.org/helloworld0.996948990116543#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@base <http://model.geneontology.org/helloworld0.9955669614571269> .
+@base <http://model.geneontology.org/helloworld0.996948990116543> .
 
-<http://model.geneontology.org/helloworld0.9955669614571269> rdf:type owl:Ontology .
+<http://model.geneontology.org/helloworld0.996948990116543> rdf:type owl:Ontology .
+
+#################################################################
+#    Annotation properties
+#################################################################
+
+###  http://purl.org/dc/elements/1.1/title
+<http://purl.org/dc/elements/1.1/title> rdf:type owl:AnnotationProperty .
+
 
 #################################################################
 #    Object Properties
@@ -254,54 +262,54 @@
 <http://www.reactome.org/biopax/63/109581#Complex20> rdf:type owl:NamedIndividual .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex20_function_0.20837018021470866
-<http://www.reactome.org/biopax/63/109581#Complex20_function_0.20837018021470866> rdf:type owl:NamedIndividual ,
-                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
-                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex20> ;
-                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction69> .
+###  http://www.reactome.org/biopax/63/109581#Complex20_function_0.8576924637646692
+<http://www.reactome.org/biopax/63/109581#Complex20_function_0.8576924637646692> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0003674> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex20> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction72> .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex20_function_0.38731054942397114
-<http://www.reactome.org/biopax/63/109581#Complex20_function_0.38731054942397114> rdf:type owl:NamedIndividual ,
-                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
-                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex20> ;
-                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction72> .
+###  http://www.reactome.org/biopax/63/109581#Complex20_function_0.8726647965732375
+<http://www.reactome.org/biopax/63/109581#Complex20_function_0.8726647965732375> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0003674> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex20> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction69> .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Complex34
 <http://www.reactome.org/biopax/63/109581#Complex34> rdf:type owl:NamedIndividual .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex34_function_0.12268153217037603
-<http://www.reactome.org/biopax/63/109581#Complex34_function_0.12268153217037603> rdf:type owl:NamedIndividual ,
-                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
-                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex34> ;
-                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction67> .
-
-
-###  http://www.reactome.org/biopax/63/109581#Complex34_function_0.9030727991071316
-<http://www.reactome.org/biopax/63/109581#Complex34_function_0.9030727991071316> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#Complex34_function_0.0424170038702828
+<http://www.reactome.org/biopax/63/109581#Complex34_function_0.0424170038702828> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex34> ;
-                                                                                 <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction71> .
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction67> .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex34_function_0.9391556477451165
-<http://www.reactome.org/biopax/63/109581#Complex34_function_0.9391556477451165> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#Complex34_function_0.4253019583711649
+<http://www.reactome.org/biopax/63/109581#Complex34_function_0.4253019583711649> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex34> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction65> .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex34_function_0.9600757099098494
-<http://www.reactome.org/biopax/63/109581#Complex34_function_0.9600757099098494> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#Complex34_function_0.5718852293999489
+<http://www.reactome.org/biopax/63/109581#Complex34_function_0.5718852293999489> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0003674> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex34> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction71> .
+
+
+###  http://www.reactome.org/biopax/63/109581#Complex34_function_0.7708901443995236
+<http://www.reactome.org/biopax/63/109581#Complex34_function_0.7708901443995236> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex34> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction73> .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex34_function_0.9970995668136688
-<http://www.reactome.org/biopax/63/109581#Complex34_function_0.9970995668136688> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#Complex34_function_0.9361530240267328
+<http://www.reactome.org/biopax/63/109581#Complex34_function_0.9361530240267328> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex34> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction64> .
@@ -311,26 +319,26 @@
 <http://www.reactome.org/biopax/63/109581#Complex88> rdf:type owl:NamedIndividual .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex88_function_0.20658066465363045
-<http://www.reactome.org/biopax/63/109581#Complex88_function_0.20658066465363045> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#Complex88_function_0.03994391671350195
+<http://www.reactome.org/biopax/63/109581#Complex88_function_0.03994391671350195> rdf:type owl:NamedIndividual ,
                                                                                            <http://purl.obolibrary.org/obo/GO_0003674> ;
                                                                                   <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex88> ;
-                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction66> .
+                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction68> .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex88_function_0.6799552742927634
-<http://www.reactome.org/biopax/63/109581#Complex88_function_0.6799552742927634> rdf:type owl:NamedIndividual ,
-                                                                                          <http://purl.obolibrary.org/obo/GO_0003674> ;
-                                                                                 <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex88> ;
-                                                                                 <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction68> .
+###  http://www.reactome.org/biopax/63/109581#Complex88_function_0.828878928234142
+<http://www.reactome.org/biopax/63/109581#Complex88_function_0.828878928234142> rdf:type owl:NamedIndividual ,
+                                                                                         <http://purl.obolibrary.org/obo/GO_0003674> ;
+                                                                                <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex88> ;
+                                                                                <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction66> .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Complex89
 <http://www.reactome.org/biopax/63/109581#Complex89> rdf:type owl:NamedIndividual .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex89_function_0.5516755750451651
-<http://www.reactome.org/biopax/63/109581#Complex89_function_0.5516755750451651> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#Complex89_function_0.7009070944823024
+<http://www.reactome.org/biopax/63/109581#Complex89_function_0.7009070944823024> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex89> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction70> .
@@ -518,6 +526,9 @@
 #################################################################
 #    Annotations
 #################################################################
+
+<http://model.geneontology.org/helloworld0.996948990116543> <http://purl.org/dc/elements/1.1/title> "Caspase-mediated cleavage of cytoskeletal proteins" .
+
 
 <http://purl.obolibrary.org/obo/BFO_0000051> rdfs:label "has part" .
 
