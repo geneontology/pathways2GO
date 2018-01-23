@@ -1,12 +1,12 @@
-@prefix : <http://model.geneontology.org/helloworld0.2344700871938743#> .
+@prefix : <http://model.geneontology.org/helloworld0.169084034103132#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@base <http://model.geneontology.org/helloworld0.2344700871938743> .
+@base <http://model.geneontology.org/helloworld0.169084034103132> .
 
-<http://model.geneontology.org/helloworld0.2344700871938743> rdf:type owl:Ontology .
+<http://model.geneontology.org/helloworld0.169084034103132> rdf:type owl:Ontology .
 
 #################################################################
 #    Annotation properties
@@ -28,6 +28,11 @@
 ###  http://purl.obolibrary.org/obo/BFO_0000051
 <http://purl.obolibrary.org/obo/BFO_0000051> rdf:type owl:ObjectProperty ;
                                              rdfs:label "has part" .
+
+
+###  http://purl.obolibrary.org/obo/BFO_0000066
+<http://purl.obolibrary.org/obo/BFO_0000066> rdf:type owl:ObjectProperty ;
+                                             rdfs:label "occurs in" .
 
 
 ###  http://purl.obolibrary.org/obo/RO_0002233
@@ -64,6 +69,16 @@
 ###  http://purl.obolibrary.org/obo/BFO_0000002
 <http://purl.obolibrary.org/obo/BFO_0000002> rdf:type owl:Class ;
                                              rdfs:label "Continuant" .
+
+
+###  http://purl.obolibrary.org/obo/GO_0005741
+<http://purl.obolibrary.org/obo/GO_0005741> rdf:type owl:Class ;
+                                            rdfs:label "mitochondrial outer membrane" .
+
+
+###  http://purl.obolibrary.org/obo/GO_0005829
+<http://purl.obolibrary.org/obo/GO_0005829> rdf:type owl:Class ;
+                                            rdfs:label "cytosol" .
 
 
 ###  http://purl.obolibrary.org/obo/GO_0008150
@@ -241,12 +256,43 @@
                                                                  rdfs:label "Release of SMAC from mitochondria" .
 
 
+###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-1074219210
+<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-1074219210> rdf:type owl:NamedIndividual ,
+                                                                                           <http://purl.obolibrary.org/obo/GO_0005829> .
+
+
+###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-840222302
+<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-840222302> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0005829> .
+
+
+###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-840222303
+<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-840222303> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0005829> .
+
+
+###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-840222456
+<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-840222456> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0005829> .
+
+
+###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1074219209
+<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1074219209> rdf:type owl:NamedIndividual ,
+                                                                                           <http://purl.obolibrary.org/obo/GO_0005741> .
+
+
+###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-840222301
+<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-840222301> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0005741> .
+
+
 ###  http://www.reactome.org/biopax/63/109581#Complex70
 <http://www.reactome.org/biopax/63/109581#Complex70> rdf:type owl:NamedIndividual ,
                                                               <http://purl.obolibrary.org/obo/GO_0032991> ,
                                                               <http://www.reactome.org/biopax/63/109581#Complex70_class> ;
                                                      <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein49> ,
                                                                                                   <http://www.reactome.org/biopax/63/109581#Protein97> ;
+                                                     <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-1074219210> ;
                                                      rdfs:label "tBID bound to inactive BAX" .
 
 
@@ -255,6 +301,7 @@
                                                               <http://purl.obolibrary.org/obo/GO_0032991> ,
                                                               <http://www.reactome.org/biopax/63/109581#Complex71_class> ;
                                                      <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein99> ;
+                                                     <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1074219209> ;
                                                      rdfs:label "Activated BAX" .
 
 
@@ -291,6 +338,7 @@
 <http://www.reactome.org/biopax/63/109581#Protein49> rdf:type owl:NamedIndividual ,
                                                               <http://identifiers.org/uniprot/P55957> ,
                                                               <http://www.reactome.org/biopax/63/109581#Protein49_class> ;
+                                                     <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-840222456> ;
                                                      rdfs:label "BID" .
 
 
@@ -298,6 +346,7 @@
 <http://www.reactome.org/biopax/63/109581#Protein97> rdf:type owl:NamedIndividual ,
                                                               <http://identifiers.org/uniprot/Q07812> ,
                                                               <http://www.reactome.org/biopax/63/109581#Protein97_class> ;
+                                                     <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-840222303> ;
                                                      rdfs:label "BAX" .
 
 
@@ -305,6 +354,7 @@
 <http://www.reactome.org/biopax/63/109581#Protein98> rdf:type owl:NamedIndividual ,
                                                               <http://identifiers.org/uniprot/Q07812> ,
                                                               <http://www.reactome.org/biopax/63/109581#Protein98_class> ;
+                                                     <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-840222302> ;
                                                      rdfs:label "BAX activated" .
 
 
@@ -312,6 +362,7 @@
 <http://www.reactome.org/biopax/63/109581#Protein99> rdf:type owl:NamedIndividual ,
                                                               <http://identifiers.org/uniprot/Q07812> ,
                                                               <http://www.reactome.org/biopax/63/109581#Protein99_class> ;
+                                                     <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-840222301> ;
                                                      rdfs:label "BAX" .
 
 
@@ -319,10 +370,7 @@
 #    Annotations
 #################################################################
 
-<http://model.geneontology.org/helloworld0.2344700871938743> <http://purl.org/dc/elements/1.1/title> "Reactome:Activation, translocation and oligomerization of BAX" .
-
-
-<http://purl.obolibrary.org/obo/BFO_0000066> rdfs:label "occurs in" .
+<http://model.geneontology.org/helloworld0.169084034103132> <http://purl.org/dc/elements/1.1/title> "Reactome:Activation, translocation and oligomerization of BAX" .
 
 
 <http://purl.obolibrary.org/obo/GO_0003674> rdfs:label "Molecular Function" .

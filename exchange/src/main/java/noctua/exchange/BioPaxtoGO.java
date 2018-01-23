@@ -375,6 +375,42 @@ public class BioPaxtoGO {
 		OWLNamedIndividual e = df.getOWLNamedIndividual(IRI.create(entity.getUri()));
 		String entity_name = entity.getDisplayName();
 		addLabel(ontman, go_cam_ont, df, e, entity_name);
+		//attempt to localize the entity (only if Physical Entity)
+		if(entity instanceof PhysicalEntity) {
+			CellularLocationVocabulary loc = ((PhysicalEntity) entity).getCellularLocation();
+			if(loc!=null) {
+				//TODO this is to make each location unique to so things get bundled in the Noctua view
+				//this is almost certainly a bug in Noctua..  
+				//OWLNamedIndividual loc_e = df.getOWLNamedIndividual(loc.getUri());
+				OWLNamedIndividual loc_e = df.getOWLNamedIndividual(loc.getUri()+entity.hashCode());
+				//hook up the location
+				OWLObjectPropertyAssertionAxiom add_loc_axiom = df.getOWLObjectPropertyAssertionAxiom(occurs_in, e, loc_e);
+				AddAxiom addLocAxiom = new AddAxiom(go_cam_ont, add_loc_axiom);
+				ontman.applyChanges(addLocAxiom);
+				//dig out the GO cellular location and create an individual for it
+				Set<Xref> xrefs = loc.getXref();
+				for(Xref xref : xrefs) {
+					if(xref.getModelInterface().equals(UnificationXref.class)) {
+						UnificationXref uref = (UnificationXref)xref;	    			
+						//here we add the referenced GO class as a type.  
+						if(uref.getDb().equals("GENE ONTOLOGY")) {
+							OWLClass xref_go_loc = df.getOWLClass(IRI.create(obo_iri + uref.getId().replaceAll(":", "_")));
+							Set<XReferrable> refs = uref.getXrefOf();
+							String term = "";
+							for(XReferrable ref : refs) {
+								term = ref.toString().replaceAll("CellularLocationVocabulary_", "");
+								break;
+							}
+							addLabel(ontman, go_cam_ont, df, xref_go_loc, term);
+							OWLClassAssertionAxiom isa_loc = df.getOWLClassAssertionAxiom(xref_go_loc, loc_e);
+							ontman.addAxiom(go_cam_ont, isa_loc);
+							ontman.applyChanges();
+						}
+					}
+				}
+			}
+		}
+
 		//		//set a default type of continuant to start
 		//		OWLClassAssertionAxiom isa_continuant = df.getOWLClassAssertionAxiom(continuant_class, e);
 		//		ontman.addAxiom(go_cam_ont, isa_continuant);
@@ -522,12 +558,13 @@ public class BioPaxtoGO {
 			Set<Entity> participants = reaction.getParticipant();
 			for(Entity participant : participants) {
 				//figure out its nature and capture that
-				defineReactionEntity(ontman, go_cam_ont, df, participant);		
+				go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, participant);		
 				//link to participants in reaction
 				//biopax#left -> obo:input , biopax#right -> obo:output
 				Set<PhysicalEntity> inputs = reaction.getLeft();
 				for(PhysicalEntity input : inputs) {
 					OWLNamedIndividual input_entity = df.getOWLNamedIndividual(IRI.create(input.getUri()));
+					go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, input);
 					OWLObjectPropertyAssertionAxiom add_input_axiom = df.getOWLObjectPropertyAssertionAxiom(has_input, e, input_entity);
 					AddAxiom addInputAxiom = new AddAxiom(go_cam_ont, add_input_axiom);
 					ontman.applyChanges(addInputAxiom);
@@ -535,6 +572,7 @@ public class BioPaxtoGO {
 				Set<PhysicalEntity> outputs = reaction.getRight();
 				for(PhysicalEntity output : outputs) {
 					OWLNamedIndividual output_entity = df.getOWLNamedIndividual(IRI.create(output.getUri()));
+					go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, output);
 					OWLObjectPropertyAssertionAxiom add_output_axiom = df.getOWLObjectPropertyAssertionAxiom(has_output, e, output_entity);
 					AddAxiom addOutputAxiom = new AddAxiom(go_cam_ont, add_output_axiom);
 					ontman.applyChanges(addOutputAxiom);
@@ -554,33 +592,7 @@ public class BioPaxtoGO {
 				ControlType ctype = controller.getControlType();
 				Set<Controller> controller_entities = controller.getController();
 				for(Controller controller_entity : controller_entities) {
-					CellularLocationVocabulary loc = ((PhysicalEntity) controller_entity).getCellularLocation();
-					OWLNamedIndividual loc_e = df.getOWLNamedIndividual(loc.getUri());
-					//hook up the location
-					OWLObjectPropertyAssertionAxiom add_loc_axiom = df.getOWLObjectPropertyAssertionAxiom(occurs_in, e, loc_e);
-					AddAxiom addLocAxiom = new AddAxiom(go_cam_ont, add_loc_axiom);
-					ontman.applyChanges(addLocAxiom);
-					//dig out the GO cellular location for the controller and create an individual for it
-					Set<Xref> xrefs = loc.getXref();
-					for(Xref xref : xrefs) {
-						if(xref.getModelInterface().equals(UnificationXref.class)) {
-							UnificationXref uref = (UnificationXref)xref;	    			
-							//here we add the referenced GO class as a type.  
-							if(uref.getDb().equals("GENE ONTOLOGY")) {
-								OWLClass xref_go_loc = df.getOWLClass(IRI.create(obo_iri + uref.getId().replaceAll(":", "_")));
-								Set<XReferrable> refs = uref.getXrefOf();
-								String term = "";
-								for(XReferrable ref : refs) {
-									term = ref.toString().replaceAll("CellularLocationVocabulary_", "");
-									break;
-								}
-								addLabel(ontman, go_cam_ont, df, xref_go_loc, term);
-								OWLClassAssertionAxiom isa_loc = df.getOWLClassAssertionAxiom(xref_go_loc, loc_e);
-								ontman.addAxiom(go_cam_ont, isa_loc);
-								ontman.applyChanges();
-							}
-						}
-					}
+					go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, controller_entity);
 					//the protein or complex
 					OWLNamedIndividual c_e = df.getOWLNamedIndividual(IRI.create(controller_entity.getUri()));
 					//make an individual of the class molecular function
