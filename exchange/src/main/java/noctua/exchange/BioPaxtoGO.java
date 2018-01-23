@@ -88,7 +88,7 @@ public class BioPaxtoGO {
 	 * @return
 	 * @throws OWLOntologyCreationException
 	 */
-	public OWLOntology initGOCAMOntology(String pathway_title, String contributor_uri, boolean add_lego_import) throws OWLOntologyCreationException {
+	private OWLOntology initGOCAMOntology(String pathway_title, String contributor_uri, boolean add_lego_import) throws OWLOntologyCreationException {
 		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();
 		IRI ont_iri = IRI.create("http://model.geneontology.org/helloworld"+Math.random());
 		OWLOntology go_cam_ont = ontman.createOntology(ont_iri);
@@ -180,7 +180,7 @@ public class BioPaxtoGO {
 		return go_cam_ont;
 	}
 
-	public void convert(String input_biopax, String converted, boolean split_by_pathway, boolean add_lego_import) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException  {
+	private void convert(String input_biopax, String converted, boolean split_by_pathway, boolean add_lego_import) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException  {
 		//read biopax pathway(s)
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileInputStream f = new FileInputStream(input_biopax);
@@ -202,70 +202,19 @@ public class BioPaxtoGO {
 			}
 
 			String uri = currentPathway.getUri();
-			//make the OWL individual representing the pathway
+			//make the OWL individual representing the pathway so it can be used below
 			OWLNamedIndividual p = df.getOWLNamedIndividual(IRI.create(uri));
-			//label it
-			for(String pathway_name : currentPathway.getName()) {
-				addLabel(ontman, go_cam_ont, df, p, pathway_name);
-			}	
-			//set a default type of biological process
-			OWLClassAssertionAxiom isa_bp = df.getOWLClassAssertionAxiom(bp_class, p);
-			ontman.addAxiom(go_cam_ont, isa_bp);
-			ontman.applyChanges();
-			//dig out any xreferenced GO processes and assign them as types
-			Set<Xref> xrefs = currentPathway.getXref();
-			for(Xref xref : xrefs) {
-				if(xref.getModelInterface().equals(RelationshipXref.class)) {
-					RelationshipXref r = (RelationshipXref)xref;	    			
-					//System.out.println(xref.getDb()+" "+xref.getId()+" "+xref.getUri()+"----"+r.getRelationshipType());
-					//note that relationship types are not defined beyond text strings like RelationshipTypeVocabulary_gene ontology term for cellular process
-					//you just have to know what to do.
-					//here we add the referenced GO class as a type.  
-					if(r.getDb().equals("GENE ONTOLOGY")) {
-						OWLClass xref_go_parent = df.getOWLClass(IRI.create(obo_iri + r.getId().replaceAll(":", "_")));
-						//add it into local hierarchy (temp pre inport)
-						OWLSubClassOfAxiom tmp = df.getOWLSubClassOfAxiom(xref_go_parent, bp_class);
-						ontman.addAxiom(go_cam_ont, tmp);
-						OWLClassAssertionAxiom isa_xrefedbp = df.getOWLClassAssertionAxiom(xref_go_parent, p);
-						ontman.addAxiom(go_cam_ont, isa_xrefedbp);
-						ontman.applyChanges();
-					}
-				}
-			}
-			//get any pathway-part of relationships
-			for(Pathway parent_pathway : currentPathway.getPathwayComponentOf()) {
+			//define it (add types etc)
+			go_cam_ont = definePathwayEntity(ontman, go_cam_ont, df, currentPathway);
+			
+			//get and set parent pathways
+			for(Pathway parent_pathway : currentPathway.getPathwayComponentOf()) {				
 				//System.out.println(currentPathway.getName()+" is a Component of Pathway:"+parent_pathway.getName()); 
 				OWLNamedIndividual parent = df.getOWLNamedIndividual(IRI.create(parent_pathway.getUri()));
 				OWLObjectPropertyAssertionAxiom add_partof_axiom = df.getOWLObjectPropertyAssertionAxiom(part_of, p, parent);
 				AddAxiom addAxiom = new AddAxiom(go_cam_ont, add_partof_axiom);
 				ontman.applyChanges(addAxiom);
-				//TODO pull this out into its own method so not repeating.
-				addLabel(ontman, go_cam_ont, df, parent, parent_pathway.getDisplayName());
-				//set a default type of biological process
-				OWLClassAssertionAxiom p_isa_bp = df.getOWLClassAssertionAxiom(bp_class, parent);
-				ontman.addAxiom(go_cam_ont, p_isa_bp);
-				ontman.applyChanges();
-				//dig out any xreferenced GO processes and assign them as types
-				xrefs = parent_pathway.getXref();
-				for(Xref xref : xrefs) {
-					if(xref.getModelInterface().equals(RelationshipXref.class)) {
-						RelationshipXref r = (RelationshipXref)xref;	    			
-						//System.out.println(xref.getDb()+" "+xref.getId()+" "+xref.getUri()+"----"+r.getRelationshipType());
-						//note that relationship types are not defined beyond text strings like RelationshipTypeVocabulary_gene ontology term for cellular process
-						//you just have to know what to do.
-						//here we add the referenced GO class as a type.  
-						if(r.getDb().equals("GENE ONTOLOGY")) {
-							OWLClass xref_go_parent = df.getOWLClass(IRI.create(obo_iri + r.getId().replaceAll(":", "_")));
-							//add it into local hierarchy (temp pre inport)
-							OWLSubClassOfAxiom tmp = df.getOWLSubClassOfAxiom(xref_go_parent, bp_class);
-							ontman.addAxiom(go_cam_ont, tmp);
-							OWLClassAssertionAxiom isa_xrefedbp = df.getOWLClassAssertionAxiom(xref_go_parent, parent);
-							ontman.addAxiom(go_cam_ont, isa_xrefedbp);
-							ontman.applyChanges();
-						}
-					}
-				}
-
+				go_cam_ont = definePathwayEntity(ontman, go_cam_ont, df, parent_pathway);
 			}
 
 			//below mapped from Chris Mungall's
@@ -313,6 +262,13 @@ public class BioPaxtoGO {
 				if(process.getModelInterface().equals(BiochemicalReaction.class)) {
 					BiochemicalReaction reaction = (BiochemicalReaction)process;
 					defineReactionEntity(ontman, go_cam_ont, df, reaction);
+					//add the child pathway (one level) when splitting up into indidual pathways (unnesting)
+				}else if(split_by_pathway&&process.getModelInterface().equals(Pathway.class)){
+					OWLNamedIndividual child = df.getOWLNamedIndividual(IRI.create(process.getUri()));
+					OWLObjectPropertyAssertionAxiom add_haspart_axiom = df.getOWLObjectPropertyAssertionAxiom(has_part, p, child);
+					AddAxiom addAxiom = new AddAxiom(go_cam_ont, add_haspart_axiom);
+					ontman.applyChanges(addAxiom);
+					go_cam_ont = definePathwayEntity(ontman, go_cam_ont, df, (Pathway)process);	
 				}
 			}
 			if(split_by_pathway) {
@@ -336,7 +292,37 @@ public class BioPaxtoGO {
 	}
 
 
-	public OWLOntology addLabel(OWLOntologyManager ontman, OWLOntology go_cam_ont, OWLDataFactory df, OWLEntity entity, String label) {
+	private OWLOntology definePathwayEntity(OWLOntologyManager ontman, OWLOntology go_cam_ont, OWLDataFactory df,Pathway pathway) {
+		OWLNamedIndividual pathway_e = df.getOWLNamedIndividual(IRI.create(pathway.getUri()));		
+		addLabel(ontman, go_cam_ont, df, pathway_e, pathway.getDisplayName());
+		//set a default type of biological process
+//		OWLClassAssertionAxiom p_isa_bp = df.getOWLClassAssertionAxiom(bp_class, pathway_e);
+//		ontman.addAxiom(go_cam_ont, p_isa_bp);
+//		ontman.applyChanges();
+		//dig out any xreferenced GO processes and assign them as types
+		Set<Xref> xrefs = pathway.getXref();
+		for(Xref xref : xrefs) {
+			if(xref.getModelInterface().equals(RelationshipXref.class)) {
+				RelationshipXref r = (RelationshipXref)xref;	    			
+				//System.out.println(xref.getDb()+" "+xref.getId()+" "+xref.getUri()+"----"+r.getRelationshipType());
+				//note that relationship types are not defined beyond text strings like RelationshipTypeVocabulary_gene ontology term for cellular process
+				//you just have to know what to do.
+				//here we add the referenced GO class as a type.  
+				if(r.getDb().equals("GENE ONTOLOGY")) {
+					OWLClass xref_go_parent = df.getOWLClass(IRI.create(obo_iri + r.getId().replaceAll(":", "_")));
+					//add it into local hierarchy (temp pre inport)
+					OWLSubClassOfAxiom tmp = df.getOWLSubClassOfAxiom(xref_go_parent, bp_class);
+					ontman.addAxiom(go_cam_ont, tmp);
+					OWLClassAssertionAxiom isa_xrefedbp = df.getOWLClassAssertionAxiom(xref_go_parent, pathway_e);
+					ontman.addAxiom(go_cam_ont, isa_xrefedbp);
+					ontman.applyChanges();
+				}
+			}
+		}
+		return go_cam_ont;
+	}
+
+	private OWLOntology addLabel(OWLOntologyManager ontman, OWLOntology go_cam_ont, OWLDataFactory df, OWLEntity entity, String label) {
 		if(label==null) {
 			return go_cam_ont;
 		}
@@ -370,7 +356,7 @@ public class BioPaxtoGO {
 	 * @param entity
 	 * @return
 	 */
-	public OWLOntology defineReactionEntity(OWLOntologyManager ontman, OWLOntology go_cam_ont, OWLDataFactory df, Entity entity) {
+	private OWLOntology defineReactionEntity(OWLOntologyManager ontman, OWLOntology go_cam_ont, OWLDataFactory df, Entity entity) {
 		//add entity to ontology, whatever it is
 		OWLNamedIndividual e = df.getOWLNamedIndividual(IRI.create(entity.getUri()));
 		String entity_name = entity.getDisplayName();

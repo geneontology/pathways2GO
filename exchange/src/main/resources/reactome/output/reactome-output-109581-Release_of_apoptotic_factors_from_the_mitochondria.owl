@@ -1,12 +1,12 @@
-@prefix : <http://model.geneontology.org/helloworld0.17940163341121895#> .
+@prefix : <http://model.geneontology.org/helloworld0.7293428068910861#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@base <http://model.geneontology.org/helloworld0.17940163341121895> .
+@base <http://model.geneontology.org/helloworld0.7293428068910861> .
 
-<http://model.geneontology.org/helloworld0.17940163341121895> rdf:type owl:Ontology .
+<http://model.geneontology.org/helloworld0.7293428068910861> rdf:type owl:Ontology .
 
 #################################################################
 #    Annotation properties
@@ -380,15 +380,15 @@
                                                      rdfs:label "Activated BAX,BAK oligomers" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex74_function_0.2253651268752076
-<http://www.reactome.org/biopax/63/109581#Complex74_function_0.2253651268752076> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#Complex74_function_0.8567113103683452
+<http://www.reactome.org/biopax/63/109581#Complex74_function_0.8567113103683452> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex74> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction51> .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex74_function_0.6117990657165308
-<http://www.reactome.org/biopax/63/109581#Complex74_function_0.6117990657165308> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#Complex74_function_0.8692600954509913
+<http://www.reactome.org/biopax/63/109581#Complex74_function_0.8692600954509913> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex74> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction52> .
@@ -408,7 +408,6 @@
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway18
 <http://www.reactome.org/biopax/63/109581#Pathway18> rdf:type owl:NamedIndividual ,
-                                                              <http://purl.obolibrary.org/obo/GO_0008150> ,
                                                               <http://www.reactome.org/biopax/63/109581#Pathway18_class> ;
                                                      <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway7> ;
                                                      rdfs:label "Release of apoptotic factors from the mitochondria" .
@@ -440,7 +439,6 @@
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway7
 <http://www.reactome.org/biopax/63/109581#Pathway7> rdf:type owl:NamedIndividual ,
-                                                             <http://purl.obolibrary.org/obo/GO_0008150> ,
                                                              <http://purl.obolibrary.org/obo/GO_0097193> ,
                                                              <http://www.reactome.org/biopax/63/109581#Pathway7_class> ;
                                                     rdfs:label "Intrinsic Pathway for Apoptosis" .
@@ -498,7 +496,7 @@
 #    Annotations
 #################################################################
 
-<http://model.geneontology.org/helloworld0.17940163341121895> <http://purl.org/dc/elements/1.1/title> "Reactome:Release of apoptotic factors from the mitochondria" .
+<http://model.geneontology.org/helloworld0.7293428068910861> <http://purl.org/dc/elements/1.1/title> "Reactome:Release of apoptotic factors from the mitochondria" .
 
 
 <http://purl.obolibrary.org/obo/RO_0002334> rdfs:label "regulated by" .

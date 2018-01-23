@@ -1,12 +1,12 @@
-@prefix : <http://model.geneontology.org/helloworld0.7368523874448198#> .
+@prefix : <http://model.geneontology.org/helloworld0.09140653729737824#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@base <http://model.geneontology.org/helloworld0.7368523874448198> .
+@base <http://model.geneontology.org/helloworld0.09140653729737824> .
 
-<http://model.geneontology.org/helloworld0.7368523874448198> rdf:type owl:Ontology .
+<http://model.geneontology.org/helloworld0.09140653729737824> rdf:type owl:Ontology .
 
 #################################################################
 #    Annotation properties
@@ -909,18 +909,18 @@
                                                       rdfs:label "active caspase-3" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex105_function_0.32187151167078154
-<http://www.reactome.org/biopax/63/109581#Complex105_function_0.32187151167078154> rdf:type owl:NamedIndividual ,
-                                                                                            <http://purl.obolibrary.org/obo/GO_0003674> ;
-                                                                                   <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex105> ;
-                                                                                   <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction104> .
+###  http://www.reactome.org/biopax/63/109581#Complex105_function_0.267717784141277
+<http://www.reactome.org/biopax/63/109581#Complex105_function_0.267717784141277> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0003674> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex105> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction104> .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex105_function_0.3541996106412282
-<http://www.reactome.org/biopax/63/109581#Complex105_function_0.3541996106412282> rdf:type owl:NamedIndividual ,
-                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
-                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex105> ;
-                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction105> .
+###  http://www.reactome.org/biopax/63/109581#Complex105_function_0.294622675649034
+<http://www.reactome.org/biopax/63/109581#Complex105_function_0.294622675649034> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0003674> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex105> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction105> .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Complex106
@@ -985,11 +985,11 @@
                                                       rdfs:label "DFF40 associated with chromatin" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex111_function_0.23070851908442602
-<http://www.reactome.org/biopax/63/109581#Complex111_function_0.23070851908442602> rdf:type owl:NamedIndividual ,
-                                                                                            <http://purl.obolibrary.org/obo/GO_0003674> ;
-                                                                                   <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex111> ;
-                                                                                   <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction110> .
+###  http://www.reactome.org/biopax/63/109581#Complex111_function_0.3320377585408697
+<http://www.reactome.org/biopax/63/109581#Complex111_function_0.3320377585408697> rdf:type owl:NamedIndividual ,
+                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
+                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex111> ;
+                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction110> .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Complex112
@@ -1002,11 +1002,11 @@
                                                       rdfs:label "HMGB1/HMGB2- bound chromatin" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex112_function_0.9468163283124806
-<http://www.reactome.org/biopax/63/109581#Complex112_function_0.9468163283124806> rdf:type owl:NamedIndividual ,
-                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
-                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex112> ;
-                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction110> .
+###  http://www.reactome.org/biopax/63/109581#Complex112_function_0.164004083053226
+<http://www.reactome.org/biopax/63/109581#Complex112_function_0.164004083053226> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0003674> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex112> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction110> .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Complex113
@@ -1057,14 +1057,12 @@
 ###  http://www.reactome.org/biopax/63/109581#Pathway31
 <http://www.reactome.org/biopax/63/109581#Pathway31> rdf:type owl:NamedIndividual ,
                                                               <http://purl.obolibrary.org/obo/GO_0006309> ,
-                                                              <http://purl.obolibrary.org/obo/GO_0008150> ,
                                                               <http://www.reactome.org/biopax/63/109581#Pathway31_class> ;
                                                      rdfs:label "Apoptosis induced DNA fragmentation" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway32
 <http://www.reactome.org/biopax/63/109581#Pathway32> rdf:type owl:NamedIndividual ,
-                                                              <http://purl.obolibrary.org/obo/GO_0008150> ,
                                                               <http://www.reactome.org/biopax/63/109581#Pathway32_class> ;
                                                      <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway31> ;
                                                      rdfs:label "Activation of DNA fragmentation factor" .
@@ -1309,7 +1307,7 @@
 #    Annotations
 #################################################################
 
-<http://model.geneontology.org/helloworld0.7368523874448198> <http://purl.org/dc/elements/1.1/title> "Reactome:Activation of DNA fragmentation factor" .
+<http://model.geneontology.org/helloworld0.09140653729737824> <http://purl.org/dc/elements/1.1/title> "Reactome:Activation of DNA fragmentation factor" .
 
 
 <http://purl.obolibrary.org/obo/RO_0002334> rdfs:label "regulated by" .

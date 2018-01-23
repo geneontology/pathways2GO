@@ -1,12 +1,12 @@
-@prefix : <http://model.geneontology.org/helloworld0.7555338316516197#> .
+@prefix : <http://model.geneontology.org/helloworld0.6441555911768899#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@base <http://model.geneontology.org/helloworld0.7555338316516197> .
+@base <http://model.geneontology.org/helloworld0.6441555911768899> .
 
-<http://model.geneontology.org/helloworld0.7555338316516197> rdf:type owl:Ontology .
+<http://model.geneontology.org/helloworld0.6441555911768899> rdf:type owl:Ontology .
 
 #################################################################
 #    Annotation properties
@@ -95,11 +95,6 @@
 ###  http://purl.obolibrary.org/obo/GO_0005654
 <http://purl.obolibrary.org/obo/GO_0005654> rdf:type owl:Class ;
                                             rdfs:label "nucleoplasm" .
-
-
-###  http://purl.obolibrary.org/obo/GO_0008150
-<http://purl.obolibrary.org/obo/GO_0008150> rdf:type owl:Class ;
-                                            rdfs:label "Biological Process" .
 
 
 ###  http://purl.obolibrary.org/obo/GO_0032991
@@ -274,15 +269,15 @@
                                                      rdfs:label "active caspase-6" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex93_function_0.24846591712313748
-<http://www.reactome.org/biopax/63/109581#Complex93_function_0.24846591712313748> rdf:type owl:NamedIndividual ,
-                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
-                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex93> ;
-                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction85> .
+###  http://www.reactome.org/biopax/63/109581#Complex93_function_0.4434605900649323
+<http://www.reactome.org/biopax/63/109581#Complex93_function_0.4434605900649323> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0003674> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex93> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction85> .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex93_function_0.4837290614007107
-<http://www.reactome.org/biopax/63/109581#Complex93_function_0.4837290614007107> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#Complex93_function_0.4555127383591424
+<http://www.reactome.org/biopax/63/109581#Complex93_function_0.4555127383591424> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex93> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction84> .
@@ -300,14 +295,12 @@
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway27
 <http://www.reactome.org/biopax/63/109581#Pathway27> rdf:type owl:NamedIndividual ,
-                                                              <http://purl.obolibrary.org/obo/GO_0008150> ,
                                                               <http://www.reactome.org/biopax/63/109581#Pathway27_class> ;
                                                      rdfs:label "Apoptotic cleavage of cellular proteins" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway30
 <http://www.reactome.org/biopax/63/109581#Pathway30> rdf:type owl:NamedIndividual ,
-                                                              <http://purl.obolibrary.org/obo/GO_0008150> ,
                                                               <http://www.reactome.org/biopax/63/109581#Pathway30_class> ;
                                                      <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway27> ;
                                                      rdfs:label "Breakdown of the nuclear lamina" .
@@ -381,7 +374,10 @@
 #    Annotations
 #################################################################
 
-<http://model.geneontology.org/helloworld0.7555338316516197> <http://purl.org/dc/elements/1.1/title> "Reactome:Breakdown of the nuclear lamina" .
+<http://model.geneontology.org/helloworld0.6441555911768899> <http://purl.org/dc/elements/1.1/title> "Reactome:Breakdown of the nuclear lamina" .
+
+
+<http://purl.obolibrary.org/obo/GO_0008150> rdfs:label "Biological Process" .
 
 
 <http://purl.obolibrary.org/obo/RO_0002334> rdfs:label "regulated by" .

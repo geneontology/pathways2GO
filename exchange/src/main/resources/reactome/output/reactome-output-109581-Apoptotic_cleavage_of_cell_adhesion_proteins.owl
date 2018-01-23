@@ -1,12 +1,12 @@
-@prefix : <http://model.geneontology.org/helloworld0.46284602799123475#> .
+@prefix : <http://model.geneontology.org/helloworld0.6836121289685555#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@base <http://model.geneontology.org/helloworld0.46284602799123475> .
+@base <http://model.geneontology.org/helloworld0.6836121289685555> .
 
-<http://model.geneontology.org/helloworld0.46284602799123475> rdf:type owl:Ontology .
+<http://model.geneontology.org/helloworld0.6836121289685555> rdf:type owl:Ontology .
 
 #################################################################
 #    Annotation properties
@@ -143,11 +143,6 @@
 ###  http://purl.obolibrary.org/obo/GO_0005886
 <http://purl.obolibrary.org/obo/GO_0005886> rdf:type owl:Class ;
                                             rdfs:label "plasma membrane" .
-
-
-###  http://purl.obolibrary.org/obo/GO_0008150
-<http://purl.obolibrary.org/obo/GO_0008150> rdf:type owl:Class ;
-                                            rdfs:label "Biological Process" .
 
 
 ###  http://purl.obolibrary.org/obo/GO_0032991
@@ -735,8 +730,8 @@
                                                      rdfs:label "Caspase-3" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex34_function_0.9731981244661053
-<http://www.reactome.org/biopax/63/109581#Complex34_function_0.9731981244661053> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#Complex34_function_0.9359059865230231
+<http://www.reactome.org/biopax/63/109581#Complex34_function_0.9359059865230231> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex34> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction75> .
@@ -761,29 +756,29 @@
                                                      rdfs:label "active caspase 3" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex91_function_0.315129795974482
-<http://www.reactome.org/biopax/63/109581#Complex91_function_0.315129795974482> rdf:type owl:NamedIndividual ,
-                                                                                         <http://purl.obolibrary.org/obo/GO_0003674> ;
-                                                                                <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex91> ;
-                                                                                <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction74> .
-
-
-###  http://www.reactome.org/biopax/63/109581#Complex91_function_0.3585319299525138
-<http://www.reactome.org/biopax/63/109581#Complex91_function_0.3585319299525138> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#Complex91_function_0.3424190101868865
+<http://www.reactome.org/biopax/63/109581#Complex91_function_0.3424190101868865> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex91> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction77> .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex91_function_0.40335785788673295
-<http://www.reactome.org/biopax/63/109581#Complex91_function_0.40335785788673295> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#Complex91_function_0.44329978538787196
+<http://www.reactome.org/biopax/63/109581#Complex91_function_0.44329978538787196> rdf:type owl:NamedIndividual ,
                                                                                            <http://purl.obolibrary.org/obo/GO_0003674> ;
                                                                                   <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex91> ;
-                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction78> .
+                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction74> .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex91_function_0.6676842628575554
-<http://www.reactome.org/biopax/63/109581#Complex91_function_0.6676842628575554> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#Complex91_function_0.7358109370701925
+<http://www.reactome.org/biopax/63/109581#Complex91_function_0.7358109370701925> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0003674> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex91> ;
+                                                                                 <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction78> .
+
+
+###  http://www.reactome.org/biopax/63/109581#Complex91_function_0.8182587166198279
+<http://www.reactome.org/biopax/63/109581#Complex91_function_0.8182587166198279> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex91> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction76> .
@@ -801,14 +796,12 @@
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway27
 <http://www.reactome.org/biopax/63/109581#Pathway27> rdf:type owl:NamedIndividual ,
-                                                              <http://purl.obolibrary.org/obo/GO_0008150> ,
                                                               <http://www.reactome.org/biopax/63/109581#Pathway27_class> ;
                                                      rdfs:label "Apoptotic cleavage of cellular proteins" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway29
 <http://www.reactome.org/biopax/63/109581#Pathway29> rdf:type owl:NamedIndividual ,
-                                                              <http://purl.obolibrary.org/obo/GO_0008150> ,
                                                               <http://www.reactome.org/biopax/63/109581#Pathway29_class> ;
                                                      <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway27> ;
                                                      rdfs:label "Apoptotic cleavage of cell adhesion proteins" .
@@ -821,11 +814,11 @@
                                                            rdfs:label "unidentified caspase acting on Desmoplakin" .
 
 
-###  http://www.reactome.org/biopax/63/109581#PhysicalEntity2_function_0.5804325075101012
-<http://www.reactome.org/biopax/63/109581#PhysicalEntity2_function_0.5804325075101012> rdf:type owl:NamedIndividual ,
-                                                                                                <http://purl.obolibrary.org/obo/GO_0003674> ;
-                                                                                       <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#PhysicalEntity2> ;
-                                                                                       <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction79> .
+###  http://www.reactome.org/biopax/63/109581#PhysicalEntity2_function_0.36806333725165175
+<http://www.reactome.org/biopax/63/109581#PhysicalEntity2_function_0.36806333725165175> rdf:type owl:NamedIndividual ,
+                                                                                                 <http://purl.obolibrary.org/obo/GO_0003674> ;
+                                                                                        <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#PhysicalEntity2> ;
+                                                                                        <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction79> .
 
 
 ###  http://www.reactome.org/biopax/63/109581#PhysicalEntity3
@@ -835,8 +828,8 @@
                                                            rdfs:label "unidentified caspase acting on Plakophilin 1" .
 
 
-###  http://www.reactome.org/biopax/63/109581#PhysicalEntity3_function_0.9796747603095988
-<http://www.reactome.org/biopax/63/109581#PhysicalEntity3_function_0.9796747603095988> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#PhysicalEntity3_function_0.6370312604062643
+<http://www.reactome.org/biopax/63/109581#PhysicalEntity3_function_0.6370312604062643> rdf:type owl:NamedIndividual ,
                                                                                                 <http://purl.obolibrary.org/obo/GO_0003674> ;
                                                                                        <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#PhysicalEntity3> ;
                                                                                        <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction80> .
@@ -849,11 +842,11 @@
                                                            rdfs:label "unidentified caspase acting on TJP1 (ZO-1)" .
 
 
-###  http://www.reactome.org/biopax/63/109581#PhysicalEntity4_function_0.32521147633264214
-<http://www.reactome.org/biopax/63/109581#PhysicalEntity4_function_0.32521147633264214> rdf:type owl:NamedIndividual ,
-                                                                                                 <http://purl.obolibrary.org/obo/GO_0003674> ;
-                                                                                        <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#PhysicalEntity4> ;
-                                                                                        <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction81> .
+###  http://www.reactome.org/biopax/63/109581#PhysicalEntity4_function_0.6756909723334541
+<http://www.reactome.org/biopax/63/109581#PhysicalEntity4_function_0.6756909723334541> rdf:type owl:NamedIndividual ,
+                                                                                                <http://purl.obolibrary.org/obo/GO_0003674> ;
+                                                                                       <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#PhysicalEntity4> ;
+                                                                                       <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction81> .
 
 
 ###  http://www.reactome.org/biopax/63/109581#PhysicalEntity5
@@ -863,11 +856,11 @@
                                                            rdfs:label "unidentified caspase acting on TJP2 (ZO-2)" .
 
 
-###  http://www.reactome.org/biopax/63/109581#PhysicalEntity5_function_0.387717918889117
-<http://www.reactome.org/biopax/63/109581#PhysicalEntity5_function_0.387717918889117> rdf:type owl:NamedIndividual ,
-                                                                                               <http://purl.obolibrary.org/obo/GO_0003674> ;
-                                                                                      <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#PhysicalEntity5> ;
-                                                                                      <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction82> .
+###  http://www.reactome.org/biopax/63/109581#PhysicalEntity5_function_0.7715128002106716
+<http://www.reactome.org/biopax/63/109581#PhysicalEntity5_function_0.7715128002106716> rdf:type owl:NamedIndividual ,
+                                                                                                <http://purl.obolibrary.org/obo/GO_0003674> ;
+                                                                                       <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#PhysicalEntity5> ;
+                                                                                       <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction82> .
 
 
 ###  http://www.reactome.org/biopax/63/109581#PhysicalEntity6
@@ -877,11 +870,11 @@
                                                            rdfs:label "unidentified caspase acting on Occludin" .
 
 
-###  http://www.reactome.org/biopax/63/109581#PhysicalEntity6_function_0.39286695543544603
-<http://www.reactome.org/biopax/63/109581#PhysicalEntity6_function_0.39286695543544603> rdf:type owl:NamedIndividual ,
-                                                                                                 <http://purl.obolibrary.org/obo/GO_0003674> ;
-                                                                                        <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#PhysicalEntity6> ;
-                                                                                        <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction83> .
+###  http://www.reactome.org/biopax/63/109581#PhysicalEntity6_function_0.8936238210871507
+<http://www.reactome.org/biopax/63/109581#PhysicalEntity6_function_0.8936238210871507> rdf:type owl:NamedIndividual ,
+                                                                                                <http://purl.obolibrary.org/obo/GO_0003674> ;
+                                                                                       <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#PhysicalEntity6> ;
+                                                                                       <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction83> .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein142
@@ -1128,7 +1121,10 @@
 #    Annotations
 #################################################################
 
-<http://model.geneontology.org/helloworld0.46284602799123475> <http://purl.org/dc/elements/1.1/title> "Reactome:Apoptotic cleavage of cell adhesion proteins" .
+<http://model.geneontology.org/helloworld0.6836121289685555> <http://purl.org/dc/elements/1.1/title> "Reactome:Apoptotic cleavage of cell adhesion proteins" .
+
+
+<http://purl.obolibrary.org/obo/GO_0008150> rdfs:label "Biological Process" .
 
 
 <http://purl.obolibrary.org/obo/RO_0002334> rdfs:label "regulated by" .

@@ -1,12 +1,12 @@
-@prefix : <http://model.geneontology.org/helloworld0.6661399656191778#> .
+@prefix : <http://model.geneontology.org/helloworld0.9765867205825022#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@base <http://model.geneontology.org/helloworld0.6661399656191778> .
+@base <http://model.geneontology.org/helloworld0.9765867205825022> .
 
-<http://model.geneontology.org/helloworld0.6661399656191778> rdf:type owl:Ontology .
+<http://model.geneontology.org/helloworld0.9765867205825022> rdf:type owl:Ontology .
 
 #################################################################
 #    Annotation properties
@@ -652,22 +652,22 @@
                                                      rdfs:label "Caspase-3" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex34_function_0.3187897882153242
-<http://www.reactome.org/biopax/63/109581#Complex34_function_0.3187897882153242> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#Complex34_function_0.3563273462600264
+<http://www.reactome.org/biopax/63/109581#Complex34_function_0.3563273462600264> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex34> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction16> .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex34_function_0.4632759125389716
-<http://www.reactome.org/biopax/63/109581#Complex34_function_0.4632759125389716> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#Complex34_function_0.5046710654590354
+<http://www.reactome.org/biopax/63/109581#Complex34_function_0.5046710654590354> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex34> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction14> .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex34_function_0.9073681527265324
-<http://www.reactome.org/biopax/63/109581#Complex34_function_0.9073681527265324> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#Complex34_function_0.9608179364620383
+<http://www.reactome.org/biopax/63/109581#Complex34_function_0.9608179364620383> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex34> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction10> .
@@ -713,8 +713,8 @@
                                                      rdfs:label "DCC:DIP13alpha:Caspase-9" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Complex38_function_0.4274041642479891
-<http://www.reactome.org/biopax/63/109581#Complex38_function_0.4274041642479891> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#Complex38_function_0.3691582139781293
+<http://www.reactome.org/biopax/63/109581#Complex38_function_0.3691582139781293> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0003674> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Complex38> ;
                                                                                  <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction13> .
@@ -751,7 +751,6 @@
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway2
 <http://www.reactome.org/biopax/63/109581#Pathway2> rdf:type owl:NamedIndividual ,
-                                                             <http://purl.obolibrary.org/obo/GO_0008150> ,
                                                              <http://purl.obolibrary.org/obo/GO_0097191> ,
                                                              <http://www.reactome.org/biopax/63/109581#Pathway2_class> ;
                                                     rdfs:label "Caspase activation via extrinsic apoptotic signalling pathway" .
@@ -759,7 +758,6 @@
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway6
 <http://www.reactome.org/biopax/63/109581#Pathway6> rdf:type owl:NamedIndividual ,
-                                                             <http://purl.obolibrary.org/obo/GO_0008150> ,
                                                              <http://purl.obolibrary.org/obo/GO_0097192> ,
                                                              <http://www.reactome.org/biopax/63/109581#Pathway6_class> ;
                                                     <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway2> ;
@@ -948,7 +946,7 @@
 #    Annotations
 #################################################################
 
-<http://model.geneontology.org/helloworld0.6661399656191778> <http://purl.org/dc/elements/1.1/title> "Reactome:Ligand-independent caspase activation via DCC" .
+<http://model.geneontology.org/helloworld0.9765867205825022> <http://purl.org/dc/elements/1.1/title> "Reactome:Ligand-independent caspase activation via DCC" .
 
 
 <http://purl.obolibrary.org/obo/RO_0002334> rdfs:label "regulated by" .
