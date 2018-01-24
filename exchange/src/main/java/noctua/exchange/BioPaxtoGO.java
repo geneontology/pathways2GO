@@ -72,8 +72,9 @@ public class BioPaxtoGO {
 	 */
 	public static void main(String[] args) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException {
 		BioPaxtoGO bp2g = new BioPaxtoGO();
-		String input_biopax = "src/main/resources/reactome/reactome-input-109581.owl";
-		String converted_split = "src/main/resources/reactome/output/reactome-output-109581-";
+		String input_biopax = //"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
+				"src/main/resources/reactome/reactome-input-109581.owl";
+		String converted_split = "src/main/resources/reactome/output/reactome-output-109581-";//reactome-output-glyco-"; 
 		String converted_full = "src/main/resources/reactome/reactome-output-109581";
 		boolean split_by_pathway = true;
 		boolean add_lego_import = false;
@@ -216,7 +217,7 @@ public class BioPaxtoGO {
 				ontman.applyChanges(addAxiom);
 				go_cam_ont = definePathwayEntity(ontman, go_cam_ont, df, parent_pathway);
 			}
-
+			
 			//below mapped from Chris Mungall's
 			//prolog rules https://github.com/cmungall/pl-sysbio/blob/master/prolog/sysbio/bp2lego.pl
 			//looking at this, prolog/graph solution seems much more elegant... 
@@ -275,7 +276,7 @@ public class BioPaxtoGO {
 				String n = currentPathway.getDisplayName();
 				n = n.replaceAll("/", "-");	
 				n = n.replaceAll(" ", "_");
-				String outfilename = converted+n+".owl";	
+				String outfilename = converted+n+".ttl";	
 				FileDocumentTarget outfile = new FileDocumentTarget(new File(outfilename));
 				ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());
 				ontman.saveOntology(go_cam_ont,outfile);
@@ -284,7 +285,7 @@ public class BioPaxtoGO {
 		}	
 		//export all
 		if(!split_by_pathway) {
-			FileDocumentTarget outfile = new FileDocumentTarget(new File(converted+".owl"));
+			FileDocumentTarget outfile = new FileDocumentTarget(new File(converted+".ttl"));
 			//TODO - figure out how to set format with OntologyConfigurator (per undocumented 5.0 )
 			ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());
 			ontman.saveOntology(go_cam_ont,outfile);
@@ -527,6 +528,21 @@ public class BioPaxtoGO {
 			}
 		}
 		else if(entity.getModelInterface().equals(BiochemicalReaction.class)){
+			//TODO get the preceeding event
+			//e.g. pathway 'Mitochondrial recruitment of Drp1' (reaction116) has preceeding event 'Caspase mediated cleavage of BAP31' [Homo sapiens] Reaction 94
+			//94 - stepProcessOf - next Step - stepProcess 
+//			if(entity.getDisplayName().equals("Caspase mediated cleavage of BAP31")) {
+//				System.out.println(entity);
+//				BiochemicalReaction e_r = (BiochemicalReaction)entity;
+//				Set<PathwayStep> steps_of = e_r.getStepProcessOf();
+//				for(PathwayStep step : steps_of) {
+//					for(PathwayStep s : step.getNextStep()) {
+//						System.out.println("BAP31.."+s.getStepProcess());
+//						System.out.println(s.getStepProcess()+" has preceeding event "+e);
+//					}
+//				}
+//			}
+			
 			//type it
 			BiochemicalReaction reaction = (BiochemicalReaction)(entity);
 			OWLClassAssertionAxiom isa_reaction = df.getOWLClassAssertionAxiom(reaction_class, e);
