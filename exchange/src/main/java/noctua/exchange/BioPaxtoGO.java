@@ -568,7 +568,8 @@ public class BioPaxtoGO {
 				//a flat representation of the parts of the complex (e.g. proteins) and not nested complexes (which the reactome biopax does here)
 				for(PhysicalEntity component : complex_parts) {
 					//go_cam_ont = addComplexComponent(ontman, go_cam_ont, df, component, entity);
-					OWLNamedIndividual component_entity = df.getOWLNamedIndividual(IRI.create(component.getUri()));
+					IRI comp_uri = IRI.create(component.getUri()+e.hashCode());
+					OWLNamedIndividual component_entity = df.getOWLNamedIndividual(comp_uri);
 					//OWLNamedIndividual complex_o = df.getOWLNamedIndividual(IRI.create(complex.getUri()));
 					//OWLObjectPropertyAssertionAxiom add_cpart_axiom = df.getOWLObjectPropertyAssertionAxiom(has_part, complex_o, component_entity);
 					//hook up parts	
@@ -576,7 +577,7 @@ public class BioPaxtoGO {
 					AddAxiom addCpartAxiom = new AddAxiom(go_cam_ont, add_cpart_axiom);
 					ontman.applyChanges(addCpartAxiom);
 					//now define complex components - and recurse for sub complexes	
-					go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, component, null);
+					go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, component, comp_uri);
 				}
 			}
 		}
@@ -618,16 +619,18 @@ public class BioPaxtoGO {
 				//biopax#left -> obo:input , biopax#right -> obo:output
 				Set<PhysicalEntity> inputs = reaction.getLeft();
 				for(PhysicalEntity input : inputs) {
-					OWLNamedIndividual input_entity = df.getOWLNamedIndividual(IRI.create(input.getUri()));
-					go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, input, null);
+					IRI i_iri = IRI.create(input.getUri()+e.hashCode());
+					OWLNamedIndividual input_entity = df.getOWLNamedIndividual(i_iri);
+					go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, input, i_iri);
 					OWLObjectPropertyAssertionAxiom add_input_axiom = df.getOWLObjectPropertyAssertionAxiom(has_input, e, input_entity);
 					AddAxiom addInputAxiom = new AddAxiom(go_cam_ont, add_input_axiom);
 					ontman.applyChanges(addInputAxiom);
 				}
 				Set<PhysicalEntity> outputs = reaction.getRight();
 				for(PhysicalEntity output : outputs) {
-					OWLNamedIndividual output_entity = df.getOWLNamedIndividual(IRI.create(output.getUri()));
-					go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, output, null);
+					IRI o_iri = IRI.create(output.getUri()+e.hashCode());
+					OWLNamedIndividual output_entity = df.getOWLNamedIndividual(o_iri);
+					go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, output, o_iri);
 					OWLObjectPropertyAssertionAxiom add_output_axiom = df.getOWLObjectPropertyAssertionAxiom(has_output, e, output_entity);
 					AddAxiom addOutputAxiom = new AddAxiom(go_cam_ont, add_output_axiom);
 					ontman.applyChanges(addOutputAxiom);
@@ -647,7 +650,7 @@ public class BioPaxtoGO {
 				//catalysis 'entities' from biopax may map onto functions from go_cam
 				//check for reactome mappings
 				//dig out the GO molecular function and create an individual for it
-				OWLNamedIndividual mf = df.getOWLNamedIndividual(controller.getUri()); 
+				//OWLNamedIndividual mf = df.getOWLNamedIndividual(controller.getUri()); 
 				Set<Xref> xrefs = controller.getXref(); //controller is either a 'control' or a 'catalysis' so far
 				boolean mf_set = false;
 				for(Xref xref : xrefs) {
@@ -658,11 +661,14 @@ public class BioPaxtoGO {
 							OWLClass xref_go_func = df.getOWLClass(IRI.create(obo_iri + ref.getId().replaceAll(":", "_")));
 							//reactome doesn't seem to have a separate label for the GO mf terms that they refer to 						
 							//								addLabel(ontman, go_cam_ont, df, xref_go_func, term);
-							OWLClassAssertionAxiom isa_func = df.getOWLClassAssertionAxiom(xref_go_func, mf);
-							ontman.addAxiom(go_cam_ont, isa_func);
+							//taking out the mf intermediate node for the controller and merging it with the reaction node
+							//OWLClassAssertionAxiom isa_func = df.getOWLClassAssertionAxiom(xref_go_func, mf);
+							//ontman.addAxiom(go_cam_ont, isa_func);
+							//add the go function class as a type for the reaction instance being controlled here
+							OWLClassAssertionAxiom r_isa_func = df.getOWLClassAssertionAxiom(xref_go_func, e);
+							ontman.addAxiom(go_cam_ont, r_isa_func);													
 							ontman.applyChanges();
 							mf_set = true;
-							System.out.println(xref_go_func+" "+mf);
 						}
 					}
 				}		
@@ -674,42 +680,43 @@ public class BioPaxtoGO {
 					go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, controller_entity, iri);
 					//the protein or complex
 					OWLNamedIndividual controller_e = df.getOWLNamedIndividual(IRI.create(local_id));
-
-					//TODO maybe try harder to find a MF if not explicitly defined
-					if(!mf_set) {
-						mf = df.getOWLNamedIndividual(controller_entity.getUri()+"_function_"+Math.random()); 
-						OWLClassAssertionAxiom isa_function = df.getOWLClassAssertionAxiom(molecular_function, mf);
-						ontman.addAxiom(go_cam_ont, isa_function);
-						ontman.applyChanges();
-					}
-					//the controlling physical entity enables that function
-					OWLObjectPropertyAssertionAxiom add_func_axiom = df.getOWLObjectPropertyAssertionAxiom(enabled_by, mf, controller_e);
+					//the controlling physical entity enables that function/reaction
+					OWLObjectPropertyAssertionAxiom add_func_axiom = df.getOWLObjectPropertyAssertionAxiom(enabled_by, e, controller_e);
 					AddAxiom addFuncAxiom = new AddAxiom(go_cam_ont, add_func_axiom);
 					ontman.applyChanges(addFuncAxiom);
-					OWLObjectPropertyAssertionAxiom add_func_axiom2 = df.getOWLObjectPropertyAssertionAxiom(enables, controller_e, mf);
-					AddAxiom addFuncAxiom2 = new AddAxiom(go_cam_ont, add_func_axiom2);
-					ontman.applyChanges(addFuncAxiom2);
+//					OWLObjectPropertyAssertionAxiom add_func_axiom2 = df.getOWLObjectPropertyAssertionAxiom(enables, controller_e, e);
+//					AddAxiom addFuncAxiom2 = new AddAxiom(go_cam_ont, add_func_axiom2);
+//					ontman.applyChanges(addFuncAxiom2);
 
-					//define how the molecular function (process) relates to the reaction (process)
-					if(ctype.toString().startsWith("INHIBITION")){
-						// Event directly_inhibits NextEvent 
-						OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(directly_inhibits, mf, e);
-						AddAxiom addStepAxiom = new AddAxiom(go_cam_ont, add_step_axiom);
-						ontman.applyChanges(addStepAxiom);
-						//System.out.println(a_mf +" inhibits "+e);
-					}else if(ctype.toString().startsWith("ACTIVATION")){
-						// Event directly_ACTIVATES NextEvent 
-						OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(directly_activates, mf, e);
-						AddAxiom addStepAxiom = new AddAxiom(go_cam_ont, add_step_axiom);
-						ontman.applyChanges(addStepAxiom);
-						//System.out.println(a_mf +" activates "+e);
-					}else {
-						//default to regulates
-						OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(regulated_by, e, mf);
-						AddAxiom addStepAxiom = new AddAxiom(go_cam_ont, add_step_axiom);
-						ontman.applyChanges(addStepAxiom);
-						//System.out.println(e +" regulated_by "+a_mf);
-					}
+					//TODO maybe try harder to find a MF if not explicitly defined
+					//if no GO is set for the controller, add an intermediate empty function?
+//					if(!mf_set) {
+//						OWLNamedIndividual mf = df.getOWLNamedIndividual(controller_entity.getUri()+"_function_"+Math.random()); 
+//						OWLClassAssertionAxiom isa_function = df.getOWLClassAssertionAxiom(molecular_function, mf);
+//						ontman.addAxiom(go_cam_ont, isa_function);
+//						ontman.applyChanges();
+//					}
+					
+//					//define how the molecular function (process) relates to the reaction (process)
+//					if(ctype.toString().startsWith("INHIBITION")){
+//						// Event directly_inhibits NextEvent 
+//						OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(directly_inhibits, controller_e, e);
+//						AddAxiom addStepAxiom = new AddAxiom(go_cam_ont, add_step_axiom);
+//						ontman.applyChanges(addStepAxiom);
+//						//System.out.println(a_mf +" inhibits "+e);
+//					}else if(ctype.toString().startsWith("ACTIVATION")){
+//						// Event directly_ACTIVATES NextEvent 
+//						OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(directly_activates, controller_e, e);
+//						AddAxiom addStepAxiom = new AddAxiom(go_cam_ont, add_step_axiom);
+//						ontman.applyChanges(addStepAxiom);
+//						//System.out.println(a_mf +" activates "+e);
+//					}else {
+//						//default to regulates
+//						OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(regulated_by, e, controller_e);
+//						AddAxiom addStepAxiom = new AddAxiom(go_cam_ont, add_step_axiom);
+//						ontman.applyChanges(addStepAxiom);
+//						//System.out.println(e +" regulated_by "+a_mf);
+//					}
 				}
 			}
 		}
