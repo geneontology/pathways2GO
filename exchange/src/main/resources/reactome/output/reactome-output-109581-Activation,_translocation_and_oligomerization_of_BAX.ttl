@@ -1,12 +1,12 @@
-@prefix : <http://model.geneontology.org/helloworld0.5799711810372902#> .
+@prefix : <http://model.geneontology.org/helloworld0.30235567139790753#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@base <http://model.geneontology.org/helloworld0.5799711810372902> .
+@base <http://model.geneontology.org/helloworld0.30235567139790753> .
 
-<http://model.geneontology.org/helloworld0.5799711810372902> rdf:type owl:Ontology .
+<http://model.geneontology.org/helloworld0.30235567139790753> rdf:type owl:Ontology .
 
 #################################################################
 #    Annotation properties
@@ -298,9 +298,8 @@
 
 ###  http://www.reactome.org/biopax/63/109581#Complex71
 <http://www.reactome.org/biopax/63/109581#Complex71> rdf:type owl:NamedIndividual ,
-                                                              <http://purl.obolibrary.org/obo/GO_0032991> ,
+                                                              <http://identifiers.org/uniprot/Q07812> ,
                                                               <http://www.reactome.org/biopax/63/109581#Complex71_class> ;
-                                                     <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein99> ;
                                                      <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1074219209> ;
                                                      rdfs:label "Activated BAX" .
 
@@ -368,10 +367,13 @@
 #    Annotations
 #################################################################
 
-<http://model.geneontology.org/helloworld0.5799711810372902> <http://purl.org/dc/elements/1.1/title> "Reactome:Activation, translocation and oligomerization of BAX" .
+<http://model.geneontology.org/helloworld0.30235567139790753> <http://purl.org/dc/elements/1.1/title> "Reactome:Activation, translocation and oligomerization of BAX" .
 
 
 <http://purl.obolibrary.org/obo/GO_0003674> rdfs:label "Molecular Function" .
+
+
+<http://purl.obolibrary.org/obo/RO_0002327> rdfs:label "enables" .
 
 
 <http://purl.obolibrary.org/obo/RO_0002333> rdfs:label "enabled by" .

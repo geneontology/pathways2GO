@@ -1,12 +1,12 @@
-@prefix : <http://model.geneontology.org/helloworld0.7953903949004197#> .
+@prefix : <http://model.geneontology.org/helloworld0.6603416491389119#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@base <http://model.geneontology.org/helloworld0.7953903949004197> .
+@base <http://model.geneontology.org/helloworld0.6603416491389119> .
 
-<http://model.geneontology.org/helloworld0.7953903949004197> rdf:type owl:Ontology .
+<http://model.geneontology.org/helloworld0.6603416491389119> rdf:type owl:Ontology .
 
 #################################################################
 #    Annotation properties
@@ -43,6 +43,11 @@
 ###  http://purl.obolibrary.org/obo/RO_0002234
 <http://purl.obolibrary.org/obo/RO_0002234> rdf:type owl:ObjectProperty ;
                                             rdfs:label "has output" .
+
+
+###  http://purl.obolibrary.org/obo/RO_0002327
+<http://purl.obolibrary.org/obo/RO_0002327> rdf:type owl:ObjectProperty ;
+                                            rdfs:label "enables" .
 
 
 ###  http://purl.obolibrary.org/obo/RO_0002333
@@ -82,9 +87,8 @@
                                              rdfs:label "CHEBI_15377" .
 
 
-###  http://purl.obolibrary.org/obo/GO_0003674
-<http://purl.obolibrary.org/obo/GO_0003674> rdf:type owl:Class ;
-                                            rdfs:label "Molecular Function" .
+###  http://purl.obolibrary.org/obo/GO_0004222
+<http://purl.obolibrary.org/obo/GO_0004222> rdf:type owl:Class .
 
 
 ###  http://purl.obolibrary.org/obo/GO_0005743
@@ -174,9 +178,9 @@
                                                             rdfs:label "OPA1_HUMAN" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Protein323_class
-<http://www.reactome.org/biopax/63/109581#Protein323_class> rdf:type owl:Class ;
-                                                            rdfs:label "OMA1" .
+###  http://www.reactome.org/biopax/63/109581#Protein323-688052890_class
+<http://www.reactome.org/biopax/63/109581#Protein323-688052890_class> rdf:type owl:Class ;
+                                                                      rdfs:label "OMA1" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#SmallMolecule6_class
@@ -198,6 +202,13 @@
                                                                   <http://purl.obolibrary.org/obo/RO_0002234> <http://www.reactome.org/biopax/63/109581#Protein321> ,
                                                                                                               <http://www.reactome.org/biopax/63/109581#Protein322> ;
                                                                   rdfs:label "OMA1 hydrolyses OPA1" .
+
+
+###  http://www.reactome.org/biopax/63/109581#Catalysis62
+<http://www.reactome.org/biopax/63/109581#Catalysis62> rdf:type owl:NamedIndividual ,
+                                                                <http://purl.obolibrary.org/obo/GO_0004222> ;
+                                                       <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Protein323-688052890> ;
+                                                       <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction122> .
 
 
 ###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary11-277093487
@@ -280,19 +291,13 @@
                                                       rdfs:label "OPA1_HUMAN" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Protein323
-<http://www.reactome.org/biopax/63/109581#Protein323> rdf:type owl:NamedIndividual ,
-                                                               <http://identifiers.org/uniprot/Q96E52> ,
-                                                               <http://www.reactome.org/biopax/63/109581#Protein323_class> ;
-                                                      <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary11-277093487> ;
-                                                      rdfs:label "OMA1" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein323_function_0.33122964879538763
-<http://www.reactome.org/biopax/63/109581#Protein323_function_0.33122964879538763> rdf:type owl:NamedIndividual ,
-                                                                                            <http://purl.obolibrary.org/obo/GO_0003674> ;
-                                                                                   <http://purl.obolibrary.org/obo/RO_0002333> <http://www.reactome.org/biopax/63/109581#Protein323> ;
-                                                                                   <http://purl.obolibrary.org/obo/RO_0002406> <http://www.reactome.org/biopax/63/109581#BiochemicalReaction122> .
+###  http://www.reactome.org/biopax/63/109581#Protein323-688052890
+<http://www.reactome.org/biopax/63/109581#Protein323-688052890> rdf:type owl:NamedIndividual ,
+                                                                         <http://identifiers.org/uniprot/Q96E52> ,
+                                                                         <http://www.reactome.org/biopax/63/109581#Protein323-688052890_class> ;
+                                                                <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary11-277093487> ;
+                                                                <http://purl.obolibrary.org/obo/RO_0002327> <http://www.reactome.org/biopax/63/109581#Catalysis62> ;
+                                                                rdfs:label "OMA1" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#SmallMolecule6
@@ -307,7 +312,10 @@
 #    Annotations
 #################################################################
 
-<http://model.geneontology.org/helloworld0.7953903949004197> <http://purl.org/dc/elements/1.1/title> "Reactome:Regulation of Apoptosis" .
+<http://model.geneontology.org/helloworld0.6603416491389119> <http://purl.org/dc/elements/1.1/title> "Reactome:Regulation of Apoptosis" .
+
+
+<http://purl.obolibrary.org/obo/GO_0003674> rdfs:label "Molecular Function" .
 
 
 <http://purl.obolibrary.org/obo/RO_0002334> rdfs:label "regulated by" .

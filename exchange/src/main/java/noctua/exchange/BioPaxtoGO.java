@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.biopax.paxtools.controller.PathAccessor;
@@ -61,7 +62,7 @@ public class BioPaxtoGO {
 	public static final IRI uniprot_iri = IRI.create("http://identifiers.org/uniprot/");
 	public static final IRI biopax_iri = IRI.create("http://www.biopax.org/release/biopax-level3.owl#");
 	OWLObjectProperty part_of, has_part, has_input, has_output, 
-	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, regulated_by;
+	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by;
 	OWLClass bp_class, continuant_class, protein_class, reaction_class, go_complex, molecular_function;
 
 	/**
@@ -175,6 +176,9 @@ public class BioPaxtoGO {
 		//RO_0002333 enabled by
 		enabled_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002333"));
 		addLabel(ontman, go_cam_ont, df, enabled_by, "enabled by");
+		//RO_0002327
+		enables = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002327"));
+		addLabel(ontman, go_cam_ont, df, enables, "enables");
 		//RO_0002334 regulated by (processual) 
 		regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002334"));
 		addLabel(ontman, go_cam_ont, df, regulated_by, "regulated by");
@@ -207,7 +211,7 @@ public class BioPaxtoGO {
 			OWLNamedIndividual p = df.getOWLNamedIndividual(IRI.create(uri));
 			//define it (add types etc)
 			go_cam_ont = definePathwayEntity(ontman, go_cam_ont, df, currentPathway);
-			
+
 			//get and set parent pathways
 			for(Pathway parent_pathway : currentPathway.getPathwayComponentOf()) {				
 				//System.out.println(currentPathway.getName()+" is a Component of Pathway:"+parent_pathway.getName()); 
@@ -217,12 +221,20 @@ public class BioPaxtoGO {
 				ontman.applyChanges(addAxiom);
 				go_cam_ont = definePathwayEntity(ontman, go_cam_ont, df, parent_pathway);
 			}
-			
+
 			//below mapped from Chris Mungall's
 			//prolog rules https://github.com/cmungall/pl-sysbio/blob/master/prolog/sysbio/bp2lego.pl
 			//looking at this, prolog/graph solution seems much more elegant... 
 
-			//get the steps of the pathway 			
+			//get the steps of the pathway (process (aka event) can be either a pathway or a reaction) 
+
+			//Event directly_provides_input_for NextEvent
+			//<==	
+			//pathway pathway_order pathwayStep1
+			//pathwayStep1 step_process process
+			//pathwayStep1 next_step pathwayStep2
+			//PathwayStep2 step_process process2
+
 			Set<PathwayStep> steps = currentPathway.getPathwayOrder();
 			for(PathwayStep step1 : steps) {
 				Set<Process> events = step1.getStepProcess();
@@ -248,6 +260,10 @@ public class BioPaxtoGO {
 								AddAxiom addStepAxiom = new AddAxiom(go_cam_ont, add_step_axiom);
 								ontman.applyChanges(addStepAxiom);
 							}
+							//							else {
+							//
+							//							}
+							//							System.out.println(event+" could provide input for "+nextEvent);
 						}
 					}
 				}
@@ -262,7 +278,7 @@ public class BioPaxtoGO {
 				//Otherwise it will be a Reaction - which holds most of the information.  
 				if(process.getModelInterface().equals(BiochemicalReaction.class)) {
 					BiochemicalReaction reaction = (BiochemicalReaction)process;
-					defineReactionEntity(ontman, go_cam_ont, df, reaction);
+					defineReactionEntity(ontman, go_cam_ont, df, reaction, null);
 					//add the child pathway (one level) when splitting up into indidual pathways (unnesting)
 				}else if(split_by_pathway&&process.getModelInterface().equals(Pathway.class)){
 					OWLNamedIndividual child = df.getOWLNamedIndividual(IRI.create(process.getUri()));
@@ -297,9 +313,9 @@ public class BioPaxtoGO {
 		OWLNamedIndividual pathway_e = df.getOWLNamedIndividual(IRI.create(pathway.getUri()));		
 		addLabel(ontman, go_cam_ont, df, pathway_e, pathway.getDisplayName());
 		//set a default type of biological process
-//		OWLClassAssertionAxiom p_isa_bp = df.getOWLClassAssertionAxiom(bp_class, pathway_e);
-//		ontman.addAxiom(go_cam_ont, p_isa_bp);
-//		ontman.applyChanges();
+		//		OWLClassAssertionAxiom p_isa_bp = df.getOWLClassAssertionAxiom(bp_class, pathway_e);
+		//		ontman.addAxiom(go_cam_ont, p_isa_bp);
+		//		ontman.applyChanges();
 		//dig out any xreferenced GO processes and assign them as types
 		Set<Xref> xrefs = pathway.getXref();
 		for(Xref xref : xrefs) {
@@ -347,6 +363,24 @@ public class BioPaxtoGO {
 	}
 
 
+	private String getUniprotProteinId(Protein protein) {
+		String id = null;
+		EntityReference entity_ref = protein.getEntityReference();	
+		if(entity_ref!=null) {
+			Set<Xref> p_xrefs = entity_ref.getXref();				
+			for(Xref xref : p_xrefs) {
+				if(xref.getModelInterface().equals(UnificationXref.class)) {
+					UnificationXref uref = (UnificationXref)xref;	
+					if(uref.getDb().startsWith("UniProt")) {
+						id = uref.getId();
+						break;//TODO consider case where there is more than one id..
+					}
+				}
+			}
+		}
+		return id;
+	}
+	
 	/**
 	 * Given a BioPax entity and an ontology, add a GO_CAM structured OWLIndividual representing the entity into the ontology
 	 * 	//Done: Complex, Protein, SmallMolecule, Dna 
@@ -357,9 +391,14 @@ public class BioPaxtoGO {
 	 * @param entity
 	 * @return
 	 */
-	private OWLOntology defineReactionEntity(OWLOntologyManager ontman, OWLOntology go_cam_ont, OWLDataFactory df, Entity entity) {
+	private OWLOntology defineReactionEntity(OWLOntologyManager ontman, OWLOntology go_cam_ont, OWLDataFactory df, Entity entity, IRI this_iri) {
 		//add entity to ontology, whatever it is
-		OWLNamedIndividual e = df.getOWLNamedIndividual(IRI.create(entity.getUri()));
+		OWLNamedIndividual e = null;
+		if(this_iri!=null) {
+			e = df.getOWLNamedIndividual(this_iri);
+		}else {
+			e = df.getOWLNamedIndividual(IRI.create(entity.getUri()));
+		}
 		String entity_name = entity.getDisplayName();
 		addLabel(ontman, go_cam_ont, df, e, entity_name);
 		//attempt to localize the entity (only if Physical Entity)
@@ -405,32 +444,23 @@ public class BioPaxtoGO {
 		//Protein	
 		if(entity.getModelInterface().equals(Protein.class)) {
 			Protein protein = (Protein)entity;
-			EntityReference entity_ref = protein.getEntityReference();	
-			if(entity_ref!=null) {
-				Set<Xref> p_xrefs = entity_ref.getXref();				
-				for(Xref xref : p_xrefs) {
-					if(xref.getModelInterface().equals(UnificationXref.class)) {
-						UnificationXref uref = (UnificationXref)xref;	
-						if(uref.getDb().startsWith("UniProt")) {
-							String id = uref.getId();
-							//going from original conversion results here, the uri for uniprot proteins is like http://identifiers.org/uniprot/P09848
-							//recent output from prolog converter produces &UniProtIsoform;Q14790 but not sure what the namespace is that is referred to
-							//create the specific protein class
-							OWLClass uniprotein_class = df.getOWLClass(IRI.create(uniprot_iri + id)); 
-							OWLSubClassOfAxiom prot_instance = df.getOWLSubClassOfAxiom(uniprotein_class, protein_class);
-							ontman.addAxiom(go_cam_ont, prot_instance);
-							ontman.applyChanges();											
-							//name the class with the uniprot id for now..
-							//NOTE different protein versions are grouped together into the same root class by the conversion
-							//e.g. Q9UKV3 gets the uniproteins ACIN1, ACIN1(1-1093), ACIN1(1094-1341)
-							addLabel(ontman, go_cam_ont, df, uniprotein_class, id);
-							//until something is imported that understands the uniprot entities, assert that they are proteins
-							OWLClassAssertionAxiom isa_uniprotein = df.getOWLClassAssertionAxiom(uniprotein_class, e);
-							ontman.addAxiom(go_cam_ont, isa_uniprotein);
-							ontman.applyChanges();
-						}
-					}
-				}
+			String id = getUniprotProteinId(protein);
+			if(id!=null) {
+				//going from original conversion results here, the uri for uniprot proteins is like http://identifiers.org/uniprot/P09848
+				//recent output from prolog converter produces &UniProtIsoform;Q14790 but not sure what the namespace is that is referred to
+				//create the specific protein class
+				OWLClass uniprotein_class = df.getOWLClass(IRI.create(uniprot_iri + id)); 
+				OWLSubClassOfAxiom prot_instance = df.getOWLSubClassOfAxiom(uniprotein_class, protein_class);
+				ontman.addAxiom(go_cam_ont, prot_instance);
+				ontman.applyChanges();											
+				//name the class with the uniprot id for now..
+				//NOTE different protein versions are grouped together into the same root class by the conversion
+				//e.g. Q9UKV3 gets the uniproteins ACIN1, ACIN1(1-1093), ACIN1(1094-1341)
+				addLabel(ontman, go_cam_ont, df, uniprotein_class, id);
+				//until something is imported that understands the uniprot entities, assert that they are proteins
+				OWLClassAssertionAxiom isa_uniprotein = df.getOWLClassAssertionAxiom(uniprotein_class, e);
+				ontman.addAxiom(go_cam_ont, isa_uniprotein);
+				ontman.applyChanges();
 			}else { //no entity reference so look for parts 
 				Set<PhysicalEntity> prot_parts = protein.getMemberPhysicalEntity();
 				if(prot_parts!=null) {
@@ -441,7 +471,7 @@ public class BioPaxtoGO {
 						AddAxiom addCpartAxiom = new AddAxiom(go_cam_ont, add_cpart_axiom);
 						ontman.applyChanges(addCpartAxiom);
 						//define them = hopefully get out a name and a class for the sub protein.	
-						go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, prot_part);
+						go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, prot_part, null);
 					}
 				}
 			}
@@ -501,50 +531,73 @@ public class BioPaxtoGO {
 		//Complex 
 		else if(entity.getModelInterface().equals(Complex.class)) {
 			Complex complex = (Complex)entity;
-			OWLClassAssertionAxiom isa_complex = df.getOWLClassAssertionAxiom(go_complex, e);
-			ontman.addAxiom(go_cam_ont, isa_complex);
-			ontman.applyChanges();
-
-			//get parts of the complex - allows nesting of complexes
-			Set<PhysicalEntity> complex_parts = complex.getComponent();
-			//note that biopx doc suggests not to use this.. but its there in reactome in some places
-			Set<PhysicalEntity> members = complex.getMemberPhysicalEntity();
-			if(members!=null&&members.size()>0) {
-				complex_parts.addAll(members);
-			}
-			//note that complex.getComponent() apparently violates the rules in its documentation which stipulate that it should return
-			//a flat representation of the parts of the complex (e.g. proteins) and not nested complexes (which the reactome biopax does here)
+			//recursively get parts
+			Set<PhysicalEntity> complex_parts = getAllPartsOfComplex(complex, null);
+			
+			//Now decide if, in GO-CAM, it should be a complex or not
+			//If the complex has only 1 protein or only forms of the same protein, then just call it a protein
+			//Otherwise go ahead and make the complex
+			Set<String> prots = new HashSet<String>();
+			String id = null;
 			for(PhysicalEntity component : complex_parts) {
-				//go_cam_ont = addComplexComponent(ontman, go_cam_ont, df, component, entity);
-				OWLNamedIndividual component_entity = df.getOWLNamedIndividual(IRI.create(component.getUri()));
-				//OWLNamedIndividual complex_o = df.getOWLNamedIndividual(IRI.create(complex.getUri()));
-				//OWLObjectPropertyAssertionAxiom add_cpart_axiom = df.getOWLObjectPropertyAssertionAxiom(has_part, complex_o, component_entity);
-				//hook up parts	
-				OWLObjectPropertyAssertionAxiom add_cpart_axiom = df.getOWLObjectPropertyAssertionAxiom(has_part, e, component_entity);
-				AddAxiom addCpartAxiom = new AddAxiom(go_cam_ont, add_cpart_axiom);
-				ontman.applyChanges(addCpartAxiom);
-				//now define complex components - and recurse for sub complexes	
-				go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, component);
+				//TODO need to think through recursion..
+				//one level
+				if(component.getModelInterface().equals(Protein.class)) {
+					id = getUniprotProteinId((Protein)component);
+					if(id!=null) {
+						prots.add(id);
+					}
+				}
+			}
+			if(prots.size()==1) {
+				//assert it as one protein 
+				OWLClass uniprotein_class = df.getOWLClass(IRI.create(uniprot_iri + id)); 
+				OWLSubClassOfAxiom prot_instance = df.getOWLSubClassOfAxiom(uniprotein_class, protein_class);
+				ontman.addAxiom(go_cam_ont, prot_instance);
+				ontman.applyChanges();											
+				addLabel(ontman, go_cam_ont, df, uniprotein_class, id);
+				//until something is imported that understands the uniprot entities, assert that they are proteins
+				OWLClassAssertionAxiom isa_uniprotein = df.getOWLClassAssertionAxiom(uniprotein_class, e);
+				ontman.addAxiom(go_cam_ont, isa_uniprotein);
+				ontman.applyChanges();
+			}else {
+				OWLClassAssertionAxiom isa_complex = df.getOWLClassAssertionAxiom(go_complex, e);
+				ontman.addAxiom(go_cam_ont, isa_complex);
+				ontman.applyChanges();
+				//note that complex.getComponent() apparently violates the rules in its documentation which stipulate that it should return
+				//a flat representation of the parts of the complex (e.g. proteins) and not nested complexes (which the reactome biopax does here)
+				for(PhysicalEntity component : complex_parts) {
+					//go_cam_ont = addComplexComponent(ontman, go_cam_ont, df, component, entity);
+					OWLNamedIndividual component_entity = df.getOWLNamedIndividual(IRI.create(component.getUri()));
+					//OWLNamedIndividual complex_o = df.getOWLNamedIndividual(IRI.create(complex.getUri()));
+					//OWLObjectPropertyAssertionAxiom add_cpart_axiom = df.getOWLObjectPropertyAssertionAxiom(has_part, complex_o, component_entity);
+					//hook up parts	
+					OWLObjectPropertyAssertionAxiom add_cpart_axiom = df.getOWLObjectPropertyAssertionAxiom(has_part, e, component_entity);
+					AddAxiom addCpartAxiom = new AddAxiom(go_cam_ont, add_cpart_axiom);
+					ontman.applyChanges(addCpartAxiom);
+					//now define complex components - and recurse for sub complexes	
+					go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, component, null);
+				}
 			}
 		}
 		else if(entity.getModelInterface().equals(BiochemicalReaction.class)){
+			BiochemicalReaction reaction = (BiochemicalReaction)(entity);
 			//TODO get the preceeding event
 			//e.g. pathway 'Mitochondrial recruitment of Drp1' (reaction116) has preceeding event 'Caspase mediated cleavage of BAP31' [Homo sapiens] Reaction 94
 			//94 - stepProcessOf - next Step - stepProcess 
-//			if(entity.getDisplayName().equals("Caspase mediated cleavage of BAP31")) {
-//				System.out.println(entity);
-//				BiochemicalReaction e_r = (BiochemicalReaction)entity;
-//				Set<PathwayStep> steps_of = e_r.getStepProcessOf();
-//				for(PathwayStep step : steps_of) {
-//					for(PathwayStep s : step.getNextStep()) {
-//						System.out.println("BAP31.."+s.getStepProcess());
-//						System.out.println(s.getStepProcess()+" has preceeding event "+e);
-//					}
-//				}
-//			}
-			
+			//			if(entity.getDisplayName().equals("Caspase mediated cleavage of BAP31")) {
+			//				System.out.println(entity);
+			//				BiochemicalReaction e_r = (BiochemicalReaction)entity;
+			//				Set<PathwayStep> steps_of = e_r.getStepProcessOf();
+			//				for(PathwayStep step : steps_of) {
+			//					for(PathwayStep s : step.getNextStep()) {
+			//						System.out.println("BAP31.."+s.getStepProcess());
+			//						System.out.println(s.getStepProcess()+" has preceeding event "+e);
+			//					}
+			//				}
+			//			}
+
 			//type it
-			BiochemicalReaction reaction = (BiochemicalReaction)(entity);
 			OWLClassAssertionAxiom isa_reaction = df.getOWLClassAssertionAxiom(reaction_class, e);
 			ontman.addAxiom(go_cam_ont, isa_reaction);
 			ontman.applyChanges();				
@@ -560,13 +613,13 @@ public class BioPaxtoGO {
 			Set<Entity> participants = reaction.getParticipant();
 			for(Entity participant : participants) {
 				//figure out its nature and capture that
-				go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, participant);		
+				go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, participant, null);		
 				//link to participants in reaction
 				//biopax#left -> obo:input , biopax#right -> obo:output
 				Set<PhysicalEntity> inputs = reaction.getLeft();
 				for(PhysicalEntity input : inputs) {
 					OWLNamedIndividual input_entity = df.getOWLNamedIndividual(IRI.create(input.getUri()));
-					go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, input);
+					go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, input, null);
 					OWLObjectPropertyAssertionAxiom add_input_axiom = df.getOWLObjectPropertyAssertionAxiom(has_input, e, input_entity);
 					AddAxiom addInputAxiom = new AddAxiom(go_cam_ont, add_input_axiom);
 					ontman.applyChanges(addInputAxiom);
@@ -574,7 +627,7 @@ public class BioPaxtoGO {
 				Set<PhysicalEntity> outputs = reaction.getRight();
 				for(PhysicalEntity output : outputs) {
 					OWLNamedIndividual output_entity = df.getOWLNamedIndividual(IRI.create(output.getUri()));
-					go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, output);
+					go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, output, null);
 					OWLObjectPropertyAssertionAxiom add_output_axiom = df.getOWLObjectPropertyAssertionAxiom(has_output, e, output_entity);
 					AddAxiom addOutputAxiom = new AddAxiom(go_cam_ont, add_output_axiom);
 					ontman.applyChanges(addOutputAxiom);
@@ -587,42 +640,72 @@ public class BioPaxtoGO {
 			//			   controlled(Event,NextEvent),
 			//			   controlType(Event,literal(type(_,'INHIBITION'))).
 
-
-
 			Set<Control> controllers = reaction.getControlledOf();
 			for(Control controller : controllers) {
 				ControlType ctype = controller.getControlType();
+				//make an individual of the class molecular function
+				//catalysis 'entities' from biopax may map onto functions from go_cam
+				//check for reactome mappings
+				//dig out the GO molecular function and create an individual for it
+				OWLNamedIndividual mf = df.getOWLNamedIndividual(controller.getUri()); 
+				Set<Xref> xrefs = controller.getXref(); //controller is either a 'control' or a 'catalysis' so far
+				boolean mf_set = false;
+				for(Xref xref : xrefs) {
+					if(xref.getModelInterface().equals(RelationshipXref.class)) {
+						RelationshipXref ref = (RelationshipXref)xref;	    			
+						//here we add the referenced GO class as a type.  
+						if(ref.getDb().equals("GENE ONTOLOGY")) {
+							OWLClass xref_go_func = df.getOWLClass(IRI.create(obo_iri + ref.getId().replaceAll(":", "_")));
+							//reactome doesn't seem to have a separate label for the GO mf terms that they refer to 						
+							//								addLabel(ontman, go_cam_ont, df, xref_go_func, term);
+							OWLClassAssertionAxiom isa_func = df.getOWLClassAssertionAxiom(xref_go_func, mf);
+							ontman.addAxiom(go_cam_ont, isa_func);
+							ontman.applyChanges();
+							mf_set = true;
+							System.out.println(xref_go_func+" "+mf);
+						}
+					}
+				}		
+
 				Set<Controller> controller_entities = controller.getController();
 				for(Controller controller_entity : controller_entities) {
-					go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, controller_entity);
+					String local_id = controller_entity.getUri()+e.hashCode();
+					IRI iri = IRI.create((local_id));
+					go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, controller_entity, iri);
 					//the protein or complex
-					OWLNamedIndividual c_e = df.getOWLNamedIndividual(IRI.create(controller_entity.getUri()));
-					//make an individual of the class molecular function
-					//TODO likely need to come up with a pseudo-random URI here instead???
-					OWLIndividual a_mf = df.getOWLNamedIndividual(controller_entity.getUri()+"_function_"+Math.random()); 
-					OWLClassAssertionAxiom isa_function = df.getOWLClassAssertionAxiom(molecular_function, a_mf);
-					ontman.addAxiom(go_cam_ont, isa_function);
-					ontman.applyChanges();
-					//the controller enables that function
-					OWLObjectPropertyAssertionAxiom add_func_axiom = df.getOWLObjectPropertyAssertionAxiom(enabled_by, a_mf, c_e);
+					OWLNamedIndividual controller_e = df.getOWLNamedIndividual(IRI.create(local_id));
+
+					//TODO maybe try harder to find a MF if not explicitly defined
+					if(!mf_set) {
+						mf = df.getOWLNamedIndividual(controller_entity.getUri()+"_function_"+Math.random()); 
+						OWLClassAssertionAxiom isa_function = df.getOWLClassAssertionAxiom(molecular_function, mf);
+						ontman.addAxiom(go_cam_ont, isa_function);
+						ontman.applyChanges();
+					}
+					//the controlling physical entity enables that function
+					OWLObjectPropertyAssertionAxiom add_func_axiom = df.getOWLObjectPropertyAssertionAxiom(enabled_by, mf, controller_e);
 					AddAxiom addFuncAxiom = new AddAxiom(go_cam_ont, add_func_axiom);
 					ontman.applyChanges(addFuncAxiom);
+					OWLObjectPropertyAssertionAxiom add_func_axiom2 = df.getOWLObjectPropertyAssertionAxiom(enables, controller_e, mf);
+					AddAxiom addFuncAxiom2 = new AddAxiom(go_cam_ont, add_func_axiom2);
+					ontman.applyChanges(addFuncAxiom2);
+
 					//define how the molecular function (process) relates to the reaction (process)
 					if(ctype.toString().startsWith("INHIBITION")){
 						// Event directly_inhibits NextEvent 
-						OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(directly_inhibits, a_mf, e);
+						OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(directly_inhibits, mf, e);
 						AddAxiom addStepAxiom = new AddAxiom(go_cam_ont, add_step_axiom);
 						ontman.applyChanges(addStepAxiom);
 						//System.out.println(a_mf +" inhibits "+e);
 					}else if(ctype.toString().startsWith("ACTIVATION")){
 						// Event directly_ACTIVATES NextEvent 
-						OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(directly_activates, a_mf, e);
+						OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(directly_activates, mf, e);
 						AddAxiom addStepAxiom = new AddAxiom(go_cam_ont, add_step_axiom);
 						ontman.applyChanges(addStepAxiom);
 						//System.out.println(a_mf +" activates "+e);
 					}else {
 						//default to regulates
-						OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(regulated_by, e, a_mf);
+						OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(regulated_by, e, mf);
 						AddAxiom addStepAxiom = new AddAxiom(go_cam_ont, add_step_axiom);
 						ontman.applyChanges(addStepAxiom);
 						//System.out.println(e +" regulated_by "+a_mf);
@@ -633,4 +716,24 @@ public class BioPaxtoGO {
 		return go_cam_ont;
 	}
 
+	private Set<PhysicalEntity> getAllPartsOfComplex(Complex complex, Set<PhysicalEntity> parts){
+		Set<PhysicalEntity> all_parts = new HashSet<PhysicalEntity>();
+		if(parts!=null) {
+			all_parts.addAll(parts);
+		}
+		//note that biopx doc suggests not to use this.. but its there in reactome in some places
+		Set<PhysicalEntity> members = complex.getMemberPhysicalEntity();
+		if(members!=null&&members.size()>0) {
+			all_parts.addAll(members);
+		}
+		for(PhysicalEntity e : complex.getComponent()) {
+			if(e.getModelInterface().equals(Complex.class)) {
+				all_parts = getAllPartsOfComplex((Complex)e, all_parts);
+			}else {
+				all_parts.add(e);
+			}
+		}
+		return all_parts;
+	}
+	
 }
