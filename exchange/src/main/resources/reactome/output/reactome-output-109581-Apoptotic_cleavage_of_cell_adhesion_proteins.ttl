@@ -286,9 +286,9 @@
                                                                       rdfs:label "beta-catenin" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Protein148_class
-<http://www.reactome.org/biopax/63/109581#Protein148_class> rdf:type owl:Class ;
-                                                            rdfs:label "CTNNB1-1" .
+###  http://www.reactome.org/biopax/63/109581#Protein148-1720275180_class
+<http://www.reactome.org/biopax/63/109581#Protein148-1720275180_class> rdf:type owl:Class ;
+                                                                       rdfs:label "CTNNB1-1" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein149-885057863_class
@@ -695,13 +695,13 @@
                                                                                           <http://purl.obolibrary.org/obo/GO_0005829> .
 
 
-###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary31844997588
-<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary31844997588> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary31482706448
+<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary31482706448> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0005829> .
 
 
-###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary31856103306
-<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary31856103306> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary31844997588
+<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary31844997588> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0005829> .
 
 
@@ -820,17 +820,17 @@
 ###  http://www.reactome.org/biopax/63/109581#Protein147-885057863
 <http://www.reactome.org/biopax/63/109581#Protein147-885057863> rdf:type owl:NamedIndividual ,
                                                                          <http://www.reactome.org/biopax/63/109581#Protein147-885057863_class> ;
-                                                                <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein148> ;
+                                                                <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein148-1720275180> ;
                                                                 <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-1720275180> ;
                                                                 rdfs:label "beta-catenin" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Protein148
-<http://www.reactome.org/biopax/63/109581#Protein148> rdf:type owl:NamedIndividual ,
-                                                               <http://identifiers.org/uniprot/P35222-1> ,
-                                                               <http://www.reactome.org/biopax/63/109581#Protein148_class> ;
-                                                      <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary31856103306> ;
-                                                      rdfs:label "CTNNB1-1" .
+###  http://www.reactome.org/biopax/63/109581#Protein148-1720275180
+<http://www.reactome.org/biopax/63/109581#Protein148-1720275180> rdf:type owl:NamedIndividual ,
+                                                                          <http://identifiers.org/uniprot/P35222-1> ,
+                                                                          <http://www.reactome.org/biopax/63/109581#Protein148-1720275180_class> ;
+                                                                 <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary31482706448> ;
+                                                                 rdfs:label "CTNNB1-1" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein149-885057863
