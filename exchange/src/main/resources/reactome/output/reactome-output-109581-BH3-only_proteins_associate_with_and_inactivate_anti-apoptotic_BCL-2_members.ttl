@@ -189,8 +189,18 @@
                                                           rdfs:label "Intrinsic Pathway for Apoptosis" .
 
 
+###  http://www.reactome.org/biopax/63/109581#Protein53-648555831_class
+<http://www.reactome.org/biopax/63/109581#Protein53-648555831_class> rdf:type owl:Class ;
+                                                                     rdfs:label "tBID" .
+
+
 ###  http://www.reactome.org/biopax/63/109581#Protein53-885057959_class
 <http://www.reactome.org/biopax/63/109581#Protein53-885057959_class> rdf:type owl:Class ;
+                                                                     rdfs:label "tBID" .
+
+
+###  http://www.reactome.org/biopax/63/109581#Protein531148395551_class
+<http://www.reactome.org/biopax/63/109581#Protein531148395551_class> rdf:type owl:Class ;
                                                                      rdfs:label "tBID" .
 
 
@@ -199,14 +209,14 @@
                                                                      rdfs:label "tBID" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Protein53_class
-<http://www.reactome.org/biopax/63/109581#Protein53_class> rdf:type owl:Class ;
-                                                           rdfs:label "tBID" .
+###  http://www.reactome.org/biopax/63/109581#Protein69-648555831_class
+<http://www.reactome.org/biopax/63/109581#Protein69-648555831_class> rdf:type owl:Class ;
+                                                                     rdfs:label "BAD" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Protein69_class
-<http://www.reactome.org/biopax/63/109581#Protein69_class> rdf:type owl:Class ;
-                                                           rdfs:label "BAD" .
+###  http://www.reactome.org/biopax/63/109581#Protein691148395551_class
+<http://www.reactome.org/biopax/63/109581#Protein691148395551_class> rdf:type owl:Class ;
+                                                                     rdfs:label "BAD" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein70-885057959_class
@@ -224,24 +234,39 @@
                                                                      rdfs:label "BCL2" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Protein77_class
-<http://www.reactome.org/biopax/63/109581#Protein77_class> rdf:type owl:Class ;
-                                                           rdfs:label "PMAIP1" .
+###  http://www.reactome.org/biopax/63/109581#Protein77-648555831_class
+<http://www.reactome.org/biopax/63/109581#Protein77-648555831_class> rdf:type owl:Class ;
+                                                                     rdfs:label "PMAIP1" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Protein84_class
-<http://www.reactome.org/biopax/63/109581#Protein84_class> rdf:type owl:Class ;
-                                                           rdfs:label "BBC3" .
+###  http://www.reactome.org/biopax/63/109581#Protein771148395551_class
+<http://www.reactome.org/biopax/63/109581#Protein771148395551_class> rdf:type owl:Class ;
+                                                                     rdfs:label "PMAIP1" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Protein89_class
-<http://www.reactome.org/biopax/63/109581#Protein89_class> rdf:type owl:Class ;
-                                                           rdfs:label "p-BIM" .
+###  http://www.reactome.org/biopax/63/109581#Protein84-648555831_class
+<http://www.reactome.org/biopax/63/109581#Protein84-648555831_class> rdf:type owl:Class ;
+                                                                     rdfs:label "BBC3" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Protein93_class
-<http://www.reactome.org/biopax/63/109581#Protein93_class> rdf:type owl:Class ;
-                                                           rdfs:label "p-BMF" .
+###  http://www.reactome.org/biopax/63/109581#Protein841148395551_class
+<http://www.reactome.org/biopax/63/109581#Protein841148395551_class> rdf:type owl:Class ;
+                                                                     rdfs:label "BBC3" .
+
+
+###  http://www.reactome.org/biopax/63/109581#Protein89-648555831_class
+<http://www.reactome.org/biopax/63/109581#Protein89-648555831_class> rdf:type owl:Class ;
+                                                                     rdfs:label "p-BIM" .
+
+
+###  http://www.reactome.org/biopax/63/109581#Protein891148395551_class
+<http://www.reactome.org/biopax/63/109581#Protein891148395551_class> rdf:type owl:Class ;
+                                                                     rdfs:label "p-BIM" .
+
+
+###  http://www.reactome.org/biopax/63/109581#Protein931148395551_class
+<http://www.reactome.org/biopax/63/109581#Protein931148395551_class> rdf:type owl:Class ;
+                                                                     rdfs:label "p-BMF" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein94-885057960_class
@@ -303,34 +328,14 @@
                                                                  rdfs:label "BH3 only proteins associate with and inactivate anti-apoptotic BCL-XL" .
 
 
-###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1357177579
-<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1357177579> rdf:type owl:NamedIndividual ,
+###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1148676255
+<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1148676255> rdf:type owl:NamedIndividual ,
                                                                                            <http://purl.obolibrary.org/obo/GO_0005741> .
 
 
-###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1357177604
-<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1357177604> rdf:type owl:NamedIndividual ,
-                                                                                           <http://purl.obolibrary.org/obo/GO_0005741> .
-
-
-###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1357177609
-<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1357177609> rdf:type owl:NamedIndividual ,
-                                                                                           <http://purl.obolibrary.org/obo/GO_0005741> .
-
-
-###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1357177637
-<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1357177637> rdf:type owl:NamedIndividual ,
-                                                                                           <http://purl.obolibrary.org/obo/GO_0005741> .
-
-
-###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1357177666
-<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1357177666> rdf:type owl:NamedIndividual ,
-                                                                                           <http://purl.obolibrary.org/obo/GO_0005741> .
-
-
-###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1357177703
-<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1357177703> rdf:type owl:NamedIndividual ,
-                                                                                           <http://purl.obolibrary.org/obo/GO_0005741> .
+###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-184411060
+<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-184411060> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0005741> .
 
 
 ###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1865951284
@@ -343,6 +348,11 @@
                                                                                            <http://purl.obolibrary.org/obo/GO_0005741> .
 
 
+###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-318528958
+<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-318528958> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0005741> .
+
+
 ###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-511899043
 <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-511899043> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0005741> .
@@ -350,6 +360,11 @@
 
 ###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-511899065
 <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-511899065> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0005741> .
+
+
+###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-576694396
+<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-576694396> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0005741> .
 
 
@@ -363,6 +378,11 @@
                                                                                           <http://purl.obolibrary.org/obo/GO_0005741> .
 
 
+###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-756392919
+<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-756392919> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0005741> .
+
+
 ###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary61148395551
 <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary61148395551> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0005741> .
@@ -370,6 +390,11 @@
 
 ###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary61402099384
 <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary61402099384> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0005741> .
+
+
+###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary61485996447
+<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary61485996447> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0005741> .
 
 
@@ -381,6 +406,31 @@
 ###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary61849460106
 <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary61849460106> rdf:type owl:NamedIndividual ,
                                                                                           <http://purl.obolibrary.org/obo/GO_0005741> .
+
+
+###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary61878279783
+<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary61878279783> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0005741> .
+
+
+###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary62002327323
+<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary62002327323> rdf:type owl:NamedIndividual ,
+                                                                                          <http://purl.obolibrary.org/obo/GO_0005741> .
+
+
+###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6468576581
+<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6468576581> rdf:type owl:NamedIndividual ,
+                                                                                         <http://purl.obolibrary.org/obo/GO_0005741> .
+
+
+###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary673754378
+<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary673754378> rdf:type owl:NamedIndividual ,
+                                                                                        <http://purl.obolibrary.org/obo/GO_0005741> .
+
+
+###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary676293245
+<http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary676293245> rdf:type owl:NamedIndividual ,
+                                                                                        <http://purl.obolibrary.org/obo/GO_0005741> .
 
 
 ###  http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6861468701
@@ -429,12 +479,12 @@
                                                     rdfs:label "Intrinsic Pathway for Apoptosis" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Protein53
-<http://www.reactome.org/biopax/63/109581#Protein53> rdf:type owl:NamedIndividual ,
-                                                              <http://identifiers.org/uniprot/P55957> ,
-                                                              <http://www.reactome.org/biopax/63/109581#Protein53_class> ;
-                                                     <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1357177703> ;
-                                                     rdfs:label "tBID" .
+###  http://www.reactome.org/biopax/63/109581#Protein53-648555831
+<http://www.reactome.org/biopax/63/109581#Protein53-648555831> rdf:type owl:NamedIndividual ,
+                                                                        <http://identifiers.org/uniprot/P55957> ,
+                                                                        <http://www.reactome.org/biopax/63/109581#Protein53-648555831_class> ;
+                                                               <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary61878279783> ;
+                                                               rdfs:label "tBID" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein53-885057959
@@ -442,6 +492,14 @@
                                                                         <http://identifiers.org/uniprot/P55957> ,
                                                                         <http://www.reactome.org/biopax/63/109581#Protein53-885057959_class> ;
                                                                <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1865951284> ;
+                                                               rdfs:label "tBID" .
+
+
+###  http://www.reactome.org/biopax/63/109581#Protein531148395551
+<http://www.reactome.org/biopax/63/109581#Protein531148395551> rdf:type owl:NamedIndividual ,
+                                                                        <http://identifiers.org/uniprot/P55957> ,
+                                                                        <http://www.reactome.org/biopax/63/109581#Protein531148395551_class> ;
+                                                               <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary61485996447> ;
                                                                rdfs:label "tBID" .
 
 
@@ -453,12 +511,20 @@
                                                                rdfs:label "tBID" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Protein69
-<http://www.reactome.org/biopax/63/109581#Protein69> rdf:type owl:NamedIndividual ,
-                                                              <http://identifiers.org/uniprot/Q92934> ,
-                                                              <http://www.reactome.org/biopax/63/109581#Protein69_class> ;
-                                                     <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1357177666> ;
-                                                     rdfs:label "BAD" .
+###  http://www.reactome.org/biopax/63/109581#Protein69-648555831
+<http://www.reactome.org/biopax/63/109581#Protein69-648555831> rdf:type owl:NamedIndividual ,
+                                                                        <http://identifiers.org/uniprot/Q92934> ,
+                                                                        <http://www.reactome.org/biopax/63/109581#Protein69-648555831_class> ;
+                                                               <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-184411060> ;
+                                                               rdfs:label "BAD" .
+
+
+###  http://www.reactome.org/biopax/63/109581#Protein691148395551
+<http://www.reactome.org/biopax/63/109581#Protein691148395551> rdf:type owl:NamedIndividual ,
+                                                                        <http://identifiers.org/uniprot/Q92934> ,
+                                                                        <http://www.reactome.org/biopax/63/109581#Protein691148395551_class> ;
+                                                               <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-576694396> ;
+                                                               rdfs:label "BAD" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein70-885057959
@@ -485,47 +551,71 @@
                                                                rdfs:label "BCL2" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Protein77
-<http://www.reactome.org/biopax/63/109581#Protein77> rdf:type owl:NamedIndividual ,
-                                                              <http://identifiers.org/uniprot/Q13794> ,
-                                                              <http://www.reactome.org/biopax/63/109581#Protein77_class> ;
-                                                     <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1357177637> ;
-                                                     rdfs:label "PMAIP1" .
+###  http://www.reactome.org/biopax/63/109581#Protein77-648555831
+<http://www.reactome.org/biopax/63/109581#Protein77-648555831> rdf:type owl:NamedIndividual ,
+                                                                        <http://identifiers.org/uniprot/Q13794> ,
+                                                                        <http://www.reactome.org/biopax/63/109581#Protein77-648555831_class> ;
+                                                               <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-756392919> ;
+                                                               rdfs:label "PMAIP1" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Protein84
-<http://www.reactome.org/biopax/63/109581#Protein84> rdf:type owl:NamedIndividual ,
-                                                              <http://identifiers.org/uniprot/Q9BXH1> ,
-                                                              <http://www.reactome.org/biopax/63/109581#Protein84_class> ;
-                                                     <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1357177609> ;
-                                                     rdfs:label "BBC3" .
+###  http://www.reactome.org/biopax/63/109581#Protein771148395551
+<http://www.reactome.org/biopax/63/109581#Protein771148395551> rdf:type owl:NamedIndividual ,
+                                                                        <http://identifiers.org/uniprot/Q13794> ,
+                                                                        <http://www.reactome.org/biopax/63/109581#Protein771148395551_class> ;
+                                                               <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1148676255> ;
+                                                               rdfs:label "PMAIP1" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Protein89
-<http://www.reactome.org/biopax/63/109581#Protein89> rdf:type owl:NamedIndividual ,
-                                                              <http://identifiers.org/uniprot/O43521> ,
-                                                              <http://www.reactome.org/biopax/63/109581#Protein89_class> ;
-                                                     <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1357177604> ;
-                                                     rdfs:label "p-BIM" .
+###  http://www.reactome.org/biopax/63/109581#Protein84-648555831
+<http://www.reactome.org/biopax/63/109581#Protein84-648555831> rdf:type owl:NamedIndividual ,
+                                                                        <http://identifiers.org/uniprot/Q9BXH1> ,
+                                                                        <http://www.reactome.org/biopax/63/109581#Protein84-648555831_class> ;
+                                                               <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6468576581> ;
+                                                               rdfs:label "BBC3" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Protein93
-<http://www.reactome.org/biopax/63/109581#Protein93> rdf:type owl:NamedIndividual ,
-                                                              <http://identifiers.org/uniprot/Q96LC9> ,
-                                                              <http://www.reactome.org/biopax/63/109581#Protein93_class> ;
-                                                     <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1357177579> ;
-                                                     rdfs:label "p-BMF" .
+###  http://www.reactome.org/biopax/63/109581#Protein841148395551
+<http://www.reactome.org/biopax/63/109581#Protein841148395551> rdf:type owl:NamedIndividual ,
+                                                                        <http://identifiers.org/uniprot/Q9BXH1> ,
+                                                                        <http://www.reactome.org/biopax/63/109581#Protein841148395551_class> ;
+                                                               <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary676293245> ;
+                                                               rdfs:label "BBC3" .
+
+
+###  http://www.reactome.org/biopax/63/109581#Protein89-648555831
+<http://www.reactome.org/biopax/63/109581#Protein89-648555831> rdf:type owl:NamedIndividual ,
+                                                                        <http://identifiers.org/uniprot/O43521> ,
+                                                                        <http://www.reactome.org/biopax/63/109581#Protein89-648555831_class> ;
+                                                               <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary673754378> ;
+                                                               rdfs:label "p-BIM" .
+
+
+###  http://www.reactome.org/biopax/63/109581#Protein891148395551
+<http://www.reactome.org/biopax/63/109581#Protein891148395551> rdf:type owl:NamedIndividual ,
+                                                                        <http://identifiers.org/uniprot/O43521> ,
+                                                                        <http://www.reactome.org/biopax/63/109581#Protein891148395551_class> ;
+                                                               <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-318528958> ;
+                                                               rdfs:label "p-BIM" .
+
+
+###  http://www.reactome.org/biopax/63/109581#Protein931148395551
+<http://www.reactome.org/biopax/63/109581#Protein931148395551> rdf:type owl:NamedIndividual ,
+                                                                        <http://identifiers.org/uniprot/Q96LC9> ,
+                                                                        <http://www.reactome.org/biopax/63/109581#Protein931148395551_class> ;
+                                                               <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary62002327323> ;
+                                                               rdfs:label "p-BMF" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein94-885057960
 <http://www.reactome.org/biopax/63/109581#Protein94-885057960> rdf:type owl:NamedIndividual ,
                                                                         <http://www.reactome.org/biopax/63/109581#Protein94-885057960_class> ;
-                                                               <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein53> ,
-                                                                                                            <http://www.reactome.org/biopax/63/109581#Protein69> ,
-                                                                                                            <http://www.reactome.org/biopax/63/109581#Protein77> ,
-                                                                                                            <http://www.reactome.org/biopax/63/109581#Protein84> ,
-                                                                                                            <http://www.reactome.org/biopax/63/109581#Protein89> ,
-                                                                                                            <http://www.reactome.org/biopax/63/109581#Protein93> ;
+                                                               <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein531148395551> ,
+                                                                                                            <http://www.reactome.org/biopax/63/109581#Protein691148395551> ,
+                                                                                                            <http://www.reactome.org/biopax/63/109581#Protein771148395551> ,
+                                                                                                            <http://www.reactome.org/biopax/63/109581#Protein841148395551> ,
+                                                                                                            <http://www.reactome.org/biopax/63/109581#Protein891148395551> ,
+                                                                                                            <http://www.reactome.org/biopax/63/109581#Protein931148395551> ;
                                                                <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary61148395551> ;
                                                                rdfs:label "Bcl-2 interacting BH-3 only proteins" .
 
@@ -533,11 +623,11 @@
 ###  http://www.reactome.org/biopax/63/109581#Protein95-885057958
 <http://www.reactome.org/biopax/63/109581#Protein95-885057958> rdf:type owl:NamedIndividual ,
                                                                         <http://www.reactome.org/biopax/63/109581#Protein95-885057958_class> ;
-                                                               <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein53> ,
-                                                                                                            <http://www.reactome.org/biopax/63/109581#Protein69> ,
-                                                                                                            <http://www.reactome.org/biopax/63/109581#Protein77> ,
-                                                                                                            <http://www.reactome.org/biopax/63/109581#Protein84> ,
-                                                                                                            <http://www.reactome.org/biopax/63/109581#Protein89> ;
+                                                               <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein53-648555831> ,
+                                                                                                            <http://www.reactome.org/biopax/63/109581#Protein69-648555831> ,
+                                                                                                            <http://www.reactome.org/biopax/63/109581#Protein77-648555831> ,
+                                                                                                            <http://www.reactome.org/biopax/63/109581#Protein84-648555831> ,
+                                                                                                            <http://www.reactome.org/biopax/63/109581#Protein89-648555831> ;
                                                                <http://purl.obolibrary.org/obo/BFO_0000066> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-648555831> ;
                                                                rdfs:label "Bcl-XL interacting BH3-only proteins" .
 

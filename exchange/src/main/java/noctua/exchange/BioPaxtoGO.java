@@ -470,7 +470,7 @@ public class BioPaxtoGO {
 				Set<PhysicalEntity> prot_parts = protein.getMemberPhysicalEntity();
 				if(prot_parts!=null) {
 					for(PhysicalEntity prot_part : prot_parts) {
-						OWLNamedIndividual prot_part_entity = df.getOWLNamedIndividual(IRI.create(prot_part.getUri()));
+						OWLNamedIndividual prot_part_entity = df.getOWLNamedIndividual(IRI.create(prot_part.getUri()+e.hashCode())); //define it independently within this context
 						//hook up parts	
 						OWLObjectPropertyAssertionAxiom add_cpart_axiom = df.getOWLObjectPropertyAssertionAxiom(has_part, e, prot_part_entity);
 						AddAxiom addCpartAxiom = new AddAxiom(go_cam_ont, add_cpart_axiom);
@@ -564,6 +564,7 @@ public class BioPaxtoGO {
 				ontman.addAxiom(go_cam_ont, isa_uniprotein);
 				ontman.applyChanges();
 			}else {
+				//assert it as a complex
 				OWLClassAssertionAxiom isa_complex = df.getOWLClassAssertionAxiom(go_complex, e);
 				ontman.addAxiom(go_cam_ont, isa_complex);
 				ontman.applyChanges();
@@ -573,8 +574,6 @@ public class BioPaxtoGO {
 					//go_cam_ont = addComplexComponent(ontman, go_cam_ont, df, component, entity);
 					IRI comp_uri = IRI.create(component.getUri()+e.hashCode());
 					OWLNamedIndividual component_entity = df.getOWLNamedIndividual(comp_uri);
-					//OWLNamedIndividual complex_o = df.getOWLNamedIndividual(IRI.create(complex.getUri()));
-					//OWLObjectPropertyAssertionAxiom add_cpart_axiom = df.getOWLObjectPropertyAssertionAxiom(has_part, complex_o, component_entity);
 					//hook up parts	
 					OWLObjectPropertyAssertionAxiom add_cpart_axiom = df.getOWLObjectPropertyAssertionAxiom(has_part, e, component_entity);
 					AddAxiom addCpartAxiom = new AddAxiom(go_cam_ont, add_cpart_axiom);
