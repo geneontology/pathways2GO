@@ -8,6 +8,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -70,8 +72,9 @@ public class BioPaxtoGO {
 	 * @throws FileNotFoundException 
 	 * @throws OWLOntologyCreationException 
 	 * @throws OWLOntologyStorageException 
+	 * @throws UnsupportedEncodingException 
 	 */
-	public static void main(String[] args) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException {
+	public static void main(String[] args) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException, UnsupportedEncodingException {
 		BioPaxtoGO bp2g = new BioPaxtoGO();
 		String input_biopax = //"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 				"src/main/resources/reactome/reactome-input-109581.owl";
@@ -89,10 +92,12 @@ public class BioPaxtoGO {
 	 * @param add_lego_import
 	 * @return
 	 * @throws OWLOntologyCreationException
+	 * @throws UnsupportedEncodingException 
 	 */
-	private OWLOntology initGOCAMOntology(String pathway_title, String contributor_uri, boolean add_lego_import) throws OWLOntologyCreationException {
-		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();
-		IRI ont_iri = IRI.create("http://model.geneontology.org/helloworld"+Math.random());
+	private OWLOntology initGOCAMOntology(String pathway_title, String contributor_uri, boolean add_lego_import) throws OWLOntologyCreationException, UnsupportedEncodingException {
+		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();				
+		String iri = "http://model.geneontology.org/"+URLEncoder.encode(pathway_title, "UTF-8");
+		IRI ont_iri = IRI.create(iri);
 		OWLOntology go_cam_ont = ontman.createOntology(ont_iri);
 		OWLDataFactory df = OWLManager.getOWLDataFactory();
 
@@ -185,7 +190,7 @@ public class BioPaxtoGO {
 		return go_cam_ont;
 	}
 
-	private void convert(String input_biopax, String converted, boolean split_by_pathway, boolean add_lego_import) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException  {
+	private void convert(String input_biopax, String converted, boolean split_by_pathway, boolean add_lego_import) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException, UnsupportedEncodingException  {
 		//read biopax pathway(s)
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileInputStream f = new FileInputStream(input_biopax);
@@ -401,14 +406,14 @@ public class BioPaxtoGO {
 		}
 		String entity_name = entity.getDisplayName();
 		addLabel(ontman, go_cam_ont, df, e, entity_name);
-		//attempt to localize the entity (only if Physical Entity)
+		//attempt to localize the entity (only if Physical Entity because that is how Reactome views existence in space)
 		if(entity instanceof PhysicalEntity) {
 			CellularLocationVocabulary loc = ((PhysicalEntity) entity).getCellularLocation();
 			if(loc!=null) {
 				//TODO this is to make each location unique to so things get bundled in the Noctua view
 				//this is almost certainly a bug in Noctua..  
 				//OWLNamedIndividual loc_e = df.getOWLNamedIndividual(loc.getUri());
-				OWLNamedIndividual loc_e = df.getOWLNamedIndividual(loc.getUri()+entity.hashCode());
+				OWLNamedIndividual loc_e = df.getOWLNamedIndividual(loc.getUri()+e.hashCode());
 				//hook up the location
 				OWLObjectPropertyAssertionAxiom add_loc_axiom = df.getOWLObjectPropertyAssertionAxiom(occurs_in, e, loc_e);
 				AddAxiom addLocAxiom = new AddAxiom(go_cam_ont, add_loc_axiom);
@@ -471,7 +476,7 @@ public class BioPaxtoGO {
 						AddAxiom addCpartAxiom = new AddAxiom(go_cam_ont, add_cpart_axiom);
 						ontman.applyChanges(addCpartAxiom);
 						//define them = hopefully get out a name and a class for the sub protein.	
-						go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, prot_part, null);
+						go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, prot_part, prot_part_entity.getIRI());
 					}
 				}
 			}
@@ -531,7 +536,7 @@ public class BioPaxtoGO {
 		//Complex 
 		else if(entity.getModelInterface().equals(Complex.class)) {
 			Complex complex = (Complex)entity;
-			//recursively get parts
+			//recursively get all parts
 			Set<PhysicalEntity> complex_parts = getAllPartsOfComplex(complex, null);
 			
 			//Now decide if, in GO-CAM, it should be a complex or not
@@ -540,8 +545,6 @@ public class BioPaxtoGO {
 			Set<String> prots = new HashSet<String>();
 			String id = null;
 			for(PhysicalEntity component : complex_parts) {
-				//TODO need to think through recursion..
-				//one level
 				if(component.getModelInterface().equals(Protein.class)) {
 					id = getUniprotProteinId((Protein)component);
 					if(id!=null) {
@@ -614,7 +617,8 @@ public class BioPaxtoGO {
 			Set<Entity> participants = reaction.getParticipant();
 			for(Entity participant : participants) {
 				//figure out its nature and capture that
-				go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, participant, null);		
+				IRI participant_iri = IRI.create(participant.getUri()+e.hashCode()); //keep the entities in this reaction uniquely identified.. (don't merge them with members of other reactions even if same class of thing)				
+				go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, participant, participant_iri);		
 				//link to participants in reaction
 				//biopax#left -> obo:input , biopax#right -> obo:output
 				Set<PhysicalEntity> inputs = reaction.getLeft();
