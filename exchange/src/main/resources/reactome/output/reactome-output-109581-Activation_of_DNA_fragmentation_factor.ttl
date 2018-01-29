@@ -1,12 +1,12 @@
-@prefix : <http://model.geneontology.org/Activation+of+DNA+fragmentation+factor#> .
+@prefix : <http://model.geneontology.org/419789042#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@base <http://model.geneontology.org/Activation+of+DNA+fragmentation+factor> .
+@base <http://model.geneontology.org/419789042> .
 
-<http://model.geneontology.org/Activation+of+DNA+fragmentation+factor> rdf:type owl:Ontology .
+<http://model.geneontology.org/419789042> rdf:type owl:Ontology .
 
 #################################################################
 #    Annotation properties
@@ -2081,7 +2081,7 @@
 #    Annotations
 #################################################################
 
-<http://model.geneontology.org/Activation+of+DNA+fragmentation+factor> <http://purl.org/dc/elements/1.1/title> "Reactome:Activation of DNA fragmentation factor" .
+<http://model.geneontology.org/419789042> <http://purl.org/dc/elements/1.1/title> "Reactome:Activation of DNA fragmentation factor" .
 
 
 <http://purl.obolibrary.org/obo/GO_0003674> rdfs:label "Molecular Function" .

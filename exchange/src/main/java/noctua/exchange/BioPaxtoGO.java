@@ -96,7 +96,7 @@ public class BioPaxtoGO {
 	 */
 	private OWLOntology initGOCAMOntology(String pathway_title, String contributor_uri, boolean add_lego_import) throws OWLOntologyCreationException, UnsupportedEncodingException {
 		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();				
-		String iri = "http://model.geneontology.org/"+URLEncoder.encode(pathway_title, "UTF-8");
+		String iri = "http://model.geneontology.org/"+pathway_title.hashCode(); //using a URL encoded string here confused the UI code...
 		IRI ont_iri = IRI.create(iri);
 		OWLOntology go_cam_ont = ontman.createOntology(ont_iri);
 		OWLDataFactory df = OWLManager.getOWLDataFactory();

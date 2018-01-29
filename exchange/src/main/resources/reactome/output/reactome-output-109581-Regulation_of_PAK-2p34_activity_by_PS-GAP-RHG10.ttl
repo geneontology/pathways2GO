@@ -1,12 +1,12 @@
-@prefix : <http://model.geneontology.org/Regulation+of+PAK-2p34+activity+by+PS-GAP%2FRHG10#> .
+@prefix : <http://model.geneontology.org/788612352#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@base <http://model.geneontology.org/Regulation+of+PAK-2p34+activity+by+PS-GAP%2FRHG10> .
+@base <http://model.geneontology.org/788612352> .
 
-<http://model.geneontology.org/Regulation+of+PAK-2p34+activity+by+PS-GAP%2FRHG10> rdf:type owl:Ontology .
+<http://model.geneontology.org/788612352> rdf:type owl:Ontology .
 
 #################################################################
 #    Annotation properties
@@ -377,7 +377,7 @@
 #    Annotations
 #################################################################
 
-<http://model.geneontology.org/Regulation+of+PAK-2p34+activity+by+PS-GAP%2FRHG10> <http://purl.org/dc/elements/1.1/title> "Reactome:Regulation of PAK-2p34 activity by PS-GAP/RHG10" .
+<http://model.geneontology.org/788612352> <http://purl.org/dc/elements/1.1/title> "Reactome:Regulation of PAK-2p34 activity by PS-GAP/RHG10" .
 
 
 <http://purl.obolibrary.org/obo/GO_0003674> rdfs:label "Molecular Function" .

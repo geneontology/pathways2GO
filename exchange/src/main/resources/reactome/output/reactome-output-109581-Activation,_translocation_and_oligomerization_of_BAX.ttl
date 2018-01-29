@@ -1,12 +1,12 @@
-@prefix : <http://model.geneontology.org/Activation%2C+translocation+and+oligomerization+of+BAX#> .
+@prefix : <http://model.geneontology.org/-293187736#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@base <http://model.geneontology.org/Activation%2C+translocation+and+oligomerization+of+BAX> .
+@base <http://model.geneontology.org/-293187736> .
 
-<http://model.geneontology.org/Activation%2C+translocation+and+oligomerization+of+BAX> rdf:type owl:Ontology .
+<http://model.geneontology.org/-293187736> rdf:type owl:Ontology .
 
 #################################################################
 #    Annotation properties
@@ -513,7 +513,7 @@
 #    Annotations
 #################################################################
 
-<http://model.geneontology.org/Activation%2C+translocation+and+oligomerization+of+BAX> <http://purl.org/dc/elements/1.1/title> "Reactome:Activation, translocation and oligomerization of BAX" .
+<http://model.geneontology.org/-293187736> <http://purl.org/dc/elements/1.1/title> "Reactome:Activation, translocation and oligomerization of BAX" .
 
 
 <http://purl.obolibrary.org/obo/GO_0003674> rdfs:label "Molecular Function" .
