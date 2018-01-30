@@ -76,9 +76,10 @@ public class BioPaxtoGO {
 	 */
 	public static void main(String[] args) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException, UnsupportedEncodingException {
 		BioPaxtoGO bp2g = new BioPaxtoGO();
-		String input_biopax = //"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
-				"src/main/resources/reactome/reactome-input-109581.owl";
-		String converted_split = "src/main/resources/reactome/output/reactome-output-109581-";//reactome-output-glyco-"; 
+		String input_biopax = "src/main/resources/reactome/glycolysis/glyco_biopax.owl";
+				//"src/main/resources/reactome/reactome-input-109581.owl";
+		String converted_split = "src/main/resources/reactome/output/reactome-output-glyco-"; 
+				//"src/main/resources/reactome/output/reactome-output-109581-";
 		String converted_full = "src/main/resources/reactome/reactome-output-109581";
 		boolean split_by_pathway = true;
 		boolean add_lego_import = false;
