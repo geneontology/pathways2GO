@@ -67,7 +67,7 @@ public class BioPaxtoGO {
 	public static final IRI uniprot_iri = IRI.create("http://identifiers.org/uniprot/");
 	public static final IRI biopax_iri = IRI.create("http://www.biopax.org/release/biopax-level3.owl#");
 	OWLObjectProperty part_of, has_part, has_input, has_output, 
-	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by;
+	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in;
 	OWLClass bp_class, continuant_class, protein_class, reaction_class, go_complex, molecular_function;
 
 	/**
@@ -195,9 +195,12 @@ public class BioPaxtoGO {
 		//RO_0002406 directly activates (process to process)
 		directly_activates = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002406"));
 		addLabel(ontman, go_cam_ont, df, directly_activates, "directly activates (process to process)");
-		//BFO_0000066 occurs in
+		//BFO_0000066 occurs in (note that it can only be used for occurents in occurents)
 		occurs_in = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000066"));
 		addLabel(ontman, go_cam_ont, df, occurs_in, "occurs in");
+		//RO_0001025
+		located_in = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0001025"));
+		addLabel(ontman, go_cam_ont, df, located_in, "located in");		
 		//RO_0002333 enabled by
 		enabled_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002333"));
 		addLabel(ontman, go_cam_ont, df, enabled_by, "enabled by");
@@ -435,7 +438,7 @@ public class BioPaxtoGO {
 				//OWLNamedIndividual loc_e = df.getOWLNamedIndividual(loc.getUri());
 				OWLNamedIndividual loc_e = df.getOWLNamedIndividual(loc.getUri()+e.hashCode());
 				//hook up the location
-				OWLObjectPropertyAssertionAxiom add_loc_axiom = df.getOWLObjectPropertyAssertionAxiom(occurs_in, e, loc_e);
+				OWLObjectPropertyAssertionAxiom add_loc_axiom = df.getOWLObjectPropertyAssertionAxiom(located_in, e, loc_e);
 				AddAxiom addLocAxiom = new AddAxiom(go_cam_ont, add_loc_axiom);
 				ontman.applyChanges(addLocAxiom);
 				//dig out the GO cellular location and create an individual for it
