@@ -229,7 +229,24 @@ public class BioPaxtoGO {
 			System.out.println("Pathway:"+currentPathway.getName()); 
 			if(split_by_pathway) {
 				//re initialize for each pathway
-				go_cam_ont = initGOCAMOntology(currentPathway.getDisplayName(), "https://reactome.org", add_lego_import);
+				String reactome_id = null;
+				String provider_link = "https://reactome.org";
+				//See if there is a specific pathway reference to allow a direct link
+				Set<Xref> xrefs = currentPathway.getXref();
+				for(Xref xref : xrefs) {
+					if(xref.getModelInterface().equals(UnificationXref.class)) {
+						UnificationXref r = (UnificationXref)xref;	    			
+						if(r.getDb().equals("Reactome")) {
+							reactome_id = r.getId();
+							if(reactome_id.startsWith("R-HSA")) {
+								provider_link = "https://reactome.org/content/detail/"+reactome_id;
+								//or https://reactome.org/PathwayBrowser/#/ to go right to pathway browser
+								break;
+							}
+						}
+					}
+				}			
+				go_cam_ont = initGOCAMOntology(currentPathway.getDisplayName(), provider_link, add_lego_import);
 				ontman = go_cam_ont.getOWLOntologyManager();
 				df = OWLManager.getOWLDataFactory();
 			}
@@ -271,10 +288,6 @@ public class BioPaxtoGO {
 					Set<Process> nextEvents = step2.getStepProcess();
 					for(Process event : events) {
 						for(Process nextEvent : nextEvents) {
-							OWLNamedIndividual e1 = df.getOWLNamedIndividual(IRI.create(event.getUri()));
-							addLabel(ontman, go_cam_ont, df, e1, event.getDisplayName());
-							OWLNamedIndividual e2 = df.getOWLNamedIndividual(IRI.create(nextEvent.getUri()));
-							addLabel(ontman, go_cam_ont, df, e2, nextEvent.getDisplayName());
 							//	Event directly_provides_input_for NextEvent
 							//	 <==
 							//		Step stepProcess Event,
@@ -284,6 +297,10 @@ public class BioPaxtoGO {
 							//		biochemicalReaction(NextEvent).
 							if((event.getModelInterface().equals(BiochemicalReaction.class))&&
 									(nextEvent.getModelInterface().equals(BiochemicalReaction.class))) {
+								OWLNamedIndividual e1 = df.getOWLNamedIndividual(IRI.create(event.getUri()));
+								addLabel(ontman, go_cam_ont, df, e1, event.getDisplayName());
+								OWLNamedIndividual e2 = df.getOWLNamedIndividual(IRI.create(nextEvent.getUri()));
+								addLabel(ontman, go_cam_ont, df, e2, nextEvent.getDisplayName());
 								OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(provides_direct_input_for, e1, e2);
 								AddAxiom addStepAxiom = new AddAxiom(go_cam_ont, add_step_axiom);
 								ontman.applyChanges(addStepAxiom);
@@ -339,6 +356,11 @@ public class BioPaxtoGO {
 
 	private OWLOntology definePathwayEntity(OWLOntologyManager ontman, OWLOntology go_cam_ont, OWLDataFactory df,Pathway pathway) {
 		OWLNamedIndividual pathway_e = df.getOWLNamedIndividual(IRI.create(pathway.getUri()));		
+	
+		if(pathway_e.getIRI().toString().equals("http://www.reactome.org/biopax/63/70326#Control3")) {
+			System.out.println("Hello 2 controller ");
+		}
+		
 		addLabel(ontman, go_cam_ont, df, pathway_e, pathway.getDisplayName());
 		//set a default type of biological process
 		//		OWLClassAssertionAxiom p_isa_bp = df.getOWLClassAssertionAxiom(bp_class, pathway_e);
@@ -371,6 +393,7 @@ public class BioPaxtoGO {
 		if(label==null) {
 			return go_cam_ont;
 		}
+		
 		OWLLiteral lbl = df.getOWLLiteral(label);
 		OWLAnnotation label_anno = df.getOWLAnnotation(df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI()), lbl);
 		OWLAxiom labelaxiom = df.getOWLAnnotationAssertionAxiom(entity.getIRI(), label_anno);
@@ -427,6 +450,7 @@ public class BioPaxtoGO {
 		}else {
 			e = df.getOWLNamedIndividual(IRI.create(entity.getUri()));
 		}
+		
 		String entity_name = entity.getDisplayName();
 		addLabel(ontman, go_cam_ont, df, e, entity_name);
 		//attempt to localize the entity (only if Physical Entity because that is how Reactome views existence in space)
@@ -608,7 +632,14 @@ public class BioPaxtoGO {
 		}
 		else if(entity.getModelInterface().equals(BiochemicalReaction.class)){
 			BiochemicalReaction reaction = (BiochemicalReaction)(entity);
-			//TODO get the preceeding event
+			//TODO get the preceding event
+			//This is not necessary to get the connectivity when querying the integrated pathway collection
+			//the outgoing connections are present in the preceding pathway - e.g. 
+			//tbid binds to inactive BAK protein has preceding event translocation of tBID to mitichondria
+			//connection not shown in pathway containing tbid binds to inactive BAK protein but is shown 
+			//in pathway containing translocation of tBID to mitichondria 
+			// e.g. translocation of tBID to mitichondria -- provides direct input for -- tbid binds to inactive BAK protein
+			
 			//e.g. pathway 'Mitochondrial recruitment of Drp1' (reaction116) has preceeding event 'Caspase mediated cleavage of BAP31' [Homo sapiens] Reaction 94
 			//94 - stepProcessOf - next Step - stepProcess 
 			//			if(entity.getDisplayName().equals("Caspase mediated cleavage of BAP31")) {
@@ -618,7 +649,7 @@ public class BioPaxtoGO {
 			//				for(PathwayStep step : steps_of) {
 			//					for(PathwayStep s : step.getNextStep()) {
 			//						System.out.println("BAP31.."+s.getStepProcess());
-			//						System.out.println(s.getStepProcess()+" has preceeding event "+e);
+			//						System.out.println(s.getStepProcess()+" has preceding event "+e);
 			//					}
 			//				}
 			//			}
@@ -671,6 +702,10 @@ public class BioPaxtoGO {
 
 			Set<Control> controllers = reaction.getControlledOf();
 			for(Control controller : controllers) {
+//				if(controller.getUri().equals("http://www.reactome.org/biopax/63/70326#Control3")) {
+//					System.out.println("Hello 3 controller ");
+//				}
+				
 				ControlType ctype = controller.getControlType();
 				//make an individual of the class molecular function
 				//catalysis 'entities' from biopax may map onto functions from go_cam
@@ -705,7 +740,7 @@ public class BioPaxtoGO {
 					IRI iri = IRI.create((local_id));
 					go_cam_ont = defineReactionEntity(ontman, go_cam_ont, df, controller_entity, iri);
 					//the protein or complex
-					OWLNamedIndividual controller_e = df.getOWLNamedIndividual(IRI.create(local_id));
+					OWLNamedIndividual controller_e = df.getOWLNamedIndividual(iri);
 					//the controlling physical entity enables that function/reaction
 					OWLObjectPropertyAssertionAxiom add_func_axiom = df.getOWLObjectPropertyAssertionAxiom(enabled_by, e, controller_e);
 					AddAxiom addFuncAxiom = new AddAxiom(go_cam_ont, add_func_axiom);

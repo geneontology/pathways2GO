@@ -160,16 +160,6 @@
                                                                      rdfs:label "Active oligomeric BAK" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Control10_class
-<http://www.reactome.org/biopax/63/109581#Control10_class> rdf:type owl:Class ;
-                                                           rdfs:label "'Activated BAX,BAK oligomers [mitochondrial outer membrane]' positively regulates 'Release of SMAC from mitochondria'" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Control9_class
-<http://www.reactome.org/biopax/63/109581#Control9_class> rdf:type owl:Class ;
-                                                          rdfs:label "'Activated BAX,BAK oligomers [mitochondrial outer membrane]' positively regulates 'Release of Cytochrome c from mitochondria'" .
-
-
 ###  http://www.reactome.org/biopax/63/109581#Pathway17_class
 <http://www.reactome.org/biopax/63/109581#Pathway17_class> rdf:type owl:Class ;
                                                            rdfs:label "Activation and oligomerization of BAK protein" .
@@ -365,18 +355,6 @@
                                                                rdfs:label "Active oligomeric BAK" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Control10
-<http://www.reactome.org/biopax/63/109581#Control10> rdf:type owl:NamedIndividual ,
-                                                              <http://www.reactome.org/biopax/63/109581#Control10_class> ;
-                                                     rdfs:label "'Activated BAX,BAK oligomers [mitochondrial outer membrane]' positively regulates 'Release of SMAC from mitochondria'" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Control9
-<http://www.reactome.org/biopax/63/109581#Control9> rdf:type owl:NamedIndividual ,
-                                                             <http://www.reactome.org/biopax/63/109581#Control9_class> ;
-                                                    rdfs:label "'Activated BAX,BAK oligomers [mitochondrial outer membrane]' positively regulates 'Release of Cytochrome c from mitochondria'" .
-
-
 ###  http://www.reactome.org/biopax/63/109581#Pathway17
 <http://www.reactome.org/biopax/63/109581#Pathway17> rdf:type owl:NamedIndividual ,
                                                               <http://purl.obolibrary.org/obo/GO_1901030> ,
@@ -469,7 +447,7 @@
 #################################################################
 
 <http://model.geneontology.org/1910086939> <http://geneontology.org/lego/modelstate> "Auto-generated" ;
-                                           <http://purl.org/dc/elements/1.1/contributor> "https://reactome.org" ;
+                                           <http://purl.org/dc/elements/1.1/contributor> "https://reactome.org/content/detail/R-HSA-111452" ;
                                            <http://purl.org/dc/elements/1.1/date> "2018-01-30" ;
                                            <http://purl.org/dc/elements/1.1/title> "Reactome:Activation and oligomerization of BAK protein" .
 
