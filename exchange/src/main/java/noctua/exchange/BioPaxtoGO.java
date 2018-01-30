@@ -10,6 +10,9 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -76,10 +79,10 @@ public class BioPaxtoGO {
 	 */
 	public static void main(String[] args) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException, UnsupportedEncodingException {
 		BioPaxtoGO bp2g = new BioPaxtoGO();
-		String input_biopax = "src/main/resources/reactome/glycolysis/glyco_biopax.owl";
-				//"src/main/resources/reactome/reactome-input-109581.owl";
-		String converted_split = "src/main/resources/reactome/output/reactome-output-glyco-"; 
-				//"src/main/resources/reactome/output/reactome-output-109581-";
+		String input_biopax = //"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
+				"src/main/resources/reactome/reactome-input-109581.owl";
+		String converted_split = //"src/main/resources/reactome/output/reactome-output-glyco-"; 
+				"src/main/resources/reactome/output/reactome-output-109581-";
 		String converted_full = "src/main/resources/reactome/reactome-output-109581";
 		boolean split_by_pathway = true;
 		boolean add_lego_import = false;
@@ -119,10 +122,26 @@ public class BioPaxtoGO {
 		OWLAnnotationProperty title_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/title"));
 		OWLAnnotationProperty contributor_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/contributor"));
 		OWLAnnotationProperty date_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/date"));
-
+		OWLAnnotationProperty state_prop = df.getOWLAnnotationProperty(IRI.create("http://geneontology.org/lego/modelstate"));
+		
 		OWLAnnotation title_anno = df.getOWLAnnotation(title_prop, df.getOWLLiteral("Reactome:"+pathway_title));
 		OWLAxiom titleaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, title_anno);
 		ontman.addAxiom(go_cam_ont, titleaxiom);
+		
+		OWLAnnotation contributor_anno = df.getOWLAnnotation(contributor_prop, df.getOWLLiteral(contributor_uri));
+		OWLAxiom contributoraxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, contributor_anno);
+		ontman.addAxiom(go_cam_ont, contributoraxiom);
+		
+		Date now = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		OWLAnnotation date_anno = df.getOWLAnnotation(date_prop, df.getOWLLiteral(sdf.format(now)));
+		OWLAxiom dateaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, date_anno);
+		ontman.addAxiom(go_cam_ont, dateaxiom);
+		
+		OWLAnnotation state_anno = df.getOWLAnnotation(state_prop, df.getOWLLiteral("Auto-generated"));
+		OWLAxiom stateaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, state_anno);
+		ontman.addAxiom(go_cam_ont, stateaxiom);
+		
 		ontman.applyChanges();
 
 		//Will add classes and relations as we need them now. 
@@ -198,7 +217,7 @@ public class BioPaxtoGO {
 		Model model = handler.convertFromOWL(f);
 
 		//set up ontology (used if not split)
-		OWLOntology go_cam_ont = initGOCAMOntology("Meta Pathway Ontology", "put creator here", add_lego_import);
+		OWLOntology go_cam_ont = initGOCAMOntology("Meta Pathway Ontology", "https://reactome.org", add_lego_import);
 		OWLOntologyManager ontman = go_cam_ont.getOWLOntologyManager();
 		OWLDataFactory df = OWLManager.getOWLDataFactory();
 
@@ -207,7 +226,7 @@ public class BioPaxtoGO {
 			System.out.println("Pathway:"+currentPathway.getName()); 
 			if(split_by_pathway) {
 				//re initialize for each pathway
-				go_cam_ont = initGOCAMOntology(currentPathway.getDisplayName(), "put creator here", add_lego_import);
+				go_cam_ont = initGOCAMOntology(currentPathway.getDisplayName(), "https://reactome.org", add_lego_import);
 				ontman = go_cam_ont.getOWLOntologyManager();
 				df = OWLManager.getOWLDataFactory();
 			}
