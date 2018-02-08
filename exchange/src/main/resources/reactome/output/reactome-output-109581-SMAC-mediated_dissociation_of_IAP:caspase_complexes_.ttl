@@ -123,244 +123,13 @@
                                                            rdfs:label "Reaction" .
 
 
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction61_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction61_class> rdf:type owl:Class ;
-                                                                       rdfs:label "Dissociation of Caspase-3 from SMAC:XIAP:Caspase-3" .
-
-
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction62_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction62_class> rdf:type owl:Class ;
-                                                                       rdfs:label "Dissociation of Caspase-7 from SMAC:XIAP:Caspase-7" .
-
-
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction63_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction63_class> rdf:type owl:Class ;
-                                                                       rdfs:label "Dissociation of Caspase-9 from SMAC:XIAP:Caspase-9" .
-
-
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction64_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction64_class> rdf:type owl:Class ;
-                                                                       rdfs:label "Caspase-mediated cleavage of alpha adducin" .
-
-
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction65_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction65_class> rdf:type owl:Class ;
-                                                                       rdfs:label "Caspase mediated cleavage of alpha-II-Fodrin" .
-
-
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction66_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction66_class> rdf:type owl:Class ;
-                                                                       rdfs:label "Caspase-mediated cleavage of GAS2" .
-
-
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction67_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction67_class> rdf:type owl:Class ;
-                                                                       rdfs:label "Caspase mediated cleavage of HIP-55" .
-
-
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction75_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction75_class> rdf:type owl:Class ;
-                                                                       rdfs:label "Caspase mediated cleavage of beta-catenin" .
-
-
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction76_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction76_class> rdf:type owl:Class ;
-                                                                       rdfs:label "Caspase-mediated cleavage of Desmoglein 3" .
-
-
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction77_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction77_class> rdf:type owl:Class ;
-                                                                       rdfs:label "Caspase-mediated cleavage of Desmoglein 2" .
-
-
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction78_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction78_class> rdf:type owl:Class ;
-                                                                       rdfs:label "Caspase-mediated cleavage of Desmoglein 1" .
-
-
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction86_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction86_class> rdf:type owl:Class ;
-                                                                       rdfs:label "Caspase mediated cleavage of APC" .
-
-
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction87_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction87_class> rdf:type owl:Class ;
-                                                                       rdfs:label "Caspase mediated cleavage of C-IAP1" .
-
-
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction88_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction88_class> rdf:type owl:Class ;
-                                                                       rdfs:label "Caspase-mediated cleavage of FADK 1" .
-
-
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction93_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction93_class> rdf:type owl:Class ;
-                                                                       rdfs:label "Caspase-mediated cleavage of farnesyltransferase/geranyl- geranyltransferase subunit alpha " .
-
-
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction95_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction95_class> rdf:type owl:Class ;
-                                                                       rdfs:label "Caspase-mediated cleavage of Etk" .
-
-
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction96_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction96_class> rdf:type owl:Class ;
-                                                                       rdfs:label "Caspase-mediated cleavage of MASK" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Complex34-885057898_class
-<http://www.reactome.org/biopax/63/109581#Complex34-885057898_class> rdf:type owl:Class ;
-                                                                     rdfs:label "Caspase-3" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Complex37-885057896_class
-<http://www.reactome.org/biopax/63/109581#Complex37-885057896_class> rdf:type owl:Class ;
-                                                                     rdfs:label "Cleaved Caspase-9" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Complex79-885057897_class
-<http://www.reactome.org/biopax/63/109581#Complex79-885057897_class> rdf:type owl:Class ;
-                                                                     rdfs:label "Caspase-7" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Complex82-885057898_class
-<http://www.reactome.org/biopax/63/109581#Complex82-885057898_class> rdf:type owl:Class ;
-                                                                     rdfs:label "SMAC:XIAP:Caspase-3" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Complex84-885057897_class
-<http://www.reactome.org/biopax/63/109581#Complex84-885057897_class> rdf:type owl:Class ;
-                                                                     rdfs:label "SMAC:XIAP:Caspase-7" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Complex86-885057896_class
-<http://www.reactome.org/biopax/63/109581#Complex86-885057896_class> rdf:type owl:Class ;
-                                                                     rdfs:label "SMAC:XIAP:Caspase-9" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Complex87-885057896_class
-<http://www.reactome.org/biopax/63/109581#Complex87-885057896_class> rdf:type owl:Class ;
-                                                                     rdfs:label "SMAC:XIAP" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Complex87-885057897_class
-<http://www.reactome.org/biopax/63/109581#Complex87-885057897_class> rdf:type owl:Class ;
-                                                                     rdfs:label "SMAC:XIAP" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Complex87-885057898_class
-<http://www.reactome.org/biopax/63/109581#Complex87-885057898_class> rdf:type owl:Class ;
-                                                                     rdfs:label "SMAC:XIAP" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Pathway23_class
-<http://www.reactome.org/biopax/63/109581#Pathway23_class> rdf:type owl:Class ;
-                                                           rdfs:label "SMAC-mediated apoptotic response" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Pathway25_class
-<http://www.reactome.org/biopax/63/109581#Pathway25_class> rdf:type owl:Class ;
-                                                           rdfs:label "SMAC-mediated dissociation of IAP:caspase complexes " .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein105-1103491439_class
-<http://www.reactome.org/biopax/63/109581#Protein105-1103491439_class> rdf:type owl:Class ;
-                                                                       rdfs:label "SMAC" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein105-1804556016_class
-<http://www.reactome.org/biopax/63/109581#Protein105-1804556016_class> rdf:type owl:Class ;
-                                                                       rdfs:label "SMAC" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein1051394524498_class
-<http://www.reactome.org/biopax/63/109581#Protein1051394524498_class> rdf:type owl:Class ;
-                                                                      rdfs:label "SMAC" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein1051394524499_class
-<http://www.reactome.org/biopax/63/109581#Protein1051394524499_class> rdf:type owl:Class ;
-                                                                      rdfs:label "SMAC" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein1051394524500_class
-<http://www.reactome.org/biopax/63/109581#Protein1051394524500_class> rdf:type owl:Class ;
-                                                                      rdfs:label "SMAC" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein1051789346703_class
-<http://www.reactome.org/biopax/63/109581#Protein1051789346703_class> rdf:type owl:Class ;
-                                                                      rdfs:label "SMAC" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein109-1804556016_class
-<http://www.reactome.org/biopax/63/109581#Protein109-1804556016_class> rdf:type owl:Class ;
-                                                                       rdfs:label "CASP7(24-198)" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein110-1804556016_class
-<http://www.reactome.org/biopax/63/109581#Protein110-1804556016_class> rdf:type owl:Class ;
-                                                                       rdfs:label "CASP7(207-303)" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein111-1103491439_class
-<http://www.reactome.org/biopax/63/109581#Protein111-1103491439_class> rdf:type owl:Class ;
-                                                                       rdfs:label "XIAP" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein111-1804556016_class
-<http://www.reactome.org/biopax/63/109581#Protein111-1804556016_class> rdf:type owl:Class ;
-                                                                       rdfs:label "XIAP" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein1111394524498_class
-<http://www.reactome.org/biopax/63/109581#Protein1111394524498_class> rdf:type owl:Class ;
-                                                                      rdfs:label "XIAP" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein1111394524499_class
-<http://www.reactome.org/biopax/63/109581#Protein1111394524499_class> rdf:type owl:Class ;
-                                                                      rdfs:label "XIAP" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein1111394524500_class
-<http://www.reactome.org/biopax/63/109581#Protein1111394524500_class> rdf:type owl:Class ;
-                                                                      rdfs:label "XIAP" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein1111789346703_class
-<http://www.reactome.org/biopax/63/109581#Protein1111789346703_class> rdf:type owl:Class ;
-                                                                      rdfs:label "XIAP" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein311789346703_class
-<http://www.reactome.org/biopax/63/109581#Protein311789346703_class> rdf:type owl:Class ;
-                                                                     rdfs:label "CASP3" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein321789346703_class
-<http://www.reactome.org/biopax/63/109581#Protein321789346703_class> rdf:type owl:Class ;
-                                                                     rdfs:label "CASP3(176-277)" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein34-1103491439_class
-<http://www.reactome.org/biopax/63/109581#Protein34-1103491439_class> rdf:type owl:Class ;
-                                                                      rdfs:label "CASP9" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein35-1103491439_class
-<http://www.reactome.org/biopax/63/109581#Protein35-1103491439_class> rdf:type owl:Class ;
-                                                                      rdfs:label "CASP9 p35" .
-
-
 #################################################################
 #    Individuals
 #################################################################
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction61
 <http://www.reactome.org/biopax/63/109581#BiochemicalReaction61> rdf:type owl:NamedIndividual ,
-                                                                          <http://www.biopax.org/release/biopax-level3.owl#Reaction> ,
-                                                                          <http://www.reactome.org/biopax/63/109581#BiochemicalReaction61_class> ;
+                                                                          <http://www.biopax.org/release/biopax-level3.owl#Reaction> ;
                                                                  <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway25> ;
                                                                  <http://purl.obolibrary.org/obo/RO_0002233> <http://www.reactome.org/biopax/63/109581#Complex82-885057898> ;
                                                                  <http://purl.obolibrary.org/obo/RO_0002234> <http://www.reactome.org/biopax/63/109581#Complex34-885057898> ,
@@ -383,8 +152,7 @@
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction62
 <http://www.reactome.org/biopax/63/109581#BiochemicalReaction62> rdf:type owl:NamedIndividual ,
-                                                                          <http://www.biopax.org/release/biopax-level3.owl#Reaction> ,
-                                                                          <http://www.reactome.org/biopax/63/109581#BiochemicalReaction62_class> ;
+                                                                          <http://www.biopax.org/release/biopax-level3.owl#Reaction> ;
                                                                  <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway25> ;
                                                                  <http://purl.obolibrary.org/obo/RO_0002233> <http://www.reactome.org/biopax/63/109581#Complex84-885057897> ;
                                                                  <http://purl.obolibrary.org/obo/RO_0002234> <http://www.reactome.org/biopax/63/109581#Complex79-885057897> ,
@@ -396,8 +164,7 @@
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction63
 <http://www.reactome.org/biopax/63/109581#BiochemicalReaction63> rdf:type owl:NamedIndividual ,
-                                                                          <http://www.biopax.org/release/biopax-level3.owl#Reaction> ,
-                                                                          <http://www.reactome.org/biopax/63/109581#BiochemicalReaction63_class> ;
+                                                                          <http://www.biopax.org/release/biopax-level3.owl#Reaction> ;
                                                                  <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway25> ;
                                                                  <http://purl.obolibrary.org/obo/RO_0002233> <http://www.reactome.org/biopax/63/109581#Complex86-885057896> ;
                                                                  <http://purl.obolibrary.org/obo/RO_0002234> <http://www.reactome.org/biopax/63/109581#Complex37-885057896> ,
@@ -406,86 +173,72 @@
 
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction64
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction64> rdf:type owl:NamedIndividual ,
-                                                                          <http://www.reactome.org/biopax/63/109581#BiochemicalReaction64_class> ;
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction64> rdf:type owl:NamedIndividual ;
                                                                  rdfs:label "Caspase-mediated cleavage of alpha adducin" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction65
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction65> rdf:type owl:NamedIndividual ,
-                                                                          <http://www.reactome.org/biopax/63/109581#BiochemicalReaction65_class> ;
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction65> rdf:type owl:NamedIndividual ;
                                                                  rdfs:label "Caspase mediated cleavage of alpha-II-Fodrin" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction66
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction66> rdf:type owl:NamedIndividual ,
-                                                                          <http://www.reactome.org/biopax/63/109581#BiochemicalReaction66_class> ;
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction66> rdf:type owl:NamedIndividual ;
                                                                  rdfs:label "Caspase-mediated cleavage of GAS2" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction67
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction67> rdf:type owl:NamedIndividual ,
-                                                                          <http://www.reactome.org/biopax/63/109581#BiochemicalReaction67_class> ;
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction67> rdf:type owl:NamedIndividual ;
                                                                  rdfs:label "Caspase mediated cleavage of HIP-55" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction75
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction75> rdf:type owl:NamedIndividual ,
-                                                                          <http://www.reactome.org/biopax/63/109581#BiochemicalReaction75_class> ;
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction75> rdf:type owl:NamedIndividual ;
                                                                  rdfs:label "Caspase mediated cleavage of beta-catenin" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction76
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction76> rdf:type owl:NamedIndividual ,
-                                                                          <http://www.reactome.org/biopax/63/109581#BiochemicalReaction76_class> ;
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction76> rdf:type owl:NamedIndividual ;
                                                                  rdfs:label "Caspase-mediated cleavage of Desmoglein 3" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction77
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction77> rdf:type owl:NamedIndividual ,
-                                                                          <http://www.reactome.org/biopax/63/109581#BiochemicalReaction77_class> ;
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction77> rdf:type owl:NamedIndividual ;
                                                                  rdfs:label "Caspase-mediated cleavage of Desmoglein 2" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction78
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction78> rdf:type owl:NamedIndividual ,
-                                                                          <http://www.reactome.org/biopax/63/109581#BiochemicalReaction78_class> ;
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction78> rdf:type owl:NamedIndividual ;
                                                                  rdfs:label "Caspase-mediated cleavage of Desmoglein 1" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction86
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction86> rdf:type owl:NamedIndividual ,
-                                                                          <http://www.reactome.org/biopax/63/109581#BiochemicalReaction86_class> ;
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction86> rdf:type owl:NamedIndividual ;
                                                                  rdfs:label "Caspase mediated cleavage of APC" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction87
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction87> rdf:type owl:NamedIndividual ,
-                                                                          <http://www.reactome.org/biopax/63/109581#BiochemicalReaction87_class> ;
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction87> rdf:type owl:NamedIndividual ;
                                                                  rdfs:label "Caspase mediated cleavage of C-IAP1" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction88
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction88> rdf:type owl:NamedIndividual ,
-                                                                          <http://www.reactome.org/biopax/63/109581#BiochemicalReaction88_class> ;
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction88> rdf:type owl:NamedIndividual ;
                                                                  rdfs:label "Caspase-mediated cleavage of FADK 1" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction93
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction93> rdf:type owl:NamedIndividual ,
-                                                                          <http://www.reactome.org/biopax/63/109581#BiochemicalReaction93_class> ;
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction93> rdf:type owl:NamedIndividual ;
                                                                  rdfs:label "Caspase-mediated cleavage of farnesyltransferase/geranyl- geranyltransferase subunit alpha " .
 
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction95
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction95> rdf:type owl:NamedIndividual ,
-                                                                          <http://www.reactome.org/biopax/63/109581#BiochemicalReaction95_class> ;
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction95> rdf:type owl:NamedIndividual ;
                                                                  rdfs:label "Caspase-mediated cleavage of Etk" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction96
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction96> rdf:type owl:NamedIndividual ,
-                                                                          <http://www.reactome.org/biopax/63/109581#BiochemicalReaction96_class> ;
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction96> rdf:type owl:NamedIndividual ;
                                                                  rdfs:label "Caspase-mediated cleavage of MASK" .
 
 
@@ -626,32 +379,28 @@
 
 ###  http://www.reactome.org/biopax/63/109581#Complex34-885057898
 <http://www.reactome.org/biopax/63/109581#Complex34-885057898> rdf:type owl:NamedIndividual ,
-                                                                        <http://identifiers.org/uniprot/P42574> ,
-                                                                        <http://www.reactome.org/biopax/63/109581#Complex34-885057898_class> ;
+                                                                        <http://identifiers.org/uniprot/P42574> ;
                                                                <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary31844997686> ;
                                                                rdfs:label "Caspase-3" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Complex37-885057896
 <http://www.reactome.org/biopax/63/109581#Complex37-885057896> rdf:type owl:NamedIndividual ,
-                                                                        <http://identifiers.org/uniprot/P55211> ,
-                                                                        <http://www.reactome.org/biopax/63/109581#Complex37-885057896_class> ;
+                                                                        <http://identifiers.org/uniprot/P55211> ;
                                                                <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3749110903> ;
                                                                rdfs:label "Cleaved Caspase-9" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Complex79-885057897
 <http://www.reactome.org/biopax/63/109581#Complex79-885057897> rdf:type owl:NamedIndividual ,
-                                                                        <http://identifiers.org/uniprot/P55210> ,
-                                                                        <http://www.reactome.org/biopax/63/109581#Complex79-885057897_class> ;
+                                                                        <http://identifiers.org/uniprot/P55210> ;
                                                                <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary31966506358> ;
                                                                rdfs:label "Caspase-7" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Complex82-885057898
 <http://www.reactome.org/biopax/63/109581#Complex82-885057898> rdf:type owl:NamedIndividual ,
-                                                                        <http://purl.obolibrary.org/obo/GO_0032991> ,
-                                                                        <http://www.reactome.org/biopax/63/109581#Complex82-885057898_class> ;
+                                                                        <http://purl.obolibrary.org/obo/GO_0032991> ;
                                                                <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein1051789346703> ,
                                                                                                             <http://www.reactome.org/biopax/63/109581#Protein1111789346703> ,
                                                                                                             <http://www.reactome.org/biopax/63/109581#Protein311789346703> ,
@@ -662,8 +411,7 @@
 
 ###  http://www.reactome.org/biopax/63/109581#Complex84-885057897
 <http://www.reactome.org/biopax/63/109581#Complex84-885057897> rdf:type owl:NamedIndividual ,
-                                                                        <http://purl.obolibrary.org/obo/GO_0032991> ,
-                                                                        <http://www.reactome.org/biopax/63/109581#Complex84-885057897_class> ;
+                                                                        <http://purl.obolibrary.org/obo/GO_0032991> ;
                                                                <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein105-1804556016> ,
                                                                                                             <http://www.reactome.org/biopax/63/109581#Protein109-1804556016> ,
                                                                                                             <http://www.reactome.org/biopax/63/109581#Protein110-1804556016> ,
@@ -674,8 +422,7 @@
 
 ###  http://www.reactome.org/biopax/63/109581#Complex86-885057896
 <http://www.reactome.org/biopax/63/109581#Complex86-885057896> rdf:type owl:NamedIndividual ,
-                                                                        <http://purl.obolibrary.org/obo/GO_0032991> ,
-                                                                        <http://www.reactome.org/biopax/63/109581#Complex86-885057896_class> ;
+                                                                        <http://purl.obolibrary.org/obo/GO_0032991> ;
                                                                <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein105-1103491439> ,
                                                                                                             <http://www.reactome.org/biopax/63/109581#Protein111-1103491439> ,
                                                                                                             <http://www.reactome.org/biopax/63/109581#Protein34-1103491439> ,
@@ -686,8 +433,7 @@
 
 ###  http://www.reactome.org/biopax/63/109581#Complex87-885057896
 <http://www.reactome.org/biopax/63/109581#Complex87-885057896> rdf:type owl:NamedIndividual ,
-                                                                        <http://purl.obolibrary.org/obo/GO_0032991> ,
-                                                                        <http://www.reactome.org/biopax/63/109581#Complex87-885057896_class> ;
+                                                                        <http://purl.obolibrary.org/obo/GO_0032991> ;
                                                                <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein1051394524498> ,
                                                                                                             <http://www.reactome.org/biopax/63/109581#Protein1111394524498> ;
                                                                <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary31394524498> ;
@@ -696,8 +442,7 @@
 
 ###  http://www.reactome.org/biopax/63/109581#Complex87-885057897
 <http://www.reactome.org/biopax/63/109581#Complex87-885057897> rdf:type owl:NamedIndividual ,
-                                                                        <http://purl.obolibrary.org/obo/GO_0032991> ,
-                                                                        <http://www.reactome.org/biopax/63/109581#Complex87-885057897_class> ;
+                                                                        <http://purl.obolibrary.org/obo/GO_0032991> ;
                                                                <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein1051394524499> ,
                                                                                                             <http://www.reactome.org/biopax/63/109581#Protein1111394524499> ;
                                                                <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary31394524499> ;
@@ -706,8 +451,7 @@
 
 ###  http://www.reactome.org/biopax/63/109581#Complex87-885057898
 <http://www.reactome.org/biopax/63/109581#Complex87-885057898> rdf:type owl:NamedIndividual ,
-                                                                        <http://purl.obolibrary.org/obo/GO_0032991> ,
-                                                                        <http://www.reactome.org/biopax/63/109581#Complex87-885057898_class> ;
+                                                                        <http://purl.obolibrary.org/obo/GO_0032991> ;
                                                                <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Protein1051394524500> ,
                                                                                                             <http://www.reactome.org/biopax/63/109581#Protein1111394524500> ;
                                                                <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary31394524500> ;
@@ -715,158 +459,138 @@
 
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway23
-<http://www.reactome.org/biopax/63/109581#Pathway23> rdf:type owl:NamedIndividual ,
-                                                              <http://www.reactome.org/biopax/63/109581#Pathway23_class> ;
+<http://www.reactome.org/biopax/63/109581#Pathway23> rdf:type owl:NamedIndividual ;
                                                      rdfs:label "SMAC-mediated apoptotic response" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway25
-<http://www.reactome.org/biopax/63/109581#Pathway25> rdf:type owl:NamedIndividual ,
-                                                              <http://www.reactome.org/biopax/63/109581#Pathway25_class> ;
+<http://www.reactome.org/biopax/63/109581#Pathway25> rdf:type owl:NamedIndividual ;
                                                      <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway23> ;
                                                      rdfs:label "SMAC-mediated dissociation of IAP:caspase complexes " .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein105-1103491439
 <http://www.reactome.org/biopax/63/109581#Protein105-1103491439> rdf:type owl:NamedIndividual ,
-                                                                          <http://identifiers.org/uniprot/Q9NR28> ,
-                                                                          <http://www.reactome.org/biopax/63/109581#Protein105-1103491439_class> ;
+                                                                          <http://identifiers.org/uniprot/Q9NR28> ;
                                                                  <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-535225501> ;
                                                                  rdfs:label "SMAC" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein105-1804556016
 <http://www.reactome.org/biopax/63/109581#Protein105-1804556016> rdf:type owl:NamedIndividual ,
-                                                                          <http://identifiers.org/uniprot/Q9NR28> ,
-                                                                          <http://www.reactome.org/biopax/63/109581#Protein105-1804556016_class> ;
+                                                                          <http://identifiers.org/uniprot/Q9NR28> ;
                                                                  <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3610078940> ;
                                                                  rdfs:label "SMAC" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein1051394524498
 <http://www.reactome.org/biopax/63/109581#Protein1051394524498> rdf:type owl:NamedIndividual ,
-                                                                         <http://identifiers.org/uniprot/Q9NR28> ,
-                                                                         <http://www.reactome.org/biopax/63/109581#Protein1051394524498_class> ;
+                                                                         <http://identifiers.org/uniprot/Q9NR28> ;
                                                                 <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary32014169092> ;
                                                                 rdfs:label "SMAC" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein1051394524499
 <http://www.reactome.org/biopax/63/109581#Protein1051394524499> rdf:type owl:NamedIndividual ,
-                                                                         <http://identifiers.org/uniprot/Q9NR28> ,
-                                                                         <http://www.reactome.org/biopax/63/109581#Protein1051394524499_class> ;
+                                                                         <http://identifiers.org/uniprot/Q9NR28> ;
                                                                 <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary32014169093> ;
                                                                 rdfs:label "SMAC" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein1051394524500
 <http://www.reactome.org/biopax/63/109581#Protein1051394524500> rdf:type owl:NamedIndividual ,
-                                                                         <http://identifiers.org/uniprot/Q9NR28> ,
-                                                                         <http://www.reactome.org/biopax/63/109581#Protein1051394524500_class> ;
+                                                                         <http://identifiers.org/uniprot/Q9NR28> ;
                                                                 <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary32014169766> ;
                                                                 rdfs:label "SMAC" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein1051789346703
 <http://www.reactome.org/biopax/63/109581#Protein1051789346703> rdf:type owl:NamedIndividual ,
-                                                                         <http://identifiers.org/uniprot/Q9NR28> ,
-                                                                         <http://www.reactome.org/biopax/63/109581#Protein1051789346703_class> ;
+                                                                         <http://identifiers.org/uniprot/Q9NR28> ;
                                                                 <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary31718677527> ;
                                                                 rdfs:label "SMAC" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein109-1804556016
 <http://www.reactome.org/biopax/63/109581#Protein109-1804556016> rdf:type owl:NamedIndividual ,
-                                                                          <http://identifiers.org/uniprot/P55210> ,
-                                                                          <http://www.reactome.org/biopax/63/109581#Protein109-1804556016_class> ;
+                                                                          <http://identifiers.org/uniprot/P55210> ;
                                                                  <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary31126409816> ;
                                                                  rdfs:label "CASP7(24-198)" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein110-1804556016
 <http://www.reactome.org/biopax/63/109581#Protein110-1804556016> rdf:type owl:NamedIndividual ,
-                                                                          <http://identifiers.org/uniprot/P55210> ,
-                                                                          <http://www.reactome.org/biopax/63/109581#Protein110-1804556016_class> ;
+                                                                          <http://identifiers.org/uniprot/P55210> ;
                                                                  <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-328737662> ;
                                                                  rdfs:label "CASP7(207-303)" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein111-1103491439
 <http://www.reactome.org/biopax/63/109581#Protein111-1103491439> rdf:type owl:NamedIndividual ,
-                                                                          <http://identifiers.org/uniprot/P98170> ,
-                                                                          <http://www.reactome.org/biopax/63/109581#Protein111-1103491439_class> ;
+                                                                          <http://identifiers.org/uniprot/P98170> ;
                                                                  <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-1344959384> ;
                                                                  rdfs:label "XIAP" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein111-1804556016
 <http://www.reactome.org/biopax/63/109581#Protein111-1804556016> rdf:type owl:NamedIndividual ,
-                                                                          <http://identifiers.org/uniprot/P98170> ,
-                                                                          <http://www.reactome.org/biopax/63/109581#Protein111-1804556016_class> ;
+                                                                          <http://identifiers.org/uniprot/P98170> ;
                                                                  <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-199654943> ;
                                                                  rdfs:label "XIAP" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein1111394524498
 <http://www.reactome.org/biopax/63/109581#Protein1111394524498> rdf:type owl:NamedIndividual ,
-                                                                         <http://identifiers.org/uniprot/P98170> ,
-                                                                         <http://www.reactome.org/biopax/63/109581#Protein1111394524498_class> ;
+                                                                         <http://identifiers.org/uniprot/P98170> ;
                                                                 <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3741122655> ;
                                                                 rdfs:label "XIAP" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein1111394524499
 <http://www.reactome.org/biopax/63/109581#Protein1111394524499> rdf:type owl:NamedIndividual ,
-                                                                         <http://identifiers.org/uniprot/P98170> ,
-                                                                         <http://www.reactome.org/biopax/63/109581#Protein1111394524499_class> ;
+                                                                         <http://identifiers.org/uniprot/P98170> ;
                                                                 <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3741122656> ;
                                                                 rdfs:label "XIAP" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein1111394524500
 <http://www.reactome.org/biopax/63/109581#Protein1111394524500> rdf:type owl:NamedIndividual ,
-                                                                         <http://identifiers.org/uniprot/P98170> ,
-                                                                         <http://www.reactome.org/biopax/63/109581#Protein1111394524500_class> ;
+                                                                         <http://identifiers.org/uniprot/P98170> ;
                                                                 <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3741123329> ;
                                                                 rdfs:label "XIAP" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein1111789346703
 <http://www.reactome.org/biopax/63/109581#Protein1111789346703> rdf:type owl:NamedIndividual ,
-                                                                         <http://identifiers.org/uniprot/P98170> ,
-                                                                         <http://www.reactome.org/biopax/63/109581#Protein1111789346703_class> ;
+                                                                         <http://identifiers.org/uniprot/P98170> ;
                                                                 <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3445631090> ;
                                                                 rdfs:label "XIAP" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein311789346703
 <http://www.reactome.org/biopax/63/109581#Protein311789346703> rdf:type owl:NamedIndividual ,
-                                                                        <http://identifiers.org/uniprot/P42574> ,
-                                                                        <http://www.reactome.org/biopax/63/109581#Protein311789346703_class> ;
+                                                                        <http://identifiers.org/uniprot/P42574> ;
                                                                <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary31831165925> ;
                                                                rdfs:label "CASP3" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein321789346703
 <http://www.reactome.org/biopax/63/109581#Protein321789346703> rdf:type owl:NamedIndividual ,
-                                                                        <http://identifiers.org/uniprot/P42574> ,
-                                                                        <http://www.reactome.org/biopax/63/109581#Protein321789346703_class> ;
+                                                                        <http://identifiers.org/uniprot/P42574> ;
                                                                <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary334214566> ;
                                                                rdfs:label "CASP3(176-277)" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein34-1103491439
 <http://www.reactome.org/biopax/63/109581#Protein34-1103491439> rdf:type owl:NamedIndividual ,
-                                                                         <http://identifiers.org/uniprot/P55211> ,
-                                                                         <http://www.reactome.org/biopax/63/109581#Protein34-1103491439_class> ;
+                                                                         <http://identifiers.org/uniprot/P55211> ;
                                                                 <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-955804302> ;
                                                                 rdfs:label "CASP9" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein35-1103491439
 <http://www.reactome.org/biopax/63/109581#Protein35-1103491439> rdf:type owl:NamedIndividual ,
-                                                                         <http://identifiers.org/uniprot/P55211> ,
-                                                                         <http://www.reactome.org/biopax/63/109581#Protein35-1103491439_class> ;
+                                                                         <http://identifiers.org/uniprot/P55211> ;
                                                                 <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-826721583> ;
                                                                 rdfs:label "CASP9 p35" .
 
@@ -875,9 +599,9 @@
 #    Annotations
 #################################################################
 
-<http://model.geneontology.org/-174246342> <http://geneontology.org/lego/modelstate> "Auto-generated" ;
-                                           <http://purl.org/dc/elements/1.1/contributor> "https://reactome.org" ;
-                                           <http://purl.org/dc/elements/1.1/date> "2018-01-30" ;
+<http://model.geneontology.org/-174246342> <http://geneontology.org/lego/modelstate> "development" ;
+                                           <http://purl.org/dc/elements/1.1/contributor> "https://reactome.org/content/detail/R-HSA-111464" ;
+                                           <http://purl.org/dc/elements/1.1/date> "2018-02-07" ;
                                            <http://purl.org/dc/elements/1.1/title> "Reactome:SMAC-mediated dissociation of IAP:caspase complexes " .
 
 

@@ -78,44 +78,26 @@
                                                           rdfs:label "Protein" .
 
 
-###  http://www.reactome.org/biopax/63/109581#Pathway26_class
-<http://www.reactome.org/biopax/63/109581#Pathway26_class> rdf:type owl:Class ;
-                                                           rdfs:label "Apoptotic execution phase" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Pathway31_class
-<http://www.reactome.org/biopax/63/109581#Pathway31_class> rdf:type owl:Class ;
-                                                           rdfs:label "Apoptosis induced DNA fragmentation" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Pathway32_class
-<http://www.reactome.org/biopax/63/109581#Pathway32_class> rdf:type owl:Class ;
-                                                           rdfs:label "Activation of DNA fragmentation factor" .
-
-
 #################################################################
 #    Individuals
 #################################################################
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway26
 <http://www.reactome.org/biopax/63/109581#Pathway26> rdf:type owl:NamedIndividual ,
-                                                              <http://purl.obolibrary.org/obo/GO_0097194> ,
-                                                              <http://www.reactome.org/biopax/63/109581#Pathway26_class> ;
+                                                              <http://purl.obolibrary.org/obo/GO_0097194> ;
                                                      rdfs:label "Apoptotic execution phase" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway31
 <http://www.reactome.org/biopax/63/109581#Pathway31> rdf:type owl:NamedIndividual ,
-                                                              <http://purl.obolibrary.org/obo/GO_0006309> ,
-                                                              <http://www.reactome.org/biopax/63/109581#Pathway31_class> ;
+                                                              <http://purl.obolibrary.org/obo/GO_0006309> ;
                                                      <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway26> ;
                                                      <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Pathway32> ;
                                                      rdfs:label "Apoptosis induced DNA fragmentation" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway32
-<http://www.reactome.org/biopax/63/109581#Pathway32> rdf:type owl:NamedIndividual ,
-                                                              <http://www.reactome.org/biopax/63/109581#Pathway32_class> ;
+<http://www.reactome.org/biopax/63/109581#Pathway32> rdf:type owl:NamedIndividual ;
                                                      rdfs:label "Activation of DNA fragmentation factor" .
 
 
@@ -123,9 +105,9 @@
 #    Annotations
 #################################################################
 
-<http://model.geneontology.org/919721370> <http://geneontology.org/lego/modelstate> "Auto-generated" ;
+<http://model.geneontology.org/919721370> <http://geneontology.org/lego/modelstate> "development" ;
                                           <http://purl.org/dc/elements/1.1/contributor> "https://reactome.org/content/detail/R-HSA-140342" ;
-                                          <http://purl.org/dc/elements/1.1/date> "2018-01-30" ;
+                                          <http://purl.org/dc/elements/1.1/date> "2018-02-07" ;
                                           <http://purl.org/dc/elements/1.1/title> "Reactome:Apoptosis induced DNA fragmentation" .
 
 

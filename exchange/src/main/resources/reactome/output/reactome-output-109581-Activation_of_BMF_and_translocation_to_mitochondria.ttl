@@ -140,76 +140,6 @@
                                                            rdfs:label "Reaction" .
 
 
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction39_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction39_class> rdf:type owl:Class ;
-                                                                       rdfs:label "Phosphorylation of DLC2 by MAPK8" .
-
-
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction40_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction40_class> rdf:type owl:Class ;
-                                                                       rdfs:label "Translocation of BMF to mitochondria" .
-
-
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction41_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction41_class> rdf:type owl:Class ;
-                                                                       rdfs:label "BH3-only proteins associate with and inactivate anti-apoptotic BCL-2" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Complex66-885057983_class
-<http://www.reactome.org/biopax/63/109581#Complex66-885057983_class> rdf:type owl:Class ;
-                                                                     rdfs:label "BMF sequestered to dynein (DLC2)" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Complex67-885057983_class
-<http://www.reactome.org/biopax/63/109581#Complex67-885057983_class> rdf:type owl:Class ;
-                                                                     rdfs:label "Dynein (DLC2) on microtubules" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Pathway14_class
-<http://www.reactome.org/biopax/63/109581#Pathway14_class> rdf:type owl:Class ;
-                                                           rdfs:label "Activation of BMF and translocation to mitochondria" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Pathway9_class
-<http://www.reactome.org/biopax/63/109581#Pathway9_class> rdf:type owl:Class ;
-                                                          rdfs:label "Activation of BH3-only proteins" .
-
-
-###  http://www.reactome.org/biopax/63/109581#PhysicalEntity1-1361655950_class
-<http://www.reactome.org/biopax/63/109581#PhysicalEntity1-1361655950_class> rdf:type owl:Class ;
-                                                                            rdfs:label "microtubules" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein88-885057983_class
-<http://www.reactome.org/biopax/63/109581#Protein88-885057983_class> rdf:type owl:Class ;
-                                                                     rdfs:label "JNK1" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein90-1361655950_class
-<http://www.reactome.org/biopax/63/109581#Protein90-1361655950_class> rdf:type owl:Class ;
-                                                                      rdfs:label "DLC2" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein91-1361655950_class
-<http://www.reactome.org/biopax/63/109581#Protein91-1361655950_class> rdf:type owl:Class ;
-                                                                      rdfs:label "BMF" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein92-885057961_class
-<http://www.reactome.org/biopax/63/109581#Protein92-885057961_class> rdf:type owl:Class ;
-                                                                     rdfs:label "p-BMF" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein92-885057983_class
-<http://www.reactome.org/biopax/63/109581#Protein92-885057983_class> rdf:type owl:Class ;
-                                                                     rdfs:label "p-BMF" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein93-885057961_class
-<http://www.reactome.org/biopax/63/109581#Protein93-885057961_class> rdf:type owl:Class ;
-                                                                     rdfs:label "p-BMF" .
-
-
 #################################################################
 #    Individuals
 #################################################################
@@ -217,8 +147,7 @@
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction39
 <http://www.reactome.org/biopax/63/109581#BiochemicalReaction39> rdf:type owl:NamedIndividual ,
                                                                           <http://purl.obolibrary.org/obo/GO_0016301> ,
-                                                                          <http://www.biopax.org/release/biopax-level3.owl#Reaction> ,
-                                                                          <http://www.reactome.org/biopax/63/109581#BiochemicalReaction39_class> ;
+                                                                          <http://www.biopax.org/release/biopax-level3.owl#Reaction> ;
                                                                  <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway14> ;
                                                                  <http://purl.obolibrary.org/obo/RO_0002233> <http://www.reactome.org/biopax/63/109581#Complex66-885057983> ;
                                                                  <http://purl.obolibrary.org/obo/RO_0002234> <http://www.reactome.org/biopax/63/109581#Complex67-885057983> ,
@@ -230,8 +159,7 @@
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction40
 <http://www.reactome.org/biopax/63/109581#BiochemicalReaction40> rdf:type owl:NamedIndividual ,
-                                                                          <http://www.biopax.org/release/biopax-level3.owl#Reaction> ,
-                                                                          <http://www.reactome.org/biopax/63/109581#BiochemicalReaction40_class> ;
+                                                                          <http://www.biopax.org/release/biopax-level3.owl#Reaction> ;
                                                                  <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway14> ;
                                                                  <http://purl.obolibrary.org/obo/RO_0002233> <http://www.reactome.org/biopax/63/109581#Protein92-885057961> ;
                                                                  <http://purl.obolibrary.org/obo/RO_0002234> <http://www.reactome.org/biopax/63/109581#Protein93-885057961> ;
@@ -240,8 +168,7 @@
 
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction41
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction41> rdf:type owl:NamedIndividual ,
-                                                                          <http://www.reactome.org/biopax/63/109581#BiochemicalReaction41_class> ;
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction41> rdf:type owl:NamedIndividual ;
                                                                  rdfs:label "BH3-only proteins associate with and inactivate anti-apoptotic BCL-2" .
 
 
@@ -292,8 +219,7 @@
 
 ###  http://www.reactome.org/biopax/63/109581#Complex66-885057983
 <http://www.reactome.org/biopax/63/109581#Complex66-885057983> rdf:type owl:NamedIndividual ,
-                                                                        <http://purl.obolibrary.org/obo/GO_0032991> ,
-                                                                        <http://www.reactome.org/biopax/63/109581#Complex66-885057983_class> ;
+                                                                        <http://purl.obolibrary.org/obo/GO_0032991> ;
                                                                <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#PhysicalEntity1-1361655950> ,
                                                                                                             <http://www.reactome.org/biopax/63/109581#Protein90-1361655950> ,
                                                                                                             <http://www.reactome.org/biopax/63/109581#Protein91-1361655950> ;
@@ -303,78 +229,68 @@
 
 ###  http://www.reactome.org/biopax/63/109581#Complex67-885057983
 <http://www.reactome.org/biopax/63/109581#Complex67-885057983> rdf:type owl:NamedIndividual ,
-                                                                        <http://identifiers.org/uniprot/Q96FJ2> ,
-                                                                        <http://www.reactome.org/biopax/63/109581#Complex67-885057983_class> ;
+                                                                        <http://identifiers.org/uniprot/Q96FJ2> ;
                                                                <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary11136359987> ;
                                                                rdfs:label "Dynein (DLC2) on microtubules" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway14
 <http://www.reactome.org/biopax/63/109581#Pathway14> rdf:type owl:NamedIndividual ,
-                                                              <http://purl.obolibrary.org/obo/GO_1900740> ,
-                                                              <http://www.reactome.org/biopax/63/109581#Pathway14_class> ;
+                                                              <http://purl.obolibrary.org/obo/GO_1900740> ;
                                                      <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway9> ;
                                                      rdfs:label "Activation of BMF and translocation to mitochondria" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway9
 <http://www.reactome.org/biopax/63/109581#Pathway9> rdf:type owl:NamedIndividual ,
-                                                             <http://purl.obolibrary.org/obo/GO_1900740> ,
-                                                             <http://www.reactome.org/biopax/63/109581#Pathway9_class> ;
+                                                             <http://purl.obolibrary.org/obo/GO_1900740> ;
                                                     rdfs:label "Activation of BH3-only proteins" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#PhysicalEntity1-1361655950
-<http://www.reactome.org/biopax/63/109581#PhysicalEntity1-1361655950> rdf:type owl:NamedIndividual ,
-                                                                               <http://www.reactome.org/biopax/63/109581#PhysicalEntity1-1361655950_class> ;
+<http://www.reactome.org/biopax/63/109581#PhysicalEntity1-1361655950> rdf:type owl:NamedIndividual ;
                                                                       <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary1-870279863> ;
                                                                       rdfs:label "microtubules" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein88-885057983
 <http://www.reactome.org/biopax/63/109581#Protein88-885057983> rdf:type owl:NamedIndividual ,
-                                                                        <http://identifiers.org/uniprot/P45983> ,
-                                                                        <http://www.reactome.org/biopax/63/109581#Protein88-885057983_class> ;
+                                                                        <http://identifiers.org/uniprot/P45983> ;
                                                                <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-1873525243> ;
                                                                rdfs:label "JNK1" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein90-1361655950
 <http://www.reactome.org/biopax/63/109581#Protein90-1361655950> rdf:type owl:NamedIndividual ,
-                                                                         <http://identifiers.org/uniprot/Q96FJ2> ,
-                                                                         <http://www.reactome.org/biopax/63/109581#Protein90-1361655950_class> ;
+                                                                         <http://identifiers.org/uniprot/Q96FJ2> ;
                                                                 <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary11888080742> ;
                                                                 rdfs:label "DLC2" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein91-1361655950
 <http://www.reactome.org/biopax/63/109581#Protein91-1361655950> rdf:type owl:NamedIndividual ,
-                                                                         <http://identifiers.org/uniprot/Q96LC9> ,
-                                                                         <http://www.reactome.org/biopax/63/109581#Protein91-1361655950_class> ;
+                                                                         <http://identifiers.org/uniprot/Q96LC9> ;
                                                                 <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary12017163461> ;
                                                                 rdfs:label "BMF" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein92-885057961
 <http://www.reactome.org/biopax/63/109581#Protein92-885057961> rdf:type owl:NamedIndividual ,
-                                                                        <http://identifiers.org/uniprot/Q96LC9> ,
-                                                                        <http://www.reactome.org/biopax/63/109581#Protein92-885057961_class> ;
+                                                                        <http://identifiers.org/uniprot/Q96LC9> ;
                                                                <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3447330974> ;
                                                                rdfs:label "p-BMF" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein92-885057983
 <http://www.reactome.org/biopax/63/109581#Protein92-885057983> rdf:type owl:NamedIndividual ,
-                                                                        <http://identifiers.org/uniprot/Q96LC9> ,
-                                                                        <http://www.reactome.org/biopax/63/109581#Protein92-885057983_class> ;
+                                                                        <http://identifiers.org/uniprot/Q96LC9> ;
                                                                <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3447331038> ;
                                                                rdfs:label "p-BMF" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein93-885057961
 <http://www.reactome.org/biopax/63/109581#Protein93-885057961> rdf:type owl:NamedIndividual ,
-                                                                        <http://identifiers.org/uniprot/Q96LC9> ,
-                                                                        <http://www.reactome.org/biopax/63/109581#Protein93-885057961_class> ;
+                                                                        <http://identifiers.org/uniprot/Q96LC9> ;
                                                                <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1349620385> ;
                                                                rdfs:label "p-BMF" .
 
@@ -383,9 +299,9 @@
 #    Annotations
 #################################################################
 
-<http://model.geneontology.org/-1189210346> <http://geneontology.org/lego/modelstate> "Auto-generated" ;
+<http://model.geneontology.org/-1189210346> <http://geneontology.org/lego/modelstate> "development" ;
                                             <http://purl.org/dc/elements/1.1/contributor> "https://reactome.org/content/detail/R-HSA-139910" ;
-                                            <http://purl.org/dc/elements/1.1/date> "2018-01-30" ;
+                                            <http://purl.org/dc/elements/1.1/date> "2018-02-07" ;
                                             <http://purl.org/dc/elements/1.1/title> "Reactome:Activation of BMF and translocation to mitochondria" .
 
 

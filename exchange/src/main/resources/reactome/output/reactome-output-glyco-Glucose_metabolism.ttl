@@ -78,29 +78,13 @@
                                                           rdfs:label "Protein" .
 
 
-###  http://www.reactome.org/biopax/63/70326#Pathway1_class
-<http://www.reactome.org/biopax/63/70326#Pathway1_class> rdf:type owl:Class ;
-                                                         rdfs:label "Glucose metabolism" .
-
-
-###  http://www.reactome.org/biopax/63/70326#Pathway2_class
-<http://www.reactome.org/biopax/63/70326#Pathway2_class> rdf:type owl:Class ;
-                                                         rdfs:label "Gluconeogenesis" .
-
-
-###  http://www.reactome.org/biopax/63/70326#Pathway3_class
-<http://www.reactome.org/biopax/63/70326#Pathway3_class> rdf:type owl:Class ;
-                                                         rdfs:label "Glycolysis" .
-
-
 #################################################################
 #    Individuals
 #################################################################
 
 ###  http://www.reactome.org/biopax/63/70326#Pathway1
 <http://www.reactome.org/biopax/63/70326#Pathway1> rdf:type owl:NamedIndividual ,
-                                                            <http://purl.obolibrary.org/obo/GO_0006006> ,
-                                                            <http://www.reactome.org/biopax/63/70326#Pathway1_class> ;
+                                                            <http://purl.obolibrary.org/obo/GO_0006006> ;
                                                    <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/70326#Pathway2> ,
                                                                                                 <http://www.reactome.org/biopax/63/70326#Pathway3> ;
                                                    rdfs:label "Glucose metabolism" .
@@ -108,15 +92,13 @@
 
 ###  http://www.reactome.org/biopax/63/70326#Pathway2
 <http://www.reactome.org/biopax/63/70326#Pathway2> rdf:type owl:NamedIndividual ,
-                                                            <http://purl.obolibrary.org/obo/GO_0006094> ,
-                                                            <http://www.reactome.org/biopax/63/70326#Pathway2_class> ;
+                                                            <http://purl.obolibrary.org/obo/GO_0006094> ;
                                                    rdfs:label "Gluconeogenesis" .
 
 
 ###  http://www.reactome.org/biopax/63/70326#Pathway3
 <http://www.reactome.org/biopax/63/70326#Pathway3> rdf:type owl:NamedIndividual ,
-                                                            <http://purl.obolibrary.org/obo/GO_0061621> ,
-                                                            <http://www.reactome.org/biopax/63/70326#Pathway3_class> ;
+                                                            <http://purl.obolibrary.org/obo/GO_0061621> ;
                                                    rdfs:label "Glycolysis" .
 
 
@@ -124,9 +106,9 @@
 #    Annotations
 #################################################################
 
-<http://model.geneontology.org/1785354299> <http://geneontology.org/lego/modelstate> "Auto-generated" ;
+<http://model.geneontology.org/1785354299> <http://geneontology.org/lego/modelstate> "development" ;
                                            <http://purl.org/dc/elements/1.1/contributor> "https://reactome.org/content/detail/R-HSA-70326" ;
-                                           <http://purl.org/dc/elements/1.1/date> "2018-01-30" ;
+                                           <http://purl.org/dc/elements/1.1/date> "2018-02-07" ;
                                            <http://purl.org/dc/elements/1.1/title> "Reactome:Glucose metabolism" .
 
 

@@ -140,56 +140,6 @@
                                                            rdfs:label "Reaction" .
 
 
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction122_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction122_class> rdf:type owl:Class ;
-                                                                        rdfs:label "OMA1 hydrolyses OPA1" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Pathway1_class
-<http://www.reactome.org/biopax/63/109581#Pathway1_class> rdf:type owl:Class ;
-                                                          rdfs:label "Apoptosis" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Pathway34_class
-<http://www.reactome.org/biopax/63/109581#Pathway34_class> rdf:type owl:Class ;
-                                                           rdfs:label "Regulation of Apoptosis" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Pathway35_class
-<http://www.reactome.org/biopax/63/109581#Pathway35_class> rdf:type owl:Class ;
-                                                           rdfs:label "Regulation of activated PAK-2p34 by proteasome mediated degradation" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Pathway36_class
-<http://www.reactome.org/biopax/63/109581#Pathway36_class> rdf:type owl:Class ;
-                                                           rdfs:label "Regulation of PAK-2p34 activity by PS-GAP/RHG10" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein320-688052890_class
-<http://www.reactome.org/biopax/63/109581#Protein320-688052890_class> rdf:type owl:Class ;
-                                                                      rdfs:label "OPA1" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein321-688052890_class
-<http://www.reactome.org/biopax/63/109581#Protein321-688052890_class> rdf:type owl:Class ;
-                                                                      rdfs:label "OPA1_HUMAN" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein322-688052890_class
-<http://www.reactome.org/biopax/63/109581#Protein322-688052890_class> rdf:type owl:Class ;
-                                                                      rdfs:label "OPA1_HUMAN" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein323-688052890_class
-<http://www.reactome.org/biopax/63/109581#Protein323-688052890_class> rdf:type owl:Class ;
-                                                                      rdfs:label "OMA1" .
-
-
-###  http://www.reactome.org/biopax/63/109581#SmallMolecule6-688052890_class
-<http://www.reactome.org/biopax/63/109581#SmallMolecule6-688052890_class> rdf:type owl:Class ;
-                                                                          rdfs:label "H2O" .
-
-
 #################################################################
 #    Individuals
 #################################################################
@@ -197,8 +147,7 @@
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction122
 <http://www.reactome.org/biopax/63/109581#BiochemicalReaction122> rdf:type owl:NamedIndividual ,
                                                                            <http://purl.obolibrary.org/obo/GO_0004222> ,
-                                                                           <http://www.biopax.org/release/biopax-level3.owl#Reaction> ,
-                                                                           <http://www.reactome.org/biopax/63/109581#BiochemicalReaction122_class> ;
+                                                                           <http://www.biopax.org/release/biopax-level3.owl#Reaction> ;
                                                                   <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway34> ;
                                                                   <http://purl.obolibrary.org/obo/RO_0002233> <http://www.reactome.org/biopax/63/109581#Protein320-688052890> ,
                                                                                                               <http://www.reactome.org/biopax/63/109581#SmallMolecule6-688052890> ;
@@ -235,15 +184,13 @@
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway1
 <http://www.reactome.org/biopax/63/109581#Pathway1> rdf:type owl:NamedIndividual ,
-                                                             <http://purl.obolibrary.org/obo/GO_0006915> ,
-                                                             <http://www.reactome.org/biopax/63/109581#Pathway1_class> ;
+                                                             <http://purl.obolibrary.org/obo/GO_0006915> ;
                                                     rdfs:label "Apoptosis" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway34
 <http://www.reactome.org/biopax/63/109581#Pathway34> rdf:type owl:NamedIndividual ,
-                                                              <http://purl.obolibrary.org/obo/GO_0042981> ,
-                                                              <http://www.reactome.org/biopax/63/109581#Pathway34_class> ;
+                                                              <http://purl.obolibrary.org/obo/GO_0042981> ;
                                                      <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway1> ;
                                                      <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Pathway35> ,
                                                                                                   <http://www.reactome.org/biopax/63/109581#Pathway36> ;
@@ -252,54 +199,47 @@
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway35
 <http://www.reactome.org/biopax/63/109581#Pathway35> rdf:type owl:NamedIndividual ,
-                                                              <http://purl.obolibrary.org/obo/GO_0043066> ,
-                                                              <http://www.reactome.org/biopax/63/109581#Pathway35_class> ;
+                                                              <http://purl.obolibrary.org/obo/GO_0043066> ;
                                                      rdfs:label "Regulation of activated PAK-2p34 by proteasome mediated degradation" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway36
 <http://www.reactome.org/biopax/63/109581#Pathway36> rdf:type owl:NamedIndividual ,
-                                                              <http://purl.obolibrary.org/obo/GO_0043066> ,
-                                                              <http://www.reactome.org/biopax/63/109581#Pathway36_class> ;
+                                                              <http://purl.obolibrary.org/obo/GO_0043066> ;
                                                      rdfs:label "Regulation of PAK-2p34 activity by PS-GAP/RHG10" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein320-688052890
 <http://www.reactome.org/biopax/63/109581#Protein320-688052890> rdf:type owl:NamedIndividual ,
-                                                                         <http://identifiers.org/uniprot/O60313> ,
-                                                                         <http://www.reactome.org/biopax/63/109581#Protein320-688052890_class> ;
+                                                                         <http://identifiers.org/uniprot/O60313> ;
                                                                 <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary11-889185199> ;
                                                                 rdfs:label "OPA1" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein321-688052890
 <http://www.reactome.org/biopax/63/109581#Protein321-688052890> rdf:type owl:NamedIndividual ,
-                                                                         <http://identifiers.org/uniprot/O60313> ,
-                                                                         <http://www.reactome.org/biopax/63/109581#Protein321-688052890_class> ;
+                                                                         <http://identifiers.org/uniprot/O60313> ;
                                                                 <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary111608830738> ;
                                                                 rdfs:label "OPA1_HUMAN" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein322-688052890
 <http://www.reactome.org/biopax/63/109581#Protein322-688052890> rdf:type owl:NamedIndividual ,
-                                                                         <http://identifiers.org/uniprot/O60313> ,
-                                                                         <http://www.reactome.org/biopax/63/109581#Protein322-688052890_class> ;
+                                                                         <http://identifiers.org/uniprot/O60313> ;
                                                                 <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary11-188120621> ;
                                                                 rdfs:label "OPA1_HUMAN" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein323-688052890
 <http://www.reactome.org/biopax/63/109581#Protein323-688052890> rdf:type owl:NamedIndividual ,
-                                                                         <http://identifiers.org/uniprot/Q96E52> ,
-                                                                         <http://www.reactome.org/biopax/63/109581#Protein323-688052890_class> ;
+                                                                         <http://identifiers.org/uniprot/Q96E52> ;
                                                                 <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary11-1985071980> ;
                                                                 rdfs:label "OMA1" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#SmallMolecule6-688052890
 <http://www.reactome.org/biopax/63/109581#SmallMolecule6-688052890> rdf:type owl:NamedIndividual ,
-                                                                             <http://purl.obolibrary.org/obo/CHEBI_15377> ,
-                                                                             <http://www.reactome.org/biopax/63/109581#SmallMolecule6-688052890_class> ;
+                                                                             <http://purl.obolibrary.org/obo/CHEBI_15377> ;
                                                                     <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary12-1452280724> ;
                                                                     rdfs:label "H2O" .
 
@@ -308,9 +248,9 @@
 #    Annotations
 #################################################################
 
-<http://model.geneontology.org/-374492769> <http://geneontology.org/lego/modelstate> "Auto-generated" ;
+<http://model.geneontology.org/-374492769> <http://geneontology.org/lego/modelstate> "development" ;
                                            <http://purl.org/dc/elements/1.1/contributor> "https://reactome.org/content/detail/R-HSA-169911" ;
-                                           <http://purl.org/dc/elements/1.1/date> "2018-01-30" ;
+                                           <http://purl.org/dc/elements/1.1/date> "2018-02-07" ;
                                            <http://purl.org/dc/elements/1.1/title> "Reactome:Regulation of Apoptosis" .
 
 

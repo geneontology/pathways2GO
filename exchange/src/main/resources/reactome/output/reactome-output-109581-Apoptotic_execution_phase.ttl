@@ -141,89 +141,13 @@
                                                            rdfs:label "Reaction" .
 
 
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction115_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction115_class> rdf:type owl:Class ;
-                                                                        rdfs:label "Translocation of active caspase-8 to the mitochondrial membrane" .
-
-
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction116_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction116_class> rdf:type owl:Class ;
-                                                                        rdfs:label "Mitochondrial recruitment of Drp1" .
-
-
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction117_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction117_class> rdf:type owl:Class ;
-                                                                        rdfs:label "Nuclear translocation of catalytic domain of Mst3" .
-
-
-###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction94_class
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction94_class> rdf:type owl:Class ;
-                                                                       rdfs:label "Caspase mediated cleavage of BAP31" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Complex20-688052918_class
-<http://www.reactome.org/biopax/63/109581#Complex20-688052918_class> rdf:type owl:Class ;
-                                                                     rdfs:label "active caspase-8 " .
-
-
-###  http://www.reactome.org/biopax/63/109581#Complex95-688052918_class
-<http://www.reactome.org/biopax/63/109581#Complex95-688052918_class> rdf:type owl:Class ;
-                                                                     rdfs:label "active caspase-8 " .
-
-
-###  http://www.reactome.org/biopax/63/109581#Pathway1_class
-<http://www.reactome.org/biopax/63/109581#Pathway1_class> rdf:type owl:Class ;
-                                                          rdfs:label "Apoptosis" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Pathway26_class
-<http://www.reactome.org/biopax/63/109581#Pathway26_class> rdf:type owl:Class ;
-                                                           rdfs:label "Apoptotic execution phase" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Pathway27_class
-<http://www.reactome.org/biopax/63/109581#Pathway27_class> rdf:type owl:Class ;
-                                                           rdfs:label "Apoptotic cleavage of cellular proteins" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Pathway31_class
-<http://www.reactome.org/biopax/63/109581#Pathway31_class> rdf:type owl:Class ;
-                                                           rdfs:label "Apoptosis induced DNA fragmentation" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Pathway33_class
-<http://www.reactome.org/biopax/63/109581#Pathway33_class> rdf:type owl:Class ;
-                                                           rdfs:label "Stimulation of the cell death response by PAK-2p34" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein215-688052916_class
-<http://www.reactome.org/biopax/63/109581#Protein215-688052916_class> rdf:type owl:Class ;
-                                                                      rdfs:label "STK24(1-313)" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein255-688052917_class
-<http://www.reactome.org/biopax/63/109581#Protein255-688052917_class> rdf:type owl:Class ;
-                                                                      rdfs:label "Drp1" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein256-688052917_class
-<http://www.reactome.org/biopax/63/109581#Protein256-688052917_class> rdf:type owl:Class ;
-                                                                      rdfs:label "Drp1" .
-
-
-###  http://www.reactome.org/biopax/63/109581#Protein257-688052916_class
-<http://www.reactome.org/biopax/63/109581#Protein257-688052916_class> rdf:type owl:Class ;
-                                                                      rdfs:label "STK24(1-313)" .
-
-
 #################################################################
 #    Individuals
 #################################################################
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction115
 <http://www.reactome.org/biopax/63/109581#BiochemicalReaction115> rdf:type owl:NamedIndividual ,
-                                                                           <http://www.biopax.org/release/biopax-level3.owl#Reaction> ,
-                                                                           <http://www.reactome.org/biopax/63/109581#BiochemicalReaction115_class> ;
+                                                                           <http://www.biopax.org/release/biopax-level3.owl#Reaction> ;
                                                                   <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway26> ;
                                                                   <http://purl.obolibrary.org/obo/RO_0002233> <http://www.reactome.org/biopax/63/109581#Complex20-688052918> ;
                                                                   <http://purl.obolibrary.org/obo/RO_0002234> <http://www.reactome.org/biopax/63/109581#Complex95-688052918> ;
@@ -233,8 +157,7 @@
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction116
 <http://www.reactome.org/biopax/63/109581#BiochemicalReaction116> rdf:type owl:NamedIndividual ,
-                                                                           <http://www.biopax.org/release/biopax-level3.owl#Reaction> ,
-                                                                           <http://www.reactome.org/biopax/63/109581#BiochemicalReaction116_class> ;
+                                                                           <http://www.biopax.org/release/biopax-level3.owl#Reaction> ;
                                                                   <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway26> ;
                                                                   <http://purl.obolibrary.org/obo/RO_0002233> <http://www.reactome.org/biopax/63/109581#Protein255-688052917> ;
                                                                   <http://purl.obolibrary.org/obo/RO_0002234> <http://www.reactome.org/biopax/63/109581#Protein256-688052917> ;
@@ -243,8 +166,7 @@
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction117
 <http://www.reactome.org/biopax/63/109581#BiochemicalReaction117> rdf:type owl:NamedIndividual ,
-                                                                           <http://www.biopax.org/release/biopax-level3.owl#Reaction> ,
-                                                                           <http://www.reactome.org/biopax/63/109581#BiochemicalReaction117_class> ;
+                                                                           <http://www.biopax.org/release/biopax-level3.owl#Reaction> ;
                                                                   <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway26> ;
                                                                   <http://purl.obolibrary.org/obo/RO_0002233> <http://www.reactome.org/biopax/63/109581#Protein215-688052916> ;
                                                                   <http://purl.obolibrary.org/obo/RO_0002234> <http://www.reactome.org/biopax/63/109581#Protein257-688052916> ;
@@ -252,8 +174,7 @@
 
 
 ###  http://www.reactome.org/biopax/63/109581#BiochemicalReaction94
-<http://www.reactome.org/biopax/63/109581#BiochemicalReaction94> rdf:type owl:NamedIndividual ,
-                                                                          <http://www.reactome.org/biopax/63/109581#BiochemicalReaction94_class> ;
+<http://www.reactome.org/biopax/63/109581#BiochemicalReaction94> rdf:type owl:NamedIndividual ;
                                                                  rdfs:label "Caspase mediated cleavage of BAP31" .
 
 
@@ -289,31 +210,27 @@
 
 ###  http://www.reactome.org/biopax/63/109581#Complex20-688052918
 <http://www.reactome.org/biopax/63/109581#Complex20-688052918> rdf:type owl:NamedIndividual ,
-                                                                        <http://identifiers.org/uniprot/Q14790> ,
-                                                                        <http://www.reactome.org/biopax/63/109581#Complex20-688052918_class> ;
+                                                                        <http://identifiers.org/uniprot/Q14790> ;
                                                                <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-1998877054> ;
                                                                rdfs:label "active caspase-8 " .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Complex95-688052918
 <http://www.reactome.org/biopax/63/109581#Complex95-688052918> rdf:type owl:NamedIndividual ,
-                                                                        <http://identifiers.org/uniprot/Q14790> ,
-                                                                        <http://www.reactome.org/biopax/63/109581#Complex95-688052918_class> ;
+                                                                        <http://identifiers.org/uniprot/Q14790> ;
                                                                <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary6-1490120224> ;
                                                                rdfs:label "active caspase-8 " .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway1
 <http://www.reactome.org/biopax/63/109581#Pathway1> rdf:type owl:NamedIndividual ,
-                                                             <http://purl.obolibrary.org/obo/GO_0006915> ,
-                                                             <http://www.reactome.org/biopax/63/109581#Pathway1_class> ;
+                                                             <http://purl.obolibrary.org/obo/GO_0006915> ;
                                                     rdfs:label "Apoptosis" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway26
 <http://www.reactome.org/biopax/63/109581#Pathway26> rdf:type owl:NamedIndividual ,
-                                                              <http://purl.obolibrary.org/obo/GO_0097194> ,
-                                                              <http://www.reactome.org/biopax/63/109581#Pathway26_class> ;
+                                                              <http://purl.obolibrary.org/obo/GO_0097194> ;
                                                      <http://purl.obolibrary.org/obo/BFO_0000050> <http://www.reactome.org/biopax/63/109581#Pathway1> ;
                                                      <http://purl.obolibrary.org/obo/BFO_0000051> <http://www.reactome.org/biopax/63/109581#Pathway27> ,
                                                                                                   <http://www.reactome.org/biopax/63/109581#Pathway31> ,
@@ -322,52 +239,45 @@
 
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway27
-<http://www.reactome.org/biopax/63/109581#Pathway27> rdf:type owl:NamedIndividual ,
-                                                              <http://www.reactome.org/biopax/63/109581#Pathway27_class> ;
+<http://www.reactome.org/biopax/63/109581#Pathway27> rdf:type owl:NamedIndividual ;
                                                      rdfs:label "Apoptotic cleavage of cellular proteins" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway31
 <http://www.reactome.org/biopax/63/109581#Pathway31> rdf:type owl:NamedIndividual ,
-                                                              <http://purl.obolibrary.org/obo/GO_0006309> ,
-                                                              <http://www.reactome.org/biopax/63/109581#Pathway31_class> ;
+                                                              <http://purl.obolibrary.org/obo/GO_0006309> ;
                                                      rdfs:label "Apoptosis induced DNA fragmentation" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Pathway33
-<http://www.reactome.org/biopax/63/109581#Pathway33> rdf:type owl:NamedIndividual ,
-                                                              <http://www.reactome.org/biopax/63/109581#Pathway33_class> ;
+<http://www.reactome.org/biopax/63/109581#Pathway33> rdf:type owl:NamedIndividual ;
                                                      rdfs:label "Stimulation of the cell death response by PAK-2p34" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein215-688052916
 <http://www.reactome.org/biopax/63/109581#Protein215-688052916> rdf:type owl:NamedIndividual ,
-                                                                         <http://identifiers.org/uniprot/Q9Y6E0> ,
-                                                                         <http://www.reactome.org/biopax/63/109581#Protein215-688052916_class> ;
+                                                                         <http://identifiers.org/uniprot/Q9Y6E0> ;
                                                                 <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-1119686395> ;
                                                                 rdfs:label "STK24(1-313)" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein255-688052917
 <http://www.reactome.org/biopax/63/109581#Protein255-688052917> rdf:type owl:NamedIndividual ,
-                                                                         <http://identifiers.org/uniprot/O00429> ,
-                                                                         <http://www.reactome.org/biopax/63/109581#Protein255-688052917_class> ;
+                                                                         <http://identifiers.org/uniprot/O00429> ;
                                                                 <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary3-603355518> ;
                                                                 rdfs:label "Drp1" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein256-688052917
 <http://www.reactome.org/biopax/63/109581#Protein256-688052917> rdf:type owl:NamedIndividual ,
-                                                                         <http://identifiers.org/uniprot/O00429> ,
-                                                                         <http://www.reactome.org/biopax/63/109581#Protein256-688052917_class> ;
+                                                                         <http://identifiers.org/uniprot/O00429> ;
                                                                 <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary61894660419> ;
                                                                 rdfs:label "Drp1" .
 
 
 ###  http://www.reactome.org/biopax/63/109581#Protein257-688052916
 <http://www.reactome.org/biopax/63/109581#Protein257-688052916> rdf:type owl:NamedIndividual ,
-                                                                         <http://identifiers.org/uniprot/Q9Y6E0> ,
-                                                                         <http://www.reactome.org/biopax/63/109581#Protein257-688052916_class> ;
+                                                                         <http://identifiers.org/uniprot/Q9Y6E0> ;
                                                                 <http://purl.obolibrary.org/obo/RO_0001025> <http://www.reactome.org/biopax/63/109581#CellularLocationVocabulary797709059> ;
                                                                 rdfs:label "STK24(1-313)" .
 
@@ -376,9 +286,9 @@
 #    Annotations
 #################################################################
 
-<http://model.geneontology.org/666333206> <http://geneontology.org/lego/modelstate> "Auto-generated" ;
+<http://model.geneontology.org/666333206> <http://geneontology.org/lego/modelstate> "development" ;
                                           <http://purl.org/dc/elements/1.1/contributor> "https://reactome.org/content/detail/R-HSA-75153" ;
-                                          <http://purl.org/dc/elements/1.1/date> "2018-01-30" ;
+                                          <http://purl.org/dc/elements/1.1/date> "2018-02-07" ;
                                           <http://purl.org/dc/elements/1.1/title> "Reactome:Apoptotic execution phase" .
 
 
