@@ -89,15 +89,19 @@ public class BioPaxtoGO {
 				//"src/main/resources/reactome/Homo_sapiens.owl";
 				//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 				//"src/main/resources/reactome/reactome-input-109581.owl";
-		//String converted_split = 
-		//		"/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-";
+		String converted = 
+				//"/Users/bgood/Desktop/test/converted-wnt-full-";
+				"/Users/bgood/Desktop/test/converted-";
+				//"/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-";
 				//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 				//"src/main/resources/reactome/output/reactome-output-109581-";
-		String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-wnt-tcf-full";
-		boolean split_by_pathway = false;
+		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-wnt-tcf-full";
+		boolean split_by_pathway = true;
 		boolean add_lego_import = false;
-		String base_title = "default pathway ontology"; String base_contributor = "default contributor"; String base_provider = "default provider";
-		bp2g.convert(input_biopax, converted_full, split_by_pathway, add_lego_import, base_title, base_contributor, base_provider);
+		String base_title = "default pathway ontology"; 
+		String base_contributor = "reactome contributor"; 
+		String base_provider = "https://reactome.org";
+		bp2g.convert(input_biopax, converted, split_by_pathway, add_lego_import, base_title, base_contributor, base_provider);
 	}
 
 	
@@ -120,7 +124,7 @@ public class BioPaxtoGO {
 			if(split_by_pathway) {
 				//re initialize for each pathway
 				String reactome_id = null;
-				String provider_link = "https://reactome.org";
+				String contributor_link = "https://reactome.org";
 				//See if there is a specific pathway reference to allow a direct link
 				Set<Xref> xrefs = currentPathway.getXref();
 				for(Xref xref : xrefs) {
@@ -129,14 +133,14 @@ public class BioPaxtoGO {
 						if(r.getDb().equals("Reactome")) {
 							reactome_id = r.getId();
 							if(reactome_id.startsWith("R-HSA")) {
-								provider_link = "https://reactome.org/content/detail/"+reactome_id;
+								contributor_link = "https://reactome.org/content/detail/"+reactome_id;
 								//or https://reactome.org/PathwayBrowser/#/ to go right to pathway browser
 								break;
 							}
 						}
 					}
 				}			
-				go_cam = new GoCAM("Reactome:"+currentPathway.getDisplayName(), base_contributor, null, base_provider, add_lego_import);
+				go_cam = new GoCAM("Reactome:"+currentPathway.getDisplayName(), contributor_link, null, base_provider, add_lego_import);
 			}
 
 			String uri = currentPathway.getUri();

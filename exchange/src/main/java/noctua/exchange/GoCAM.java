@@ -220,8 +220,8 @@ public class GoCAM {
 	}
 	
 	void addObjectPropertyAssertion(OWLIndividual source, OWLObjectProperty prop, OWLIndividual target) {
-		OWLObjectPropertyAssertionAxiom add_partof_axiom = df.getOWLObjectPropertyAssertionAxiom(GoCAM.part_of, source, target);
-		AddAxiom addAxiom = new AddAxiom(go_cam_ont, add_partof_axiom);
+		OWLObjectPropertyAssertionAxiom add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(prop, source, target);
+		AddAxiom addAxiom = new AddAxiom(go_cam_ont, add_prop_axiom);
 		ontman.applyChanges(addAxiom);
 	}
 	
