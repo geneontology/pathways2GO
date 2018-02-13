@@ -45,12 +45,11 @@ public class GoCAM {
 	public static final IRI go_lego_iri = IRI.create("http://purl.obolibrary.org/obo/go/extensions/go-lego.owl");
 	public static final IRI obo_iri = IRI.create("http://purl.obolibrary.org/obo/");
 	public static final IRI uniprot_iri = IRI.create("http://identifiers.org/uniprot/");
-	public static final IRI biopax_iri = IRI.create("http://www.biopax.org/release/biopax-level3.owl#");
 	public static OWLAnnotationProperty title_prop, contributor_prop, date_prop, 
 		state_prop, evidence_prop, provided_by_prop, x_prop, y_prop, rdfs_label, rdfs_comment, source_prop;
 	public static OWLObjectProperty part_of, has_part, has_input, has_output, 
 		provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in;
-	public static OWLClass bp_class, continuant_class, protein_class, reaction_class, go_complex, molecular_function, eco_imported, eco_imported_auto;
+	public static OWLClass bp_class, continuant_class, go_complex, molecular_function, eco_imported, eco_imported_auto;
 	OWLOntology go_cam_ont;
 	OWLDataFactory df;
 	OWLOntologyManager ontman;
@@ -95,7 +94,7 @@ public class GoCAM {
 		evidence_prop = df.getOWLAnnotationProperty(IRI.create("http://geneontology.org/lego/evidence"));
 		provided_by_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/pav/providedBy"));
 		x_prop = df.getOWLAnnotationProperty(IRI.create("http://geneontology.org/lego/hint/layout/x"));
-		y_prop = df.getOWLAnnotationProperty(IRI.create("http://geneontology.org/lego/hint/layout/x"));
+		y_prop = df.getOWLAnnotationProperty(IRI.create("http://geneontology.org/lego/hint/layout/y"));
 		rdfs_label = df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI());
 		rdfs_comment = df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_COMMENT.getIRI());
 		
@@ -111,12 +110,6 @@ public class GoCAM {
 		//continuant 
 		continuant_class = df.getOWLClass(IRI.create(obo_iri + "BFO_0000002")); 
 		addLabel(continuant_class, "Continuant");
-		//protein
-		protein_class = df.getOWLClass(IRI.create(biopax_iri + "Protein")); 
-		addLabel(protein_class, "Protein");
-		//reaction
-		reaction_class = df.getOWLClass(IRI.create(biopax_iri + "Reaction")); 
-		addLabel(reaction_class, "Reaction");
 		//complex GO_0032991
 		go_complex = df.getOWLClass(IRI.create(obo_iri + "GO_0032991")); 
 		addLabel(go_complex, "Macromolecular Complex");		
@@ -125,11 +118,7 @@ public class GoCAM {
 		eco_imported_auto = df.getOWLClass(IRI.create(obo_iri + "ECO_0000313")); 
 		//"A type of evidence that is based on work performed by a person or group prior to a use by a different person or group."
 		eco_imported = df.getOWLClass(IRI.create(obo_iri + "ECO_0000311")); 
-		
-		//tmp for viewing while debugging, will be taken care of by import and reasoning
-		OWLSubClassOfAxiom prot = df.getOWLSubClassOfAxiom(protein_class, continuant_class);
-		ontman.addAxiom(go_cam_ont, prot);
-		ontman.applyChanges();
+		//complex
 		OWLSubClassOfAxiom comp = df.getOWLSubClassOfAxiom(go_complex, continuant_class);
 		ontman.addAxiom(go_cam_ont, comp);
 		ontman.applyChanges();
@@ -241,6 +230,14 @@ public class GoCAM {
 		ontman.applyChanges();		
 		return anno;
 	}
+	
+	OWLAnnotation addLiteralAnnotations2Individual(IRI individual_iri, OWLAnnotationProperty prop, OWLLiteral value) {
+		OWLAnnotation anno = df.getOWLAnnotation(prop, value);
+		OWLAxiom axiom = df.getOWLAnnotationAssertionAxiom(individual_iri, anno);
+		ontman.addAxiom(go_cam_ont, axiom);
+		ontman.applyChanges();		
+		return anno;
+	}
 		
 	void addLabel(OWLEntity entity, String label) {
 		if(label==null) {
@@ -292,6 +289,10 @@ public class GoCAM {
 		FileDocumentTarget outfile = new FileDocumentTarget(new File(outfilename));
 		ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());
 		ontman.saveOntology(go_cam_ont,outfile);	
+	}
+	
+	void readGoCAM(String infilename) throws OWLOntologyCreationException {
+		go_cam_ont = ontman.loadOntologyFromOntologyDocument(new File(infilename));		
 	}
 	
 }
