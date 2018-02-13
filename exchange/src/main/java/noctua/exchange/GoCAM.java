@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
 
 import org.coode.owlapi.turtle.TurtleOntologyFormat;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -16,6 +17,8 @@ import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
+import org.semanticweb.owlapi.model.OWLAnnotationSubject;
+import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
@@ -43,10 +46,11 @@ public class GoCAM {
 	public static final IRI obo_iri = IRI.create("http://purl.obolibrary.org/obo/");
 	public static final IRI uniprot_iri = IRI.create("http://identifiers.org/uniprot/");
 	public static final IRI biopax_iri = IRI.create("http://www.biopax.org/release/biopax-level3.owl#");
-	public static OWLAnnotationProperty title_prop, contributor_prop, date_prop, state_prop, evidence_prop, provided_by_prop, x_prop, y_prop, rdfs_label;
+	public static OWLAnnotationProperty title_prop, contributor_prop, date_prop, 
+		state_prop, evidence_prop, provided_by_prop, x_prop, y_prop, rdfs_label, rdfs_comment, source_prop;
 	public static OWLObjectProperty part_of, has_part, has_input, has_output, 
 		provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in;
-	public static OWLClass bp_class, continuant_class, protein_class, reaction_class, go_complex, molecular_function;
+	public static OWLClass bp_class, continuant_class, protein_class, reaction_class, go_complex, molecular_function, eco_imported, eco_imported_auto;
 	OWLOntology go_cam_ont;
 	OWLDataFactory df;
 	OWLOntologyManager ontman;
@@ -58,13 +62,7 @@ public class GoCAM {
 
 	public GoCAM(String gocam_title, String contributor, String date, String provider, boolean add_lego_import) throws OWLOntologyCreationException {
 		base_contributor = contributor;
-		if(date==null) {
-			Date now = new Date();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			base_date = sdf.format(now);			
-		}else {
-			base_date = date;
-		}
+		base_date = getDate(date);
 		base_provider = provider;
 		
 		ontman = OWLManager.createOWLOntologyManager();				
@@ -92,16 +90,18 @@ public class GoCAM {
 		title_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/title"));
 		contributor_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/contributor"));
 		date_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/date"));
+		source_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/source"));
 		state_prop = df.getOWLAnnotationProperty(IRI.create("http://geneontology.org/lego/modelstate"));
 		evidence_prop = df.getOWLAnnotationProperty(IRI.create("http://geneontology.org/lego/evidence"));
 		provided_by_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/pav/providedBy"));
 		x_prop = df.getOWLAnnotationProperty(IRI.create("http://geneontology.org/lego/hint/layout/x"));
 		y_prop = df.getOWLAnnotationProperty(IRI.create("http://geneontology.org/lego/hint/layout/x"));
 		rdfs_label = df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI());
+		rdfs_comment = df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_COMMENT.getIRI());
 		
 		//Will add classes and relations as we need them now. 
 		//TODO Work on using imports later to ensure we don't produce incorrect ids..
-
+	//classes	
 		//biological process
 		bp_class = df.getOWLClass(IRI.create(obo_iri + "GO_0008150")); 
 		addLabel(bp_class, "Biological Process");
@@ -120,7 +120,12 @@ public class GoCAM {
 		//complex GO_0032991
 		go_complex = df.getOWLClass(IRI.create(obo_iri + "GO_0032991")); 
 		addLabel(go_complex, "Macromolecular Complex");		
-
+		//http://purl.obolibrary.org/obo/ECO_0000313
+		//"A type of imported information that is used in an automatic assertion."
+		eco_imported_auto = df.getOWLClass(IRI.create(obo_iri + "ECO_0000313")); 
+		//"A type of evidence that is based on work performed by a person or group prior to a use by a different person or group."
+		eco_imported = df.getOWLClass(IRI.create(obo_iri + "ECO_0000311")); 
+		
 		//tmp for viewing while debugging, will be taken care of by import and reasoning
 		OWLSubClassOfAxiom prot = df.getOWLSubClassOfAxiom(protein_class, continuant_class);
 		ontman.addAxiom(go_cam_ont, prot);
@@ -186,53 +191,99 @@ public class GoCAM {
 		ontman.applyChanges();
 	}
 
-	public void addAnnotations2Individual(IRI individual_iri, String contributor_uri, String date, String provider_uri) {
-		OWLOntologyManager ontman = go_cam_ont.getOWLOntologyManager();
-		OWLDataFactory df = ontman.getOWLDataFactory();
-		
-		OWLAnnotation contributor_anno = df.getOWLAnnotation(contributor_prop, df.getOWLLiteral(contributor_uri));
-		OWLAxiom contributoraxiom = df.getOWLAnnotationAssertionAxiom(individual_iri, contributor_anno);
-		ontman.addAxiom(go_cam_ont, contributoraxiom);
-		
-		OWLAnnotation date_anno = df.getOWLAnnotation(date_prop, df.getOWLLiteral(date));
-		OWLAxiom dateaxiom = df.getOWLAnnotationAssertionAxiom(individual_iri, date_anno);
-		ontman.addAxiom(go_cam_ont, dateaxiom);
+	public String getDate(String input_date) {
+		String date = "";
+		if(input_date==null) {
+			Date now = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			date = sdf.format(now);			
+		}else {
+			date = input_date;
+		}
+		return date;
+	}
 
-		OWLAnnotation provider_anno = df.getOWLAnnotation(provided_by_prop, df.getOWLLiteral(provider_uri));
-		OWLAxiom stateaxiom = df.getOWLAnnotationAssertionAxiom(individual_iri, provider_anno);
-		ontman.addAxiom(go_cam_ont, stateaxiom);
-
-		ontman.applyChanges();
-		
+	OWLNamedIndividual makeAnnotatedIndividual(String iri_string) {
+		IRI iri = IRI.create(iri_string);
+		return makeAnnotatedIndividual(iri);
+	}
+	OWLNamedIndividual makeAnnotatedIndividual(IRI iri, String contributor_uri, String date, String provider_uri) {
+		OWLNamedIndividual i = df.getOWLNamedIndividual(iri);		
+		addBasicAnnotations2Individual(iri, contributor_uri, date, provider_uri);
+		return i;
+	}
+	
+	OWLNamedIndividual makeAnnotatedIndividual(IRI iri) {
+		OWLNamedIndividual i = df.getOWLNamedIndividual(iri);		
+		addBasicAnnotations2Individual(iri, this.base_contributor, this.base_date, this.base_provider);
+		return i;
+	}
+	
+	void addBasicAnnotations2Individual(IRI individual_iri, String contributor_uri, String date, String provider_uri) {
+		addLiteralAnnotations2Individual(individual_iri, contributor_prop, contributor_uri);
+		addLiteralAnnotations2Individual(individual_iri, date_prop, getDate(date));
+		addLiteralAnnotations2Individual(individual_iri, provided_by_prop, provider_uri);
 		return;
 	}
 	
-	OWLOntology addLabel(OWLEntity entity, String label) {
+	OWLAnnotation addEvidenceAnnotation(IRI individual_iri, IRI evidence_iri) {
+		OWLAnnotation anno = df.getOWLAnnotation(GoCAM.evidence_prop, evidence_iri);
+		OWLAxiom axiom = df.getOWLAnnotationAssertionAxiom(individual_iri, anno);
+		ontman.addAxiom(go_cam_ont, axiom);
+		ontman.applyChanges();		
+		return anno;
+	}
+	
+	OWLAnnotation addLiteralAnnotations2Individual(IRI individual_iri, OWLAnnotationProperty prop, String value) {
+		OWLAnnotation anno = df.getOWLAnnotation(prop, df.getOWLLiteral(value));
+		OWLAxiom axiom = df.getOWLAnnotationAssertionAxiom(individual_iri, anno);
+		ontman.addAxiom(go_cam_ont, axiom);
+		ontman.applyChanges();		
+		return anno;
+	}
+		
+	void addLabel(OWLEntity entity, String label) {
 		if(label==null) {
-			return go_cam_ont;
+			return;
 		}		
 		OWLLiteral lbl = df.getOWLLiteral(label);
 		OWLAnnotation label_anno = df.getOWLAnnotation(rdfs_label, lbl);
 		OWLAxiom labelaxiom = df.getOWLAnnotationAssertionAxiom(entity.getIRI(), label_anno);
 		ontman.addAxiom(go_cam_ont, labelaxiom);
 		ontman.applyChanges();
-		return go_cam_ont;
+		return;
 	}
 	
-	void addObjectPropertyAssertion(OWLIndividual source, OWLObjectProperty prop, OWLIndividual target) {
-		OWLObjectPropertyAssertionAxiom add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(prop, source, target);
+	void addObjectPropertyAssertion(OWLIndividual source, OWLObjectProperty prop, OWLIndividual target, Set<OWLAnnotation> annotations) {
+		OWLObjectPropertyAssertionAxiom add_prop_axiom = null;
+		if(annotations!=null&&annotations.size()>0) {
+			add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(prop, source, target, annotations);
+		}else {
+			add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(prop, source, target);
+		}
 		AddAxiom addAxiom = new AddAxiom(go_cam_ont, add_prop_axiom);
 		ontman.applyChanges(addAxiom);
+		return;
 	}
 	
-	void addSubclassAssertion(OWLClass child, OWLClass parent) {
-		OWLSubClassOfAxiom tmp = df.getOWLSubClassOfAxiom(child, parent);
+	void addSubclassAssertion(OWLClass child, OWLClass parent, Set<OWLAnnotation> annotations) {
+		OWLSubClassOfAxiom tmp = null;
+		if(annotations!=null&&annotations.size()>0) {
+			tmp = df.getOWLSubClassOfAxiom(child, parent, annotations);
+		}else {
+			tmp = df.getOWLSubClassOfAxiom(child, parent);
+		} 		
 		ontman.addAxiom(go_cam_ont, tmp);
 		ontman.applyChanges();
 	}
 
-	void addTypeAssertion(OWLNamedIndividual individual, OWLClass type) {
-		OWLClassAssertionAxiom isa_xrefedbp = df.getOWLClassAssertionAxiom(type, individual);
+	void addTypeAssertion(OWLNamedIndividual individual, OWLClass type, Set<OWLAnnotation> annotations) {
+		OWLClassAssertionAxiom isa_xrefedbp = null;
+		if(annotations!=null&&annotations.size()>0) {
+			isa_xrefedbp = df.getOWLClassAssertionAxiom(type, individual, annotations);
+		}else {
+			isa_xrefedbp = df.getOWLClassAssertionAxiom(type, individual);
+		}
 		ontman.addAxiom(go_cam_ont, isa_xrefedbp);
 		ontman.applyChanges();		
 	}
