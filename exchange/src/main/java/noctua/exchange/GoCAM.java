@@ -7,8 +7,11 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
+import org.biopax.paxtools.model.level3.PublicationXref;
+import org.biopax.paxtools.model.level3.Xref;
 import org.coode.owlapi.turtle.TurtleOntologyFormat;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.FileDocumentTarget;
@@ -215,6 +218,14 @@ public class GoCAM {
 		return;
 	}
 	
+	Set<OWLAnnotation> getDefaultAnnotations(){
+		Set<OWLAnnotation> annos = new HashSet<OWLAnnotation>();
+		annos.add(df.getOWLAnnotation(contributor_prop, df.getOWLLiteral(this.base_contributor)));
+		annos.add(df.getOWLAnnotation(date_prop, df.getOWLLiteral(this.base_date)));
+		annos.add(df.getOWLAnnotation(provided_by_prop, df.getOWLLiteral(this.base_provider)));
+		return annos;
+	}
+	
 	OWLAnnotation addEvidenceAnnotation(IRI individual_iri, IRI evidence_iri) {
 		OWLAnnotation anno = df.getOWLAnnotation(GoCAM.evidence_prop, evidence_iri);
 		OWLAxiom axiom = df.getOWLAnnotationAssertionAxiom(individual_iri, anno);
@@ -251,6 +262,34 @@ public class GoCAM {
 		return;
 	}
 	
+	
+	IRI makeIri(String entity) {
+		String uri = "http://model.geneontology.org/"+entity.hashCode();
+		return IRI.create(uri);
+	}
+	
+	void addRefBackedObjectPropertyAssertion(OWLIndividual source, OWLObjectProperty prop, OWLIndividual target, Set<String> pmids, OWLClass evidence_class) {
+		OWLObjectPropertyAssertionAxiom add_prop_axiom = null;
+		if(pmids!=null&&pmids.size()>0) {
+			Set<OWLAnnotation> annos = new HashSet<OWLAnnotation>();
+			for(String pmid : pmids) {
+				IRI anno_iri = makeIri(source.hashCode()+"_"+prop.hashCode()+"_"+target.hashCode()+"_"+pmid);
+				OWLNamedIndividual evidence = makeAnnotatedIndividual(anno_iri);					
+				addTypeAssertion(evidence, evidence_class, null);
+				addLiteralAnnotations2Individual(anno_iri, GoCAM.source_prop, "PMID:"+pmid);
+				OWLAnnotation anno = df.getOWLAnnotation(GoCAM.evidence_prop, anno_iri);
+				annos.add(anno);
+			}
+			annos.addAll(getDefaultAnnotations());
+			add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(prop, source, target, annos);
+		}else {
+			add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(prop, source, target, getDefaultAnnotations());
+		}
+		AddAxiom addAxiom = new AddAxiom(go_cam_ont, add_prop_axiom);
+		ontman.applyChanges(addAxiom);
+		return ;
+	}
+	
 	void addObjectPropertyAssertion(OWLIndividual source, OWLObjectProperty prop, OWLIndividual target, Set<OWLAnnotation> annotations) {
 		OWLObjectPropertyAssertionAxiom add_prop_axiom = null;
 		if(annotations!=null&&annotations.size()>0) {
@@ -260,7 +299,7 @@ public class GoCAM {
 		}
 		AddAxiom addAxiom = new AddAxiom(go_cam_ont, add_prop_axiom);
 		ontman.applyChanges(addAxiom);
-		return;
+		return ;
 	}
 	
 	void addSubclassAssertion(OWLClass child, OWLClass parent, Set<OWLAnnotation> annotations) {
@@ -285,6 +324,41 @@ public class GoCAM {
 		ontman.applyChanges();		
 	}
 	
+	void addRefBackedTypeAssertion(OWLNamedIndividual individual, OWLClass type, Set<String> pmids, OWLClass evidence_class) {
+		OWLClassAssertionAxiom isa_xrefedbp = null;
+		 if(pmids!=null&&pmids.size()>0) {
+				Set<OWLAnnotation> annos = new HashSet<OWLAnnotation>();
+				for(String pmid : pmids) {
+					IRI anno_iri = makeIri(individual.hashCode()+"_"+type.hashCode()+"_"+pmid);
+					OWLNamedIndividual evidence = makeAnnotatedIndividual(anno_iri);					
+					addTypeAssertion(evidence, evidence_class, null);
+					addLiteralAnnotations2Individual(anno_iri, GoCAM.source_prop, "PMID:"+pmid);
+					OWLAnnotation anno = df.getOWLAnnotation(GoCAM.evidence_prop, anno_iri);
+					annos.add(anno);
+				}
+				annos.addAll(getDefaultAnnotations());
+			isa_xrefedbp = df.getOWLClassAssertionAxiom(type, individual, annos);
+		}else {
+			isa_xrefedbp = df.getOWLClassAssertionAxiom(type, individual);
+		}
+		//ignore the evidence 
+		//isa_xrefedbp = df.getOWLClassAssertionAxiom(type, individual);
+		 
+		ontman.addAxiom(go_cam_ont, isa_xrefedbp);
+		ontman.applyChanges();		
+	}
+	
+	/*
+	 * 
+	 if(pmids!=null&&pmids.size()>0) {
+			Set<OWLAnnotation> annos = new HashSet<OWLAnnotation>();
+			for(String pmid : pmids) {
+				IRI anno_iri = makeIri(source.hashCode()+"_"+prop.hashCode()+"_"+target.hashCode()+"_"+pmid);
+				OWLAnnotation anno = df.getOWLAnnotation(GoCAM.evidence_prop, anno_iri);
+				annos.add(anno);
+			}
+			
+	 */
 	void writeGoCAM(String outfilename) throws OWLOntologyStorageException {
 		FileDocumentTarget outfile = new FileDocumentTarget(new File(outfilename));
 		ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());
