@@ -31,17 +31,20 @@ import org.semanticweb.owlapi.search.EntitySearcher;
 public class App {
 
 	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException {
+		int x = 100; int y = 0;
+		
+		
 		GoCAM go_cam = new GoCAM("test ontology title", "contibutor", null, "provider", false);
 		String in = "src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		String out = "/Users/bgood/Desktop/test/test.ttl";
 		go_cam.readGoCAM(in);
 		//m.loadOntology(IRI.create("http://domain.for.import.ontology/importedontology"));
-		String minimal_lego = "/Users/bgood/minerva/minerva-server/src/main/resources/go-lego-trimmed.owl";
-		String noneo_lego = "/Users/bgood/minerva/minerva-server/src/main/resources/go-lego-noneo.owl";
-		String maximal_lego = "/Users/bgood/minerva/minerva-server/src/main/resources/go-lego-full.owl";
+//		String minimal_lego = "/Users/bgood/minerva/minerva-server/src/main/resources/go-lego-trimmed.owl";
+//		String noneo_lego = "/Users/bgood/minerva/minerva-server/src/main/resources/go-lego-noneo.owl";
+//		String maximal_lego = "/Users/bgood/minerva/minerva-server/src/main/resources/go-lego-full.owl";
 	//	go_cam.ontman.loadOntologyFromOntologyDocument(new File(minimal_lego));
 		
-		go_cam.writeGoCAM(out);
+//		go_cam.writeGoCAM(out);
 
 		//use stream to print out labels for members of a class
 		//		OWLClass pathway_class = go_cam.df.getOWLClass(IRI.create(BioPaxtoGO.biopax_iri + "Pathway")); 

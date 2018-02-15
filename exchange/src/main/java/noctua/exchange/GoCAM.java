@@ -38,6 +38,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
+import org.semanticweb.owlapi.search.EntitySearcher;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 /**
@@ -324,6 +325,17 @@ public class GoCAM {
 		ontman.applyChanges();		
 	}
 
+	String printLabels(OWLEntity i) {
+		String labels = "";
+		EntitySearcher.getAnnotationObjects(i, go_cam_ont, GoCAM.rdfs_label).
+			forEach(label -> System.out.println(label));
+		
+	//    			getIndividuals(pathway_class, go_cam.go_cam_ont).
+	//    				forEach(pathway -> EntitySearcher.getAnnotationObjects((OWLEntity) pathway, go_cam.go_cam_ont, GoCAM.rdfs_label).
+	//    						forEach(System.out::println)
+	//    						);
+		return labels;
+	}
 	
 	void writeGoCAM(String outfilename) throws OWLOntologyStorageException {
 		FileDocumentTarget outfile = new FileDocumentTarget(new File(outfilename));
