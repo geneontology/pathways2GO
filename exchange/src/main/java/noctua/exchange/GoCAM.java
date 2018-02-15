@@ -275,7 +275,7 @@ public class GoCAM {
 			for(String pmid : pmids) {
 				IRI anno_iri = makeIri(source.hashCode()+"_"+prop.hashCode()+"_"+target.hashCode()+"_"+pmid);
 				OWLNamedIndividual evidence = makeAnnotatedIndividual(anno_iri);					
-				addTypeAssertion(evidence, evidence_class, null);
+				addTypeAssertion(evidence, evidence_class);
 				addLiteralAnnotations2Individual(anno_iri, GoCAM.source_prop, "PMID:"+pmid);
 				OWLAnnotation anno = df.getOWLAnnotation(GoCAM.evidence_prop, anno_iri);
 				annos.add(anno);
@@ -313,52 +313,18 @@ public class GoCAM {
 		ontman.applyChanges();
 	}
 
-	void addTypeAssertion(OWLNamedIndividual individual, OWLClass type, Set<OWLAnnotation> annotations) {
-		OWLClassAssertionAxiom isa_xrefedbp = null;
-		if(annotations!=null&&annotations.size()>0) {
-			isa_xrefedbp = df.getOWLClassAssertionAxiom(type, individual, annotations);
-		}else {
-			isa_xrefedbp = df.getOWLClassAssertionAxiom(type, individual);
-		}
-		ontman.addAxiom(go_cam_ont, isa_xrefedbp);
-		ontman.applyChanges();		
-	}
-	
-	void addRefBackedTypeAssertion(OWLNamedIndividual individual, OWLClass type, Set<String> pmids, OWLClass evidence_class) {
-		OWLClassAssertionAxiom isa_xrefedbp = null;
-		 if(pmids!=null&&pmids.size()>0) {
-				Set<OWLAnnotation> annos = new HashSet<OWLAnnotation>();
-				for(String pmid : pmids) {
-					IRI anno_iri = makeIri(individual.hashCode()+"_"+type.hashCode()+"_"+pmid);
-					OWLNamedIndividual evidence = makeAnnotatedIndividual(anno_iri);					
-					addTypeAssertion(evidence, evidence_class, null);
-					addLiteralAnnotations2Individual(anno_iri, GoCAM.source_prop, "PMID:"+pmid);
-					OWLAnnotation anno = df.getOWLAnnotation(GoCAM.evidence_prop, anno_iri);
-					annos.add(anno);
-				}
-				annos.addAll(getDefaultAnnotations());
-			isa_xrefedbp = df.getOWLClassAssertionAxiom(type, individual, annos);
-		}else {
-			isa_xrefedbp = df.getOWLClassAssertionAxiom(type, individual);
-		}
-		//ignore the evidence 
-		//isa_xrefedbp = df.getOWLClassAssertionAxiom(type, individual);
-		 
-		ontman.addAxiom(go_cam_ont, isa_xrefedbp);
-		ontman.applyChanges();		
-	}
-	
-	/*
-	 * 
-	 if(pmids!=null&&pmids.size()>0) {
-			Set<OWLAnnotation> annos = new HashSet<OWLAnnotation>();
-			for(String pmid : pmids) {
-				IRI anno_iri = makeIri(source.hashCode()+"_"+prop.hashCode()+"_"+target.hashCode()+"_"+pmid);
-				OWLAnnotation anno = df.getOWLAnnotation(GoCAM.evidence_prop, anno_iri);
-				annos.add(anno);
-			}
-			
+	/**
+	 * Note that, for Noctua, no annotations are allowed on rdf:type edges.  
+	 * @param individual
+	 * @param type
 	 */
+	void addTypeAssertion(OWLNamedIndividual individual, OWLClass type) {
+		OWLClassAssertionAxiom isa_xrefedbp = df.getOWLClassAssertionAxiom(type, individual);
+		ontman.addAxiom(go_cam_ont, isa_xrefedbp);
+		ontman.applyChanges();		
+	}
+
+	
 	void writeGoCAM(String outfilename) throws OWLOntologyStorageException {
 		FileDocumentTarget outfile = new FileDocumentTarget(new File(outfilename));
 		ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());

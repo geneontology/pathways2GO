@@ -242,7 +242,7 @@ public class BioPaxtoGO {
 		IRI pathway_iri = IRI.create(pathway.getUri());
 		OWLNamedIndividual pathway_e = go_cam.makeAnnotatedIndividual(pathway_iri);
 		//tag it as from Reactome..
-		go_cam.addTypeAssertion(pathway_e, pathway_class, null);
+		go_cam.addTypeAssertion(pathway_e, pathway_class);
 		String name = pathway.getDisplayName();
 		if(!split_by_pathway) {
 			name="Full_"+name;
@@ -275,7 +275,7 @@ public class BioPaxtoGO {
 					//add it into local hierarchy (temp pre import)	
 					//addRefBackedObjectPropertyAssertion
 					go_cam.addSubclassAssertion(xref_go_parent, GoCAM.bp_class, null);
-					go_cam.addRefBackedTypeAssertion(pathway_e, xref_go_parent, pubids, GoCAM.eco_imported_auto);
+					go_cam.addTypeAssertion(pathway_e, xref_go_parent);
 				}
 			}
 		}
@@ -347,7 +347,7 @@ public class BioPaxtoGO {
 								break;
 							}
 							go_cam.addLabel(xref_go_loc, term);
-							go_cam.addRefBackedTypeAssertion(loc_e, xref_go_loc, pubids, GoCAM.eco_imported_auto);
+							go_cam.addTypeAssertion(loc_e, xref_go_loc);
 						}
 					}
 				}
@@ -366,7 +366,7 @@ public class BioPaxtoGO {
 				//e.g. Q9UKV3 gets the uniproteins ACIN1, ACIN1(1-1093), ACIN1(1094-1341)
 				go_cam.addLabel(uniprotein_class, id);
 				//until something is imported that understands the uniprot entities, assert that they are proteins
-				go_cam.addTypeAssertion(e,  uniprotein_class, null);
+				go_cam.addTypeAssertion(e,  uniprotein_class);
 			}else { //no entity reference so look for parts 
 				Set<PhysicalEntity> prot_parts = protein.getMemberPhysicalEntity();
 				if(prot_parts!=null) {
@@ -396,7 +396,7 @@ public class BioPaxtoGO {
 							//name the class with the gene id
 							go_cam.addLabel(dna_class, id);
 							//assert a continuant
-							go_cam.addTypeAssertion(e, dna_class, null);
+							go_cam.addTypeAssertion(e, dna_class);
 						}
 					}
 				}
@@ -418,7 +418,7 @@ public class BioPaxtoGO {
 							//name the class with the chebi id
 							go_cam.addLabel(mlc_class, id);
 							//assert its a chemical instance
-							go_cam.addTypeAssertion(e, mlc_class, null);
+							go_cam.addTypeAssertion(e, mlc_class);
 						}
 					}
 				}
@@ -450,10 +450,10 @@ public class BioPaxtoGO {
 				go_cam.addSubclassAssertion(uniprotein_class, protein_class, null);										
 				go_cam.addLabel(uniprotein_class, id);
 				//until something is imported that understands the uniprot entities, assert that they are proteins
-				go_cam.addTypeAssertion(e, uniprotein_class, null);
+				go_cam.addTypeAssertion(e, uniprotein_class);
 			}else {
 				//assert it as a complex
-				go_cam.addTypeAssertion(e, GoCAM.go_complex, null);
+				go_cam.addTypeAssertion(e, GoCAM.go_complex);
 				//note that complex.getComponent() apparently violates the rules in its documentation which stipulate that it should return
 				//a flat representation of the parts of the complex (e.g. proteins) and not nested complexes (which the reactome biopax does here)
 				for(PhysicalEntity component : complex_parts) {
@@ -500,7 +500,7 @@ public class BioPaxtoGO {
 			//			}
 
 			//type it
-			go_cam.addTypeAssertion(e, reaction_class, null);			
+			go_cam.addTypeAssertion(e, reaction_class);			
 			//connect reaction to its pathway(s) via has_part
 			Set<Pathway> pathways = reaction.getPathwayComponentOf();
 			for(Pathway pathway : pathways) {
@@ -559,7 +559,7 @@ public class BioPaxtoGO {
 						if(ref.getDb().equals("GENE ONTOLOGY")) {
 							OWLClass xref_go_func = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + ref.getId().replaceAll(":", "_")));
 							//add the go function class as a type for the reaction instance being controlled here
-							go_cam.addRefBackedTypeAssertion(e, xref_go_func, pubids, GoCAM.eco_imported_auto);
+							go_cam.addTypeAssertion(e, xref_go_func);
 							mf_set = true;
 						}
 					}
@@ -628,7 +628,7 @@ public class BioPaxtoGO {
 					//create the unique individual for this reaction's location individual
 					IRI iri = IRI.create(reaction.getUri()+place.hashCode());
 					OWLNamedIndividual placeInstance = go_cam.df.getOWLNamedIndividual(iri);
-					go_cam.addRefBackedTypeAssertion(placeInstance, place, pubids, GoCAM.eco_imported_auto);
+					go_cam.addTypeAssertion(placeInstance, place);
 					go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.occurs_in, placeInstance, pubids, GoCAM.eco_imported_auto);
 				}
 				//remove all location assertions for the things in this reaction
