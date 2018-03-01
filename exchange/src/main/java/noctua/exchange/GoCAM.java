@@ -12,7 +12,8 @@ import java.util.Set;
 
 import org.biopax.paxtools.model.level3.PublicationXref;
 import org.biopax.paxtools.model.level3.Xref;
-import org.coode.owlapi.turtle.TurtleOntologyFormat;
+//import org.coode.owlapi.turtle.TurtleOntologyFormat;
+import org.semanticweb.owlapi.formats.TurtleDocumentFormat;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.FileDocumentTarget;
 import org.semanticweb.owlapi.model.AddAxiom;
@@ -26,6 +27,7 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLDocumentFormat;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLIndividual;
@@ -125,7 +127,7 @@ public class GoCAM {
 		//complex
 		OWLSubClassOfAxiom comp = df.getOWLSubClassOfAxiom(go_complex, continuant_class);
 		ontman.addAxiom(go_cam_ont, comp);
-		ontman.applyChanges();
+		//ontman.applyChanges();
 
 		//part of
 		part_of = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000050"));
@@ -181,7 +183,7 @@ public class GoCAM {
 		OWLAxiom stateaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, state_anno);
 		ontman.addAxiom(go_cam_ont, stateaxiom);
 
-		ontman.applyChanges();
+		//ontman.applyChanges();
 	}
 
 	public String getDate(String input_date) {
@@ -231,7 +233,7 @@ public class GoCAM {
 		OWLAnnotation anno = df.getOWLAnnotation(GoCAM.evidence_prop, evidence_iri);
 		OWLAxiom axiom = df.getOWLAnnotationAssertionAxiom(individual_iri, anno);
 		ontman.addAxiom(go_cam_ont, axiom);
-		ontman.applyChanges();		
+		//ontman.applyChanges();		
 		return anno;
 	}
 	
@@ -239,7 +241,7 @@ public class GoCAM {
 		OWLAnnotation anno = df.getOWLAnnotation(prop, df.getOWLLiteral(value));
 		OWLAxiom axiom = df.getOWLAnnotationAssertionAxiom(individual_iri, anno);
 		ontman.addAxiom(go_cam_ont, axiom);
-		ontman.applyChanges();		
+		//ontman.applyChanges();		
 		return anno;
 	}
 	
@@ -247,7 +249,7 @@ public class GoCAM {
 		OWLAnnotation anno = df.getOWLAnnotation(prop, value);
 		OWLAxiom axiom = df.getOWLAnnotationAssertionAxiom(individual_iri, anno);
 		ontman.addAxiom(go_cam_ont, axiom);
-		ontman.applyChanges();		
+		//ontman.applyChanges();		
 		return anno;
 	}
 		
@@ -259,7 +261,7 @@ public class GoCAM {
 		OWLAnnotation label_anno = df.getOWLAnnotation(rdfs_label, lbl);
 		OWLAxiom labelaxiom = df.getOWLAnnotationAssertionAxiom(entity.getIRI(), label_anno);
 		ontman.addAxiom(go_cam_ont, labelaxiom);
-		ontman.applyChanges();
+		//ontman.applyChanges();
 		return;
 	}
 	
@@ -287,7 +289,7 @@ public class GoCAM {
 			add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(prop, source, target, getDefaultAnnotations());
 		}
 		AddAxiom addAxiom = new AddAxiom(go_cam_ont, add_prop_axiom);
-		ontman.applyChanges(addAxiom);
+		ontman.applyChange(addAxiom);
 		return ;
 	}
 	
@@ -299,7 +301,7 @@ public class GoCAM {
 			add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(prop, source, target);
 		}
 		AddAxiom addAxiom = new AddAxiom(go_cam_ont, add_prop_axiom);
-		ontman.applyChanges(addAxiom);
+		ontman.applyChange(addAxiom);
 		return ;
 	}
 	
@@ -311,7 +313,7 @@ public class GoCAM {
 			tmp = df.getOWLSubClassOfAxiom(child, parent);
 		} 		
 		ontman.addAxiom(go_cam_ont, tmp);
-		ontman.applyChanges();
+		//ontman.applyChanges();
 	}
 
 	/**
@@ -322,7 +324,7 @@ public class GoCAM {
 	void addTypeAssertion(OWLNamedIndividual individual, OWLClass type) {
 		OWLClassAssertionAxiom isa_xrefedbp = df.getOWLClassAssertionAxiom(type, individual);
 		ontman.addAxiom(go_cam_ont, isa_xrefedbp);
-		ontman.applyChanges();		
+		//ontman.applyChanges();		
 	}
 
 	String printLabels(OWLEntity i) {
@@ -339,7 +341,8 @@ public class GoCAM {
 	
 	void writeGoCAM(String outfilename) throws OWLOntologyStorageException {
 		FileDocumentTarget outfile = new FileDocumentTarget(new File(outfilename));
-		ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());
+		//ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());	
+		ontman.setOntologyFormat(go_cam_ont, new TurtleDocumentFormat());	
 		ontman.saveOntology(go_cam_ont,outfile);	
 	}
 	

@@ -15,6 +15,30 @@
   </properties>
 
   <dependencies>
+  <dependency>
+			<groupId>org.geneontology</groupId>
+			<artifactId>owl-to-rules_2.12</artifactId>
+			<version>0.3.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geneontology</groupId>
+			<artifactId>arachne_2.12</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<dependency> 
+			<groupId>org.apache.jena</groupId>
+			<artifactId>apache-jena-libs</artifactId>
+			<version>3.1.1</version>
+			<type>pom</type>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.phenoscape/scowl -->
+<dependency>
+    <groupId>org.phenoscape</groupId>
+    <artifactId>scowl_2.11</artifactId>
+    <version>1.3</version>
+</dependency>
+
+		
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -22,29 +46,34 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-    	<groupId>net.sourceforge.owlapi</groupId>
-    	<artifactId>owlapi-api</artifactId>
-    	<version>5.1.3</version>
+    		<groupId>net.sourceforge.owlapi</groupId>
+ 		<artifactId>owlapi-api</artifactId>
+ 	<version>4.2.8</version>  
+   	<!--  <version>5.1.3</version>-->  
     </dependency>
     <dependency>
     	<groupId>net.sourceforge.owlapi</groupId>
     	<artifactId>owlapi-tools</artifactId>
-    	<version>5.1.3</version>
+ 	<version>4.2.8</version>  
+   	<!--  <version>5.1.3</version>-->  
     </dependency>
     <dependency>
     	<groupId>net.sourceforge.owlapi</groupId>
     	<artifactId>owlapi-contract</artifactId>
-    	<version>5.1.3</version>
+ 	<version>4.2.8</version>  
+   	<!--  <version>5.1.3</version>-->  
     </dependency>
     <dependency>
     	<groupId>net.sourceforge.owlapi</groupId>
     	<artifactId>owlapi-apibinding</artifactId>
-    	<version>5.1.3</version>
+ 	<version>4.2.8</version>  
+   	<!--  <version>5.1.3</version>-->  
     </dependency>
     <dependency>
     	<groupId>net.sourceforge.owlapi</groupId>
     	<artifactId>owlapi-distribution</artifactId>
-    	<version>5.1.3</version>
+ 	<version>4.2.8</version>  
+   	<!--  <version>5.1.3</version>-->  
     </dependency>
     <dependency>
     	<groupId>org.biopax.paxtools</groupId>
