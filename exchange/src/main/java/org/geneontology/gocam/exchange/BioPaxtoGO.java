@@ -1,7 +1,7 @@
 /**
  * 
  */
-package noctua.exchange;
+package org.geneontology.gocam.exchange;
 
 import java.io.File;
 import java.io.FileInputStream;
