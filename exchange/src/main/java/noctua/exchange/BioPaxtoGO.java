@@ -1107,7 +1107,7 @@ public class BioPaxtoGO {
 	private boolean mapHintPresent(OWLNamedIndividual node, GoCAM go_cam){
 		boolean x_present = false;
 		//long nx = EntitySearcher.getAnnotationObjects(node, go_cam.go_cam_ont, GoCAM.x_prop).count();
-		Collection xs = EntitySearcher.getAnnotationObjects(node, go_cam.go_cam_ont, GoCAM.x_prop);
+		Collection<OWLAnnotation> xs = EntitySearcher.getAnnotationObjects(node, go_cam.go_cam_ont, GoCAM.x_prop);
 		if(xs.size()>0) {
 			x_present = true;
 		}
