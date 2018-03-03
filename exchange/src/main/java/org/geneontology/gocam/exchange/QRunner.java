@@ -21,6 +21,7 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.reasoner.rulesys.Rule;
 import org.geneontology.jena.OWLtoRules;
 import org.geneontology.jena.SesameJena;
+import org.geneontology.rules.engine.Explanation;
 import org.geneontology.rules.engine.RuleEngine;
 import org.geneontology.rules.engine.Triple;
 import org.geneontology.rules.engine.WorkingMemory;
@@ -38,34 +39,67 @@ import scala.collection.JavaConverters;
  *
  */
 public class QRunner {
-	private final RuleEngine ruleEngine;
-	private Model jena;
+	private RuleEngine ruleEngine;
+	private final Model jena;
 	WorkingMemory wm;
+	boolean inference_on;
 	/**
 	 * 
 	 */
-	public QRunner(OWLOntology tbox, OWLOntology abox, IRI ontology_iri) {
-		ruleEngine = initializeRuleEngine(abox);
-		wm = createInferredModel(tbox, abox, ontology_iri);
-		jena = makeJenaModel(wm);
+	public QRunner(OWLOntology tbox, OWLOntology abox, IRI ontology_iri, boolean add_inferences) {
+		inference_on = add_inferences;
+		if(inference_on) {
+			ruleEngine = initializeRuleEngine(tbox);
+			wm = createInferredModel(tbox, abox, ontology_iri);
+			jena = makeJenaModel(wm);
+		}else {
+			jena = makeJenaModel(abox, tbox);
+		}
 	}
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+	Model makeJenaModel(OWLOntology abox, OWLOntology tbox) {
+		Model model = ModelFactory.createDefaultModel();
+		Set<Statement> a_statements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(abox)).asJava();		
+		for(Statement s : a_statements) {
+			model.add(s);
+		}
+		if(tbox!=null) {
+			Set<Statement> t_statements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(tbox)).asJava();
+			for(Statement s : t_statements) {
+				model.add(s);
+			}
+		}	
+		return model;
 	}
 
+	int nTriples() {
+		int n = 0;
+		String q = null;
+		try {
+			q = IOUtils.toString(App.class.getResourceAsStream("triple_count.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL query from jar \n"+e);
+		}
+		QueryExecution qe = QueryExecutionFactory.create(q, jena);
+		ResultSet results = qe.execSelect();
+		if (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Literal s = qs.getLiteral("triples");
+			System.out.println(s);
+			n = s.getInt();
+		}
+		qe.close();
+		return n;
+	}
+	
 	boolean isConsistent() {
 		boolean consistent = true;
 		String q = null;
-			try {
-				q = IOUtils.toString(App.class.getResourceAsStream("consistency_check.rq"), StandardCharsets.UTF_8);
-			} catch (IOException e) {
-				System.out.println("Could not load SPARQL query from jar \n"+e);
-			}
+		try {
+			q = IOUtils.toString(App.class.getResourceAsStream("consistency_check.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL query from jar \n"+e);
+		}
 		QueryExecution qe = QueryExecutionFactory.create(q, jena);
 		ResultSet results = qe.execSelect();
 		if (results.hasNext()) {
@@ -81,21 +115,21 @@ public class QRunner {
 		qe.close();
 		return consistent;
 	}
-	
+
 	Model makeJenaModel(WorkingMemory wm) {
 		Model model = ModelFactory.createDefaultModel();
 		model.add(JavaConverters.setAsJavaSetConverter(wm.facts()).asJava().stream()
 				.map(t -> model.asStatement(Bridge.jenaFromTriple(t))).collect(Collectors.toList()));
 		return model;
 	}
-	
+
 	RuleEngine initializeRuleEngine(OWLOntology ontology) {
 		Set<Rule> rules = new HashSet<Rule>();
 		rules.addAll(JavaConverters.setAsJavaSetConverter(OWLtoRules.translate(ontology, Imports.INCLUDED, true, true, true, true)).asJava());
 		rules.addAll(JavaConverters.setAsJavaSetConverter(OWLtoRules.indirectRules(ontology)).asJava());
 		return new RuleEngine(Bridge.rulesFromJena(JavaConverters.asScalaSetConverter(rules).asScala()), true);
 	}
-	
+
 	/**
 	 * Return Arachne working memory representing LEGO model combined with inference rules.
 	 * This model will not remain synchronized with changes to data.
@@ -119,22 +153,20 @@ public class QRunner {
 		wm = ruleEngine.processTriples(JavaConverters.asScalaSetConverter(triples).asScala());
 		return wm; 
 	}
-	
-	private void printFactsExplanations(WorkingMemory mem) {
+
+	void printFactsExplanations() {
 		int n = 0;
-		scala.collection.Iterator<Triple> i = mem.facts().iterator();		
+		scala.collection.Iterator<Triple> i = wm.facts().iterator();		
 		while(i.hasNext()) {	
 			Triple fact = i.next();
-			if(!mem.asserted().contains(fact)) {
+			if(!wm.asserted().contains(fact)) {
 				n++;
 				System.out.println(n+"\t"+fact.o().toString());
-//				if(!fact.o().toString().equals("<http://www.biopax.org/release/biopax-level3.owl#Protein>")) {
-//					scala.collection.immutable.Set<Explanation> e = mem.explain(fact);
-//					System.out.println("\t\t"+e);
-//				}
+				//				if(!fact.o().toString().equals("<http://www.biopax.org/release/biopax-level3.owl#Protein>")) {
+				scala.collection.immutable.Set<Explanation> e = wm.explain(fact);
+				System.out.println("\t\t"+e);
+				//				}
 				//<http://purl.obolibrary.org/obo/BFO_0000002>"\n" + 
-						
-				
 			}
 		}
 		return;

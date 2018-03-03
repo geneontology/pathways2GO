@@ -2,23 +2,23 @@ prefix owl: <http://www.w3.org/2002/07/owl#>
 prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
 #what genes are in the glycolysis pathway?
-select ?physical_entity ?entity_part ?part_type where {
+select ?pathway ?reaction ?physical_entity where {
   #Its this one <http://www.reactome.org/biopax/63/48887#Pathway1754>
   ?pathway rdfs:label "Glycolysis". 
   #get the sub pathways via has part 
   #?pathway <http://purl.obolibrary.org/obo/BFO_0000051> ?subpath .
   #get the reactions in the pathway(s) via part of
-  ?reaction <http://purl.obolibrary.org/obo/BFO_0000050> ?pathway .
+  ?pathway <http://purl.obolibrary.org/obo/BFO_0000051> ?reaction .
   #get the entities that 'enable' the reaction
   ?reaction <http://purl.obolibrary.org/obo/RO_0002333> ?physical_entity .
   #check for complexes 
-  ?physical_entity rdf:type <http://purl.obolibrary.org/obo/GO_0032991> .
+  #?physical_entity rdf:type <http://purl.obolibrary.org/obo/GO_0032991> .
   #get parts recursively
-  ?physical_entity <http://purl.obolibrary.org/obo/BFO_0000051>* ?entity_part
+#  ?physical_entity <http://purl.obolibrary.org/obo/BFO_0000051>* ?entity_part
   #filter out complexes 
-  minus {?entity_part rdf:type <http://purl.obolibrary.org/obo/GO_0032991>}
+#  minus {?entity_part rdf:type <http://purl.obolibrary.org/obo/GO_0032991>}
   #gather types
-  ?entity_part rdf:type ?part_type       
+#  ?entity_part rdf:type ?part_type       
   #filter (?entity_part rdf:type owl:NamedIndividual)
    }  
 
