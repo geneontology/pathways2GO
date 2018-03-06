@@ -1,6 +1,7 @@
 package org.geneontology.gocam.exchange;
 
 import java.io.File;
+import java.util.Set;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
@@ -14,21 +15,26 @@ import org.semanticweb.owlapi.model.OWLOntologyStorageException;
  *
  */
 public class App {
-//	String minimal_lego = "src/main/resources/org/geneontology/gocam/exchange/go-lego-trimmed.owl";
-//	String noneo_lego = "src/main/resources/org/geneontology/gocam/exchange/go-lego-noneo.owl";
-//	String maximal_lego = "src/main/resources/org/geneontology/gocam/exchange/go-lego-full.owl";	
-	
-	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException {
+	//	String minimal_lego = "src/main/resources/org/geneontology/gocam/exchange/go-lego-trimmed.owl";
+	//	String noneo_lego = "src/main/resources/org/geneontology/gocam/exchange/go-lego-noneo.owl";
+	//	String maximal_lego = "src/main/resources/org/geneontology/gocam/exchange/go-lego-full.owl";	
+
+	public static void main( String[] args ){
+
+	}
+
+	//TODO Maybe someday unit tests..  
+	public static void testInference()  throws OWLOntologyCreationException, OWLOntologyStorageException {
 		//Test reading, reasoning, query
 
 		//prepare an abox (taken from Arachne test case)
 		// https://github.com/balhoff/arachne/tree/master/src/test/resources/org/geneontology/rules
-		String abox_file = "src/main/resources/org/geneontology/gocam/exchange/57c82fad00000639.ttl";
+		String abox_file = "src/main/resources/org/geneontology/gocam/exchange/Unreasonable_i.ttl";//57c82fad00000639.ttl";
 		OWLOntologyManager aman = OWLManager.createOWLOntologyManager();
 		OWLOntology abox = aman.loadOntologyFromOntologyDocument(new File(abox_file));	
-		
+
 		//prepare tbox
-		String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
+		String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/Unreasonable.ttl";//ro-merged.owl";
 		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
 		OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));		
 		//build the graph
@@ -38,6 +44,13 @@ public class App {
 		//ask it questions
 		boolean c = q.isConsistent();
 		System.out.println("Is it consistent? "+c);
+		if(!c) {
+			Set<String> uns = q.getUnreasonableEntities();
+			System.out.println("Entities that equal owl:Nothing");
+			for(String u : uns) {
+				System.out.println(u);
+			}
+		}
 		//how big is it?
 		int n = q.nTriples();
 		System.out.println("N triples "+n); 
@@ -47,12 +60,12 @@ public class App {
 			System.out.println("All "+q.wm.facts().size());
 			//q.printFactsExplanations();
 		}
-//57c82fad00000639.ttl + ro-merged.owl no inference = 6630 triples
-//57c82fad00000639.ttl + ro-merged.owl with inference = 2852 triples, including 282 inferred
-//57c82fad00000639.ttl + ro-merged.owl with inference, without indirectRules = 2834 triples, including 264 inferred		
-//57c82fad00000639.ttl + ro-merged.owl with inference, without triples from tbox = 629 triples, including 282 inferred
-//57c82fad00000639.ttl + ro-merged.owl with inference, without indirectRules, without triples from tbox = 611 triples, including 264 inferred
-//test says arachneInferredTriples.size shouldEqual 611  
-//arachneInferredTriples = wm.facts
+		//57c82fad00000639.ttl + ro-merged.owl no inference = 6630 triples
+		//57c82fad00000639.ttl + ro-merged.owl with inference = 2852 triples, including 282 inferred
+		//57c82fad00000639.ttl + ro-merged.owl with inference, without indirectRules = 2834 triples, including 264 inferred		
+		//57c82fad00000639.ttl + ro-merged.owl with inference, without triples from tbox = 629 triples, including 282 inferred
+		//57c82fad00000639.ttl + ro-merged.owl with inference, without indirectRules, without triples from tbox = 611 triples, including 264 inferred
+		//test says arachneInferredTriples.size shouldEqual 611  
+		//arachneInferredTriples = wm.facts
 	}
 }

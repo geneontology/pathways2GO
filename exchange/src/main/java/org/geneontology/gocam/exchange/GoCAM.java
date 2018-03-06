@@ -51,6 +51,7 @@ public class GoCAM {
 	public static final IRI go_lego_iri = IRI.create("http://purl.obolibrary.org/obo/go/extensions/go-lego.owl");
 	public static final IRI obo_iri = IRI.create("http://purl.obolibrary.org/obo/");
 	public static final IRI uniprot_iri = IRI.create("http://identifiers.org/uniprot/");
+	public static IRI base_ont_iri;
 	public static OWLAnnotationProperty title_prop, contributor_prop, date_prop, 
 		state_prop, evidence_prop, provided_by_prop, x_prop, y_prop, rdfs_label, rdfs_comment, source_prop;
 	public static OWLObjectProperty part_of, has_part, has_input, has_output, 
@@ -65,14 +66,12 @@ public class GoCAM {
 	 * 
 	 */
 
-	public GoCAM(String gocam_title, String contributor, String date, String provider, boolean add_lego_import) throws OWLOntologyCreationException {
+	public GoCAM(IRI ont_iri, String gocam_title, String contributor, String date, String provider, boolean add_lego_import) throws OWLOntologyCreationException {
 		base_contributor = contributor;
 		base_date = getDate(date);
 		base_provider = provider;
-		
+		base_ont_iri = ont_iri;
 		ontman = OWLManager.createOWLOntologyManager();				
-		String iri = "http://model.geneontology.org/"+gocam_title.hashCode(); //using a URL encoded string here confused the UI code...
-		IRI ont_iri = IRI.create(iri);
 		go_cam_ont = ontman.createOntology(ont_iri);
 		df = OWLManager.getOWLDataFactory();
 
@@ -271,6 +270,15 @@ public class GoCAM {
 		return IRI.create(uri);
 	}
 	
+	/**
+	 * Given a set of PubMed reference identifiers, the pieces of a triple, and an evidence class, create an evidence individual for each pmid, 
+	 * create a corresponding OWLAnnotation entity, make the triple along with all the annotations as evidence.  
+	 * @param source
+	 * @param prop
+	 * @param target
+	 * @param pmids
+	 * @param evidence_class
+	 */
 	void addRefBackedObjectPropertyAssertion(OWLIndividual source, OWLObjectProperty prop, OWLIndividual target, Set<String> pmids, OWLClass evidence_class) {
 		OWLObjectPropertyAssertionAxiom add_prop_axiom = null;
 		if(pmids!=null&&pmids.size()>0) {
@@ -348,6 +356,35 @@ public class GoCAM {
 	
 	void readGoCAM(String infilename) throws OWLOntologyCreationException {
 		go_cam_ont = ontman.loadOntologyFromOntologyDocument(new File(infilename));		
+	}
+	
+	/**
+	 * Check the generated ontology for logical inconsistencies.
+	 * TODO add other checks on adherence to GO-CAM schema.  
+	 * @return
+	 * @throws OWLOntologyCreationException 
+	 */
+	boolean validateGoCAM() throws OWLOntologyCreationException {
+		boolean is_valid = false;
+		//TODO either grab this from a PURL so its always up to date, or keep the referenced imported file in sync.  
+		String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
+		//<http://purl.obolibrary.org/obo/go/extensions/go-lego.owl>
+		//String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/go-lego-noneo.owl";
+		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
+		OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
+		boolean add_inferences = true;
+		QRunner q = new QRunner(tbox, this.go_cam_ont, base_ont_iri, add_inferences);
+		is_valid = q.isConsistent();
+		if(is_valid) {
+			System.out.println("GO-CAM model is valid, nice one!");
+		}else {
+			System.out.println("GO-CAM model is not logically consistent, please inspect model and try again!\n Entities = OWL:Nothing include:\n");
+			Set<String> u = q.getUnreasonableEntities();
+			for(String s : u) {
+				System.out.println(s);
+			}
+		}
+		return is_valid;
 	}
 	
 }

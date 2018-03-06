@@ -135,6 +135,21 @@ public class BioPaxtoGO {
 		go_cam.addLabel(pathway_class, "Pathway");
 	}
 
+	/**
+	 * The main point of access for converting BioPAX level 3 OWL models into GO-CAM OWL models
+	 * @param input_biopax
+	 * @param converted
+	 * @param split_by_pathway
+	 * @param add_lego_import
+	 * @param base_title
+	 * @param base_contributor
+	 * @param base_provider
+	 * @param tag
+	 * @throws FileNotFoundException
+	 * @throws OWLOntologyCreationException
+	 * @throws OWLOntologyStorageException
+	 * @throws UnsupportedEncodingException
+	 */
 	private void convert(
 			String input_biopax, String converted, 
 			boolean split_by_pathway, boolean add_lego_import,
@@ -145,13 +160,16 @@ public class BioPaxtoGO {
 		Model model = handler.convertFromOWL(f);
 
 		//set up ontology (used if not split)
-		GoCAM go_cam = new GoCAM("Meta Pathway Ontology", base_contributor, null, base_provider, add_lego_import);
+		String base_ont_title = "Meta Pathway Ontology";
+		String iri = "http://model.geneontology.org/"+base_ont_title.hashCode(); //using a URL encoded string here confused the UI code...
+		IRI ont_iri = IRI.create(iri);
+		GoCAM go_cam = new GoCAM(ont_iri, base_ont_title, base_contributor, null, base_provider, add_lego_import);
 		setupBioPaxOntParts(go_cam);
 		//list pathways
 		for (Pathway currentPathway : model.getObjects(Pathway.class)){
 			System.out.println("Pathway:"+currentPathway.getName()); 
 			if(split_by_pathway) {
-				//re initialize for each pathway
+				//then reinitialize for each pathway
 				String reactome_id = null;
 				String contributor_link = "https://reactome.org";
 				//See if there is a specific pathway reference to allow a direct link
@@ -168,8 +186,11 @@ public class BioPaxtoGO {
 							}
 						}
 					}
-				}			
-				go_cam = new GoCAM("Reactome:"+tag+":"+currentPathway.getDisplayName(), contributor_link, null, base_provider, add_lego_import);
+				}		
+				base_ont_title = "Reactome:"+tag+":"+currentPathway.getDisplayName();
+				iri = "http://model.geneontology.org/"+base_ont_title.hashCode(); //using a URL encoded string here confused the UI code...
+				ont_iri = IRI.create(iri);	
+				go_cam = new GoCAM(ont_iri, base_ont_title, contributor_link, null, base_provider, add_lego_import);
 				setupBioPaxOntParts(go_cam);
 			}
 
@@ -179,7 +200,6 @@ public class BioPaxtoGO {
 			//define it (add types etc)
 			definePathwayEntity(go_cam, currentPathway, split_by_pathway);
 			Set<String> pubids = getPubmedIds(currentPathway);
-			//		Set<OWLAnnotation> annos = makeAnnotationSet(go_cam, pubrefs, p);
 
 			//get and set parent pathways
 			for(Pathway parent_pathway : currentPathway.getPathwayComponentOf()) {				
@@ -257,7 +277,8 @@ public class BioPaxtoGO {
 				n = n.replaceAll(" ", "_");
 				String outfilename = converted+n+".ttl";	
 				layoutForNoctua(go_cam);
-				go_cam.writeGoCAM(outfilename);
+				go_cam.validateGoCAM()
+;				go_cam.writeGoCAM(outfilename);
 				//reset for next pathway.
 				//go_cam.ontman.clearOntologies();
 				go_cam.ontman.removeOntology(go_cam.go_cam_ont);
@@ -266,6 +287,7 @@ public class BioPaxtoGO {
 		//export all
 		if(!split_by_pathway) {
 			layoutForNoctua(go_cam);
+			go_cam.validateGoCAM();
 			go_cam.writeGoCAM(converted+".ttl");
 		}
 	}

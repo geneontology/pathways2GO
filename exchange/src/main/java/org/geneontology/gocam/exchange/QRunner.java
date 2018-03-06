@@ -17,6 +17,7 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.reasoner.rulesys.Rule;
 import org.geneontology.jena.OWLtoRules;
@@ -159,6 +160,25 @@ public class QRunner {
 		}
 		qe.close();
 		return consistent;
+	}
+	
+	Set<String> getUnreasonableEntities() {
+		Set<String> unreasonable = new HashSet<String>();
+		String q = null;
+		try {
+			q = IOUtils.toString(App.class.getResourceAsStream("unreasonable_query.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL query from jar \n"+e);
+		}
+		QueryExecution qe = QueryExecutionFactory.create(q, jena);
+		ResultSet results = qe.execSelect();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Resource r = qs.getResource("s");
+			unreasonable.add(r.getURI());
+		}
+		qe.close();
+		return unreasonable;
 	}
 
 	Model makeJenaModel(WorkingMemory wm) {
