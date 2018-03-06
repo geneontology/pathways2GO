@@ -56,7 +56,53 @@ public class QRunner {
 			jena = makeJenaModel(abox, tbox);
 		}
 	}
+	
+	RuleEngine initializeRuleEngine(OWLOntology tbox) {
+		Set<Rule> rules = new HashSet<Rule>();
+		rules.addAll(JavaConverters.setAsJavaSetConverter(OWLtoRules.translate(tbox, Imports.INCLUDED, true, true, true, true)).asJava());
+		rules.addAll(JavaConverters.setAsJavaSetConverter(OWLtoRules.indirectRules(tbox)).asJava());
+		return new RuleEngine(Bridge.rulesFromJena(JavaConverters.asScalaSetConverter(rules).asScala()), true);
+	}
 
+	/**
+	 * Return Arachne working memory representing LEGO model combined with inference rules.
+	 * This model will not remain synchronized with changes to data.
+	 * @param LEGO modelId
+	 * @return Jena model
+	 */
+	WorkingMemory createInferredModel(OWLOntology tbox_ontology, OWLOntology abox_ontology, IRI ontology_id) {
+		Set<Statement> statements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(abox_ontology)).asJava();		
+		Set<Triple> triples = statements.stream().map(s -> Bridge.tripleFromJena(s.asTriple())).collect(Collectors.toSet());
+		System.out.println("abox triples: "+triples.size());
+		try {
+			// Using model's ontology IRI so that a spurious different ontology declaration triple isn't added
+			OWLOntology schemaOntology = OWLManager.createOWLOntologyManager().createOntology(tbox_ontology.getRBoxAxioms(Imports.INCLUDED), ontology_id);
+			Set<Statement> schemaStatements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(schemaOntology)).asJava();
+			System.out.println("tbox.getRBoxAxioms triples: "+schemaStatements.size());
+			triples.addAll(schemaStatements.stream().map(s -> Bridge.tripleFromJena(s.asTriple())).collect(Collectors.toSet()));
+		} catch (OWLOntologyCreationException e) {
+			System.out.println("Couldn't add rbox statements to data model.");
+			System.out.println(e);
+		}
+		wm = ruleEngine.processTriples(JavaConverters.asScalaSetConverter(triples).asScala());
+		return wm; 
+	}
+
+	void printFactsExplanations() {
+		int n = 0;
+		scala.collection.Iterator<Triple> i = wm.facts().iterator();		
+		while(i.hasNext()) {	
+			Triple fact = i.next();
+			if(!wm.asserted().contains(fact)) {
+				n++;
+				System.out.println(n+"\t"+fact.o().toString());
+				scala.collection.immutable.Set<Explanation> e = wm.explain(fact);
+				System.out.println("\t\t"+e);
+			}
+		}
+		return;
+	}
+	
 	Model makeJenaModel(OWLOntology abox, OWLOntology tbox) {
 		Model model = ModelFactory.createDefaultModel();
 		Set<Statement> a_statements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(abox)).asJava();		
@@ -105,7 +151,6 @@ public class QRunner {
 		if (results.hasNext()) {
 			QuerySolution qs = results.next();
 			Literal s = qs.getLiteral("triples");
-			System.out.println(s);
 			if(s.getInt()==0) {
 				consistent = true;
 			}else{
@@ -121,54 +166,5 @@ public class QRunner {
 		model.add(JavaConverters.setAsJavaSetConverter(wm.facts()).asJava().stream()
 				.map(t -> model.asStatement(Bridge.jenaFromTriple(t))).collect(Collectors.toList()));
 		return model;
-	}
-
-	RuleEngine initializeRuleEngine(OWLOntology ontology) {
-		Set<Rule> rules = new HashSet<Rule>();
-		rules.addAll(JavaConverters.setAsJavaSetConverter(OWLtoRules.translate(ontology, Imports.INCLUDED, true, true, true, true)).asJava());
-		rules.addAll(JavaConverters.setAsJavaSetConverter(OWLtoRules.indirectRules(ontology)).asJava());
-		return new RuleEngine(Bridge.rulesFromJena(JavaConverters.asScalaSetConverter(rules).asScala()), true);
-	}
-
-	/**
-	 * Return Arachne working memory representing LEGO model combined with inference rules.
-	 * This model will not remain synchronized with changes to data.
-	 * @param LEGO modelId
-	 * @return Jena model
-	 */
-	WorkingMemory createInferredModel(OWLOntology tbox_ontology, OWLOntology abox_ontology, IRI ontology_id) {
-		//Set<Statement> statements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(getModelAbox(modelId))).asJava();
-		Set<Statement> statements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(abox_ontology)).asJava();		
-		Set<Triple> triples = statements.stream().map(s -> Bridge.tripleFromJena(s.asTriple())).collect(Collectors.toSet());
-		try {
-			// Using model's ontology IRI so that a spurious different ontology declaration triple isn't added
-			//OWLOntology schemaOntology = OWLManager.createOWLOntologyManager().createOntology(ontology.getRBoxAxioms(Imports.INCLUDED), ontology_id);
-			OWLOntology schemaOntology = OWLManager.createOWLOntologyManager().createOntology(tbox_ontology.getRBoxAxioms(Imports.INCLUDED), ontology_id);
-			Set<Statement> schemaStatements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(schemaOntology)).asJava();
-			triples.addAll(schemaStatements.stream().map(s -> Bridge.tripleFromJena(s.asTriple())).collect(Collectors.toSet()));
-		} catch (OWLOntologyCreationException e) {
-			System.out.println("Couldn't add rbox statements to data model.");
-			System.out.println(e);
-		}
-		wm = ruleEngine.processTriples(JavaConverters.asScalaSetConverter(triples).asScala());
-		return wm; 
-	}
-
-	void printFactsExplanations() {
-		int n = 0;
-		scala.collection.Iterator<Triple> i = wm.facts().iterator();		
-		while(i.hasNext()) {	
-			Triple fact = i.next();
-			if(!wm.asserted().contains(fact)) {
-				n++;
-				System.out.println(n+"\t"+fact.o().toString());
-				//				if(!fact.o().toString().equals("<http://www.biopax.org/release/biopax-level3.owl#Protein>")) {
-				scala.collection.immutable.Set<Explanation> e = wm.explain(fact);
-				System.out.println("\t\t"+e);
-				//				}
-				//<http://purl.obolibrary.org/obo/BFO_0000002>"\n" + 
-			}
-		}
-		return;
 	}
 }

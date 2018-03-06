@@ -810,6 +810,12 @@ public class BioPaxtoGO {
 		return all_parts;
 	}
 
+	/**
+	 * Sometimes complexes are annotated with locations as are all of their (potentially many) components.  These annotations
+	 * really clog up the Noctua graph view as it stands now.  This should remove complex component location annotations and leave
+	 * just one location annotation on the complex when they are all the same.  
+	 * @param go_cam
+	 */
 	private void removeRedundantLocations(GoCAM go_cam) {
 		Iterator<OWLIndividual> complexes = EntitySearcher.getIndividuals(GoCAM.go_complex, go_cam.go_cam_ont).iterator();
 		while(complexes.hasNext()) {
@@ -937,6 +943,13 @@ public class BioPaxtoGO {
 		}
 	}
 
+	/**
+	 * Given knowledge of semantic structure of a GO-CAM, try to make a basic layout that is useful within the Noctua editor.
+	 * Tries to line up pathways/processes hotizontally on the top with reactions/functions associated with each one expanding vertically down
+	 * When a reaction provides_input_for another reaction, try to line these up so the order flows from left to right.
+	 * Try to group inputs above, outputs below and enablers - see @layoutReactionComponents
+	 * @param go_cam
+	 */
 	private void layoutForNoctua(GoCAM go_cam) {
 		removeRedundantLocations(go_cam);
 		Iterator<OWLIndividual> pathways = EntitySearcher.getIndividuals(pathway_class, go_cam.go_cam_ont).iterator();
@@ -988,6 +1001,14 @@ public class BioPaxtoGO {
 		}
 	}
 
+	/**
+	 * Try to make a consistent layout for the standard components of a biopax reaction as represented in a go-cam.
+	 * Inputs above, Outputs below, Enablers 
+	 * @param reaction
+	 * @param go_cam
+	 * @param reaction_x
+	 * @param reaction_y
+	 */
 	private void layoutReactionComponents(OWLIndividual reaction, GoCAM go_cam, int reaction_x, int reaction_y) {
 		//up for input down for output
 		int input_x = reaction_x - 200;
@@ -1062,6 +1083,13 @@ public class BioPaxtoGO {
 		}
 	}
 
+	/**
+	 * Layout the 'parts_of' the given entity (e.g. a Complex) such that they group around it.
+	 * @param entity
+	 * @param entity_x
+	 * @param entity_y
+	 * @param go_cam
+	 */
 	private void layoutPartsAndlocations(OWLIndividual entity, int entity_x, int entity_y, GoCAM go_cam) {
 		int part_x = entity_x + 50 ;
 		int part_y = entity_y - 150;
@@ -1083,6 +1111,16 @@ public class BioPaxtoGO {
 		}
 	}
 
+	/**
+	 * Idea here is to start building a semi-circle to show a closed loop.  Its not working great.
+	 * @param start_x
+	 * @param start_y
+	 * @param x_spacer
+	 * @param y_spacer
+	 * @param reaction_node
+	 * @param edge_type
+	 * @param go_cam
+	 */
 	private void layoutLoopish(int start_x, int start_y, int x_spacer, int y_spacer, OWLNamedIndividual reaction_node, OWLObjectProperty edge_type, GoCAM go_cam) {
 		//don't fly into infinity and beyond!
 		if(mapHintPresent(reaction_node, go_cam)) {		
@@ -1104,6 +1142,12 @@ public class BioPaxtoGO {
 		}	
 	}
 
+	/**
+	 * Have we already given the node a location?
+	 * @param node
+	 * @param go_cam
+	 * @return
+	 */
 	private boolean mapHintPresent(OWLNamedIndividual node, GoCAM go_cam){
 		boolean x_present = false;
 		//long nx = EntitySearcher.getAnnotationObjects(node, go_cam.go_cam_ont, GoCAM.x_prop).count();
@@ -1114,6 +1158,16 @@ public class BioPaxtoGO {
 		return x_present;
 	}
 
+	/**
+	 * Given the edge_type (e.g. provides_direct_input_for) recursively follow the links along that edge and position the nodes in a horizontal row.
+	 * @param start_x
+	 * @param start_y
+	 * @param x_spacer
+	 * @param y_spacer
+	 * @param reaction_root
+	 * @param edge_type
+	 * @param go_cam
+	 */
 	private void layoutHorizontalTree(int start_x, int start_y, int x_spacer, int y_spacer, OWLNamedIndividual reaction_root, OWLObjectProperty edge_type, GoCAM go_cam) {
 		//don't fly into infinity and beyond!
 		if(mapHintPresent(reaction_root, go_cam)) {

@@ -45,10 +45,14 @@ public class App {
 		if(add_inferences) {
 			System.out.println("inferred "+(q.wm.facts().size()-q.wm.asserted().size()));
 			System.out.println("All "+q.wm.facts().size());
-			q.printFactsExplanations();
+			//q.printFactsExplanations();
 		}
-//134 with ro merged, minimal_lego
+//57c82fad00000639.ttl + ro-merged.owl no inference = 6630 triples
+//57c82fad00000639.ttl + ro-merged.owl with inference = 2852 triples, including 282 inferred
+//57c82fad00000639.ttl + ro-merged.owl with inference, without indirectRules = 2834 triples, including 264 inferred		
+//57c82fad00000639.ttl + ro-merged.owl with inference, without triples from tbox = 629 triples, including 282 inferred
+//57c82fad00000639.ttl + ro-merged.owl with inference, without indirectRules, without triples from tbox = 611 triples, including 264 inferred
+//test says arachneInferredTriples.size shouldEqual 611  
+//arachneInferredTriples = wm.facts
 	}
-
-
 }
