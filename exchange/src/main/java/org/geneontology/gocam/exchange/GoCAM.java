@@ -373,7 +373,8 @@ public class GoCAM {
 		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
 		OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
 		boolean add_inferences = true;
-		QRunner q = new QRunner(tbox, this.go_cam_ont, base_ont_iri, add_inferences);
+		boolean add_property_definitions = false; boolean add_class_definitions = false;
+		QRunner q = new QRunner(tbox, this.go_cam_ont, add_inferences, add_property_definitions, add_class_definitions);
 		is_valid = q.isConsistent();
 		if(is_valid) {
 			System.out.println("GO-CAM model is valid, nice one!");

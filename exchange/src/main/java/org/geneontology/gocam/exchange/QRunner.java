@@ -3,6 +3,8 @@
  */
 package org.geneontology.gocam.exchange;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
@@ -19,91 +21,52 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.reasoner.rulesys.Rule;
-import org.geneontology.jena.OWLtoRules;
 import org.geneontology.jena.SesameJena;
-import org.geneontology.rules.engine.Explanation;
-import org.geneontology.rules.engine.RuleEngine;
-import org.geneontology.rules.engine.Triple;
 import org.geneontology.rules.engine.WorkingMemory;
 import org.geneontology.rules.util.Bridge;
-import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.parameters.Imports;
 
 import scala.collection.JavaConverters;
 
 /**
+ * Provide access to the Jena SPARQL engine over OWLOntology graphs.  
+ * Optionally employ the Arachne reasoner to expand the graphs prior to query.
  * @author bgood
  *
  */
 public class QRunner {
-	private RuleEngine ruleEngine;
-	private final Model jena;
+	Model jena;
+	ArachneAccessor arachne;
 	WorkingMemory wm;
-	boolean inference_on;
 	/**
 	 * 
 	 */
-	public QRunner(OWLOntology tbox, OWLOntology abox, IRI ontology_iri, boolean add_inferences) {
-		inference_on = add_inferences;
-		if(inference_on) {
-			ruleEngine = initializeRuleEngine(tbox);
-			wm = createInferredModel(tbox, abox, ontology_iri);
+	public QRunner(OWLOntology tbox, OWLOntology abox, boolean add_inferences, boolean add_property_definitions, boolean add_class_definitions) {
+		if(add_inferences) {
+			System.out.println("Setting up Arachne reasoner, extracting rules from tbox");
+			arachne = new ArachneAccessor(tbox);
+			System.out.println("Applying rules to expand the abox graph");
+			wm = arachne.createInferredModel(abox, add_property_definitions, add_class_definitions);			
+			System.out.println("Making Jena model from inferred graph");
 			jena = makeJenaModel(wm);
 		}else {
-			jena = makeJenaModel(abox, tbox);
+			System.out.println("Making Jena model (no inferred relations, no tbox)");
+			jena = makeJenaModel(abox, null);
 		}
-	}
-	
-	RuleEngine initializeRuleEngine(OWLOntology tbox) {
-		Set<Rule> rules = new HashSet<Rule>();
-		rules.addAll(JavaConverters.setAsJavaSetConverter(OWLtoRules.translate(tbox, Imports.INCLUDED, true, true, true, true)).asJava());
-		rules.addAll(JavaConverters.setAsJavaSetConverter(OWLtoRules.indirectRules(tbox)).asJava());
-		return new RuleEngine(Bridge.rulesFromJena(JavaConverters.asScalaSetConverter(rules).asScala()), true);
 	}
 
-	/**
-	 * Return Arachne working memory representing LEGO model combined with inference rules.
-	 * This model will not remain synchronized with changes to data.
-	 * @param LEGO modelId
-	 * @return Jena model
-	 */
-	WorkingMemory createInferredModel(OWLOntology tbox_ontology, OWLOntology abox_ontology, IRI ontology_id) {
-		Set<Statement> statements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(abox_ontology)).asJava();		
-		Set<Triple> triples = statements.stream().map(s -> Bridge.tripleFromJena(s.asTriple())).collect(Collectors.toSet());
-		System.out.println("abox triples: "+triples.size());
-		try {
-			// Using model's ontology IRI so that a spurious different ontology declaration triple isn't added
-			OWLOntology schemaOntology = OWLManager.createOWLOntologyManager().createOntology(tbox_ontology.getRBoxAxioms(Imports.INCLUDED), ontology_id);
-			Set<Statement> schemaStatements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(schemaOntology)).asJava();
-			System.out.println("tbox.getRBoxAxioms triples: "+schemaStatements.size());
-			triples.addAll(schemaStatements.stream().map(s -> Bridge.tripleFromJena(s.asTriple())).collect(Collectors.toSet()));
-		} catch (OWLOntologyCreationException e) {
-			System.out.println("Couldn't add rbox statements to data model.");
-			System.out.println(e);
-		}
-		wm = ruleEngine.processTriples(JavaConverters.asScalaSetConverter(triples).asScala());
-		return wm; 
+	public QRunner(OWLOntology abox) {
+		System.out.println("Setting up Jena model for query.  Only including Abox ontology, no reasoning");
+		jena = makeJenaModel(abox, null);
 	}
 
-	void printFactsExplanations() {
-		int n = 0;
-		scala.collection.Iterator<Triple> i = wm.facts().iterator();		
-		while(i.hasNext()) {	
-			Triple fact = i.next();
-			if(!wm.asserted().contains(fact)) {
-				n++;
-				System.out.println(n+"\t"+fact.o().toString());
-				scala.collection.immutable.Set<Explanation> e = wm.explain(fact);
-				System.out.println("\t\t"+e);
-			}
-		}
-		return;
+	Model makeJenaModel(WorkingMemory wm) {
+		Model model = ModelFactory.createDefaultModel();
+		model.add(JavaConverters.setAsJavaSetConverter(wm.facts()).asJava().stream()
+				.map(t -> model.asStatement(Bridge.jenaFromTriple(t))).collect(Collectors.toList()));
+		return model;
 	}
-	
+
 	Model makeJenaModel(OWLOntology abox, OWLOntology tbox) {
 		Model model = ModelFactory.createDefaultModel();
 		Set<Statement> a_statements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(abox)).asJava();		
@@ -118,7 +81,7 @@ public class QRunner {
 		}	
 		return model;
 	}
-
+	
 	int nTriples() {
 		int n = 0;
 		String q = null;
@@ -138,7 +101,7 @@ public class QRunner {
 		qe.close();
 		return n;
 	}
-	
+
 	boolean isConsistent() {
 		boolean consistent = true;
 		String q = null;
@@ -161,7 +124,7 @@ public class QRunner {
 		qe.close();
 		return consistent;
 	}
-	
+
 	Set<String> getUnreasonableEntities() {
 		Set<String> unreasonable = new HashSet<String>();
 		String q = null;
@@ -181,10 +144,15 @@ public class QRunner {
 		return unreasonable;
 	}
 
-	Model makeJenaModel(WorkingMemory wm) {
-		Model model = ModelFactory.createDefaultModel();
-		model.add(JavaConverters.setAsJavaSetConverter(wm.facts()).asJava().stream()
-				.map(t -> model.asStatement(Bridge.jenaFromTriple(t))).collect(Collectors.toList()));
-		return model;
+	/**
+	 * Writes whatever is currently in the jena model to a file
+	 * @param filename
+	 * @param format
+	 * @throws FileNotFoundException
+	 */
+	void dumpModel(String filename, String format) throws FileNotFoundException {
+		FileOutputStream o = new FileOutputStream(filename);
+		jena.write(o, format);
 	}
+
 }
