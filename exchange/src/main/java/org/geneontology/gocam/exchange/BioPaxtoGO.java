@@ -6,6 +6,7 @@ package org.geneontology.gocam.exchange;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -38,6 +39,9 @@ import org.biopax.paxtools.model.level3.SmallMolecule;
 import org.biopax.paxtools.model.level3.UnificationXref;
 import org.biopax.paxtools.model.level3.XReferrable;
 import org.biopax.paxtools.model.level3.Xref;
+import org.openrdf.repository.RepositoryException;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -66,12 +70,14 @@ public class BioPaxtoGO {
 
 	/**
 	 * @param args
-	 * @throws FileNotFoundException 
 	 * @throws OWLOntologyCreationException 
 	 * @throws OWLOntologyStorageException 
-	 * @throws UnsupportedEncodingException 
+	 * @throws IOException 
+	 * @throws RDFHandlerException 
+	 * @throws RDFParseException 
+	 * @throws RepositoryException 
 	 */
-	public static void main(String[] args) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException, UnsupportedEncodingException {
+	public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		BioPaxtoGO bp2g = new BioPaxtoGO();
 //		String input_folder = "/Users/bgood/Downloads/biopax/";
 //		String output_folder = "/Users/bgood/Downloads/biopax_converted/";
@@ -96,7 +102,7 @@ public class BioPaxtoGO {
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, save_inferences);
 	} 
 
-	private void convertReactomeFile(String input_file, String output, boolean split_by_pathway, boolean save_inferences) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException, UnsupportedEncodingException {
+	private void convertReactomeFile(String input_file, String output, boolean split_by_pathway, boolean save_inferences) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		boolean add_lego_import = false;
 		String base_title = "default pathway ontology"; 
 		String base_contributor = "reactome contributor"; 
@@ -105,7 +111,7 @@ public class BioPaxtoGO {
 		convert(input_file, output, split_by_pathway, add_lego_import, base_title, base_contributor, base_provider, tag, save_inferences);
 	}
 	
-	private void convertReactomeFolder(String input_folder, String output_folder, boolean save_inferences) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException, UnsupportedEncodingException {
+	private void convertReactomeFolder(String input_folder, String output_folder, boolean save_inferences) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		boolean split_by_pathway = true;
 		boolean add_lego_import = false;
 		String base_title = "Reactome pathway ontology"; 
@@ -147,15 +153,17 @@ public class BioPaxtoGO {
 	 * @param base_contributor
 	 * @param base_provider
 	 * @param tag
-	 * @throws FileNotFoundException
 	 * @throws OWLOntologyCreationException
 	 * @throws OWLOntologyStorageException
-	 * @throws UnsupportedEncodingException
+	 * @throws IOException 
+	 * @throws RDFHandlerException 
+	 * @throws RDFParseException 
+	 * @throws RepositoryException 
 	 */
 	private void convert(
 			String input_biopax, String converted, 
 			boolean split_by_pathway, boolean add_lego_import,
-			String base_title, String base_contributor, String base_provider, String tag, boolean save_inferences) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException, UnsupportedEncodingException  {
+			String base_title, String base_contributor, String base_provider, String tag, boolean save_inferences) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException  {
 		//read biopax pathway(s)
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileInputStream f = new FileInputStream(input_biopax);
@@ -166,6 +174,11 @@ public class BioPaxtoGO {
 		String iri = "http://model.geneontology.org/"+base_ont_title.hashCode(); //using a URL encoded string here confused the UI code...
 		IRI ont_iri = IRI.create(iri);
 		GoCAM go_cam = new GoCAM(ont_iri, base_ont_title, base_contributor, null, base_provider, add_lego_import);
+		//for blazegraph output
+		boolean save2blazegraph = true;
+		String journal = converted+".jnl";
+		go_cam.path2bgjournal = journal;
+		Blazer blaze = go_cam.initializeBlazeGraph(journal);
 		QRunner qrunner = go_cam.initializeQRunner();
 		setupBioPaxOntParts(go_cam);
 		//list pathways
@@ -197,6 +210,8 @@ public class BioPaxtoGO {
 				ont_iri = IRI.create(iri);	
 				go_cam = new GoCAM(ont_iri, base_ont_title, contributor_link, null, base_provider, add_lego_import);
 				go_cam.qrunner = qrunner; //re-use it..
+				go_cam.path2bgjournal = journal;
+				go_cam.blazegraphdb = blaze;
 				setupBioPaxOntParts(go_cam);
 			}
 
@@ -284,7 +299,7 @@ public class BioPaxtoGO {
 				String outfilename = converted+n+".ttl";	
 				layoutForNoctua(go_cam);
 				go_cam.validateGoCAM();				
-				go_cam.writeGoCAM(outfilename, save_inferences);
+				go_cam.writeGoCAM(outfilename, save_inferences, save2blazegraph);
 				if(!go_cam.validateGoCAM()) {
 					System.exit(0); //die if not logically consistent.  
 				}
@@ -296,7 +311,7 @@ public class BioPaxtoGO {
 		//export all
 		if(!split_by_pathway) {
 			layoutForNoctua(go_cam);
-			go_cam.writeGoCAM(converted+".ttl", save_inferences);
+			go_cam.writeGoCAM(converted+".ttl", save_inferences, save2blazegraph);
 			if(!go_cam.validateGoCAM()) {
 				System.exit(0); //die if not logically consistent.  
 			}			

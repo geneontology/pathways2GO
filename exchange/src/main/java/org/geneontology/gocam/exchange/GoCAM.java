@@ -5,6 +5,7 @@ package org.geneontology.gocam.exchange;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,6 +14,9 @@ import java.util.Set;
 
 import org.biopax.paxtools.model.level3.PublicationXref;
 import org.biopax.paxtools.model.level3.Xref;
+import org.openrdf.repository.RepositoryException;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
 //import org.coode.owlapi.turtle.TurtleOntologyFormat;
 import org.semanticweb.owlapi.formats.TurtleDocumentFormat;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -64,6 +68,9 @@ public class GoCAM {
 	String base_contributor, base_date, base_provider;
 	//for inference 
 	QRunner qrunner;
+	//for storage
+	String path2bgjournal;
+	Blazer blazegraphdb;
 
 	/**
 	 * @throws OWLOntologyCreationException 
@@ -189,6 +196,12 @@ public class GoCAM {
 		//ontman.applyChanges();
 	}
 
+	Blazer initializeBlazeGraph(String journal) {
+		path2bgjournal = journal;
+		blazegraphdb = new Blazer(journal);
+		return blazegraphdb;
+	}
+	
 	/**
 	 * Sets up the inference rules from provided TBox
 	 * @throws OWLOntologyCreationException
@@ -375,17 +388,24 @@ public class GoCAM {
 		return labels;
 	}
 
-	void writeGoCAM(String outfilename, boolean add_inferred) throws OWLOntologyStorageException, FileNotFoundException {
+	void writeGoCAM(String outfilename, boolean add_inferred, boolean save2blazegraph) throws OWLOntologyStorageException, OWLOntologyCreationException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
+		File outfilefile = new File(outfilename);
 		if(add_inferred) {
 			//make sure inference run
 			addInferredEdges();
 			//use jena export
-			qrunner.dumpModel(outfilename, "TURTLE");
+			qrunner.dumpModel(outfilefile, "TURTLE");
 		}else {
-			FileDocumentTarget outfile = new FileDocumentTarget(new File(outfilename));
+			FileDocumentTarget outfile = new FileDocumentTarget(outfilefile);
 			//ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());	
 			ontman.setOntologyFormat(go_cam_ont, new TurtleDocumentFormat());	
 			ontman.saveOntology(go_cam_ont,outfile);	
+		}
+		if(save2blazegraph) {
+			if(blazegraphdb==null) {
+				initializeBlazeGraph(path2bgjournal);
+			}
+			blazegraphdb.importModelToDatabase(outfilefile);
 		}
 	}
 

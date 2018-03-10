@@ -2,6 +2,7 @@ package org.geneontology.gocam.exchange;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
 
@@ -40,7 +41,7 @@ public class App {
 		a.reasonAllInFolder(input_folder, output_folder, add_property_definitions, add_class_definitions);
 	}
 	
-	public static void queryCollection() throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException {
+	public static void queryCollection() throws OWLOntologyCreationException, OWLOntologyStorageException, IOException {
 		String input_folder = "/Users/bgood/reactome-go-cam-models/humantest/";
 		OWLOntology abox = ArachneAccessor.makeOneOntologyFromDirectory(input_folder);
 		//prepare tbox

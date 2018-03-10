@@ -3,6 +3,7 @@
  */
 package org.geneontology.gocam.exchange;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -150,11 +151,17 @@ public class QRunner {
 	 * Writes whatever is currently in the jena model to a file
 	 * @param filename
 	 * @param format
-	 * @throws FileNotFoundException
+	 * @throws IOException 
 	 */
-	void dumpModel(String filename, String format) throws FileNotFoundException {
+	void dumpModel(String filename, String format) throws IOException {
 		FileOutputStream o = new FileOutputStream(filename);
 		jena.write(o, format);
+		o.close();
+	}
+	void dumpModel(File file, String format) throws IOException {
+		FileOutputStream o = new FileOutputStream(file);
+		jena.write(o, format);
+		o.close();
 	}
 
 }
