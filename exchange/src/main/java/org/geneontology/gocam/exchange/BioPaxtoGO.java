@@ -77,32 +77,35 @@ public class BioPaxtoGO {
 //		String output_folder = "/Users/bgood/Downloads/biopax_converted/";
 //		bp2g.convertReactomeFolder(input_folder, output_folder);
 		
-		String input_biopax = "/Users/bgood/Desktop/test/Wnt_example.owl";
+		String input_biopax = //"/Users/bgood/Desktop/test/Wnt_example.owl";
 				//		"src/main/resources/reactome/wnt/wnt_tcf_full.owl";
-		//		"src/main/resources/reactome/Homo_sapiens.owl";
+				//"src/main/resources/reactome/Homo_sapiens.owl";
+				"/Users/bgood/Downloads/biopax/homosapiens.owl";
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
-		String converted = "/Users/bgood/Desktop/test/Wnt_example_cam-";
+		String converted = //"/Users/bgood/Desktop/test/reasoned/Wnt_example_cam-";
 				//"/Users/bgood/Desktop/test/converted-wnt-full-";
 				//"/Users/bgood/Desktop/test_input/converted-";
 				//"/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-";
+				"/Users/bgood/reactome-go-cam-models/human_unreasoned/reactome-homosapiens-";
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-wnt-tcf-full";
 		boolean split_by_pathway = true;
-		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway);
+		boolean save_inferences = false;
+		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, save_inferences);
 	} 
 
-	private void convertReactomeFile(String input_file, String output, boolean split_by_pathway) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException, UnsupportedEncodingException {
+	private void convertReactomeFile(String input_file, String output, boolean split_by_pathway, boolean save_inferences) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException, UnsupportedEncodingException {
 		boolean add_lego_import = false;
 		String base_title = "default pathway ontology"; 
 		String base_contributor = "reactome contributor"; 
 		String base_provider = "https://reactome.org";
 		String tag = "";
-		convert(input_file, output, split_by_pathway, add_lego_import, base_title, base_contributor, base_provider, tag);
+		convert(input_file, output, split_by_pathway, add_lego_import, base_title, base_contributor, base_provider, tag, save_inferences);
 	}
 	
-	private void convertReactomeFolder(String input_folder, String output_folder) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException, UnsupportedEncodingException {
+	private void convertReactomeFolder(String input_folder, String output_folder, boolean save_inferences) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException, UnsupportedEncodingException {
 		boolean split_by_pathway = true;
 		boolean add_lego_import = false;
 		String base_title = "Reactome pathway ontology"; 
@@ -116,7 +119,7 @@ public class BioPaxtoGO {
 				String species = input_biopax.getName();
 				if(species.contains(".owl")) { //ignore other kinds of files.. liek DS_STORE!
 					String output_file_stub = output_folder+"/reactome-"+species.replaceAll(".owl", "-");
-					convert(input_biopax.getAbsolutePath(), output_file_stub, split_by_pathway, add_lego_import, base_title, base_contributor, base_provider, species);
+					convert(input_biopax.getAbsolutePath(), output_file_stub, split_by_pathway, add_lego_import, base_title, base_contributor, base_provider, species, save_inferences);
 				}
 			}
 		} 
@@ -126,7 +129,6 @@ public class BioPaxtoGO {
 		//protein
 		protein_class = go_cam.df.getOWLClass(IRI.create(biopax_iri + "Protein")); 
 		go_cam.addLabel(protein_class, "Protein");
-		go_cam.addSubclassAssertion(protein_class, GoCAM.continuant_class, null);
 		//reaction
 		reaction_class = go_cam.df.getOWLClass(IRI.create(biopax_iri + "Reaction")); 
 		go_cam.addLabel(reaction_class, "Reaction");
@@ -153,21 +155,24 @@ public class BioPaxtoGO {
 	private void convert(
 			String input_biopax, String converted, 
 			boolean split_by_pathway, boolean add_lego_import,
-			String base_title, String base_contributor, String base_provider, String tag) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException, UnsupportedEncodingException  {
+			String base_title, String base_contributor, String base_provider, String tag, boolean save_inferences) throws FileNotFoundException, OWLOntologyCreationException, OWLOntologyStorageException, UnsupportedEncodingException  {
 		//read biopax pathway(s)
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileInputStream f = new FileInputStream(input_biopax);
 		Model model = handler.convertFromOWL(f);
-
+		int n_pathways = 0; 
 		//set up ontology (used if not split)
 		String base_ont_title = "Meta Pathway Ontology";
 		String iri = "http://model.geneontology.org/"+base_ont_title.hashCode(); //using a URL encoded string here confused the UI code...
 		IRI ont_iri = IRI.create(iri);
 		GoCAM go_cam = new GoCAM(ont_iri, base_ont_title, base_contributor, null, base_provider, add_lego_import);
+		QRunner qrunner = go_cam.initializeQRunner();
 		setupBioPaxOntParts(go_cam);
 		//list pathways
+		int total_pathways = model.getObjects(Pathway.class).size();
 		for (Pathway currentPathway : model.getObjects(Pathway.class)){
-			System.out.println("Pathway:"+currentPathway.getName()); 
+			n_pathways++;
+			System.out.println(n_pathways+" of "+total_pathways+" Pathway:"+currentPathway.getName()); 
 			if(split_by_pathway) {
 				//then reinitialize for each pathway
 				String reactome_id = null;
@@ -191,6 +196,7 @@ public class BioPaxtoGO {
 				iri = "http://model.geneontology.org/"+base_ont_title.hashCode(); //using a URL encoded string here confused the UI code...
 				ont_iri = IRI.create(iri);	
 				go_cam = new GoCAM(ont_iri, base_ont_title, contributor_link, null, base_provider, add_lego_import);
+				go_cam.qrunner = qrunner; //re-use it..
 				setupBioPaxOntParts(go_cam);
 			}
 
@@ -277,8 +283,11 @@ public class BioPaxtoGO {
 				n = n.replaceAll(" ", "_");
 				String outfilename = converted+n+".ttl";	
 				layoutForNoctua(go_cam);
-				go_cam.validateGoCAM()
-;				go_cam.writeGoCAM(outfilename);
+				go_cam.validateGoCAM();				
+				go_cam.writeGoCAM(outfilename, save_inferences);
+				if(!go_cam.validateGoCAM()) {
+					System.exit(0); //die if not logically consistent.  
+				}
 				//reset for next pathway.
 				//go_cam.ontman.clearOntologies();
 				go_cam.ontman.removeOntology(go_cam.go_cam_ont);
@@ -287,8 +296,10 @@ public class BioPaxtoGO {
 		//export all
 		if(!split_by_pathway) {
 			layoutForNoctua(go_cam);
-			go_cam.validateGoCAM();
-			go_cam.writeGoCAM(converted+".ttl");
+			go_cam.writeGoCAM(converted+".ttl", save_inferences);
+			if(!go_cam.validateGoCAM()) {
+				System.exit(0); //die if not logically consistent.  
+			}			
 		}
 	}
 

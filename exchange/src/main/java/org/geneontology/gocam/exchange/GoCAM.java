@@ -4,6 +4,7 @@
 package org.geneontology.gocam.exchange;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,14 +54,17 @@ public class GoCAM {
 	public static final IRI uniprot_iri = IRI.create("http://identifiers.org/uniprot/");
 	public static IRI base_ont_iri;
 	public static OWLAnnotationProperty title_prop, contributor_prop, date_prop, 
-		state_prop, evidence_prop, provided_by_prop, x_prop, y_prop, rdfs_label, rdfs_comment, source_prop;
+	state_prop, evidence_prop, provided_by_prop, x_prop, y_prop, rdfs_label, rdfs_comment, source_prop;
 	public static OWLObjectProperty part_of, has_part, has_input, has_output, 
-		provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in;
+	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in;
 	public static OWLClass bp_class, continuant_class, go_complex, molecular_function, eco_imported, eco_imported_auto;
 	OWLOntology go_cam_ont;
 	OWLDataFactory df;
 	OWLOntologyManager ontman;
 	String base_contributor, base_date, base_provider;
+	//for inference 
+	QRunner qrunner;
+
 	/**
 	 * @throws OWLOntologyCreationException 
 	 * 
@@ -102,10 +106,10 @@ public class GoCAM {
 		y_prop = df.getOWLAnnotationProperty(IRI.create("http://geneontology.org/lego/hint/layout/y"));
 		rdfs_label = df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI());
 		rdfs_comment = df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_COMMENT.getIRI());
-		
+
 		//Will add classes and relations as we need them now. 
 		//TODO Work on using imports later to ensure we don't produce incorrect ids..
-	//classes	
+		//classes	
 		//biological process
 		bp_class = df.getOWLClass(IRI.create(obo_iri + "GO_0008150")); 
 		addLabel(bp_class, "Biological Process");
@@ -164,7 +168,7 @@ public class GoCAM {
 		//RO_0002334 regulated by (processual) 
 		regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002334"));
 		addLabel(regulated_by, "regulated by");
-		
+
 		//Annotate the ontology
 		OWLAnnotation title_anno = df.getOWLAnnotation(title_prop, df.getOWLLiteral(gocam_title));
 		OWLAxiom titleaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, title_anno);
@@ -183,6 +187,30 @@ public class GoCAM {
 		ontman.addAxiom(go_cam_ont, stateaxiom);
 
 		//ontman.applyChanges();
+	}
+
+	/**
+	 * Sets up the inference rules from provided TBox
+	 * @throws OWLOntologyCreationException
+	 */
+	QRunner initializeQRunner() throws OWLOntologyCreationException {
+		//TODO either grab this from a PURL so its always up to date, or keep the referenced imported file in sync.  
+		String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
+		//<http://purl.obolibrary.org/obo/go/extensions/go-lego.owl>
+		//String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/go-lego-noneo.owl";
+		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
+		OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
+		boolean add_inferences = true;
+		boolean add_property_definitions = false; boolean add_class_definitions = false;
+		qrunner = new QRunner(tbox, null, add_inferences, add_property_definitions, add_class_definitions);
+		return qrunner;
+	}
+
+	void addInferredEdges() {
+		//System.out.println("Applying tbox rules to expand the gocam graph");
+		qrunner.wm = qrunner.arachne.createInferredModel(this.go_cam_ont, false, false);			
+		//System.out.println("Making Jena model from inferred graph for query");
+		qrunner.jena = qrunner.makeJenaModel(qrunner.wm);
 	}
 
 	public String getDate(String input_date) {
@@ -206,20 +234,20 @@ public class GoCAM {
 		addBasicAnnotations2Individual(iri, contributor_uri, date, provider_uri);
 		return i;
 	}
-	
+
 	OWLNamedIndividual makeAnnotatedIndividual(IRI iri) {
 		OWLNamedIndividual i = df.getOWLNamedIndividual(iri);		
 		addBasicAnnotations2Individual(iri, this.base_contributor, this.base_date, this.base_provider);
 		return i;
 	}
-	
+
 	void addBasicAnnotations2Individual(IRI individual_iri, String contributor_uri, String date, String provider_uri) {
 		addLiteralAnnotations2Individual(individual_iri, contributor_prop, contributor_uri);
 		addLiteralAnnotations2Individual(individual_iri, date_prop, getDate(date));
 		addLiteralAnnotations2Individual(individual_iri, provided_by_prop, provider_uri);
 		return;
 	}
-	
+
 	Set<OWLAnnotation> getDefaultAnnotations(){
 		Set<OWLAnnotation> annos = new HashSet<OWLAnnotation>();
 		annos.add(df.getOWLAnnotation(contributor_prop, df.getOWLLiteral(this.base_contributor)));
@@ -227,7 +255,7 @@ public class GoCAM {
 		annos.add(df.getOWLAnnotation(provided_by_prop, df.getOWLLiteral(this.base_provider)));
 		return annos;
 	}
-	
+
 	OWLAnnotation addEvidenceAnnotation(IRI individual_iri, IRI evidence_iri) {
 		OWLAnnotation anno = df.getOWLAnnotation(GoCAM.evidence_prop, evidence_iri);
 		OWLAxiom axiom = df.getOWLAnnotationAssertionAxiom(individual_iri, anno);
@@ -235,7 +263,7 @@ public class GoCAM {
 		//ontman.applyChanges();		
 		return anno;
 	}
-	
+
 	OWLAnnotation addLiteralAnnotations2Individual(IRI individual_iri, OWLAnnotationProperty prop, String value) {
 		OWLAnnotation anno = df.getOWLAnnotation(prop, df.getOWLLiteral(value));
 		OWLAxiom axiom = df.getOWLAnnotationAssertionAxiom(individual_iri, anno);
@@ -243,7 +271,7 @@ public class GoCAM {
 		//ontman.applyChanges();		
 		return anno;
 	}
-	
+
 	OWLAnnotation addLiteralAnnotations2Individual(IRI individual_iri, OWLAnnotationProperty prop, OWLLiteral value) {
 		OWLAnnotation anno = df.getOWLAnnotation(prop, value);
 		OWLAxiom axiom = df.getOWLAnnotationAssertionAxiom(individual_iri, anno);
@@ -251,7 +279,7 @@ public class GoCAM {
 		//ontman.applyChanges();		
 		return anno;
 	}
-		
+
 	void addLabel(OWLEntity entity, String label) {
 		if(label==null) {
 			return;
@@ -263,13 +291,13 @@ public class GoCAM {
 		//ontman.applyChanges();
 		return;
 	}
-	
-	
+
+
 	IRI makeIri(String entity) {
 		String uri = "http://model.geneontology.org/"+entity.hashCode();
 		return IRI.create(uri);
 	}
-	
+
 	/**
 	 * Given a set of PubMed reference identifiers, the pieces of a triple, and an evidence class, create an evidence individual for each pmid, 
 	 * create a corresponding OWLAnnotation entity, make the triple along with all the annotations as evidence.  
@@ -300,7 +328,7 @@ public class GoCAM {
 		ontman.applyChange(addAxiom);
 		return ;
 	}
-	
+
 	void addObjectPropertyAssertion(OWLIndividual source, OWLObjectProperty prop, OWLIndividual target, Set<OWLAnnotation> annotations) {
 		OWLObjectPropertyAssertionAxiom add_prop_axiom = null;
 		if(annotations!=null&&annotations.size()>0) {
@@ -312,7 +340,7 @@ public class GoCAM {
 		ontman.applyChange(addAxiom);
 		return ;
 	}
-	
+
 	void addSubclassAssertion(OWLClass child, OWLClass parent, Set<OWLAnnotation> annotations) {
 		OWLSubClassOfAxiom tmp = null;
 		if(annotations!=null&&annotations.size()>0) {
@@ -338,26 +366,33 @@ public class GoCAM {
 	String printLabels(OWLEntity i) {
 		String labels = "";
 		EntitySearcher.getAnnotationObjects(i, go_cam_ont, GoCAM.rdfs_label).
-			forEach(label -> System.out.println(label));
-		
-	//    			getIndividuals(pathway_class, go_cam.go_cam_ont).
-	//    				forEach(pathway -> EntitySearcher.getAnnotationObjects((OWLEntity) pathway, go_cam.go_cam_ont, GoCAM.rdfs_label).
-	//    						forEach(System.out::println)
-	//    						);
+		forEach(label -> System.out.println(label));
+
+		//    			getIndividuals(pathway_class, go_cam.go_cam_ont).
+		//    				forEach(pathway -> EntitySearcher.getAnnotationObjects((OWLEntity) pathway, go_cam.go_cam_ont, GoCAM.rdfs_label).
+		//    						forEach(System.out::println)
+		//    						);
 		return labels;
 	}
-	
-	void writeGoCAM(String outfilename) throws OWLOntologyStorageException {
-		FileDocumentTarget outfile = new FileDocumentTarget(new File(outfilename));
-		//ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());	
-		ontman.setOntologyFormat(go_cam_ont, new TurtleDocumentFormat());	
-		ontman.saveOntology(go_cam_ont,outfile);	
+
+	void writeGoCAM(String outfilename, boolean add_inferred) throws OWLOntologyStorageException, FileNotFoundException {
+		if(add_inferred) {
+			//make sure inference run
+			addInferredEdges();
+			//use jena export
+			qrunner.dumpModel(outfilename, "TURTLE");
+		}else {
+			FileDocumentTarget outfile = new FileDocumentTarget(new File(outfilename));
+			//ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());	
+			ontman.setOntologyFormat(go_cam_ont, new TurtleDocumentFormat());	
+			ontman.saveOntology(go_cam_ont,outfile);	
+		}
 	}
-	
+
 	void readGoCAM(String infilename) throws OWLOntologyCreationException {
 		go_cam_ont = ontman.loadOntologyFromOntologyDocument(new File(infilename));		
 	}
-	
+
 	/**
 	 * Check the generated ontology for logical inconsistencies.
 	 * TODO add other checks on adherence to GO-CAM schema.  
@@ -366,26 +401,19 @@ public class GoCAM {
 	 */
 	boolean validateGoCAM() throws OWLOntologyCreationException {
 		boolean is_valid = false;
-		//TODO either grab this from a PURL so its always up to date, or keep the referenced imported file in sync.  
-		String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
-		//<http://purl.obolibrary.org/obo/go/extensions/go-lego.owl>
-		//String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/go-lego-noneo.owl";
-		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
-		OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
-		boolean add_inferences = true;
-		boolean add_property_definitions = false; boolean add_class_definitions = false;
-		QRunner q = new QRunner(tbox, this.go_cam_ont, add_inferences, add_property_definitions, add_class_definitions);
-		is_valid = q.isConsistent();
-		if(is_valid) {
-			System.out.println("GO-CAM model is valid, nice one!");
-		}else {
+		if(qrunner==null) {
+			this.initializeQRunner();
+		}
+		this.addInferredEdges();
+		is_valid = qrunner.isConsistent();
+		if(!is_valid) {
 			System.out.println("GO-CAM model is not logically consistent, please inspect model and try again!\n Entities = OWL:Nothing include:\n");
-			Set<String> u = q.getUnreasonableEntities();
+			Set<String> u = qrunner.getUnreasonableEntities();
 			for(String s : u) {
 				System.out.println(s);
 			}
 		}
 		return is_valid;
 	}
-	
+
 }

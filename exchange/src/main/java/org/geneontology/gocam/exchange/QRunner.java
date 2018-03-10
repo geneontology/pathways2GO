@@ -45,10 +45,12 @@ public class QRunner {
 		if(add_inferences) {
 			System.out.println("Setting up Arachne reasoner, extracting rules from tbox");
 			arachne = new ArachneAccessor(tbox);
-			System.out.println("Applying rules to expand the abox graph");
-			wm = arachne.createInferredModel(abox, add_property_definitions, add_class_definitions);			
-			System.out.println("Making Jena model from inferred graph");
-			jena = makeJenaModel(wm);
+			if(abox!=null) {
+				System.out.println("Applying rules to expand the abox graph");
+				wm = arachne.createInferredModel(abox, add_property_definitions, add_class_definitions);			
+				System.out.println("Making Jena model from inferred graph");
+				jena = makeJenaModel(wm);
+			}
 		}else {
 			System.out.println("Making Jena model (no inferred relations, no tbox)");
 			jena = makeJenaModel(abox, null);
@@ -81,7 +83,7 @@ public class QRunner {
 		}	
 		return model;
 	}
-	
+
 	int nTriples() {
 		int n = 0;
 		String q = null;
