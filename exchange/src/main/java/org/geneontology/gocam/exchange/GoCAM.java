@@ -228,7 +228,17 @@ public class GoCAM {
 		return qrunner;
 	}
 
-	void addInferredEdges() {
+	QRunner initializeQRunner(OWLOntology tbox) throws OWLOntologyCreationException {
+		boolean add_inferences = true;
+		boolean add_property_definitions = false; boolean add_class_definitions = false;
+		qrunner = new QRunner(tbox, null, add_inferences, add_property_definitions, add_class_definitions);
+		return qrunner;
+	}
+	
+	void addInferredEdges() throws OWLOntologyCreationException {
+		if(qrunner==null) {
+			initializeQRunner();
+		}
 		//System.out.println("Applying tbox rules to expand the gocam graph");
 		qrunner.wm = qrunner.arachne.createInferredModel(this.go_cam_ont, false, false);			
 		//System.out.println("Making Jena model from inferred graph for query");

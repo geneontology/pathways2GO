@@ -4,13 +4,21 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
+import org.openrdf.repository.RepositoryException;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
+import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
@@ -25,8 +33,38 @@ public class App {
 	//	String noneo_lego = "src/main/resources/org/geneontology/gocam/exchange/go-lego-noneo.owl";
 	//	String maximal_lego = "src/main/resources/org/geneontology/gocam/exchange/go-lego-full.owl";	
 
-	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException {
-		buildSparqlable();
+	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
+		String base_ont_title = "Meta Pathway Ontology";
+		String iri = "http://model.geneontology.org/"+base_ont_title.hashCode(); //using a URL encoded string here confused the UI code...
+		IRI ont_iri = IRI.create(iri);
+		GoCAM go_cam = new GoCAM(ont_iri, base_ont_title, "base_contributor", null, "base_provider", false);
+		String pid1 = "pid1"; String pid2 = "pid2";
+		String root_iri = "http://model.geneontology.org/";
+
+		OWLClass pclass1 = go_cam.df.getOWLClass(IRI.create(root_iri+"pclass1"));
+		OWLClass pclass2 = go_cam.df.getOWLClass(IRI.create(root_iri+"pclass2"));
+		
+		OWLClass complex = go_cam.df.getOWLClass(IRI.create(root_iri+"complexclass1"));
+		OWLClassExpression hasPartPclass1 = go_cam.df.getOWLObjectSomeValuesFrom(GoCAM.has_part, pclass1);
+		OWLClassExpression hasPartPclass2 = go_cam.df.getOWLObjectSomeValuesFrom(GoCAM.has_part, pclass2);
+		Set<OWLClassExpression> parts = new HashSet<OWLClassExpression>();
+		parts.add(hasPartPclass1); parts.add(hasPartPclass2);
+		OWLClassExpression complex_def = go_cam.df.getOWLObjectIntersectionOf(parts);
+		OWLEquivalentClassesAxiom eq = go_cam.df.getOWLEquivalentClassesAxiom(complex, complex_def);
+		go_cam.ontman.addAxiom(go_cam.go_cam_ont, eq);
+		
+		IRI prot_part_iri1 = IRI.create(root_iri+"p1"); IRI prot_part_iri2 = IRI.create(root_iri+"p2");
+		OWLNamedIndividual prot_part_entity2 = go_cam.df.getOWLNamedIndividual(prot_part_iri2); 
+		OWLNamedIndividual prot_part_entity1 = go_cam.df.getOWLNamedIndividual(prot_part_iri1); //define it independently within this context
+		go_cam.addTypeAssertion(prot_part_entity1, pclass1);
+		go_cam.addTypeAssertion(prot_part_entity2, pclass2);
+		
+		OWLNamedIndividual complex_i = go_cam.df.getOWLNamedIndividual(IRI.create(root_iri+Math.random()));
+		go_cam.addObjectPropertyAssertion(complex_i, GoCAM.has_part, prot_part_entity1, null);
+		go_cam.addObjectPropertyAssertion(complex_i, GoCAM.has_part, prot_part_entity2, null);
+	//	go_cam.addTypeAssertion(complex_i, complex);
+		go_cam.initializeQRunner(go_cam.go_cam_ont);
+		go_cam.writeGoCAM("/Users/bgood/Desktop/test.ttl", true, false);
 	}
 
 	public static void buildSparqlable() throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException{

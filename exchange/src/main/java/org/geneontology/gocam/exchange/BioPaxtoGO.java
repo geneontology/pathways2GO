@@ -93,14 +93,14 @@ public class BioPaxtoGO {
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = //"/Users/bgood/Desktop/test/reasoned/Wnt_example_cam-";
-				"/Users/bgood/Desktop/test/Wnt_output/converted-wnt-full-";
+				"/Users/bgood/Desktop/test/Wnt_output/converted-wnt-by-class-";
 				//"/Users/bgood/Desktop/test_input/converted-";
 				//"/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-";
 				//"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-wnt-tcf-full";
-		boolean split_by_pathway = false;
+		boolean split_by_pathway = true;
 		boolean save_inferences = false;
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, save_inferences);
 	} 
@@ -459,6 +459,8 @@ public class BioPaxtoGO {
 						OWLNamedIndividual prot_part_entity = go_cam.df.getOWLNamedIndividual(IRI.create(prot_part.getUri()+e.hashCode())); //define it independently within this context
 						//hook up parts	
 						go_cam.addObjectPropertyAssertion(e, GoCAM.has_part, prot_part_entity, null);
+						//if its made of parts and it doesn't have its own unique protein name, call it a complex..
+						go_cam.addTypeAssertion(e, GoCAM.go_complex);
 						//define them = hopefully get out a name and a class for the sub protein.	
 						defineReactionEntity(go_cam, prot_part, prot_part_entity.getIRI());
 					}
