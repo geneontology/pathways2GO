@@ -20,10 +20,13 @@ import java.util.stream.Stream;
 import org.biopax.paxtools.io.BioPAXIOHandler;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.Model;
+import org.biopax.paxtools.model.level2.catalysis;
 import org.biopax.paxtools.model.level3.BiochemicalReaction;
+import org.biopax.paxtools.model.level3.Catalysis;
 import org.biopax.paxtools.model.level3.CellularLocationVocabulary;
 import org.biopax.paxtools.model.level3.Complex;
 import org.biopax.paxtools.model.level3.Control;
+import org.biopax.paxtools.model.level3.ControlType;
 import org.biopax.paxtools.model.level3.Controller;
 import org.biopax.paxtools.model.level3.Dna;
 import org.biopax.paxtools.model.level3.Entity;
@@ -83,22 +86,22 @@ public class BioPaxtoGO {
 //		String output_folder = "/Users/bgood/Downloads/biopax_converted/";
 //		bp2g.convertReactomeFolder(input_folder, output_folder);
 		
-		String input_biopax = //"/Users/bgood/Desktop/test/Wnt_example.owl";
+		String input_biopax = "/Users/bgood/Desktop/test/Wnt_example.owl";
 				//		"src/main/resources/reactome/wnt/wnt_tcf_full.owl";
 				//"src/main/resources/reactome/Homo_sapiens.owl";
-				"/Users/bgood/Downloads/biopax/homosapiens.owl";
+				//"/Users/bgood/Downloads/biopax/homosapiens.owl";
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = //"/Users/bgood/Desktop/test/reasoned/Wnt_example_cam-";
-				//"/Users/bgood/Desktop/test/converted-wnt-full-";
+				"/Users/bgood/Desktop/test/Wnt_output/converted-wnt-full-";
 				//"/Users/bgood/Desktop/test_input/converted-";
 				//"/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-";
-				"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
+				//"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-wnt-tcf-full";
-		boolean split_by_pathway = true;
-		boolean save_inferences = true;
+		boolean split_by_pathway = false;
+		boolean save_inferences = false;
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, save_inferences);
 	} 
 
@@ -622,16 +625,10 @@ public class BioPaxtoGO {
 
 			Set<Control> controllers = reaction.getControlledOf();
 			for(Control controller : controllers) {
-				//				if(controller.getUri().equals("http://www.reactome.org/biopax/63/70326#Control3")) {
-				//					System.out.println("Hello 3 controller ");
-				//				}
-
-				//ControlType ctype = controller.getControlType();
 				//make an individual of the class molecular function
 				//catalysis 'entities' from biopax may map onto functions from go_cam
 				//check for reactome mappings
 				//dig out the GO molecular function and create an individual for it
-				//OWLNamedIndividual mf = df.getOWLNamedIndividual(controller.getUri()); 
 				Set<Xref> xrefs = controller.getXref(); //controller is either a 'control' or a 'catalysis' so far
 				boolean mf_set = false;
 				for(Xref xref : xrefs) {
@@ -646,7 +643,11 @@ public class BioPaxtoGO {
 						}
 					}
 				}		
-
+				ControlType ctype = controller.getControlType();				
+				boolean is_catalysis = false;
+				if(controller.getModelInterface().equals(Catalysis.class)) {
+					is_catalysis = true;
+				}
 				Set<Controller> controller_entities = controller.getController();
 				for(Controller controller_entity : controller_entities) {
 					String local_id = controller_entity.getUri()+e.hashCode();
@@ -656,43 +657,27 @@ public class BioPaxtoGO {
 					OWLNamedIndividual controller_e = go_cam.df.getOWLNamedIndividual(iri);
 					//the controlling physical entity enables that function/reaction
 					//on occasion there are refs associated with the controller.
-					Set<String> controllerpubrefs = getPubmedIds(controller_entity);					
-					go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, controller_e, controllerpubrefs, GoCAM.eco_imported_auto);	
+					Set<String> controllerpubrefs = getPubmedIds(controller_entity);		
+
+					//define relationship between controller entity and reaction
+					//if catalysis then always enabled by
+					if(is_catalysis) {
+						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, controller_e, controllerpubrefs, GoCAM.eco_imported_auto);	
+					}else {
+						//otherwise look at text 
+						//					//define how the molecular function (process) relates to the reaction (process)
+						if(ctype.toString().startsWith("INHIBITION")){
+							go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.directly_negatively_regulated_by, controller_e, controllerpubrefs, GoCAM.eco_imported_auto);	
+						}else if(ctype.toString().startsWith("ACTIVATION")){
+							go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.directly_positively_regulated_by, controller_e, controllerpubrefs, GoCAM.eco_imported_auto);
+						}else {
+							//default to regulates
+							go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.regulated_by, controller_e, controllerpubrefs, GoCAM.eco_imported_auto);
+						}
+					}
+
 				}
 			}
-			//					OWLObjectPropertyAssertionAxiom add_func_axiom2 = df.getOWLObjectPropertyAssertionAxiom(enables, controller_e, e);
-			//					AddAxiom addFuncAxiom2 = new AddAxiom(go_cam_ont, add_func_axiom2);
-			//					ontman.applyChanges(addFuncAxiom2);
-
-			//TODO maybe try harder to find a MF if not explicitly defined
-			//if no GO is set for the controller, add an intermediate empty function?
-			//					if(!mf_set) {
-			//						OWLNamedIndividual mf = df.getOWLNamedIndividual(controller_entity.getUri()+"_function_"+Math.random()); 
-			//						OWLClassAssertionAxiom isa_function = df.getOWLClassAssertionAxiom(molecular_function, mf);
-			//						ontman.addAxiom(go_cam_ont, isa_function);
-			//						ontman.applyChanges();
-			//					}
-
-			//					//define how the molecular function (process) relates to the reaction (process)
-			//					if(ctype.toString().startsWith("INHIBITION")){
-			//						// Event directly_inhibits NextEvent 
-			//						OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(directly_inhibits, controller_e, e);
-			//						AddAxiom addStepAxiom = new AddAxiom(go_cam_ont, add_step_axiom);
-			//						ontman.applyChanges(addStepAxiom);
-			//						//System.out.println(a_mf +" inhibits "+e);
-			//					}else if(ctype.toString().startsWith("ACTIVATION")){
-			//						// Event directly_ACTIVATES NextEvent 
-			//						OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(directly_activates, controller_e, e);
-			//						AddAxiom addStepAxiom = new AddAxiom(go_cam_ont, add_step_axiom);
-			//						ontman.applyChanges(addStepAxiom);
-			//						//System.out.println(a_mf +" activates "+e);
-			//					}else {
-			//						//default to regulates
-			//						OWLObjectPropertyAssertionAxiom add_step_axiom = df.getOWLObjectPropertyAssertionAxiom(regulated_by, e, controller_e);
-			//						AddAxiom addStepAxiom = new AddAxiom(go_cam_ont, add_step_axiom);
-			//						ontman.applyChanges(addStepAxiom);
-			//						//System.out.println(e +" regulated_by "+a_mf);
-			//					}
 
 			//The OWL for the reaction and all of its parts should now be assembled.  Now can apply secondary rules to improve mapping to go-cam model
 			//If all of the entities involved in a reaction are located in the same GO cellular component, 

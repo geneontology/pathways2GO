@@ -60,7 +60,8 @@ public class GoCAM {
 	public static OWLAnnotationProperty title_prop, contributor_prop, date_prop, 
 	state_prop, evidence_prop, provided_by_prop, x_prop, y_prop, rdfs_label, rdfs_comment, source_prop;
 	public static OWLObjectProperty part_of, has_part, has_input, has_output, 
-	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in;
+	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in,
+	directly_positively_regulated_by, directly_negatively_regulated_by;
 	public static OWLClass bp_class, continuant_class, go_complex, molecular_function, eco_imported, eco_imported_auto;
 	OWLOntology go_cam_ont;
 	OWLDataFactory df;
@@ -175,7 +176,15 @@ public class GoCAM {
 		//RO_0002334 regulated by (processual) 
 		regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002334"));
 		addLabel(regulated_by, "regulated by");
-
+		//RO_0002335 negatively regulated by
+		//RO_0002336 positively regulated by
+		//directly negatively regulated by RO_0002023
+		//directly positively regulated by RO_0002024
+		directly_negatively_regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002023"));
+		addLabel(directly_negatively_regulated_by, "directly negatively regulated by");
+		directly_positively_regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002024"));
+		addLabel(directly_positively_regulated_by, "directly positively regulated by");
+		
 		//Annotate the ontology
 		OWLAnnotation title_anno = df.getOWLAnnotation(title_prop, df.getOWLLiteral(gocam_title));
 		OWLAxiom titleaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, title_anno);
