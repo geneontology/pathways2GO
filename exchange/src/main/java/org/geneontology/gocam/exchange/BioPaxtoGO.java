@@ -52,6 +52,7 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
@@ -455,15 +456,19 @@ public class BioPaxtoGO {
 			}else { //no entity reference so look for parts 
 				Set<PhysicalEntity> prot_parts = protein.getMemberPhysicalEntity();
 				if(prot_parts!=null) {
+					//if its made of parts and it doesn't have its own unique protein name, call it a complex..					
+					Set<String> cnames = new HashSet<String>();
 					for(PhysicalEntity prot_part : prot_parts) {
+						cnames.add(prot_part.getDisplayName());
 						OWLNamedIndividual prot_part_entity = go_cam.df.getOWLNamedIndividual(IRI.create(prot_part.getUri()+e.hashCode())); //define it independently within this context
 						//hook up parts	
-						go_cam.addObjectPropertyAssertion(e, GoCAM.has_part, prot_part_entity, null);
-						//if its made of parts and it doesn't have its own unique protein name, call it a complex..
-						go_cam.addTypeAssertion(e, GoCAM.go_complex);
+						go_cam.addObjectPropertyAssertion(e, GoCAM.has_part, prot_part_entity, null);						
+						//go_cam.addTypeAssertion(e, GoCAM.go_complex);
 						//define them = hopefully get out a name and a class for the sub protein.	
 						defineReactionEntity(go_cam, prot_part, prot_part_entity.getIRI());
 					}
+					//adds a unique class to describe this complex 
+					addComplexAsSimpleClass(go_cam, cnames, e, null);
 				}
 			}
 		}
@@ -539,10 +544,9 @@ public class BioPaxtoGO {
 				//until something is imported that understands the uniprot entities, assert that they are proteins
 				go_cam.addTypeAssertion(e, uniprotein_class);
 			}else {
-				//assert it as a complex
-				go_cam.addTypeAssertion(e, GoCAM.go_complex);
 				//note that complex.getComponent() apparently violates the rules in its documentation which stipulate that it should return
 				//a flat representation of the parts of the complex (e.g. proteins) and not nested complexes (which the reactome biopax does here)
+				Set<String> cnames = new HashSet<String>();
 				for(PhysicalEntity component : complex_parts) {
 					//hook up parts	
 					if(component.getModelInterface().equals(Complex.class)){
@@ -553,6 +557,7 @@ public class BioPaxtoGO {
 							System.out.println("No nested complexes please.. failing on "+e);
 							System.exit(0);
 						}
+						cnames.add(component.getDisplayName());
 						IRI comp_uri = IRI.create(component.getUri()+e.hashCode());
 						OWLNamedIndividual component_entity = go_cam.df.getOWLNamedIndividual(comp_uri);
 						go_cam.addObjectPropertyAssertion(e, GoCAM.has_part, component_entity, null);
@@ -560,6 +565,10 @@ public class BioPaxtoGO {
 						defineReactionEntity(go_cam, component, comp_uri);
 					}
 				}
+				//assert it as a complex
+				//	go_cam.addTypeAssertion(e, GoCAM.go_complex);
+				//adds a unique class to describe this complex 
+				addComplexAsSimpleClass(go_cam, cnames, e, null);
 			}
 		}
 		else if(entity.getModelInterface().equals(BiochemicalReaction.class)){
@@ -714,6 +723,31 @@ public class BioPaxtoGO {
 		return;
 	}
 
+	/**
+	 * Since Noctua expects specific classes for individuals and go doesn't have them for complexes, make them.
+	 * Note that these could be defined logically based on their parts if we ever wanted to do any inference.  
+	 * @param go_cam
+	 * @param component_names
+	 * @param complex_i
+	 * @param annotations
+	 * @return
+	 */
+	private OWLNamedIndividual addComplexAsSimpleClass(GoCAM go_cam, Set<String> component_names, OWLNamedIndividual complex_i, Set<OWLAnnotation> annotations) {
+		String combo_name = "";
+		for(String n : component_names) {
+			combo_name=combo_name+"_"+n;
+		}
+		OWLClass complex_class = go_cam.df.getOWLClass(IRI.create(GoCAM.base_iri+""+combo_name.hashCode()));
+		Set<String> labels =  go_cam.getLabels(complex_i);
+		for(String label : labels) {
+			go_cam.addLabel(complex_class, label+"_c");
+		}
+		go_cam.addSubclassAssertion(complex_class, GoCAM.go_complex, annotations);
+		go_cam.addTypeAssertion(complex_i, complex_class);
+		return complex_i;
+	}
+	
+	
 	//Could be done with a PathAccessor
 	//PathAccessor accessor = new PathAccessor("Complex/component*");
 	//The * should do the recursion according to http://journals.plos.org/ploscompbiol/article/file?type=supplementary&id=info:doi/10.1371/journal.pcbi.1003194.s001

@@ -14,6 +14,7 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
@@ -35,37 +36,20 @@ public class App {
 
 	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		String base_ont_title = "Meta Pathway Ontology";
+		String root_iri = "http://model.geneontology.org/";
 		String iri = "http://model.geneontology.org/"+base_ont_title.hashCode(); //using a URL encoded string here confused the UI code...
 		IRI ont_iri = IRI.create(iri);
 		GoCAM go_cam = new GoCAM(ont_iri, base_ont_title, "base_contributor", null, "base_provider", false);
 		String pid1 = "pid1"; String pid2 = "pid2";
-		String root_iri = "http://model.geneontology.org/";
-
-		OWLClass pclass1 = go_cam.df.getOWLClass(IRI.create(root_iri+"pclass1"));
-		OWLClass pclass2 = go_cam.df.getOWLClass(IRI.create(root_iri+"pclass2"));
-		
-		OWLClass complex = go_cam.df.getOWLClass(IRI.create(root_iri+"complexclass1"));
-		OWLClassExpression hasPartPclass1 = go_cam.df.getOWLObjectSomeValuesFrom(GoCAM.has_part, pclass1);
-		OWLClassExpression hasPartPclass2 = go_cam.df.getOWLObjectSomeValuesFrom(GoCAM.has_part, pclass2);
-		Set<OWLClassExpression> parts = new HashSet<OWLClassExpression>();
-		parts.add(hasPartPclass1); parts.add(hasPartPclass2);
-		OWLClassExpression complex_def = go_cam.df.getOWLObjectIntersectionOf(parts);
-		OWLEquivalentClassesAxiom eq = go_cam.df.getOWLEquivalentClassesAxiom(complex, complex_def);
-		go_cam.ontman.addAxiom(go_cam.go_cam_ont, eq);
-		
-		IRI prot_part_iri1 = IRI.create(root_iri+"p1"); IRI prot_part_iri2 = IRI.create(root_iri+"p2");
-		OWLNamedIndividual prot_part_entity2 = go_cam.df.getOWLNamedIndividual(prot_part_iri2); 
-		OWLNamedIndividual prot_part_entity1 = go_cam.df.getOWLNamedIndividual(prot_part_iri1); //define it independently within this context
-		go_cam.addTypeAssertion(prot_part_entity1, pclass1);
-		go_cam.addTypeAssertion(prot_part_entity2, pclass2);
-		
-		OWLNamedIndividual complex_i = go_cam.df.getOWLNamedIndividual(IRI.create(root_iri+Math.random()));
-		go_cam.addObjectPropertyAssertion(complex_i, GoCAM.has_part, prot_part_entity1, null);
-		go_cam.addObjectPropertyAssertion(complex_i, GoCAM.has_part, prot_part_entity2, null);
-	//	go_cam.addTypeAssertion(complex_i, complex);
-		go_cam.initializeQRunner(go_cam.go_cam_ont);
-		go_cam.writeGoCAM("/Users/bgood/Desktop/test.ttl", true, false);
+		Set<IRI> protein_ids = new HashSet<IRI>();
+		protein_ids.add(IRI.create(root_iri+pid1)); protein_ids.add(IRI.create(root_iri+pid2));
+//		OWLNamedIndividual ci = go_cam.addComplexAsClass(protein_ids, go_cam.makeRandomIri(), null);
+//
+//		go_cam.initializeQRunner(go_cam.go_cam_ont);
+//		go_cam.writeGoCAM("/Users/bgood/Desktop/test.ttl", false, false);
 	}
+
+
 
 	public static void buildSparqlable() throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException{
 		String input_folder = "/Users/bgood/reactome-go-cam-models/humantest/";
@@ -78,7 +62,7 @@ public class App {
 		boolean add_class_definitions = false;
 		a.reasonAllInFolder(input_folder, output_folder, add_property_definitions, add_class_definitions);
 	}
-	
+
 	public static void queryCollection() throws OWLOntologyCreationException, OWLOntologyStorageException, IOException {
 		String input_folder = "/Users/bgood/reactome-go-cam-models/humantest/";
 		OWLOntology abox = ArachneAccessor.makeOneOntologyFromDirectory(input_folder);
@@ -160,5 +144,54 @@ public class App {
 		//test says arachneInferredTriples.size shouldEqual 611  
 		//arachneInferredTriples = wm.facts
 		return q;
+	}
+	
+	OWLNamedIndividual addComplexAsSimpleClass(GoCAM go_cam, Set<String> component_names, IRI complex_instance_iri, Set<OWLAnnotation> annotations) {
+		String combo_name = GoCAM.base_iri;
+		for(String n : component_names) {
+			combo_name=combo_name+"_"+n;
+		}
+		OWLClass complex_class = go_cam.df.getOWLClass(IRI.create(combo_name));
+		go_cam.addSubclassAssertion(complex_class, GoCAM.go_complex, annotations);
+		//complex instance
+		OWLNamedIndividual complex_i = go_cam.makeAnnotatedIndividual(complex_instance_iri);
+		go_cam.addTypeAssertion(complex_i, complex_class);
+		return complex_i;
+	}
+		
+	
+	OWLNamedIndividual addComplexAsLogicalClass(GoCAM go_cam, Set<IRI> component_iris, IRI complex_instance_iri, Set<OWLAnnotation> annotations) {
+		String combo_name = GoCAM.base_iri;
+		for(IRI component_iri : component_iris) {
+			combo_name=combo_name+"_"+component_iri.getShortForm();
+		}
+		OWLClass complex_class = go_cam.df.getOWLClass(IRI.create(combo_name));
+		//could be inferred if we added an if has_protein_parts axiom to parent, but not our ontology..
+		go_cam.addSubclassAssertion(complex_class, GoCAM.go_complex, annotations);
+		//parts list as class expressions and individuals 
+		Set<OWLClassExpression> part_classes = new HashSet<OWLClassExpression>();
+		Set<OWLNamedIndividual> part_is = new HashSet<OWLNamedIndividual>();
+		for(IRI component_iri : component_iris) {
+			//add or get the class
+			OWLClass protein_class = go_cam.df.getOWLClass(component_iri);		
+			OWLClassExpression hasPartPclass = go_cam.df.getOWLObjectSomeValuesFrom(GoCAM.has_part, protein_class);
+			part_classes.add(hasPartPclass);
+			//make the instance
+			OWLNamedIndividual prot_part_entity = go_cam.makeAnnotatedIndividual(component_iri);
+			go_cam.addTypeAssertion(prot_part_entity, protein_class);
+			part_is.add(prot_part_entity);
+		}
+		//build intersection class 
+		OWLClassExpression complex_def = go_cam.df.getOWLObjectIntersectionOf(part_classes);
+		OWLEquivalentClassesAxiom eq = go_cam.df.getOWLEquivalentClassesAxiom(complex_class, complex_def);
+		go_cam.ontman.addAxiom(go_cam.go_cam_ont, eq);
+		//complex instance
+		OWLNamedIndividual complex_i = go_cam.makeAnnotatedIndividual(complex_instance_iri);
+		for(OWLNamedIndividual i : part_is) {
+			go_cam.addObjectPropertyAssertion(complex_i, GoCAM.has_part, i, annotations);
+		}
+		//this could be inferred based on definition above, but since we know right now no need to run reasoner
+		go_cam.addTypeAssertion(complex_i, complex_class);
+		return complex_i;
 	}
 }

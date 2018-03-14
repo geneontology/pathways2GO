@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.biopax.paxtools.model.level3.PublicationXref;
@@ -25,15 +26,18 @@ import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
+import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAnnotationSubject;
 import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDocumentFormat;
 import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLLiteral;
@@ -53,6 +57,7 @@ import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
  *
  */
 public class GoCAM {
+	public static final String base_iri = "http://model.geneontology.org/";
 	public static final IRI go_lego_iri = IRI.create("http://purl.obolibrary.org/obo/go/extensions/go-lego.owl");
 	public static final IRI obo_iri = IRI.create("http://purl.obolibrary.org/obo/");
 	public static final IRI uniprot_iri = IRI.create("http://identifiers.org/uniprot/");
@@ -324,9 +329,33 @@ public class GoCAM {
 		return;
 	}
 
+	/**
+	 * Thanks https://stackoverflow.com/questions/20780425/using-owl-api-given-an-owlclass-how-can-i-get-rdfslabel-of-it/20784993#20784993
+	 * ...
+	 * @param cls
+	 * @return
+	 */
+	Set<String> getLabels(OWLEntity e){
+		Set<String> labels = new HashSet<String>();
+		for(OWLAnnotationAssertionAxiom a : go_cam_ont.getAnnotationAssertionAxioms(e.getIRI())) {
+		    if(a.getProperty().isLabel()) {
+		        if(a.getValue() instanceof OWLLiteral) {
+		            OWLLiteral val = (OWLLiteral) a.getValue();
+		            labels.add(val.getLiteral());
+		        }
+		    }
+		}
+		return labels;
+	}
+	
 
-	IRI makeIri(String entity) {
-		String uri = "http://model.geneontology.org/"+entity.hashCode();
+	IRI makeEntityHashIri(Object entity) {
+		String uri = base_iri+entity.hashCode();
+		return IRI.create(uri);
+	}
+	
+	IRI makeRandomIri() {
+		String uri = base_iri+Math.random();
 		return IRI.create(uri);
 	}
 
@@ -344,7 +373,7 @@ public class GoCAM {
 		if(pmids!=null&&pmids.size()>0) {
 			Set<OWLAnnotation> annos = new HashSet<OWLAnnotation>();
 			for(String pmid : pmids) {
-				IRI anno_iri = makeIri(source.hashCode()+"_"+prop.hashCode()+"_"+target.hashCode()+"_"+pmid);
+				IRI anno_iri = makeEntityHashIri(source.hashCode()+"_"+prop.hashCode()+"_"+target.hashCode()+"_"+pmid);
 				OWLNamedIndividual evidence = makeAnnotatedIndividual(anno_iri);					
 				addTypeAssertion(evidence, evidence_class);
 				addLiteralAnnotations2Individual(anno_iri, GoCAM.source_prop, "PMID:"+pmid);
