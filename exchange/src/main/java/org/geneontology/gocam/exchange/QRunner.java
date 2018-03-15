@@ -22,6 +22,9 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.update.UpdateAction;
+import org.apache.jena.update.UpdateFactory;
+import org.apache.jena.update.UpdateRequest;
 import org.geneontology.jena.SesameJena;
 import org.geneontology.rules.engine.WorkingMemory;
 import org.geneontology.rules.util.Bridge;
@@ -98,7 +101,6 @@ public class QRunner {
 		if (results.hasNext()) {
 			QuerySolution qs = results.next();
 			Literal s = qs.getLiteral("triples");
-			System.out.println(s);
 			n = s.getInt();
 		}
 		qe.close();
@@ -146,7 +148,40 @@ public class QRunner {
 		qe.close();
 		return unreasonable;
 	}
-
+	
+	int addInferredEnablers() {
+		int n = 0;
+		String update = null;
+		String count = null;
+		try {
+			update = IOUtils.toString(App.class.getResourceAsStream("update_enabled_by.rq"), StandardCharsets.UTF_8);
+			count = IOUtils.toString(App.class.getResourceAsStream("count_enabled_by.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL update from jar \n"+e);
+		}
+		//before
+		int n_before = count(count);
+		UpdateAction.parseExecute(update, jena) ;
+		int n_after = count(count);
+		n= n_after-n_before;
+		System.out.println(n_before+" before, now "+n_after+" =+ "+n);
+		System.out.println("Total n triples "+nTriples());
+		return n;
+	}	
+	
+	int count(String sparql_count_query) {
+		int n = 0;
+		QueryExecution qe = QueryExecutionFactory.create(sparql_count_query, jena);
+		ResultSet results = qe.execSelect();
+		if (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Literal s = qs.getLiteral("c"); 
+			n = s.getInt();
+		}
+		qe.close();
+		return n;
+	}
+	
 	/**
 	 * Writes whatever is currently in the jena model to a file
 	 * @param filename

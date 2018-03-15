@@ -172,7 +172,7 @@ public class BioPaxtoGO {
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileInputStream f = new FileInputStream(input_biopax);
 		Model model = handler.convertFromOWL(f);
-		int n_pathways = 0; 
+		int n_pathways = 0; int n_inferred_enablers = 0;
 		//set up ontology (used if not split)
 		String base_ont_title = "Meta Pathway Ontology";
 		String iri = "http://model.geneontology.org/"+base_ont_title.hashCode(); //using a URL encoded string here confused the UI code...
@@ -302,7 +302,8 @@ public class BioPaxtoGO {
 				n = n.replaceAll(" ", "_");
 				String outfilename = converted+n+".ttl";	
 				layoutForNoctua(go_cam);
-				go_cam.validateGoCAM();				
+				go_cam.validateGoCAM();	
+				n_inferred_enablers += go_cam.qrunner.addInferredEnablers();
 				go_cam.writeGoCAM(outfilename, save_inferences, save2blazegraph);
 				if(!go_cam.validateGoCAM()) {
 					System.exit(0); //die if not logically consistent.  
@@ -315,11 +316,14 @@ public class BioPaxtoGO {
 		//export all
 		if(!split_by_pathway) {
 			layoutForNoctua(go_cam);
+			go_cam.validateGoCAM();	
+			n_inferred_enablers += go_cam.qrunner.addInferredEnablers();
 			go_cam.writeGoCAM(converted+".ttl", save_inferences, save2blazegraph);
 			if(!go_cam.validateGoCAM()) {
 				System.exit(0); //die if not logically consistent.  
 			}			
 		}
+		System.out.println("Done. inferred_enablers = "+n_inferred_enablers); //25 by pathway
 	}
 
 

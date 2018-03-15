@@ -474,6 +474,7 @@ public class GoCAM {
 		}
 		this.addInferredEdges();
 		is_valid = qrunner.isConsistent();
+		System.out.println("Total triples: "+qrunner.nTriples());
 		if(!is_valid) {
 			System.out.println("GO-CAM model is not logically consistent, please inspect model and try again!\n Entities = OWL:Nothing include:\n");
 			Set<String> u = qrunner.getUnreasonableEntities();
