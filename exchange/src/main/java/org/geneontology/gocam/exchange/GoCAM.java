@@ -66,8 +66,8 @@ public class GoCAM {
 	state_prop, evidence_prop, provided_by_prop, x_prop, y_prop, rdfs_label, rdfs_comment, source_prop;
 	public static OWLObjectProperty part_of, has_part, has_input, has_output, 
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in,
-	directly_positively_regulated_by, directly_negatively_regulated_by;
-	public static OWLClass bp_class, continuant_class, go_complex, molecular_function, eco_imported, eco_imported_auto;
+	directly_positively_regulated_by, directly_negatively_regulated_by, involved_in_regulation_of, involved_in_negative_regulation_of, involved_in_positive_regulation_of;
+	public static OWLClass bp_class, continuant_class, process_class, go_complex, molecular_function, eco_imported, eco_imported_auto;
 	OWLOntology go_cam_ont;
 	OWLDataFactory df;
 	OWLOntologyManager ontman;
@@ -132,6 +132,9 @@ public class GoCAM {
 		//continuant 
 		continuant_class = df.getOWLClass(IRI.create(obo_iri + "BFO_0000002")); 
 		addLabel(continuant_class, "Continuant");
+		//occurent
+		process_class =  df.getOWLClass(IRI.create(obo_iri + "BFO_0000015")); 
+		addLabel(process_class, "Process");		
 		//complex GO_0032991
 		go_complex = df.getOWLClass(IRI.create(obo_iri + "GO_0032991")); 
 		addLabel(go_complex, "Macromolecular Complex");		
@@ -189,6 +192,15 @@ public class GoCAM {
 		addLabel(directly_negatively_regulated_by, "directly negatively regulated by");
 		directly_positively_regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002024"));
 		addLabel(directly_positively_regulated_by, "directly positively regulated by");
+		//RO_0002430 involved_in_negative_regulation_of
+		//RO_0002429 involved_in_positive_regulation_of
+		involved_in_negative_regulation_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002430"));
+		addLabel(involved_in_negative_regulation_of, "involved in negative regulation_of");
+		involved_in_positive_regulation_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002429"));
+		addLabel(involved_in_positive_regulation_of, "involved in positive regulation_of");
+		
+		involved_in_regulation_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002428"));
+		addLabel(involved_in_regulation_of, "involved in regulation of");
 		
 		//Annotate the ontology
 		OWLAnnotation title_anno = df.getOWLAnnotation(title_prop, df.getOWLLiteral(gocam_title));
@@ -417,7 +429,7 @@ public class GoCAM {
 		OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
 		boolean add_inferences = true;
 		boolean add_property_definitions = false; boolean add_class_definitions = false;
-		qrunner = new QRunner(tbox, null, add_inferences, add_property_definitions, add_class_definitions);
+		qrunner = new QRunner(tbox, go_cam_ont, add_inferences, add_property_definitions, add_class_definitions);
 		return qrunner;
 	}
 
@@ -443,7 +455,7 @@ public class GoCAM {
  * should only be executed as a last step prior to exporting or using the rdf version of the go-cam.  
  */
 	void applySparqlRules() {
-		//qrunner.addInferredEnablers();
+		qrunner.addInferredEnablers();
 		qrunner.deleteEntityLocations();
 	}
 	

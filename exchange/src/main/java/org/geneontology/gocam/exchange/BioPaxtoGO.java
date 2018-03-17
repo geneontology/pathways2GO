@@ -107,7 +107,7 @@ public class BioPaxtoGO {
 	} 
 
 	private void convertReactomeFile(String input_file, String output, boolean split_by_pathway, boolean save_inferences) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
-		boolean add_lego_import = false;
+		boolean add_lego_import = false; //unless you never want to open the output in Protege always leave false..
 		String base_title = "default pathway ontology"; 
 		String base_contributor = "reactome contributor"; 
 		String base_provider = "https://reactome.org";
@@ -139,12 +139,15 @@ public class BioPaxtoGO {
 		//protein
 		protein_class = go_cam.df.getOWLClass(IRI.create(biopax_iri + "Protein")); 
 		go_cam.addLabel(protein_class, "Protein");
+		go_cam.addSubclassAssertion(protein_class, GoCAM.continuant_class, null);
 		//reaction
 		reaction_class = go_cam.df.getOWLClass(IRI.create(biopax_iri + "Reaction")); 
 		go_cam.addLabel(reaction_class, "Reaction");
+		go_cam.addSubclassAssertion(reaction_class, GoCAM.process_class, null);
 		//pathway
 		pathway_class = go_cam.df.getOWLClass(IRI.create(biopax_iri + "Pathway")); 
 		go_cam.addLabel(pathway_class, "Pathway");
+		go_cam.addSubclassAssertion(pathway_class, GoCAM.process_class, null);
 	}
 
 	/**
@@ -184,8 +187,8 @@ public class BioPaxtoGO {
 		String journal = converted+".jnl";
 		go_cam.path2bgjournal = journal;
 		Blazer blaze = go_cam.initializeBlazeGraph(journal);
-		QRunner qrunner = go_cam.initializeQRunnerForTboxInference();
 		setupBioPaxOntParts(go_cam);
+		QRunner qrunner = go_cam.initializeQRunnerForTboxInference();
 		//list pathways
 		int total_pathways = model.getObjects(Pathway.class).size();
 		for (Pathway currentPathway : model.getObjects(Pathway.class)){
@@ -680,12 +683,12 @@ public class BioPaxtoGO {
 						//otherwise look at text 
 						//					//define how the molecular function (process) relates to the reaction (process)
 						if(ctype.toString().startsWith("INHIBITION")){
-							go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.directly_negatively_regulated_by, controller_e, controllerpubrefs, GoCAM.eco_imported_auto);	
+							go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.involved_in_negative_regulation_of, e, controllerpubrefs, GoCAM.eco_imported_auto);	
 						}else if(ctype.toString().startsWith("ACTIVATION")){
-							go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.directly_positively_regulated_by, controller_e, controllerpubrefs, GoCAM.eco_imported_auto);
+							go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.involved_in_positive_regulation_of, e, controllerpubrefs, GoCAM.eco_imported_auto);
 						}else {
 							//default to regulates
-							go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.regulated_by, controller_e, controllerpubrefs, GoCAM.eco_imported_auto);
+							go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.involved_in_regulation_of,  e, controllerpubrefs, GoCAM.eco_imported_auto);
 						}
 					}
 

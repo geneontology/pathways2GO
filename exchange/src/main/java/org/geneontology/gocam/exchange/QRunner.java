@@ -28,6 +28,7 @@ import org.apache.jena.update.UpdateRequest;
 import org.geneontology.jena.SesameJena;
 import org.geneontology.rules.engine.WorkingMemory;
 import org.geneontology.rules.util.Bridge;
+import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 import scala.collection.JavaConverters;
@@ -48,6 +49,15 @@ public class QRunner {
 	public QRunner(OWLOntology tbox, OWLOntology abox, boolean add_inferences, boolean add_property_definitions, boolean add_class_definitions) {
 		if(add_inferences) {
 			System.out.println("Setting up Arachne reasoner, extracting rules from tbox");
+			if(abox!=null) {
+				//pull out any rules from abox.. and add to tbox
+				Set<OWLAxiom> littlet = abox.getTBoxAxioms(null);
+				if(littlet!=null) {
+					for(OWLAxiom a : littlet) {
+						tbox.getOWLOntologyManager().addAxiom(tbox, a);
+					}
+				}
+			}
 			arachne = new ArachneAccessor(tbox);
 			if(abox!=null) {
 				System.out.println("Applying rules to expand the abox graph");
