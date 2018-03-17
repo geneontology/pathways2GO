@@ -216,39 +216,7 @@ public class GoCAM {
 		return blazegraphdb;
 	}
 	
-	/**
-	 * Sets up the inference rules from provided TBox
-	 * @throws OWLOntologyCreationException
-	 */
-	QRunner initializeQRunner() throws OWLOntologyCreationException {
-		//TODO either grab this from a PURL so its always up to date, or keep the referenced imported file in sync.  
-		String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
-		//<http://purl.obolibrary.org/obo/go/extensions/go-lego.owl>
-		//String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/go-lego-noneo.owl";
-		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
-		OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
-		boolean add_inferences = true;
-		boolean add_property_definitions = false; boolean add_class_definitions = false;
-		qrunner = new QRunner(tbox, null, add_inferences, add_property_definitions, add_class_definitions);
-		return qrunner;
-	}
 
-	QRunner initializeQRunner(OWLOntology tbox) throws OWLOntologyCreationException {
-		boolean add_inferences = true;
-		boolean add_property_definitions = false; boolean add_class_definitions = false;
-		qrunner = new QRunner(tbox, null, add_inferences, add_property_definitions, add_class_definitions);
-		return qrunner;
-	}
-	
-	void addInferredEdges() throws OWLOntologyCreationException {
-		if(qrunner==null) {
-			initializeQRunner();
-		}
-		//System.out.println("Applying tbox rules to expand the gocam graph");
-		qrunner.wm = qrunner.arachne.createInferredModel(this.go_cam_ont, false, false);			
-		//System.out.println("Making Jena model from inferred graph for query");
-		qrunner.jena = qrunner.makeJenaModel(qrunner.wm);
-	}
 
 	public String getDate(String input_date) {
 		String date = "";
@@ -436,19 +404,67 @@ public class GoCAM {
 		return labels;
 	}
 
-	void writeGoCAM(String outfilename, boolean add_inferred, boolean save2blazegraph) throws OWLOntologyStorageException, OWLOntologyCreationException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
-		File outfilefile = new File(outfilename);
-		if(add_inferred) {
-			//make sure inference run
-			addInferredEdges();
-			//use jena export
-			qrunner.dumpModel(outfilefile, "TURTLE");
-		}else {
-			FileDocumentTarget outfile = new FileDocumentTarget(outfilefile);
-			//ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());	
-			ontman.setOntologyFormat(go_cam_ont, new TurtleDocumentFormat());	
-			ontman.saveOntology(go_cam_ont,outfile);	
+	/**
+	 * Sets up the inference rules from provided TBox
+	 * @throws OWLOntologyCreationException
+	 */
+	QRunner initializeQRunnerForTboxInference() throws OWLOntologyCreationException {
+		//TODO either grab this from a PURL so its always up to date, or keep the referenced imported file in sync.  
+		String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
+		//<http://purl.obolibrary.org/obo/go/extensions/go-lego.owl>
+		//String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/go-lego-noneo.owl";
+		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
+		OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
+		boolean add_inferences = true;
+		boolean add_property_definitions = false; boolean add_class_definitions = false;
+		qrunner = new QRunner(tbox, null, add_inferences, add_property_definitions, add_class_definitions);
+		return qrunner;
+	}
+
+	QRunner initializeQRunner(OWLOntology tbox) throws OWLOntologyCreationException {
+		boolean add_inferences = true;
+		boolean add_property_definitions = false; boolean add_class_definitions = false;
+		qrunner = new QRunner(tbox, null, add_inferences, add_property_definitions, add_class_definitions);
+		return qrunner;
+	}
+	
+	void addInferredEdges() throws OWLOntologyCreationException {
+		if(qrunner==null||qrunner.arachne==null) {
+			initializeQRunnerForTboxInference();
 		}
+		//System.out.println("Applying tbox rules to expand the gocam graph");
+		qrunner.wm = qrunner.arachne.createInferredModel(this.go_cam_ont, false, false);			
+		//System.out.println("Making Jena model from inferred graph for query");
+		qrunner.jena = qrunner.makeJenaModel(qrunner.wm);
+	}
+	
+/**
+ * These rules adapt the exported graph.  Note changes here will only impact the Jena model - they will not be cascaded back into the OWL model hence
+ * should only be executed as a last step prior to exporting or using the rdf version of the go-cam.  
+ */
+	void applySparqlRules() {
+		//qrunner.addInferredEnablers();
+		qrunner.deleteEntityLocations();
+	}
+	
+	void writeGoCAM(String outfilename, boolean add_inferred, boolean save2blazegraph, boolean applySparqlRules) throws OWLOntologyStorageException, OWLOntologyCreationException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
+		File outfilefile = new File(outfilename);	
+		//make sure jena model is synchronized <- with owl-api model	 
+		//go_cam_ont should have everything we want at this point, including any imports
+		qrunner = new QRunner(go_cam_ont); 
+		System.out.println("preparing model starting with triples: "+qrunner.nTriples());
+		if(add_inferred) {
+			//apply Arachne to tbox rules and add inferences to qrunner.jena rdf model
+			addInferredEdges();
+		}
+		if(applySparqlRules) {
+			applySparqlRules();
+		}
+		//use jena export
+		System.out.println("writing n triples: "+qrunner.nTriples());
+		qrunner.dumpModel(outfilefile, "TURTLE");
+		//reads in file created above and converts to journal
+		//could optimize speed by going direct at some point if it matters
 		if(save2blazegraph) {
 			if(blazegraphdb==null) {
 				initializeBlazeGraph(path2bgjournal);
@@ -470,11 +486,11 @@ public class GoCAM {
 	boolean validateGoCAM() throws OWLOntologyCreationException {
 		boolean is_valid = false;
 		if(qrunner==null) {
-			this.initializeQRunner();
+			this.initializeQRunnerForTboxInference();
 		}
 		this.addInferredEdges();
 		is_valid = qrunner.isConsistent();
-		System.out.println("Total triples: "+qrunner.nTriples());
+		System.out.println("Total triples in validated model including tbox: "+qrunner.nTriples());
 		if(!is_valid) {
 			System.out.println("GO-CAM model is not logically consistent, please inspect model and try again!\n Entities = OWL:Nothing include:\n");
 			Set<String> u = qrunner.getUnreasonableEntities();

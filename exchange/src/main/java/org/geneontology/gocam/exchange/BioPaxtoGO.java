@@ -94,7 +94,7 @@ public class BioPaxtoGO {
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = //"/Users/bgood/Desktop/test/reasoned/Wnt_example_cam-";
-				"/Users/bgood/Desktop/test/Wnt_output/converted-wnt-by-class-";
+				"/Users/bgood/Desktop/test/Wnt_output/converted-wnt-by-Paul-rules-no-loc-";
 				//"/Users/bgood/Desktop/test_input/converted-";
 				//"/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-";
 				//"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
@@ -172,18 +172,19 @@ public class BioPaxtoGO {
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileInputStream f = new FileInputStream(input_biopax);
 		Model model = handler.convertFromOWL(f);
-		int n_pathways = 0; int n_inferred_enablers = 0;
+		int n_pathways = 0;
 		//set up ontology (used if not split)
-		String base_ont_title = "Meta Pathway Ontology";
+		String base_ont_title = base_title;
 		String iri = "http://model.geneontology.org/"+base_ont_title.hashCode(); //using a URL encoded string here confused the UI code...
 		IRI ont_iri = IRI.create(iri);
 		GoCAM go_cam = new GoCAM(ont_iri, base_ont_title, base_contributor, null, base_provider, add_lego_import);
 		//for blazegraph output
 		boolean save2blazegraph = true;
+		boolean applySparqlRules = true;
 		String journal = converted+".jnl";
 		go_cam.path2bgjournal = journal;
 		Blazer blaze = go_cam.initializeBlazeGraph(journal);
-		QRunner qrunner = go_cam.initializeQRunner();
+		QRunner qrunner = go_cam.initializeQRunnerForTboxInference();
 		setupBioPaxOntParts(go_cam);
 		//list pathways
 		int total_pathways = model.getObjects(Pathway.class).size();
@@ -302,10 +303,9 @@ public class BioPaxtoGO {
 				n = n.replaceAll(" ", "_");
 				String outfilename = converted+n+".ttl";	
 				layoutForNoctua(go_cam);
-				go_cam.validateGoCAM();	
-				n_inferred_enablers += go_cam.qrunner.addInferredEnablers();
-				go_cam.writeGoCAM(outfilename, save_inferences, save2blazegraph);
-				if(!go_cam.validateGoCAM()) {
+				boolean is_logical = go_cam.validateGoCAM();	
+				go_cam.writeGoCAM(outfilename, save_inferences, save2blazegraph, applySparqlRules);
+				if(!is_logical) {
 					System.exit(0); //die if not logically consistent.  
 				}
 				//reset for next pathway.
@@ -316,14 +316,12 @@ public class BioPaxtoGO {
 		//export all
 		if(!split_by_pathway) {
 			layoutForNoctua(go_cam);
-			go_cam.validateGoCAM();	
-			n_inferred_enablers += go_cam.qrunner.addInferredEnablers();
-			go_cam.writeGoCAM(converted+".ttl", save_inferences, save2blazegraph);
-			if(!go_cam.validateGoCAM()) {
+			boolean is_logical = go_cam.validateGoCAM();	
+			go_cam.writeGoCAM(converted+".ttl", save_inferences, save2blazegraph, applySparqlRules);
+			if(!is_logical) {
 				System.exit(0); //die if not logically consistent.  
 			}			
 		}
-		System.out.println("Done. inferred_enablers = "+n_inferred_enablers); //25 by pathway
 	}
 
 

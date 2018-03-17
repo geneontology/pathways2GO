@@ -169,6 +169,26 @@ public class QRunner {
 		return n;
 	}	
 	
+	int deleteEntityLocations() {
+		int n = 0;
+		String update = null;
+		String count = null;
+		try {
+			update = IOUtils.toString(App.class.getResourceAsStream("delete_entity_locations.rq"), StandardCharsets.UTF_8);
+			count = IOUtils.toString(App.class.getResourceAsStream("count_located_in.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL update from jar \n"+e);
+		}
+		//before
+		int n_before = count(count);
+		UpdateAction.parseExecute(update, jena) ;
+		int n_after = count(count);
+		n= n_after-n_before;
+		System.out.println(n_before+" locations before, after deleting entity locations, now "+n_after+" =+ "+n);
+		System.out.println("Total n triples "+nTriples());
+		return n;
+	}
+	
 	int count(String sparql_count_query) {
 		int n = 0;
 		QueryExecution qe = QueryExecutionFactory.create(sparql_count_query, jena);

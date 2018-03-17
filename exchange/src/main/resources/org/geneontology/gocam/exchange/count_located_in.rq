@@ -1,0 +1,25 @@
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+prefix obo: <http://purl.obolibrary.org/obo/>
+prefix biopax: <http://www.biopax.org/release/biopax-level3.owl#>
+select (COUNT(*) AS ?c) 
+where {
+   ?a obo:RO_0001025 ?b
+}
+
+#filter(?outputLabel = ?inputLabel) .
+#limit 100
+# group by ?prop 
+#ORDER BY DESC(?prop)
+
+#limit 100
+# group by ?prop 
+# ORDER BY DESC(?prop)
+
+# obo:RO_0002233 has input 
+# obo:RO_0002333 enabled by
+# RO_0002234 has output
+# obo:BFO_0000051 has part
+# obo:RO_0002413 provides direct input for
+# obo:RO_0001025 located in 

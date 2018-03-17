@@ -8,7 +8,11 @@ prefix biopax: <http://www.biopax.org/release/biopax-level3.owl#>
 #and R1 has output E1
 #and R2 has input E2
 #and E1 = E2
-delete { ?reaction2 obo:RO_0002233 ?input }  
+delete { ?reaction2 obo:RO_0002233 ?input . 
+ ## must also delete annotations added for these assertions 
+  ?anno_node owl:annotatedProperty obo:RO_0002233 .
+  ?anno_node ?prop ?c 
+}  
 insert { ?reaction2 obo:RO_0002333 ?input } 
 where {
    	?reaction1 obo:RO_0002413 ?reaction2 .
@@ -16,6 +20,8 @@ where {
    	?reaction1 obo:RO_0002234 ?output .
    	?reaction2 rdf:type biopax:Reaction .
    	?reaction2 obo:RO_0002233 ?input . 
+  ?anno_node owl:annotatedSource ?reaction2 .
+  ?anno_node owl:annotatedTarget ?input .
     	?output rdfs:label ?outputLabel .
   	?input rdfs:label ?inputLabel .
   	?input rdf:type ?entity_class .  #specific, new classes have been created for ?entity_class like "TCF/LEF:CTNNB1" (which could be logically defined as an intersection of the proteins that make it up)
