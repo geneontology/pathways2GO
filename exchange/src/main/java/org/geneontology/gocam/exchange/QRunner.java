@@ -181,10 +181,12 @@ public class QRunner {
 		int n = nTriples();
 		String updatePR = null;
 		String updateNR = null;
+		String updateNR2 = null;
 		String updateR = null;
 		try {
 			updatePR = IOUtils.toString(App.class.getResourceAsStream("update_positive_regulation.rq"), StandardCharsets.UTF_8);
 			updateNR = IOUtils.toString(App.class.getResourceAsStream("update_negative_regulation.rq"), StandardCharsets.UTF_8);
+			updateNR2 = IOUtils.toString(App.class.getResourceAsStream("update_negative_regulation_by_binding.rq"), StandardCharsets.UTF_8);
 			updateR = IOUtils.toString(App.class.getResourceAsStream("update_regulation.rq"), StandardCharsets.UTF_8);
 			//	count = IOUtils.toString(App.class.getResourceAsStream("count_enabled_by.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
@@ -192,6 +194,7 @@ public class QRunner {
 		}
 		UpdateAction.parseExecute(updatePR, jena) ;
 		UpdateAction.parseExecute(updateNR, jena) ;
+		UpdateAction.parseExecute(updateNR2, jena) ;
 		UpdateAction.parseExecute(updateR, jena) ;
 		return nTriples()-n;
 	}
