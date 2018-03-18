@@ -455,8 +455,12 @@ public class GoCAM {
  * should only be executed as a last step prior to exporting or using the rdf version of the go-cam.  
  */
 	void applySparqlRules() {
-		qrunner.addInferredEnablers();
-		qrunner.deleteEntityLocations();
+		int n_enabler = qrunner.addInferredEnablers();
+		System.out.println("Added "+n_enabler+" enable_by triples");
+		int n_removed = qrunner.deleteEntityLocations();
+		System.out.println("Removed "+n_removed+" entity location triples");
+		int n_reg = qrunner.addInferredRegulators();
+		System.out.println("Added "+n_reg+" process-regulation-process triples");
 	}
 	
 	void writeGoCAM(String outfilename, boolean add_inferred, boolean save2blazegraph, boolean applySparqlRules) throws OWLOntologyStorageException, OWLOntologyCreationException, RepositoryException, RDFParseException, RDFHandlerException, IOException {

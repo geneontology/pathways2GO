@@ -174,10 +174,27 @@ public class QRunner {
 		UpdateAction.parseExecute(update, jena) ;
 		int n_after = count(count);
 		n= n_after-n_before;
-		System.out.println(n_before+" before, now "+n_after+" =+ "+n);
-		System.out.println("Total n triples "+nTriples());
 		return n;
 	}	
+	
+	int addInferredRegulators() {
+		int n = nTriples();
+		String updatePR = null;
+		String updateNR = null;
+		String updateR = null;
+		try {
+			updatePR = IOUtils.toString(App.class.getResourceAsStream("update_positive_regulation.rq"), StandardCharsets.UTF_8);
+			updateNR = IOUtils.toString(App.class.getResourceAsStream("update_negative_regulation.rq"), StandardCharsets.UTF_8);
+			updateR = IOUtils.toString(App.class.getResourceAsStream("update_regulation.rq"), StandardCharsets.UTF_8);
+			//	count = IOUtils.toString(App.class.getResourceAsStream("count_enabled_by.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL update from jar \n"+e);
+		}
+		UpdateAction.parseExecute(updatePR, jena) ;
+		UpdateAction.parseExecute(updateNR, jena) ;
+		UpdateAction.parseExecute(updateR, jena) ;
+		return nTriples()-n;
+	}
 	
 	int deleteEntityLocations() {
 		int n = 0;
@@ -194,8 +211,6 @@ public class QRunner {
 		UpdateAction.parseExecute(update, jena) ;
 		int n_after = count(count);
 		n= n_after-n_before;
-		System.out.println(n_before+" locations before, after deleting entity locations, now "+n_after+" =+ "+n);
-		System.out.println("Total n triples "+nTriples());
 		return n;
 	}
 	

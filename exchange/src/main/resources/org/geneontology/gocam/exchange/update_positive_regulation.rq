@@ -1,0 +1,52 @@
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+prefix obo: <http://purl.obolibrary.org/obo/>
+prefix biopax: <http://www.biopax.org/release/biopax-level3.owl#>
+
+insert { ?reactionZ obo:RO_0002024 ?reactionY }  #directly positively regulated by 
+where {
+    ?reactionZ rdf:type biopax:Reaction .
+    ?reactionY rdf:type biopax:Reaction .
+    ?entityZ obo:RO_0002429  ?reactionZ .   #involved_in_positive_regulation_of 
+    ?reactionY obo:RO_0002234 ?entityY .  #has output
+   # ?entityZ rdfs:label ?zlabel .
+   # ?entityY rdfs:label ?ylabel .
+   # filter(?zlabel = ?ylabel) .
+ 
+    ?entityZ rdf:type ?entity_class .
+    ?entityY rdf:type ?entity_class . 
+    ?entity_class rdfs:subClassOf ?grouping_class .
+  	VALUES ?grouping_class { obo:GO_0032991 biopax:Protein} # either protein complex or protein class 
+}
+
+#filter(?outputLabel = ?inputLabel) .
+#limit 100
+# group by ?prop 
+#ORDER BY DESC(?prop)
+
+#limit 100
+# group by ?prop 
+# ORDER BY DESC(?prop)
+# RO_0002024  directly positively regulated by 
+# RO_0002023  directly negatively regulated by 
+# RO_0002334 regulated by
+# obo:RO_0002233 has input 
+# obo:RO_0002333 enabled by
+# RO_0002234 has output
+# obo:BFO_0000051 has part
+# obo:RO_0002413 provides direct input for
+
+# directly_negatively_regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002023"));
+# 		addLabel(directly_negatively_regulated_by, "directly negatively regulated by");
+# 		directly_positively_regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002024"));
+# 		addLabel(directly_positively_regulated_by, "directly positively regulated by");
+# 		//RO_0002430 involved_in_negative_regulation_of
+# 		//RO_0002429 involved_in_positive_regulation_of
+# 		involved_in_negative_regulation_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002430"));
+# 		addLabel(involved_in_negative_regulation_of, "involved in negative regulation_of");
+# 		involved_in_positive_regulation_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002429"));
+# 		addLabel(involved_in_positive_regulation_of, "involved in positive regulation_of");
+# 		
+# 		involved_in_regulation_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002428"));
+# 		addLabel(involved_in_regulation_of, "involved in regulation of");
