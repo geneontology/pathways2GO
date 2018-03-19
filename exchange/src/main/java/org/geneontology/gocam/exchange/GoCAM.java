@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.Set;
 
 import org.biopax.paxtools.model.level3.PublicationXref;
 import org.biopax.paxtools.model.level3.Xref;
+import org.geneontology.gocam.exchange.QRunner.InferredEnabler;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
@@ -44,12 +46,15 @@ import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
+import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.search.EntitySearcher;
+import org.semanticweb.owlapi.util.OWLEntityRemover;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 /**
@@ -455,14 +460,39 @@ public class GoCAM {
  * should only be executed as a last step prior to exporting or using the rdf version of the go-cam.  
  */
 	void applySparqlRules() {
-		int n_enabler = qrunner.addInferredEnablers();
-		System.out.println("Added "+n_enabler+" enable_by triples");
+		Set<InferredEnabler> ies = qrunner.getInferredEnablers();
+		for(InferredEnabler ie : ies) {
+			//create ?reaction2 obo:RO_0002333 ?input
+			OWLNamedIndividual e = this.makeAnnotatedIndividual(ie.enabler_uri);
+			OWLNamedIndividual r = this.makeAnnotatedIndividual(ie.reaction_uri);
+			Set<OWLAnnotation> annos = this.getDefaultAnnotations();
+			annos.add(addInferenceEvidenceAsComment(r,GoCAM.enabled_by,e,"This 'enabled by' relation was inferred. "
+					+ "#An entity (either protein or protein complex) E enables a reaction R2\n" + 
+					"#IF R1 provides direct input for R2 \n" + 
+					"#and R1 has output E1 \n" + 
+					"#and R2 has input E2 \n" + 
+					"#and E1 = E2 "));
+			this.addObjectPropertyAssertion(r, GoCAM.enabled_by, e, annos);
+			//delete the input relation (replaced above by the enabled by relation)
+			OWLObjectPropertyAssertionAxiom has_input = df.getOWLObjectPropertyAssertionAxiom(GoCAM.has_input, r, e);			
+			this.ontman.removeAxiom(go_cam_ont, has_input);
+		}
+		System.out.println("Added "+ies.size()+" enable_by triples");
 		int n_removed = qrunner.deleteEntityLocations();
 		System.out.println("Removed "+n_removed+" entity location triples");
 		int n_reg = qrunner.addInferredRegulators();
 		System.out.println("Added "+n_reg+" process-regulation-process triples");
 	}
 	
+	OWLAnnotation addInferenceEvidenceAsComment(OWLNamedIndividual source, OWLObjectProperty prop, OWLNamedIndividual target, String comment) {
+		IRI anno_iri = makeEntityHashIri(source.hashCode()+"_"+prop.hashCode()+"_"+target.hashCode()+"_"+comment.hashCode());
+		OWLNamedIndividual evidence = makeAnnotatedIndividual(anno_iri);					
+		addTypeAssertion(evidence, GoCAM.eco_imported_auto);
+		addLiteralAnnotations2Individual(anno_iri, rdfs_comment, comment);
+		OWLAnnotation anno = df.getOWLAnnotation(GoCAM.evidence_prop, anno_iri);
+		return anno;
+	}
+
 	void writeGoCAM(String outfilename, boolean add_inferred, boolean save2blazegraph, boolean applySparqlRules) throws OWLOntologyStorageException, OWLOntologyCreationException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		File outfilefile = new File(outfilename);	
 		//make sure jena model is synchronized <- with owl-api model	 

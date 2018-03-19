@@ -1,0 +1,46 @@
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+prefix obo: <http://purl.obolibrary.org/obo/>
+prefix biopax: <http://www.biopax.org/release/biopax-level3.owl#>
+#infer that an entity (either protein or protein complex) E enables a reaction R2
+#if R1 provides direct input for R2 
+#and R1 has output E1
+#and R2 has input E2
+#and E1 = E2
+#delete { ?reaction2 obo:RO_0002233 ?input . 
+ ## must also delete annotations added for these assertions 
+#  ?anno_node owl:annotatedProperty obo:RO_0002233 .
+ # ?anno_node ?prop ?c 
+# }  
+select ?reaction2 ?input   # for update
+where {
+   	?reaction1 obo:RO_0002413 ?reaction2 .
+  	?reaction1 rdf:type biopax:Reaction .
+   	?reaction1 obo:RO_0002234 ?output .
+   	?reaction2 rdf:type biopax:Reaction .
+   	?reaction2 obo:RO_0002233 ?input . 
+  ?anno_node owl:annotatedSource ?reaction2 .
+  ?anno_node owl:annotatedTarget ?input .
+    	?output rdfs:label ?outputLabel .
+  	?input rdfs:label ?inputLabel .
+  	?input rdf:type ?entity_class .  #specific, new classes have been created for ?entity_class like "TCF/LEF:CTNNB1" (which could be logically defined as an intersection of the proteins that make it up)
+  	?output rdf:type ?entity_class . 
+  	?entity_class rdfs:subClassOf ?grouping_class .
+  	VALUES ?grouping_class { obo:GO_0032991 biopax:Protein} # either protein complex or protein class
+}
+
+#filter(?outputLabel = ?inputLabel) .
+#limit 100
+# group by ?prop 
+#ORDER BY DESC(?prop)
+
+#limit 100
+# group by ?prop 
+# ORDER BY DESC(?prop)
+
+# obo:RO_0002233 has input 
+# obo:RO_0002333 enabled by
+# RO_0002234 has output
+# obo:BFO_0000051 has part
+# obo:RO_0002413 provides direct input for

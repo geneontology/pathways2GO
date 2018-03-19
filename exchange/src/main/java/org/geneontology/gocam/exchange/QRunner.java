@@ -159,22 +159,47 @@ public class QRunner {
 		return unreasonable;
 	}
 	
-	int addInferredEnablers() {
-		int n = 0;
-		String update = null;
-		String count = null;
+	/**
+#infer that an entity (either protein or protein complex) E enables a reaction R2
+#if R1 provides direct input for R2 
+#and R1 has output E1
+#and R2 has input E2
+#and E1 = E2
+#delete { ?reaction2 obo:RO_0002233 ?input . 
+ ## must also delete annotations added for these assertions 
+#  ?anno_node owl:annotatedProperty obo:RO_0002233 .
+ # ?anno_node ?prop ?c 
+# }  
+select ?reaction2 obo:RO_0002333 ?input   # for update
+	 * @return
+	 */
+	class InferredEnabler {
+		String reaction_uri;
+		String enabler_uri;
+		InferredEnabler(String r_uri, String e_uri){
+			reaction_uri = r_uri;
+			enabler_uri = e_uri;
+		}
+	}
+	
+	Set<InferredEnabler> getInferredEnablers() {
+		Set<InferredEnabler> ie = new HashSet<InferredEnabler>();
+		String query = null;
 		try {
-			update = IOUtils.toString(App.class.getResourceAsStream("update_enabled_by.rq"), StandardCharsets.UTF_8);
-			count = IOUtils.toString(App.class.getResourceAsStream("count_enabled_by.rq"), StandardCharsets.UTF_8);
+			query = IOUtils.toString(App.class.getResourceAsStream("query2update_enabled_by.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL update from jar \n"+e);
 		}
-		//before
-		int n_before = count(count);
-		UpdateAction.parseExecute(update, jena) ;
-		int n_after = count(count);
-		n= n_after-n_before;
-		return n;
+		QueryExecution qe = QueryExecutionFactory.create(query, jena);
+		ResultSet results = qe.execSelect();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Resource reaction = qs.getResource("reaction2"); //?reaction2 ?input
+			Resource enabler = qs.getResource("input");
+			ie.add(new InferredEnabler(reaction.getURI(), enabler.getURI()));
+		}
+		qe.close();
+		return ie;
 	}	
 	
 	int addInferredRegulators() {
