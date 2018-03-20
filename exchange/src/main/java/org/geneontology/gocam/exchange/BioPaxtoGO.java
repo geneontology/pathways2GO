@@ -88,21 +88,21 @@ public class BioPaxtoGO {
 //		bp2g.convertReactomeFolder(input_folder, output_folder);
 		
 		String input_biopax = //"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
-				"/Users/bgood/Desktop/test/Wnt_example.owl";
-				//		"src/main/resources/reactome/wnt/wnt_tcf_full.owl";
+				//"/Users/bgood/Desktop/test/Wnt_example.owl";
+				//"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
 				//"src/main/resources/reactome/Homo_sapiens.owl";
-				//"/Users/bgood/Downloads/biopax/homosapiens.owl";
+				"/Users/bgood/Downloads/biopax/homosapiens.owl";
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = //"/Users/bgood/Desktop/test/reasoned/Wnt_example_cam-";
 				//"/Users/bgood/Desktop/test/bmp_output/converted-bmp-no-loc-";
-				"/Users/bgood/Desktop/test/Wnt_output/converted-wnt-by-Paul-rules-no-loc-";
+				//"/Users/bgood/Desktop/test/Wnt_output/converted-wnt-by-Paul-rules-no-loc-";
 				//"/Users/bgood/Desktop/test_input/converted-";
 				//"/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-";
-				//"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
+				"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
-		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-wnt-tcf-full";
+		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";
 		boolean split_by_pathway = true;
 		boolean save_inferences = false;
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, save_inferences);
@@ -110,7 +110,7 @@ public class BioPaxtoGO {
 
 	private void convertReactomeFile(String input_file, String output, boolean split_by_pathway, boolean save_inferences) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		boolean add_lego_import = false; //unless you never want to open the output in Protege always leave false..
-		String base_title = "default pathway ontology"; 
+		String base_title = "Reactome Pathway title";//"FULL TCF-dependent_signaling_in_response_to_Wnt"; 
 		String base_contributor = "reactome contributor"; 
 		String base_provider = "https://reactome.org";
 		String tag = "";

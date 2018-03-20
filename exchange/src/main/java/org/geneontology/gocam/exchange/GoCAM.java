@@ -17,6 +17,7 @@ import java.util.Set;
 import org.biopax.paxtools.model.level3.PublicationXref;
 import org.biopax.paxtools.model.level3.Xref;
 import org.geneontology.gocam.exchange.QRunner.InferredEnabler;
+import org.geneontology.gocam.exchange.QRunner.InferredRegulator;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
@@ -456,8 +457,7 @@ public class GoCAM {
 	}
 	
 /**
- * These rules adapt the exported graph.  Note changes here will only impact the Jena model - they will not be cascaded back into the OWL model hence
- * should only be executed as a last step prior to exporting or using the rdf version of the go-cam.  
+ * Use sparql queries to inform modifications to the go-cam owl ontology 
  */
 	void applySparqlRules() {
 		Set<InferredEnabler> ies = qrunner.getInferredEnablers();
@@ -465,50 +465,103 @@ public class GoCAM {
 			//create ?reaction2 obo:RO_0002333 ?input
 			OWLNamedIndividual e = this.makeAnnotatedIndividual(ie.enabler_uri);
 			OWLNamedIndividual r = this.makeAnnotatedIndividual(ie.reaction_uri);
-			Set<OWLAnnotation> annos = this.getDefaultAnnotations();
-			annos.add(addInferenceEvidenceAsComment(r,GoCAM.enabled_by,e,"This 'enabled by' relation was inferred. "
-					+ "#An entity (either protein or protein complex) E enables a reaction R2\n" + 
-					"#IF R1 provides direct input for R2 \n" + 
-					"#and R1 has output E1 \n" + 
-					"#and R2 has input E2 \n" + 
-					"#and E1 = E2 "));
+			Set<OWLAnnotation> annos = getDefaultAnnotations();
+			String explain = "This 'enabled by' relation was inferred as follows. "
+				+ "An entity (either protein or protein complex) E enables a reaction R2\n" + 
+					" IF R1 provides direct input for R2 \n" + 
+					" and R1 has output E1 \n" + 
+					" and R2 has input E2 \n" + 
+					" and E1 = E2 ";
+			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 			this.addObjectPropertyAssertion(r, GoCAM.enabled_by, e, annos);
+			System.out.println(r+" added enabled by "+e);
 			//delete the input relation (replaced above by the enabled by relation)
-			OWLObjectPropertyAssertionAxiom has_input = df.getOWLObjectPropertyAssertionAxiom(GoCAM.has_input, r, e);			
-			this.ontman.removeAxiom(go_cam_ont, has_input);
+			//TODO the following doesn't work.  Making new individuals all over the place makes them harder to find..
+			//above makes a new edge
+			//OWLObjectPropertyAssertionAxiom has_input = df.getOWLObjectPropertyAssertionAxiom(GoCAM.has_input, r, e);			
+			//this.ontman.removeAxiom(go_cam_ont, has_input);
 		}
-		System.out.println("Added "+ies.size()+" enable_by triples");
-		int n_removed = qrunner.deleteEntityLocations();
-		System.out.println("Removed "+n_removed+" entity location triples");
-		int n_reg = qrunner.addInferredRegulators();
-		System.out.println("Added "+n_reg+" process-regulation-process triples");
+		System.out.println("Added "+ies.size()+" enabled_by triples");
+		Set<InferredRegulator> ir1 = qrunner.getInferredRegulatorsQ1();
+		for(InferredRegulator ir : ir1) {
+			//create ?reaction2 obo:RO_0002333 ?input
+			OWLNamedIndividual r1 = this.makeAnnotatedIndividual(ir.reaction1_uri);
+			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ir.reaction2_uri);
+			OWLObjectProperty o = GoCAM.directly_negatively_regulated_by;
+			if(ir.prop_uri.equals("http://purl.obolibrary.org/obo/RO_0002429")) {
+				o = GoCAM.directly_positively_regulated_by;
+			}
+			Set<OWLAnnotation> annos = getDefaultAnnotations();
+			String explain = "This regulation relation was inferred. "
+				+ "Reaction1 is (+-)regulated by Reaction2 if\n" + 
+					" IF R2 has output A\n" + 
+					" and A is involved in (+-)regulation of R1 ";
+			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
+			this.addObjectPropertyAssertion(r1, o, r2, annos);
+			System.out.println("reg1 "+r1+" "+o+" "+r2);
+		}
+		System.out.println("Added "+ir1.size()+" pos/neg reg triples");
+		Set<InferredRegulator> ir2_neg = qrunner.getInferredRegulatorsQ2();
+		for(InferredRegulator ir : ir2_neg) {
+			//create ?reaction2 obo:RO_0002333 ?input
+			OWLNamedIndividual r1 = this.makeAnnotatedIndividual(ir.reaction1_uri);
+			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ir.reaction2_uri);
+			OWLObjectProperty o = df.getOWLObjectProperty(IRI.create(ir.prop_uri));
+			Set<OWLAnnotation> annos = getDefaultAnnotations();
+			String explain = "This regulation relation was inferred based on idea of inhibitory binding. "
+				+ "Reaction1 is negatively regulated by Reaction2 if\n" + 
+				 " IF R2 has input A, R2 has input B, has output A/B complex\n" + 
+				 " and R1 is enabled by B";
+			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
+			this.addObjectPropertyAssertion(r1, o, r2, annos);
+			System.out.println("reg2 "+r1+" "+o+" "+r2);
+		}		
+		System.out.println("Added "+ir2_neg.size()+" neg inhibitory binding reg triples");
 	}
-	
-	OWLAnnotation addInferenceEvidenceAsComment(OWLNamedIndividual source, OWLObjectProperty prop, OWLNamedIndividual target, String comment) {
-		IRI anno_iri = makeEntityHashIri(source.hashCode()+"_"+prop.hashCode()+"_"+target.hashCode()+"_"+comment.hashCode());
-		OWLNamedIndividual evidence = makeAnnotatedIndividual(anno_iri);					
-		addTypeAssertion(evidence, GoCAM.eco_imported_auto);
-		addLiteralAnnotations2Individual(anno_iri, rdfs_comment, comment);
-		OWLAnnotation anno = df.getOWLAnnotation(GoCAM.evidence_prop, anno_iri);
-		return anno;
-	}
+
+	//for some reason the following produces floating evidence nodes in Noctua right now - same thing that happens when you 
+	//add evidence node to an rdf:type edge
+	//not using for the moment..
+//	OWLAnnotation addInferenceEvidenceAsComment(OWLNamedIndividual source, OWLObjectProperty prop, OWLNamedIndividual target, String comment) {
+//		IRI anno_iri = makeEntityHashIri(source.hashCode()+"_"+prop.hashCode()+"_"+target.hashCode()+"_"+comment.hashCode());
+//		OWLNamedIndividual evidence = makeAnnotatedIndividual(anno_iri);					
+//		addTypeAssertion(evidence, GoCAM.eco_imported_auto);
+//		addLiteralAnnotations2Individual(anno_iri, rdfs_comment, comment);
+//		OWLAnnotation anno = df.getOWLAnnotation(GoCAM.evidence_prop, anno_iri);
+//		return anno;
+//	}
 
 	void writeGoCAM(String outfilename, boolean add_inferred, boolean save2blazegraph, boolean applySparqlRules) throws OWLOntologyStorageException, OWLOntologyCreationException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		File outfilefile = new File(outfilename);	
-		//make sure jena model is synchronized <- with owl-api model	 
+		//synchronize jena model <- with owl-api model	 
 		//go_cam_ont should have everything we want at this point, including any imports
 		qrunner = new QRunner(go_cam_ont); 
-		System.out.println("preparing model starting with triples: "+qrunner.nTriples());
+		if(applySparqlRules) {
+			System.out.println("Before sparql inference -  triples: "+qrunner.nTriples());
+			applySparqlRules();
+			//sparql rules make additions to go_cam_ont
+			qrunner = new QRunner(go_cam_ont); 
+			System.out.println("After sparql inference -  triples: "+qrunner.nTriples());
+			int n_removed = qrunner.deleteEntityLocations();
+			System.out.println("Removed "+n_removed+" entity location triples");
+		}				
 		if(add_inferred) {
+			System.out.println("preparing model starting with (unreasoned) triples: "+qrunner.nTriples());
 			//apply Arachne to tbox rules and add inferences to qrunner.jena rdf model
 			addInferredEdges();
-		}
-		if(applySparqlRules) {
-			applySparqlRules();
+			System.out.println("total triples after inference: "+qrunner.nTriples());
 		}
 		//use jena export
 		System.out.println("writing n triples: "+qrunner.nTriples());
 		qrunner.dumpModel(outfilefile, "TURTLE");
+//		else {
+//			//write with OWL API..		
+//			FileDocumentTarget outfile = new FileDocumentTarget(outfilefile);
+//			//ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());	
+//			ontman.setOntologyFormat(go_cam_ont, new TurtleDocumentFormat());	
+//			ontman.saveOntology(go_cam_ont,outfile);
+//		}
+
 		//reads in file created above and converts to journal
 		//could optimize speed by going direct at some point if it matters
 		if(save2blazegraph) {

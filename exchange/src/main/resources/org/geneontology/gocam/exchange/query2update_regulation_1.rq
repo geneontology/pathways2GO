@@ -4,26 +4,17 @@ prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 prefix obo: <http://purl.obolibrary.org/obo/>
 prefix biopax: <http://www.biopax.org/release/biopax-level3.owl#>
 
-insert { ?reaction1 obo:RO_0002023 ?reaction2 }  #directly negatively regulated by 
+select ?reaction1 ?prop ?reaction2  # obo:RO_0002023 directly negatively regulated by 
 where {
-    ?reaction2 obo:RO_0002233 ?entityA . #has input
-    ?reaction2 obo:RO_0002233 ?entityB . #has input
-    ?reaction2 obo:RO_0002234 ?complexAB . #has output 
-    ?reaction1 obo:RO_0002333 ?entityBB . #enabled by
+    ?reaction1 rdf:type biopax:Reaction .
     ?reaction2 rdf:type biopax:Reaction .
-    ?reaction1 rdf:type biopax:Reaction . 
-  	?reaction2 rdfs:label ?r1label . 
-    ?reaction1 rdfs:label ?r2label .
-    ?entityA rdfs:label ?Alabel . 
-  	?entityB rdfs:label ?Blabel .
-  	?entityBB rdfs:label ?BBlabel .
- #   filter(?Blabel = ?BBlabel) .
-	filter(?reaction2 != ?reaction1) . 
-    filter(?entityA != ?entityB) . 
-    ?entityB rdf:type ?entity_class .
-    ?entityBB rdf:type ?entity_class . 
+    ?entityZ ?prop  ?reaction1 .   #obo:RO_0002430  involved_in_negative_regulation_of 
+    VALUES ?prop { obo:RO_0002430 obo:RO_0002429} #RO_0002429 involved_in_positive_regulation_of
+       ?reaction2 obo:RO_0002234 ?entityY .  #has output
+    ?entityZ rdf:type ?entity_class .
+    ?entityY rdf:type ?entity_class . 
     ?entity_class rdfs:subClassOf ?grouping_class .
-  	VALUES ?grouping_class { obo:GO_0032991 biopax:Protein} # either protein complex or protein class
+  	VALUES ?grouping_class { obo:GO_0032991 biopax:Protein} # either protein complex or protein class 
 }
 
 #filter(?outputLabel = ?inputLabel) .

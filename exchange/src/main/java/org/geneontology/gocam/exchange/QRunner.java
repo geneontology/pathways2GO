@@ -202,26 +202,61 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		return ie;
 	}	
 	
-	int addInferredRegulators() {
-		int n = nTriples();
-		String updatePR = null;
-		String updateNR = null;
-		String updateNR2 = null;
-		String updateR = null;
+	class InferredRegulator {
+		String reaction1_uri;
+		String reaction2_uri;
+		String prop_uri;
+		InferredRegulator(String r1_uri, String p_uri, String r2_uri){
+			reaction1_uri = r1_uri;
+			prop_uri = p_uri;
+			reaction2_uri = r2_uri;
+		}
+	}
+	
+	Set<InferredRegulator> getInferredRegulatorsQ1() {
+		Set<InferredRegulator> ir = new HashSet<InferredRegulator>();
+		String query = null;
 		try {
-			updatePR = IOUtils.toString(App.class.getResourceAsStream("update_positive_regulation.rq"), StandardCharsets.UTF_8);
-			updateNR = IOUtils.toString(App.class.getResourceAsStream("update_negative_regulation.rq"), StandardCharsets.UTF_8);
-			updateNR2 = IOUtils.toString(App.class.getResourceAsStream("update_negative_regulation_by_binding.rq"), StandardCharsets.UTF_8);
-			updateR = IOUtils.toString(App.class.getResourceAsStream("update_regulation.rq"), StandardCharsets.UTF_8);
-			//	count = IOUtils.toString(App.class.getResourceAsStream("count_enabled_by.rq"), StandardCharsets.UTF_8);
+		
+			//updateNR2 = IOUtils.toString(App.class.getResourceAsStream("update_negative_regulation_by_binding.rq"), StandardCharsets.UTF_8);
+			
+			query = IOUtils.toString(App.class.getResourceAsStream("query2update_regulation_1.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL update from jar \n"+e);
 		}
-		UpdateAction.parseExecute(updatePR, jena) ;
-		UpdateAction.parseExecute(updateNR, jena) ;
-		UpdateAction.parseExecute(updateNR2, jena) ;
-		UpdateAction.parseExecute(updateR, jena) ;
-		return nTriples()-n;
+		QueryExecution qe = QueryExecutionFactory.create(query, jena);
+		ResultSet results = qe.execSelect();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Resource reaction1 = qs.getResource("reaction1"); 
+			Resource reaction2 = qs.getResource("reaction2"); 
+			Resource property = qs.getResource("prop");
+			//reaction1  regulated somehow by reaction 2
+			ir.add(new InferredRegulator(reaction1.getURI(), property.getURI(), reaction2.getURI()));
+		}
+		qe.close();
+		return ir;
+	}
+	
+	Set<InferredRegulator> getInferredRegulatorsQ2() {
+		Set<InferredRegulator> ir = new HashSet<InferredRegulator>();
+		String query = null;
+		try {		
+			query = IOUtils.toString(App.class.getResourceAsStream("query2update_regulation_2.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL update from jar \n"+e);
+		}
+		QueryExecution qe = QueryExecutionFactory.create(query, jena);
+		ResultSet results = qe.execSelect();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Resource reaction1 = qs.getResource("reaction1"); 
+			Resource reaction2 = qs.getResource("reaction2"); 
+			//reaction1  regulated somehow by reaction 2
+			ir.add(new InferredRegulator(reaction1.getURI(), GoCAM.directly_negatively_regulated_by.getIRI().toString(), reaction2.getURI()));
+		}
+		qe.close();
+		return ir;
 	}
 	
 	int deleteEntityLocations() {
