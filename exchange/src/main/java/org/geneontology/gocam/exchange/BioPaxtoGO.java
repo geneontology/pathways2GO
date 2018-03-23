@@ -47,6 +47,7 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
+import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
@@ -87,19 +88,19 @@ public class BioPaxtoGO {
 //		String output_folder = "/Users/bgood/Downloads/biopax_converted/";
 //		bp2g.convertReactomeFolder(input_folder, output_folder);
 		
-		String input_biopax = //"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
+		String input_biopax = "/Users/bgood/Desktop/test/BMP_signaling.owl"; 
 				//"/Users/bgood/Desktop/test/Wnt_example.owl";
 				//"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
 				//"src/main/resources/reactome/Homo_sapiens.owl";
-				"/Users/bgood/Downloads/biopax/homosapiens.owl";
+				//"/Users/bgood/Downloads/biopax/homosapiens.owl";
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
-		String converted = //"/Users/bgood/Desktop/test/reasoned/Wnt_example_cam-";
+		String converted = "/Users/bgood/Desktop/test/test-wnt/converted-bmp-";
 				//"/Users/bgood/Desktop/test/bmp_output/converted-bmp-no-loc-";
 				//"/Users/bgood/Desktop/test/Wnt_output/converted-wnt-by-Paul-rules-no-loc-";
 				//"/Users/bgood/Desktop/test_input/converted-";
 				//"/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-";
-				"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
+				//"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";
@@ -410,6 +411,9 @@ public class BioPaxtoGO {
 		OWLNamedIndividual e = null;
 		if(this_iri!=null) {
 			e = go_cam.makeAnnotatedIndividual(this_iri);
+			//this allows linkage between different OWL individuals in the GO-CAM sense that correspond to the same thing in the BioPax sense
+			//go_cam.addObjectPropertyAssertion(e, GoCAM.skos_exact_match, go_cam.makeAnnotatedIndividual(entity.getUri()), null);	
+			go_cam.addUriAnnotations2Individual(this_iri,GoCAM.skos_exact_match, IRI.create(entity.getUri()));	
 		}else {
 			e = go_cam.makeAnnotatedIndividual(IRI.create(entity.getUri()));
 		}
@@ -475,7 +479,10 @@ public class BioPaxtoGO {
 						defineReactionEntity(go_cam, prot_part, prot_part_entity.getIRI());
 					}
 					//adds a unique class to describe this complex 
-					addComplexAsSimpleClass(go_cam, cnames, e, null);
+					//commented as tbox modifications don't play well with Noctua/Minerva which expects only Abox in the model
+					//addComplexAsSimpleClass(go_cam, cnames, e, null);
+					//so instead we added a link to the original uri for linking and this for rough classification
+					go_cam.addTypeAssertion(e, GoCAM.go_complex);
 				}
 			}
 		}
@@ -573,9 +580,10 @@ public class BioPaxtoGO {
 					}
 				}
 				//assert it as a complex
-				//	go_cam.addTypeAssertion(e, GoCAM.go_complex);
-				//adds a unique class to describe this complex 
-				addComplexAsSimpleClass(go_cam, cnames, e, null);
+				go_cam.addTypeAssertion(e, GoCAM.go_complex);
+				//adds a unique class to describe this complex (no no to modify tbox..)
+				//addComplexAsSimpleClass(go_cam, cnames, e, null);
+				
 			}
 		}
 		else if(entity.getModelInterface().equals(BiochemicalReaction.class)){

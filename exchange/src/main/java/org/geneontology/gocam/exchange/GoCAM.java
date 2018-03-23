@@ -68,7 +68,7 @@ public class GoCAM {
 	public static final IRI obo_iri = IRI.create("http://purl.obolibrary.org/obo/");
 	public static final IRI uniprot_iri = IRI.create("http://identifiers.org/uniprot/");
 	public static IRI base_ont_iri;
-	public static OWLAnnotationProperty title_prop, contributor_prop, date_prop, 
+	public static OWLAnnotationProperty title_prop, contributor_prop, date_prop, skos_exact_match,  
 	state_prop, evidence_prop, provided_by_prop, x_prop, y_prop, rdfs_label, rdfs_comment, source_prop;
 	public static OWLObjectProperty part_of, has_part, has_input, has_output, 
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in,
@@ -154,6 +154,7 @@ public class GoCAM {
 		ontman.addAxiom(go_cam_ont, comp);
 		//ontman.applyChanges();
 
+		skos_exact_match = df.getOWLAnnotationProperty(IRI.create("http://www.w3.org/2004/02/skos/core#exactMatch"));
 		//part of
 		part_of = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000050"));
 		addLabel(part_of, "part of"); 
@@ -303,6 +304,14 @@ public class GoCAM {
 		return anno;
 	}
 
+	OWLAnnotation addUriAnnotations2Individual(IRI individual_iri, OWLAnnotationProperty prop, IRI value) {
+		OWLAnnotation anno = df.getOWLAnnotation(prop, value);
+		OWLAxiom axiom = df.getOWLAnnotationAssertionAxiom(individual_iri, anno);
+		ontman.addAxiom(go_cam_ont, axiom);
+		//ontman.applyChanges();		
+		return anno;
+	}
+	
 	void addLabel(OWLEntity entity, String label) {
 		if(label==null) {
 			return;

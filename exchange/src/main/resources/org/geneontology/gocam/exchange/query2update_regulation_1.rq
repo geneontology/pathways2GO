@@ -3,19 +3,39 @@ prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
 prefix obo: <http://purl.obolibrary.org/obo/>
 prefix biopax: <http://www.biopax.org/release/biopax-level3.owl#>
+prefix skos: <http://www.w3.org/2004/02/skos/core#>
 
 select ?reaction1 ?prop ?reaction2  # obo:RO_0002023 directly negatively regulated by 
 where {
-    ?reaction1 rdf:type biopax:Reaction .
+   { ?reaction1 rdf:type biopax:Reaction .
     ?reaction2 rdf:type biopax:Reaction .
     ?entityZ ?prop  ?reaction1 .   #obo:RO_0002430  involved_in_negative_regulation_of 
     VALUES ?prop { obo:RO_0002430 obo:RO_0002429} #RO_0002429 involved_in_positive_regulation_of
        ?reaction2 obo:RO_0002234 ?entityY .  #has output
-    ?entityZ rdf:type ?entity_class .
-    ?entityY rdf:type ?entity_class . 
-    ?entity_class rdfs:subClassOf ?grouping_class .
-  	VALUES ?grouping_class { obo:GO_0032991 biopax:Protein} # either protein complex or protein class 
+    ?entityZ skos:exactMatch ?complex . 
+    ?entityY skos:exactMatch ?complex . 
+    ?entityZ rdf:type obo:GO_0032991 .
+    ?entityY rdf:type obo:GO_0032991 .
+   }
+   UNION
+   {
+   ?reaction1 rdf:type biopax:Reaction .
+    ?reaction2 rdf:type biopax:Reaction .
+    ?entityZ ?prop  ?reaction1 .   #obo:RO_0002430  involved_in_negative_regulation_of 
+    VALUES ?prop { obo:RO_0002430 obo:RO_0002429} #RO_0002429 involved_in_positive_regulation_of
+       ?reaction2 obo:RO_0002234 ?entityY .  #has output
+    ?entityZ skos:exactMatch ?protein . 
+    ?entityY skos:exactMatch ?protein . 
+    ?entityZ rdf:type ?uniprot .
+    ?entityY rdf:type ?uniprot .
+    ?uniprot rdfs:subClassOf biopax:Protein . 
+   }
 }
+
+ #   ?entityZ rdf:type ?entity_class .
+ #   ?entityY rdf:type ?entity_class . 
+ #   ?entity_class rdfs:subClassOf ?grouping_class .
+ # 	VALUES ?grouping_class { obo:GO_0032991 biopax:Protein} # either protein complex or protein class 
 
 #filter(?outputLabel = ?inputLabel) .
 #limit 100
