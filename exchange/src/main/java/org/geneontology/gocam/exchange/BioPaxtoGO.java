@@ -84,23 +84,23 @@ public class BioPaxtoGO {
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		BioPaxtoGO bp2g = new BioPaxtoGO();
-//		String input_folder = "/Users/bgood/Downloads/biopax/";
-//		String output_folder = "/Users/bgood/Downloads/biopax_converted/";
-//		bp2g.convertReactomeFolder(input_folder, output_folder);
-		
-		String input_biopax = "/Users/bgood/Desktop/test/BMP_signaling.owl"; 
-				//"/Users/bgood/Desktop/test/Wnt_example.owl";
-				//"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
-				//"src/main/resources/reactome/Homo_sapiens.owl";
-				//"/Users/bgood/Downloads/biopax/homosapiens.owl";
+		//		String input_folder = "/Users/bgood/Downloads/biopax/";
+		//		String output_folder = "/Users/bgood/Downloads/biopax_converted/";
+		//		bp2g.convertReactomeFolder(input_folder, output_folder);
+
+		String input_biopax = //"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
+		//		"/Users/bgood/Desktop/test/Wnt_example.owl";
+		//"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
+		//"src/main/resources/reactome/Homo_sapiens.owl";
+		"/Users/bgood/Downloads/biopax/homosapiens.owl";
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
-		String converted = "/Users/bgood/Desktop/test/test-wnt/converted-bmp-";
-				//"/Users/bgood/Desktop/test/bmp_output/converted-bmp-no-loc-";
-				//"/Users/bgood/Desktop/test/Wnt_output/converted-wnt-by-Paul-rules-no-loc-";
-				//"/Users/bgood/Desktop/test_input/converted-";
-				//"/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-";
-				//"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
+		String converted = //"/Users/bgood/Desktop/test/test-wnt/converted-";
+		//"/Users/bgood/Desktop/test/bmp_output/converted-bmp-";
+		//"/Users/bgood/Desktop/test/Wnt_output/converted-wnt-by-Paul-rules-no-loc-";
+		//"/Users/bgood/Desktop/test_input/converted-";
+		//"/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-";
+		"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";
@@ -117,7 +117,7 @@ public class BioPaxtoGO {
 		String tag = "";
 		convert(input_file, output, split_by_pathway, add_lego_import, base_title, base_contributor, base_provider, tag, save_inferences);
 	}
-	
+
 	private void convertReactomeFolder(String input_folder, String output_folder, boolean save_inferences) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		boolean split_by_pathway = true;
 		boolean add_lego_import = false;
@@ -271,10 +271,12 @@ public class BioPaxtoGO {
 							//		biochemicalReaction(NextEvent).
 							if((event.getModelInterface().equals(BiochemicalReaction.class))&&
 									(nextEvent.getModelInterface().equals(BiochemicalReaction.class))) {
-								OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(IRI.create(event.getUri()));
-								go_cam.addLabel(e1, event.getDisplayName());
-								OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(IRI.create(nextEvent.getUri()));
-								go_cam.addLabel(e2, nextEvent.getDisplayName());
+								IRI e1_iri = IRI.create(event.getUri());
+								IRI e2_iri = IRI.create(nextEvent.getUri());
+								OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(e1_iri);
+								defineReactionEntity(go_cam, event, e1_iri);
+								OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(e2_iri);
+								defineReactionEntity(go_cam, nextEvent, e2_iri);
 								go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.provides_direct_input_for, e2, pubids, GoCAM.eco_imported_auto);
 							}
 							//							else {
@@ -312,7 +314,6 @@ public class BioPaxtoGO {
 				boolean is_logical = go_cam.validateGoCAM();	
 				go_cam.writeGoCAM(outfilename, save_inferences, save2blazegraph, applySparqlRules);
 				if(!is_logical) {
-					System.exit(0); //die if not logically consistent.  
 				}
 				//reset for next pathway.
 				//go_cam.ontman.clearOntologies();
@@ -355,6 +356,7 @@ public class BioPaxtoGO {
 		Set<Xref> xrefs = pathway.getXref();
 		//publications 
 		Set<String> pubids = getPubmedIds(pathway);
+		boolean go_bp_set = false;
 		for(Xref xref : xrefs) {
 			//dig out any xreferenced GO processes and assign them as types
 			if(xref.getModelInterface().equals(RelationshipXref.class)) {
@@ -369,8 +371,12 @@ public class BioPaxtoGO {
 					//addRefBackedObjectPropertyAssertion
 					go_cam.addSubclassAssertion(xref_go_parent, GoCAM.bp_class, null);
 					go_cam.addTypeAssertion(pathway_e, xref_go_parent);
+					go_bp_set = true;
 				}
 			}
+		}
+		if(!go_bp_set) {
+			go_cam.addTypeAssertion(pathway_e, GoCAM.bp_class);
 		}
 		return;
 	}
@@ -483,6 +489,9 @@ public class BioPaxtoGO {
 					//addComplexAsSimpleClass(go_cam, cnames, e, null);
 					//so instead we added a link to the original uri for linking and this for rough classification
 					go_cam.addTypeAssertion(e, GoCAM.go_complex);
+				}else { 
+					go_cam.addTypeAssertion(e,  GoCAM.chebi_protein);
+					go_cam.addTypeAssertion(e,  protein_class);
 				}
 			}
 		}
@@ -583,7 +592,7 @@ public class BioPaxtoGO {
 				go_cam.addTypeAssertion(e, GoCAM.go_complex);
 				//adds a unique class to describe this complex (no no to modify tbox..)
 				//addComplexAsSimpleClass(go_cam, cnames, e, null);
-				
+
 			}
 		}
 		else if(entity.getModelInterface().equals(BiochemicalReaction.class)){
@@ -611,7 +620,8 @@ public class BioPaxtoGO {
 			//			}
 
 			//type it
-			go_cam.addTypeAssertion(e, reaction_class);			
+			go_cam.addTypeAssertion(e, reaction_class);	
+			boolean mf_set = false;
 			//connect reaction to its pathway(s) via has_part
 			Set<Pathway> pathways = reaction.getPathwayComponentOf();
 			for(Pathway pathway : pathways) {
@@ -656,7 +666,6 @@ public class BioPaxtoGO {
 				//check for reactome mappings
 				//dig out the GO molecular function and create an individual for it
 				Set<Xref> xrefs = controller.getXref(); //controller is either a 'control' or a 'catalysis' so far
-				boolean mf_set = false;
 				for(Xref xref : xrefs) {
 					if(xref.getModelInterface().equals(RelationshipXref.class)) {
 						RelationshipXref ref = (RelationshipXref)xref;	    			
@@ -668,7 +677,7 @@ public class BioPaxtoGO {
 							mf_set = true;
 						}
 					}
-				}		
+				}	
 				ControlType ctype = controller.getControlType();				
 				boolean is_catalysis = false;
 				if(controller.getModelInterface().equals(Catalysis.class)) {
@@ -701,10 +710,12 @@ public class BioPaxtoGO {
 							go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.involved_in_regulation_of,  e, controllerpubrefs, GoCAM.eco_imported_auto);
 						}
 					}
-
 				}
 			}
-
+		if(!mf_set) {
+			//want to stay in go tbox as much as possible - even if defaulting to root nodes.  
+			go_cam.addTypeAssertion(e, GoCAM.molecular_function);	
+		}
 			//The OWL for the reaction and all of its parts should now be assembled.  Now can apply secondary rules to improve mapping to go-cam model
 			//If all of the entities involved in a reaction are located in the same GO cellular component, 
 			//add that the reaction/function occurs_in that location
@@ -761,8 +772,8 @@ public class BioPaxtoGO {
 		go_cam.addTypeAssertion(complex_i, complex_class);
 		return complex_i;
 	}
-	
-	
+
+
 	//Could be done with a PathAccessor
 	//PathAccessor accessor = new PathAccessor("Complex/component*");
 	//The * should do the recursion according to http://journals.plos.org/ploscompbiol/article/file?type=supplementary&id=info:doi/10.1371/journal.pcbi.1003194.s001

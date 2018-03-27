@@ -73,7 +73,7 @@ public class GoCAM {
 	public static OWLObjectProperty part_of, has_part, has_input, has_output, 
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in,
 	directly_positively_regulated_by, directly_negatively_regulated_by, involved_in_regulation_of, involved_in_negative_regulation_of, involved_in_positive_regulation_of;
-	public static OWLClass bp_class, continuant_class, process_class, go_complex, molecular_function, eco_imported, eco_imported_auto;
+	public static OWLClass bp_class, continuant_class, process_class, go_complex, molecular_function, eco_imported, eco_imported_auto, chebi_protein, chebi_gene;
 	OWLOntology go_cam_ont;
 	OWLDataFactory df;
 	OWLOntologyManager ontman;
@@ -152,8 +152,12 @@ public class GoCAM {
 		//complex
 		OWLSubClassOfAxiom comp = df.getOWLSubClassOfAxiom(go_complex, continuant_class);
 		ontman.addAxiom(go_cam_ont, comp);
-		//ontman.applyChanges();
-
+		//proteins and genes as they are in neo
+		chebi_protein = df.getOWLClass(IRI.create(obo_iri + "CHEBI_36080"));
+		addLabel(chebi_protein, "chebi protein");
+		chebi_gene = df.getOWLClass(IRI.create(obo_iri + "CHEBI_33695"));
+		addLabel(chebi_gene, "chebi gene"); 
+		
 		skos_exact_match = df.getOWLAnnotationProperty(IRI.create("http://www.w3.org/2004/02/skos/core#exactMatch"));
 		//part of
 		part_of = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000050"));
@@ -467,6 +471,7 @@ public class GoCAM {
 	
 /**
  * Use sparql queries to inform modifications to the go-cam owl ontology 
+ * assumes it is loaded with everything to start with a la qrunner = new QRunner(go_cam_ont); 
  */
 	void applySparqlRules() {
 		Set<InferredEnabler> ies = qrunner.getInferredEnablers();
@@ -490,6 +495,8 @@ public class GoCAM {
 			//OWLObjectPropertyAssertionAxiom has_input = df.getOWLObjectPropertyAssertionAxiom(GoCAM.has_input, r, e);			
 			//this.ontman.removeAxiom(go_cam_ont, has_input);
 		}
+		//if subsequent rules need to compute over the results of previous rules, need to load the owl back into the rdf model
+		qrunner = new QRunner(go_cam_ont); 
 		System.out.println("Added "+ies.size()+" enabled_by triples");
 		Set<InferredRegulator> ir1 = qrunner.getInferredRegulatorsQ1();
 		for(InferredRegulator ir : ir1) {
@@ -509,6 +516,8 @@ public class GoCAM {
 			this.addObjectPropertyAssertion(r1, o, r2, annos);
 			System.out.println("reg1 "+r1+" "+o+" "+r2);
 		}
+		//if subsequent rules need to compute over the results of previous rules, need to load the owl back into the rdf model
+		qrunner = new QRunner(go_cam_ont); 
 		System.out.println("Added "+ir1.size()+" pos/neg reg triples");
 		Set<InferredRegulator> ir2_neg = qrunner.getInferredRegulatorsQ2();
 		for(InferredRegulator ir : ir2_neg) {

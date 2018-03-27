@@ -5,64 +5,37 @@ prefix obo: <http://purl.obolibrary.org/obo/>
 prefix biopax: <http://www.biopax.org/release/biopax-level3.owl#>
 prefix skos: <http://www.w3.org/2004/02/skos/core#>
 
-select distinct ?reaction1  ?reaction2   #directly negatively regulated by obo:RO_0002023
+select distinct ?reaction2 ?reaction1   #directly negatively regulated by obo:RO_0002023
 where {
-   { ?reaction2 obo:RO_0002233 ?entityA . #has input
-    ?reaction2 obo:RO_0002233 ?entityB . #has input
-    ?reaction2 obo:RO_0002234 ?complexAB . #has output 
-    ?reaction1 obo:RO_0002333 ?entityBB . #enabled by
-    ?reaction2 rdf:type biopax:Reaction .
-    ?reaction1 rdf:type biopax:Reaction . 
-  	?reaction2 rdfs:label ?r1label . 
-    ?reaction1 rdfs:label ?r2label .
-    ?entityA rdfs:label ?Alabel . 
-  	?entityB rdfs:label ?Blabel .
-  	?entityBB rdfs:label ?BBlabel .
- #   filter(?Blabel = ?BBlabel) .
-	filter(?reaction2 != ?reaction1) . 
-    filter(?entityA != ?entityB) . 
-    ?entityB skos:exactMatch ?complex . 
-    ?entityBB skos:exactMatch ?complex . 
-    ?entityB rdf:type obo:GO_0032991 .
-    ?entityBB rdf:type obo:GO_0032991 .
-    } 
-    UNION {
-    ?reaction2 obo:RO_0002233 ?entityA . #has input
-    ?reaction2 obo:RO_0002233 ?entityB . #has input
-    ?reaction2 obo:RO_0002234 ?complexAB . #has output 
-    ?reaction1 obo:RO_0002333 ?entityBB . #enabled by
-    ?reaction2 rdf:type biopax:Reaction .
-    ?reaction1 rdf:type biopax:Reaction . 
-  	?reaction2 rdfs:label ?r1label . 
-    ?reaction1 rdfs:label ?r2label .
-    ?entityA rdfs:label ?Alabel . 
-  	?entityB rdfs:label ?Blabel .
-  	?entityBB rdfs:label ?BBlabel .
- #   filter(?Blabel = ?BBlabel) .
-	filter(?reaction2 != ?reaction1) . 
-    filter(?entityA != ?entityB) . 
-    ?entityB skos:exactMatch ?protein . 
-    ?entityBB skos:exactMatch ?protein . 
-    ?entityB rdf:type ?uniprot . 
-    ?entityBB rdf:type ?uniprot . 
-    ?uniprot rdfs:subClassOf biopax:Protein .
-    }
+  ?reaction2 obo:RO_0002333 ?reaction2enabler . #enabled by                      
+  ?reaction1 obo:RO_0002233 ?inputA . #has input
+  ?reaction1 obo:RO_0002233 ?inputB . #has input 		  
+  ?inputA skos:exactMatch ?A . 
+  ?reaction2enabler skos:exactMatch ?A .
+  filter(?inputA != ?inputB) . 
+  filter(?reaction1 != ?reaction2) .
+  #above seems to work by itself but ignores what happens in reaction1
+  #now see about verifying the appearance of inhibition happening..
+  #First check for case where R2 is enabled by a specific protein 
+  #(not a complex) and R1 attaches that protein to a complex (such as a ligand trap), thus stopping R2
+  {	?reaction1 obo:RO_0002234 ?r1output . #has output 
+  	?r1output obo:BFO_0000051 ?r1outputPart . #has part 
+  	?r1outputPart rdf:type ?P . 
+  	?reaction2enabler rdf:type ?P . 
+    ?p rdfs:subClassOf ?proteinClass .
+    VALUES ?proteinClass { obo:CHEBI_36080 biopax:Protein}
+  }  
+  #Now check case where R2 is enabled by a complex, R1 produces a complex as output, and the two share parts
+  # idea is that R1 is modifying a complex required by R2 to function, hence stopping R2
+  UNION {
+  	?reaction1 obo:RO_0002234 ?r1output . #has output 
+  	?r1output obo:BFO_0000051 ?r1outputPart . #has part 
+  	?reaction2enabler obo:BFO_0000051 ?r2enablerPart . 
+  	?r1outputPart skos:exactMatch ?P . #using this as there are no classes for most complexes in OBO Tbox.. 
+  	?r2enablerPart skos:exactMatch ?P . #basically is just name matching from biopax uris
+   }
+  }
 
-}
-
- #   ?entityB rdf:type ?entity_class .
- #   ?entityBB rdf:type ?entity_class . 
- #   ?entity_class rdfs:subClassOf ?grouping_class .
- # 	VALUES ?grouping_class { obo:GO_0032991 biopax:Protein} # either protein complex or protein class
-
-#filter(?outputLabel = ?inputLabel) .
-#limit 100
-# group by ?prop 
-#ORDER BY DESC(?prop)
-
-#limit 100
-# group by ?prop 
-# ORDER BY DESC(?prop)
 # RO_0002024  directly positively regulated by 
 # RO_0002023  directly negatively regulated by 
 # RO_0002334 regulated by
@@ -71,18 +44,4 @@ where {
 # RO_0002234 has output
 # obo:BFO_0000051 has part
 # obo:RO_0002413 provides direct input for
-
-# directly_negatively_regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002023"));
-# 		addLabel(directly_negatively_regulated_by, "directly negatively regulated by");
-# 		directly_positively_regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002024"));
-# 		addLabel(directly_positively_regulated_by, "directly positively regulated by");
-# 		//RO_0002430 involved_in_negative_regulation_of
-# 		//RO_0002429 involved_in_positive_regulation_of
-# 		involved_in_negative_regulation_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002430"));
-# 		addLabel(involved_in_negative_regulation_of, "involved in negative regulation_of");
-# 		involved_in_positive_regulation_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002429"));
-# 		addLabel(involved_in_positive_regulation_of, "involved in positive regulation_of");
-# 		
-# 		involved_in_regulation_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002428"));
-# 		addLabel(involved_in_regulation_of, "involved in regulation of");
 

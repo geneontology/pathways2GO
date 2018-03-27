@@ -248,7 +248,9 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		}
 		QueryExecution qe = QueryExecutionFactory.create(query, jena);
 		ResultSet results = qe.execSelect();
+		int t = 0;
 		while (results.hasNext()) {
+			t++;
 			QuerySolution qs = results.next();
 			Resource reaction1 = qs.getResource("reaction1"); 
 			Resource reaction2 = qs.getResource("reaction2"); 
