@@ -88,19 +88,19 @@ public class BioPaxtoGO {
 		//		String output_folder = "/Users/bgood/Downloads/biopax_converted/";
 		//		bp2g.convertReactomeFolder(input_folder, output_folder);
 
-		String input_biopax = //"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
+		String input_biopax = "/Users/bgood/Desktop/test/BMP_signaling.owl"; 
 		//		"/Users/bgood/Desktop/test/Wnt_example.owl";
 		//"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
 		//"src/main/resources/reactome/Homo_sapiens.owl";
-		"/Users/bgood/Downloads/biopax/homosapiens.owl";
+		//"/Users/bgood/Downloads/biopax/homosapiens.owl";
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = //"/Users/bgood/Desktop/test/test-wnt/converted-";
-		//"/Users/bgood/Desktop/test/bmp_output/converted-bmp-";
+		"/Users/bgood/Desktop/test/bmp_output/converted-bmp-";
 		//"/Users/bgood/Desktop/test/Wnt_output/converted-wnt-by-Paul-rules-no-loc-";
 		//"/Users/bgood/Desktop/test_input/converted-";
 		//"/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-";
-		"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
+		//"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";

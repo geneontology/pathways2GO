@@ -526,13 +526,13 @@ public class GoCAM {
 			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ir.reaction2_uri);
 			OWLObjectProperty o = df.getOWLObjectProperty(IRI.create(ir.prop_uri));
 			Set<OWLAnnotation> annos = getDefaultAnnotations();
-			String explain = "This regulation relation was inferred based on idea of inhibitory binding. "
+			String explain = "This regulation relation was inferred based on the idea of inhibitory binding. "
 				+ "Reaction1 is negatively regulated by Reaction2 if\n" + 
 				 " IF R2 has input A, R2 has input B, has output A/B complex\n" + 
 				 " and R1 is enabled by B";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
-			this.addObjectPropertyAssertion(r1, o, r2, annos);
-			System.out.println("reg2 "+r1+" "+o+" "+r2);
+			this.addObjectPropertyAssertion(r2, o, r1, annos);
+			System.out.println("reg2 "+r2+" "+o+" "+r1);
 		}		
 		System.out.println("Added "+ir2_neg.size()+" neg inhibitory binding reg triples");
 	}
