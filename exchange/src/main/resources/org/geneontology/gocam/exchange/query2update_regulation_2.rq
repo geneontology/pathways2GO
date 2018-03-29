@@ -5,7 +5,7 @@ prefix obo: <http://purl.obolibrary.org/obo/>
 prefix biopax: <http://www.biopax.org/release/biopax-level3.owl#>
 prefix skos: <http://www.w3.org/2004/02/skos/core#>
 
-select distinct ?reaction2 ?reaction1   #directly negatively regulated by obo:RO_0002023
+select distinct ?reaction2 ?reaction1 ?reaction2enablerLabel ?reaction2Label ?reaction1Label #directly negatively regulated by obo:RO_0002023
 where {
   ?reaction2 obo:RO_0002333 ?reaction2enabler . #enabled by                      
   ?reaction1 obo:RO_0002233 ?inputA . #has input
@@ -14,6 +14,9 @@ where {
   ?reaction2enabler skos:exactMatch ?A .
   filter(?inputA != ?inputB) . 
   filter(?reaction1 != ?reaction2) .
+    ?reaction2enabler rdfs:label ?reaction2enablerLabel .
+    ?reaction2 rdfs:label ?reaction2Label .
+    ?reaction1 rdfs:label ?reaction1Label .
   #above seems to work by itself but ignores what happens in reaction1
   #now see about verifying the appearance of inhibition happening..
   #First check for case where R2 is enabled by a specific protein 
@@ -22,7 +25,7 @@ where {
   	?r1output obo:BFO_0000051 ?r1outputPart . #has part 
   	?r1outputPart rdf:type ?P . 
   	?reaction2enabler rdf:type ?P . 
-    ?p rdfs:subClassOf ?proteinClass .
+    ?P rdfs:subClassOf ?proteinClass .
     VALUES ?proteinClass { obo:CHEBI_36080 biopax:Protein}
   }  
   #Now check case where R2 is enabled by a complex, R1 produces a complex as output, and the two share parts
@@ -31,7 +34,7 @@ where {
   	?reaction1 obo:RO_0002234 ?r1output . #has output 
   	?r1output obo:BFO_0000051 ?r1outputPart . #has part 
   	?reaction2enabler obo:BFO_0000051 ?r2enablerPart . 
-  	?r1outputPart skos:exactMatch ?P . #using this as there are no classes for most complexes in OBO Tbox.. 
+  	?r1outputPart skos:exactMatch ?P . #using this skos pattern as there are no classes for most complexes in OBO Tbox.. 
   	?r2enablerPart skos:exactMatch ?P . #basically is just name matching from biopax uris
    }
   }

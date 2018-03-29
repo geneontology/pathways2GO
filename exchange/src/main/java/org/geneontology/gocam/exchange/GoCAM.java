@@ -73,7 +73,10 @@ public class GoCAM {
 	public static OWLObjectProperty part_of, has_part, has_input, has_output, 
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in,
 	directly_positively_regulated_by, directly_negatively_regulated_by, involved_in_regulation_of, involved_in_negative_regulation_of, involved_in_positive_regulation_of;
-	public static OWLClass bp_class, continuant_class, process_class, go_complex, molecular_function, eco_imported, eco_imported_auto, chebi_protein, chebi_gene;
+	public static OWLClass 
+		bp_class, continuant_class, process_class, go_complex, molecular_function, 
+		eco_imported, eco_imported_auto, eco_inferred_auto, 
+		chebi_protein, chebi_gene;
 	OWLOntology go_cam_ont;
 	OWLDataFactory df;
 	OWLOntologyManager ontman;
@@ -149,6 +152,8 @@ public class GoCAM {
 		eco_imported_auto = df.getOWLClass(IRI.create(obo_iri + "ECO_0000313")); 
 		//"A type of evidence that is based on work performed by a person or group prior to a use by a different person or group."
 		eco_imported = df.getOWLClass(IRI.create(obo_iri + "ECO_0000311")); 
+		//ECO_0000363 "A type of evidence based on computational logical inference that is used in automatic assertion."
+		eco_inferred_auto = df.getOWLClass(IRI.create(obo_iri + "ECO_0000363")); 		
 		//complex
 		OWLSubClassOfAxiom comp = df.getOWLSubClassOfAxiom(go_complex, continuant_class);
 		ontman.addAxiom(go_cam_ont, comp);
@@ -364,31 +369,37 @@ public class GoCAM {
 	 * @param source
 	 * @param prop
 	 * @param target
-	 * @param pmids
+	 * @param ids
 	 * @param evidence_class
+	 * @param namespace_prefix (e.g. PMID)
 	 */
-	void addRefBackedObjectPropertyAssertion(OWLIndividual source, OWLObjectProperty prop, OWLIndividual target, Set<String> pmids, OWLClass evidence_class) {
+	void addRefBackedObjectPropertyAssertion(OWLIndividual source, OWLObjectProperty prop, OWLIndividual target, Set<String> ids, OWLClass evidence_class, String namespace_prefix, Set<OWLAnnotation> other_annotations) {
 		OWLObjectPropertyAssertionAxiom add_prop_axiom = null;
-		if(pmids!=null&&pmids.size()>0) {
-			Set<OWLAnnotation> annos = new HashSet<OWLAnnotation>();
-			for(String pmid : pmids) {
-				IRI anno_iri = makeEntityHashIri(source.hashCode()+"_"+prop.hashCode()+"_"+target.hashCode()+"_"+pmid);
+		Set<OWLAnnotation> annos = new HashSet<OWLAnnotation>();
+		if(other_annotations!=null) {
+			annos.addAll(other_annotations);
+		}
+		annos.addAll(getDefaultAnnotations());
+		if(ids!=null&&ids.size()>0) {			
+			for(String id : ids) {
+				IRI anno_iri = makeEntityHashIri(source.hashCode()+"_"+prop.hashCode()+"_"+target.hashCode()+"_"+namespace_prefix+"_"+id);
 				OWLNamedIndividual evidence = makeAnnotatedIndividual(anno_iri);					
 				addTypeAssertion(evidence, evidence_class);
-				addLiteralAnnotations2Individual(anno_iri, GoCAM.source_prop, "PMID:"+pmid);
+				addLiteralAnnotations2Individual(anno_iri, GoCAM.source_prop, namespace_prefix+":"+id);
 				OWLAnnotation anno = df.getOWLAnnotation(GoCAM.evidence_prop, anno_iri);
 				annos.add(anno);
 			}
-			annos.addAll(getDefaultAnnotations());
-			add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(prop, source, target, annos);
-		}else {
-			add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(prop, source, target, getDefaultAnnotations());
 		}
+		
+		add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(prop, source, target, annos);
 		AddAxiom addAxiom = new AddAxiom(go_cam_ont, add_prop_axiom);
 		ontman.applyChange(addAxiom);
 		return ;
 	}
 
+	
+	
+	
 	void addObjectPropertyAssertion(OWLIndividual source, OWLObjectProperty prop, OWLIndividual target, Set<OWLAnnotation> annotations) {
 		OWLObjectPropertyAssertionAxiom add_prop_axiom = null;
 		if(annotations!=null&&annotations.size()>0) {
@@ -473,7 +484,7 @@ public class GoCAM {
  * Use sparql queries to inform modifications to the go-cam owl ontology 
  * assumes it is loaded with everything to start with a la qrunner = new QRunner(go_cam_ont); 
  */
-	void applySparqlRules() {
+	void applySparqlRules(Set<String> evidence_ids, String evidence_namespace_string) {
 		Set<InferredEnabler> ies = qrunner.getInferredEnablers();
 		for(InferredEnabler ie : ies) {
 			//create ?reaction2 obo:RO_0002333 ?input
@@ -481,13 +492,14 @@ public class GoCAM {
 			OWLNamedIndividual r = this.makeAnnotatedIndividual(ie.reaction_uri);
 			Set<OWLAnnotation> annos = getDefaultAnnotations();
 			String explain = "This 'enabled by' relation was inferred as follows. "
-				+ "An entity (either protein or protein complex) E enables a reaction R2\n" + 
-					" IF R1 provides direct input for R2 \n" + 
-					" and R1 has output E1 \n" + 
-					" and R2 has input E2 \n" + 
-					" and E1 = E2 ";
+				+ "An entity (either protein or protein complex) E enables a reaction/function R2\n" + 
+					"If R1 provides direct input for R2 \n" + 
+					"and R1 has output E1 \n" + 
+					"and R2 has input E2 \n" + 
+					"and E1 = E2 ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
-			this.addObjectPropertyAssertion(r, GoCAM.enabled_by, e, annos);
+			//GoCAM.eco_imported_auto
+			this.addRefBackedObjectPropertyAssertion(r, enabled_by, e, evidence_ids, GoCAM.eco_inferred_auto, evidence_namespace_string, annos);
 			System.out.println(r+" added enabled by "+e);
 			//delete the input relation (replaced above by the enabled by relation)
 			//TODO the following doesn't work.  Making new individuals all over the place makes them harder to find..
@@ -527,9 +539,9 @@ public class GoCAM {
 			OWLObjectProperty o = df.getOWLObjectProperty(IRI.create(ir.prop_uri));
 			Set<OWLAnnotation> annos = getDefaultAnnotations();
 			String explain = "This regulation relation was inferred based on the idea of inhibitory binding. "
-				+ "Reaction1 is negatively regulated by Reaction2 if\n" + 
-				 " IF R2 has input A, R2 has input B, has output A/B complex\n" + 
-				 " and R1 is enabled by B";
+				+ "R2 is negatively regulated by R1 if\n" + 
+				 " If R1 has input A, R1 has input B, R1 has output A/B complex\n" + 
+				 " and R2 is enabled by B";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 			this.addObjectPropertyAssertion(r2, o, r1, annos);
 			System.out.println("reg2 "+r2+" "+o+" "+r1);
@@ -556,7 +568,12 @@ public class GoCAM {
 		qrunner = new QRunner(go_cam_ont); 
 		if(applySparqlRules) {
 			System.out.println("Before sparql inference -  triples: "+qrunner.nTriples());
-			applySparqlRules();
+			Set<String> ids = new HashSet<String>();
+			//todo generalize this once some framework for using non-pubmed references in Noctua is created..  
+			//this is a placeholder for debugging in the context of the reactome import
+			ids.add(this.base_contributor.substring(36));
+			String namespace = "Reactome";//"PMID";
+			applySparqlRules(ids, namespace);
 			//sparql rules make additions to go_cam_ont
 			qrunner = new QRunner(go_cam_ont); 
 			System.out.println("After sparql inference -  triples: "+qrunner.nTriples());

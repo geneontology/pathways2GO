@@ -4,26 +4,45 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.vocabulary.RDFS;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
+import org.semanticweb.owlapi.model.OWLAnnotationAxiom;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
+import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
+import org.semanticweb.owlapi.model.OWLObjectProperty;
+import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLObjectPropertyAxiom;
+import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
+import org.semanticweb.owlapi.model.RemoveAxiom;
+import org.semanticweb.owlapi.search.EntitySearcher;
+import org.semanticweb.owlapi.util.OWLOntologyWalker;
+import org.semanticweb.owlapi.util.OWLOntologyWalkerVisitor;
+import org.semanticweb.owlapi.util.OWLOntologyWalkerVisitorEx;
+import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 /**
  * I live to test
@@ -35,19 +54,33 @@ public class App {
 	//	String maximal_lego = "src/main/resources/org/geneontology/gocam/exchange/go-lego-full.owl";	
 
 	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
-		String base_ont_title = "Meta Pathway Ontology";
-		String root_iri = "http://model.geneontology.org/";
-		String iri = "http://model.geneontology.org/"+base_ont_title.hashCode(); //using a URL encoded string here confused the UI code...
-		IRI ont_iri = IRI.create(iri);
-		GoCAM go_cam = new GoCAM(ont_iri, base_ont_title, "base_contributor", null, "base_provider", false);
-		String pid1 = "pid1"; String pid2 = "pid2";
-		Set<IRI> protein_ids = new HashSet<IRI>();
-		protein_ids.add(IRI.create(root_iri+pid1)); protein_ids.add(IRI.create(root_iri+pid2));
-//		OWLNamedIndividual ci = go_cam.addComplexAsClass(protein_ids, go_cam.makeRandomIri(), null);
-//
-//		go_cam.initializeQRunner(go_cam.go_cam_ont);
-//		go_cam.writeGoCAM("/Users/bgood/Desktop/test.ttl", false, false);
+		String ontf = "/Users/bgood/Desktop/test/bmp_output/converted-bmp-Signaling_by_BMP.ttl";
+		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
+		OWLDataFactory df = man.getOWLDataFactory();
+		OWLOntology ont = man.loadOntologyFromOntologyDocument(new File(ontf));
+		IRI source_iri = IRI.create("http://www.reactome.org/biopax/63/201451#BiochemicalReaction9");
+		IRI prop_iri = IRI.create("http://purl.obolibrary.org/obo/RO_0002333");
+		IRI target_iri = IRI.create("http://www.reactome.org/biopax/63/201451#Protein29-842491573");
+		//get any existing axioms and any annotations for said triple		
+		System.out.println(ont.getAxiomCount());
+		OWLOntologyWalker walker = new OWLOntologyWalker(Collections.singleton(ont));
+		UpdateAnnotationsVisitor updater = new UpdateAnnotationsVisitor(walker, source_iri, prop_iri, target_iri);
+		walker.walkStructure(updater); 
+		//now ready to update by deleting and then creating again...
+		man.removeAxioms(ont, updater.getToremove());
+		System.out.println(ont.getAxiomCount());
+		Set<OWLAnnotation> annos = updater.getOldannos();
+		//add new ones now..
+//		OWLAnnotation title_anno = df.getOWLAnnotation(title_prop, df.getOWLLiteral(gocam_title));
+		OWLAnnotationProperty comment = df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_COMMENT.getIRI());
+		OWLAnnotation comment1 = df.getOWLAnnotation(comment, df.getOWLLiteral("Yay I did it"));	
+		annos.add(comment1);
+		//and add the axiom back in
+		OWLObjectPropertyAssertionAxiom back = df.getOWLObjectPropertyAssertionAxiom(df.getOWLObjectProperty(prop_iri), df.getOWLNamedIndividual(source_iri), df.getOWLNamedIndividual(target_iri), annos);
+		man.addAxiom(ont, back);
+		System.out.println(ont.getAxiomCount());
 	}
+
 
 
 
@@ -145,7 +178,7 @@ public class App {
 		//arachneInferredTriples = wm.facts
 		return q;
 	}
-	
+
 	OWLNamedIndividual addComplexAsSimpleClass(GoCAM go_cam, Set<String> component_names, IRI complex_instance_iri, Set<OWLAnnotation> annotations) {
 		String combo_name = GoCAM.base_iri;
 		for(String n : component_names) {
@@ -158,8 +191,8 @@ public class App {
 		go_cam.addTypeAssertion(complex_i, complex_class);
 		return complex_i;
 	}
-		
-	
+
+
 	OWLNamedIndividual addComplexAsLogicalClass(GoCAM go_cam, Set<IRI> component_iris, IRI complex_instance_iri, Set<OWLAnnotation> annotations) {
 		String combo_name = GoCAM.base_iri;
 		for(IRI component_iri : component_iris) {
