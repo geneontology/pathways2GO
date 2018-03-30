@@ -18,15 +18,15 @@ public class UpdateAnnotationsVisitor extends OWLOntologyWalkerVisitor{
 	IRI source_iri;
 	IRI prop_iri;
 	IRI target_iri;
-	Set<OWLAxiom> toremove = new HashSet<OWLAxiom>();
-	Set<OWLAnnotation> oldannos = new HashSet<OWLAnnotation>();
+	private Set<OWLAxiom> axioms = new HashSet<OWLAxiom>();
+	private Set<OWLAnnotation> annotations = new HashSet<OWLAnnotation>();
 	
-	public Set<OWLAxiom> getToremove() {
-		return toremove;
+	public Set<OWLAxiom> getAxioms() {
+		return axioms;
 	}
 
-	public Set<OWLAnnotation> getOldannos() {
-		return oldannos;
+	public Set<OWLAnnotation> getAnnotations() {
+		return annotations;
 	}
 	
 	public UpdateAnnotationsVisitor(OWLOntologyWalker walker, IRI s_iri, IRI p_iri , IRI t_iri) {
@@ -43,10 +43,8 @@ public class UpdateAnnotationsVisitor extends OWLOntologyWalkerVisitor{
 			IRI ob = axiom.getObject().asOWLNamedIndividual().getIRI();
 			OWLObjectProperty prop = axiom.getProperty().asOWLObjectProperty();
 			if(sub.equals(source_iri)&&ob.equals(target_iri)&&prop.getIRI().equals(prop_iri)) {
-				oldannos.addAll(axiom.getAnnotations());
-				System.out.println("hee hee "+axiom.getAnnotations());
-				toremove.add(axiom);
-				System.out.println("ha ha "+axiom);
+				annotations.addAll(axiom.getAnnotations());
+				axioms.add(axiom);
 			}
 		}		
 		return;

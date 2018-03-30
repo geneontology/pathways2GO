@@ -54,6 +54,12 @@ public class App {
 	//	String maximal_lego = "src/main/resources/org/geneontology/gocam/exchange/go-lego-full.owl";	
 
 	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
+		
+	}
+
+
+
+	public static void testUpdateAnnotations() throws OWLOntologyCreationException {
 		String ontf = "/Users/bgood/Desktop/test/bmp_output/converted-bmp-Signaling_by_BMP.ttl";
 		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
 		OWLDataFactory df = man.getOWLDataFactory();
@@ -67,9 +73,9 @@ public class App {
 		UpdateAnnotationsVisitor updater = new UpdateAnnotationsVisitor(walker, source_iri, prop_iri, target_iri);
 		walker.walkStructure(updater); 
 		//now ready to update by deleting and then creating again...
-		man.removeAxioms(ont, updater.getToremove());
+		man.removeAxioms(ont, updater.getAxioms());
 		System.out.println(ont.getAxiomCount());
-		Set<OWLAnnotation> annos = updater.getOldannos();
+		Set<OWLAnnotation> annos = updater.getAnnotations();
 		//add new ones now..
 //		OWLAnnotation title_anno = df.getOWLAnnotation(title_prop, df.getOWLLiteral(gocam_title));
 		OWLAnnotationProperty comment = df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_COMMENT.getIRI());
@@ -80,9 +86,6 @@ public class App {
 		man.addAxiom(ont, back);
 		System.out.println(ont.getAxiomCount());
 	}
-
-
-
 
 	public static void buildSparqlable() throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException{
 		String input_folder = "/Users/bgood/reactome-go-cam-models/humantest/";

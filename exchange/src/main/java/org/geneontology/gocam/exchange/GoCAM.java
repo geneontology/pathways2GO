@@ -56,6 +56,7 @@ import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.search.EntitySearcher;
 import org.semanticweb.owlapi.util.OWLEntityRemover;
+import org.semanticweb.owlapi.util.OWLOntologyWalker;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 /**
@@ -373,13 +374,13 @@ public class GoCAM {
 	 * @param evidence_class
 	 * @param namespace_prefix (e.g. PMID)
 	 */
-	void addRefBackedObjectPropertyAssertion(OWLIndividual source, OWLObjectProperty prop, OWLIndividual target, Set<String> ids, OWLClass evidence_class, String namespace_prefix, Set<OWLAnnotation> other_annotations) {
+	void addRefBackedObjectPropertyAssertion(OWLNamedIndividual source, OWLObjectProperty prop, OWLNamedIndividual target, Set<String> ids, OWLClass evidence_class, String namespace_prefix, Set<OWLAnnotation> other_annotations) {
 		OWLObjectPropertyAssertionAxiom add_prop_axiom = null;
 		Set<OWLAnnotation> annos = new HashSet<OWLAnnotation>();
 		if(other_annotations!=null) {
 			annos.addAll(other_annotations);
 		}
-		annos.addAll(getDefaultAnnotations());
+		annos.addAll(getDefaultAnnotations());//prepare the database annotations like pubmed ids 
 		if(ids!=null&&ids.size()>0) {			
 			for(String id : ids) {
 				IRI anno_iri = makeEntityHashIri(source.hashCode()+"_"+prop.hashCode()+"_"+target.hashCode()+"_"+namespace_prefix+"_"+id);
@@ -390,7 +391,19 @@ public class GoCAM {
 				annos.add(anno);
 			}
 		}
-		
+		//check if this is an update or a create
+		OWLOntologyWalker walker = new OWLOntologyWalker(Collections.singleton(go_cam_ont));
+		UpdateAnnotationsVisitor updater = new UpdateAnnotationsVisitor(walker, source.getIRI(), prop.getIRI(), target.getIRI());
+		walker.walkStructure(updater); 
+		if(updater.getAxioms()!=null&&updater.getAxioms().size()>0) {
+			//Its an update.
+			//need to remove the old one(s) but collect existing annotations.  
+			ontman.removeAxioms(go_cam_ont, updater.getAxioms());
+			if(updater.getAnnotations()!=null) {
+				annos.addAll(updater.getAnnotations());
+			}
+		}
+		//now finally make the new one.
 		add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(prop, source, target, annos);
 		AddAxiom addAxiom = new AddAxiom(go_cam_ont, add_prop_axiom);
 		ontman.applyChange(addAxiom);
@@ -548,18 +561,6 @@ public class GoCAM {
 		}		
 		System.out.println("Added "+ir2_neg.size()+" neg inhibitory binding reg triples");
 	}
-
-	//for some reason the following produces floating evidence nodes in Noctua right now - same thing that happens when you 
-	//add evidence node to an rdf:type edge
-	//not using for the moment..
-//	OWLAnnotation addInferenceEvidenceAsComment(OWLNamedIndividual source, OWLObjectProperty prop, OWLNamedIndividual target, String comment) {
-//		IRI anno_iri = makeEntityHashIri(source.hashCode()+"_"+prop.hashCode()+"_"+target.hashCode()+"_"+comment.hashCode());
-//		OWLNamedIndividual evidence = makeAnnotatedIndividual(anno_iri);					
-//		addTypeAssertion(evidence, GoCAM.eco_imported_auto);
-//		addLiteralAnnotations2Individual(anno_iri, rdfs_comment, comment);
-//		OWLAnnotation anno = df.getOWLAnnotation(GoCAM.evidence_prop, anno_iri);
-//		return anno;
-//	}
 
 	void writeGoCAM(String outfilename, boolean add_inferred, boolean save2blazegraph, boolean applySparqlRules) throws OWLOntologyStorageException, OWLOntologyCreationException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		File outfilefile = new File(outfilename);	
