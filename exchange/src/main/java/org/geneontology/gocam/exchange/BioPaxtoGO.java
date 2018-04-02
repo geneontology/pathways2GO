@@ -130,7 +130,7 @@ public class BioPaxtoGO {
 		if (directoryListing != null) {
 			for (File input_biopax : directoryListing) {
 				String species = input_biopax.getName();
-				if(species.contains(".owl")) { //ignore other kinds of files.. liek DS_STORE!
+				if(species.contains(".owl")) { //ignore other kinds of files.. like DS_STORE!
 					String output_file_stub = output_folder+"/reactome-"+species.replaceAll(".owl", "-");
 					convert(input_biopax.getAbsolutePath(), output_file_stub, split_by_pathway, add_lego_import, base_title, base_contributor, base_provider, species, save_inferences);
 				}
@@ -195,11 +195,12 @@ public class BioPaxtoGO {
 		//list pathways
 		int total_pathways = model.getObjects(Pathway.class).size();
 		for (Pathway currentPathway : model.getObjects(Pathway.class)){
+			String reactome_id = null;
 			n_pathways++;
 			System.out.println(n_pathways+" of "+total_pathways+" Pathway:"+currentPathway.getName()); 
 			if(split_by_pathway) {
 				//then reinitialize for each pathway
-				String reactome_id = null;
+				reactome_id = null;
 				String contributor_link = "https://reactome.org";
 				//See if there is a specific pathway reference to allow a direct link
 				Set<Xref> xrefs = currentPathway.getXref();
@@ -277,7 +278,7 @@ public class BioPaxtoGO {
 								defineReactionEntity(go_cam, event, e1_iri);
 								OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(e2_iri);
 								defineReactionEntity(go_cam, nextEvent, e2_iri);
-								go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.provides_direct_input_for, e2, pubids, GoCAM.eco_imported_auto, "PMID", null);
+								go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.provides_direct_input_for, e2, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, "Reactome", null);
 							}
 							//							else {
 							//
