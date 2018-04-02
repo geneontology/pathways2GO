@@ -174,12 +174,15 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 	 * @return
 	 */
 	class InferredEnabler {
-		String reaction_uri;
+		String reaction2_uri;
+		String reaction1_uri;
 		String enabler_uri;
-		InferredEnabler(String r_uri, String e_uri){
-			reaction_uri = r_uri;
-			enabler_uri = e_uri;
+		public InferredEnabler(String reaction2_uri, String reaction1_uri, String enabler_uri) {
+			this.reaction2_uri = reaction2_uri;
+			this.reaction1_uri = reaction1_uri;
+			this.enabler_uri = enabler_uri;
 		}
+		
 	}
 	
 	Set<InferredEnabler> getInferredEnablers() {
@@ -194,9 +197,10 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		ResultSet results = qe.execSelect();
 		while (results.hasNext()) {
 			QuerySolution qs = results.next();
-			Resource reaction = qs.getResource("reaction2"); //?reaction2 ?input
+			Resource reaction1 = qs.getResource("reaction1"); 
+			Resource reaction2 = qs.getResource("reaction2"); 
 			Resource enabler = qs.getResource("input");
-			ie.add(new InferredEnabler(reaction.getURI(), enabler.getURI()));
+			ie.add(new InferredEnabler(reaction2.getURI(), reaction1.getURI(), enabler.getURI()));
 		}
 		qe.close();
 		return ie;

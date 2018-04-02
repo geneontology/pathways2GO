@@ -353,6 +353,18 @@ public class GoCAM {
 		return labels;
 	}
 	
+	String getaLabel(OWLEntity e){
+		Set<String> labels = getLabels(e);
+		String label = "";
+		if(labels!=null&&labels.size()>0) {
+			for(String l : labels) {
+				label = l;
+				break;
+			}
+		}
+		return label;
+	}
+	
 
 	IRI makeEntityHashIri(Object entity) {
 		String uri = base_iri+entity.hashCode();
@@ -381,7 +393,7 @@ public class GoCAM {
 			annos.addAll(other_annotations);
 		}
 		annos.addAll(getDefaultAnnotations());//prepare the database annotations like pubmed ids 
-		if(ids!=null&&ids.size()>0) {			
+		if(ids!=null) {			
 			for(String id : ids) {
 				IRI anno_iri = makeEntityHashIri(source.hashCode()+"_"+prop.hashCode()+"_"+target.hashCode()+"_"+namespace_prefix+"_"+id);
 				OWLNamedIndividual evidence = makeAnnotatedIndividual(anno_iri);					
@@ -390,6 +402,12 @@ public class GoCAM {
 				OWLAnnotation anno = df.getOWLAnnotation(GoCAM.evidence_prop, anno_iri);
 				annos.add(anno);
 			}
+		}else {
+			IRI anno_iri = IRI.create(GoCAM.base_iri+"_evidence_"+source.toStringID()+"_"+prop.toStringID()+"_"+target.toStringID()+"_"+evidence_class.toStringID());//makeEntityHashIri("evidence"+source.hashCode()+"_"+prop.hashCode()+"_"+target.hashCode()+"_"+evidence_class.hashCode());
+			OWLNamedIndividual evidence = makeAnnotatedIndividual(anno_iri);					
+			addTypeAssertion(evidence, evidence_class);
+			OWLAnnotation anno = df.getOWLAnnotation(GoCAM.evidence_prop, anno_iri);
+			annos.add(anno);
 		}
 		//check if this is an update or a create
 		OWLOntologyWalker walker = new OWLOntologyWalker(Collections.singleton(go_cam_ont));
@@ -497,28 +515,35 @@ public class GoCAM {
  * Use sparql queries to inform modifications to the go-cam owl ontology 
  * assumes it is loaded with everything to start with a la qrunner = new QRunner(go_cam_ont); 
  */
-	void applySparqlRules(Set<String> evidence_ids, String evidence_namespace_string) {
+	void applySparqlRules() {
 		Set<InferredEnabler> ies = qrunner.getInferredEnablers();
 		for(InferredEnabler ie : ies) {
 			//create ?reaction2 obo:RO_0002333 ?input
 			OWLNamedIndividual e = this.makeAnnotatedIndividual(ie.enabler_uri);
-			OWLNamedIndividual r = this.makeAnnotatedIndividual(ie.reaction_uri);
+			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ie.reaction2_uri);
+			OWLNamedIndividual r1 = this.makeAnnotatedIndividual(ie.reaction1_uri);
+			//delete the has_input relation
+			OWLOntologyWalker walker = new OWLOntologyWalker(Collections.singleton(go_cam_ont));
+			UpdateAnnotationsVisitor updater = new UpdateAnnotationsVisitor(walker, r2.getIRI(), has_input.getIRI(), e.getIRI());
+			walker.walkStructure(updater); 
+			if(updater.getAxioms()!=null&&updater.getAxioms().size()>0) {
+				for(OWLAxiom a : updater.getAxioms()) {
+					ontman.removeAxiom(go_cam_ont, a);
+				}
+			}
+			//add the enabled_by relation 
 			Set<OWLAnnotation> annos = getDefaultAnnotations();
-			String explain = "This 'enabled by' relation was inferred as follows. "
-				+ "An entity (either protein or protein complex) E enables a reaction/function R2\n" + 
-					"If R1 provides direct input for R2 \n" + 
-					"and R1 has output E1 \n" + 
-					"and R2 has input E2 \n" + 
-					"and E1 = E2 ";
+			String r2_label = "'"+this.getaLabel(r2)+"'";
+			String r1_label = "'"+this.getaLabel(r1)+"'";
+			String e_label = "'"+this.getaLabel(e)+"'";
+			String explain = "The relation "+r2_label+" enabled_by "+e_label+" was inferred because:\n"
+					+ r1_label+" provides direct input for "+r2_label+" and \n"
+					+ r1_label+" has output "+e_label+" and \n"
+					+ r2_label+ " has input "+e_label+" .  The original has_input relation to "+e_label+" was replaced. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
-			//GoCAM.eco_imported_auto
-			this.addRefBackedObjectPropertyAssertion(r, enabled_by, e, evidence_ids, GoCAM.eco_inferred_auto, evidence_namespace_string, annos);
-			System.out.println(r+" added enabled by "+e);
-			//delete the input relation (replaced above by the enabled by relation)
-			//TODO the following doesn't work.  Making new individuals all over the place makes them harder to find..
-			//above makes a new edge
-			//OWLObjectPropertyAssertionAxiom has_input = df.getOWLObjectPropertyAssertionAxiom(GoCAM.has_input, r, e);			
-			//this.ontman.removeAxiom(go_cam_ont, has_input);
+			this.addRefBackedObjectPropertyAssertion(r2, enabled_by, e, null, GoCAM.eco_inferred_auto, null, annos);
+			System.out.println(r2+" added enabled by "+e);
+			
 		}
 		//if subsequent rules need to compute over the results of previous rules, need to load the owl back into the rdf model
 		qrunner = new QRunner(go_cam_ont); 
@@ -529,16 +554,19 @@ public class GoCAM {
 			OWLNamedIndividual r1 = this.makeAnnotatedIndividual(ir.reaction1_uri);
 			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ir.reaction2_uri);
 			OWLObjectProperty o = GoCAM.directly_negatively_regulated_by;
+			String reg = "negative regulation of";
 			if(ir.prop_uri.equals("http://purl.obolibrary.org/obo/RO_0002429")) {
 				o = GoCAM.directly_positively_regulated_by;
+				reg = "positive regulation of";
 			}
+			String r2_label = "'"+this.getaLabel(r2)+"'";
+			String r1_label = "'"+this.getaLabel(r1)+"'";
+			String o_label = "'"+this.getaLabel(o)+"'";
 			Set<OWLAnnotation> annos = getDefaultAnnotations();
-			String explain = "This regulation relation was inferred. "
-				+ "Reaction1 is (+-)regulated by Reaction2 if\n" + 
-					" IF R2 has output A\n" + 
-					" and A is involved in (+-)regulation of R1 ";
+			String explain = "The relation "+r1_label+" "+o_label+" "+r2_label+" was inferred because: "
+					+r2_label+" has output A and A is involved in "+reg+" "+r1_label+". See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
-			this.addObjectPropertyAssertion(r1, o, r2, annos);
+			this.addRefBackedObjectPropertyAssertion(r1, o, r2, null, GoCAM.eco_inferred_auto, null, annos);
 			System.out.println("reg1 "+r1+" "+o+" "+r2);
 		}
 		//if subsequent rules need to compute over the results of previous rules, need to load the owl back into the rdf model
@@ -550,13 +578,16 @@ public class GoCAM {
 			OWLNamedIndividual r1 = this.makeAnnotatedIndividual(ir.reaction1_uri);
 			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ir.reaction2_uri);
 			OWLObjectProperty o = df.getOWLObjectProperty(IRI.create(ir.prop_uri));
+			String r2_label = "'"+this.getaLabel(r2)+"'";
+			String r1_label = "'"+this.getaLabel(r1)+"'";
+			String o_label = "'"+this.getaLabel(o)+"'";
 			Set<OWLAnnotation> annos = getDefaultAnnotations();
-			String explain = "This regulation relation was inferred based on the idea of inhibitory binding. "
-				+ "R2 is negatively regulated by R1 if\n" + 
-				 " If R1 has input A, R1 has input B, R1 has output A/B complex\n" + 
-				 " and R2 is enabled by B";
+			String explain = "The relation "+r2_label+" "+o_label+" "+r1_label+" was inferred because:\n "+
+				 r1_label+" has inputs A and B, "+r1_label+" has output A/B complex, and " + 
+				 r2_label+" is enabled by B. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 			this.addObjectPropertyAssertion(r2, o, r1, annos);
+			this.addRefBackedObjectPropertyAssertion(r2, o, r1, null, GoCAM.eco_inferred_auto, null, annos);
 			System.out.println("reg2 "+r2+" "+o+" "+r1);
 		}		
 		System.out.println("Added "+ir2_neg.size()+" neg inhibitory binding reg triples");
@@ -570,11 +601,7 @@ public class GoCAM {
 		if(applySparqlRules) {
 			System.out.println("Before sparql inference -  triples: "+qrunner.nTriples());
 			Set<String> ids = new HashSet<String>();
-			//todo generalize this once some framework for using non-pubmed references in Noctua is created..  
-			//this is a placeholder for debugging in the context of the reactome import
-			ids.add(this.base_contributor.substring(36));
-			String namespace = "Reactome";//"PMID";
-			applySparqlRules(ids, namespace);
+			applySparqlRules();
 			//sparql rules make additions to go_cam_ont
 			qrunner = new QRunner(go_cam_ont); 
 			System.out.println("After sparql inference -  triples: "+qrunner.nTriples());
