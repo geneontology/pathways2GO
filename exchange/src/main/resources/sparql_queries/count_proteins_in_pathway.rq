@@ -1,0 +1,42 @@
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+prefix obo: <http://purl.obolibrary.org/obo/>
+#what genes are in the BMP Signaling pathway?
+#?item (count(?tag) as ?tagcount)
+#SELECT ?item     (count(?tag) as ?tagcount)
+select ?pathLabel (count(distinct ?uniprot) as ?c) where {
+  #Signaling by BMP pathway in GO is obo:GO_0030509
+  # Wnt Signaling GO:0016055  
+  #When there is no match will need to do text search or ?
+  ?pathway rdf:type obo:GO_0016055 .    
+  #get the sub pathways via has part 
+  #?pathway <http://purl.obolibrary.org/obo/BFO_0000051> ?subpath .
+  #get the reactions in the pathway(s) via a recursive part of - 
+  #this will hop through both sub pathways and reactions that are part of pathways
+  ?pathway <http://purl.obolibrary.org/obo/BFO_0000051>* ?reaction .
+  #get the entities that participate in any way in the reaction (as inputs, outputs, enablers, activators, etc.) ?rprop
+  #check for proteins
+  {
+    ?reaction ?rprop ?physical_entity . 
+    ?physical_entity rdf:type ?uniprot . 
+    ?uniprot rdfs:subClassOf obo:CHEBI_36080 . # obo:CHEBI_36080 = protein
+  }
+  UNION 
+  {
+    ?reaction ?rprop ?aggregate_entity . 
+    # and protein parts of complexes <http://purl.obolibrary.org/obo/GO_0032991>
+    ?aggregate_entity rdf:type obo:GO_0032991 . 
+  	#get parts recursively with * (not currently necessary as complexes have been collapsed
+  	?aggregate_entity obo:BFO_0000051* ?physical_entity . 
+    ?physical_entity rdf:type ?uniprot . 
+    ?uniprot rdfs:subClassOf obo:CHEBI_36080 .
+   }
+	?path obo:BFO_0000051 ?reaction . 
+ 	?physical_entity rdfs:label ?entityLabel . 
+  	?rprop rdfs:label ?rpropLabel . 
+  	?path rdfs:label ?pathLabel . 
+   }  
+GROUP BY ?pathLabel 
+ORDER BY DESC(?c) 
+

@@ -97,28 +97,28 @@ public class BioPaxtoGO {
 
 		String input_biopax = 
 		//		"/Users/bgood/Desktop/test/clathrin-mediated-endocytosis.owl";
-				"/Users/bgood/Desktop/test/gap_junction.owl"; 
+		//		"/Users/bgood/Desktop/test/gap_junction.owl"; 
 		//"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
 		//"/Users/bgood/Desktop/test/Wnt_example.owl";
 		//"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
 		//"src/main/resources/reactome/Homo_sapiens.owl";
-		//"/Users/bgood/Downloads/biopax/homosapiens.owl";
+		"/Users/bgood/Downloads/biopax/homosapiens.owl";
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = 
 		//		"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
 		//"/Users/bgood/Desktop/test/Wnt_output/converted-";
-				"/Users/bgood/Desktop/test/gap_junction_output/converted-";
-		//"/Users/bgood/Desktop/test/bmp_output/converted-bmp-reasoned-";
+		//		"/Users/bgood/Desktop/test/gap_junction_output/converted-";
+		//"/Users/bgood/Desktop/test/bmp_output/converted-";
 		//"/Users/bgood/Desktop/test/Wnt_output/converted-wnt-by-Paul-rules-no-loc-";
 		//"/Users/bgood/Desktop/test_input/converted-";
 		//"/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-";
-		//"/Users/bgood/reactome-go-cam-models/human-reasoned/reactome-homosapiens-";
+		"/Users/bgood/reactome-go-cam-models/human-reasoned/reactome-homosapiens-";
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";
 		boolean split_by_pathway = true;
-		boolean save_inferences = false;
+		boolean save_inferences = true;
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, save_inferences);
 	} 
 
