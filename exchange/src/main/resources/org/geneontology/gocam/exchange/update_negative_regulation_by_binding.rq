@@ -10,8 +10,8 @@ where {
     ?reaction2 obo:RO_0002233 ?entityB . #has input
     ?reaction2 obo:RO_0002234 ?complexAB . #has output 
     ?reaction1 obo:RO_0002333 ?entityBB . #enabled by
-    ?reaction2 rdf:type biopax:Reaction .
-    ?reaction1 rdf:type biopax:Reaction . 
+    ?reaction2 rdf:type obo:GO_0003674 .
+    ?reaction1 rdf:type obo:GO_0003674 . 
   	?reaction2 rdfs:label ?r1label . 
     ?reaction1 rdfs:label ?r2label .
     ?entityA rdfs:label ?Alabel . 
@@ -23,7 +23,7 @@ where {
     ?entityB rdf:type ?entity_class .
     ?entityBB rdf:type ?entity_class . 
     ?entity_class rdfs:subClassOf ?grouping_class .
-  	VALUES ?grouping_class { obo:GO_0032991 biopax:Protein} # either protein complex or protein class
+  	VALUES ?grouping_class { obo:GO_0032991 obo:CHEBI_36080} # either protein complex or protein class
 }
 
 #filter(?outputLabel = ?inputLabel) .

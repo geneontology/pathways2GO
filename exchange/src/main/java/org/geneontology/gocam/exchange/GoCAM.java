@@ -622,8 +622,9 @@ public class GoCAM {
 			//sparql rules make additions to go_cam_ont
 			qrunner = new QRunner(go_cam_ont); 
 			System.out.println("After sparql inference -  triples: "+qrunner.nTriples());
-			int n_removed = qrunner.deleteEntityLocations();
-			System.out.println("Removed "+n_removed+" entity location triples");
+			//taking this out for now.  Perhaps will spur a better layout someday..
+			//int n_removed = qrunner.deleteEntityLocations();
+			//System.out.println("Removed "+n_removed+" entity location triples");
 		}				
 		if(add_inferred) {
 			System.out.println("preparing model starting with (unreasoned) triples: "+qrunner.nTriples());

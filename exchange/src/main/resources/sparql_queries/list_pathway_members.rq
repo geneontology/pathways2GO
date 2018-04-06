@@ -16,7 +16,8 @@ select distinct ?uniprot  where {
   {
     ?reaction ?rprop ?physical_entity . 
     ?physical_entity rdf:type ?uniprot . 
-    ?uniprot rdfs:subClassOf <http://www.biopax.org/release/biopax-level3.owl#Protein> .
+    ?uniprot rdfs:subClassOf obo:CHEBI_36080 .
+   # ?uniprot rdfs:subClassOf <http://www.biopax.org/release/biopax-level3.owl#Protein> .
   }
   UNION 
   {
@@ -24,9 +25,10 @@ select distinct ?uniprot  where {
     # and protein parts of complexes <http://purl.obolibrary.org/obo/GO_0032991>
     ?aggregate_entity rdf:type <http://purl.obolibrary.org/obo/GO_0032991> . 
   	#get parts recursively with * (not currently necessary as complexes have been collapsed
-  	?aggregate_entity <http://purl.obolibrary.org/obo/BFO_0000051>* ?physical_entity . 
+  	?aggregate_entity obo:BFO_0000051* ?physical_entity . 
     ?physical_entity rdf:type ?uniprot . 
-    ?uniprot rdfs:subClassOf <http://www.biopax.org/release/biopax-level3.owl#Protein> .
+    ?uniprot rdfs:subClassOf obo:CHEBI_36080 .
+    #<http://www.biopax.org/release/biopax-level3.owl#Protein> .
    }
 
   ?physical_entity rdfs:label ?entityLabel . 

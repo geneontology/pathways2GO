@@ -40,7 +40,8 @@ where {
     ?output skos:exactMatch ?protein . 
     ?input rdf:type ?uniprot . 
     ?output rdf:type ?uniprot .
-    ?uniprot rdfs:subClassOf biopax:Protein . 
+   # ?uniprot rdfs:subClassOf biopax:Protein . 
+   ?uniprot rdfs:subClassOf obo:CHEBI_36080 .
     } 
 
 }

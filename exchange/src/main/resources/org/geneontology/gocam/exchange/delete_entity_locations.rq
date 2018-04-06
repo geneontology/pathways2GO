@@ -2,7 +2,7 @@ prefix owl: <http://www.w3.org/2002/07/owl#>
 prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
 prefix obo: <http://purl.obolibrary.org/obo/>
-prefix biopax: <http://www.biopax.org/release/biopax-level3.owl#>
+
 delete {
   ?physical_entity obo:RO_0001025 ?location . 
   ?location rdf:type ?location_class .
@@ -13,7 +13,7 @@ delete {
 where {
   ?physical_entity rdf:type ?entity_class . 
   ?entity_class rdfs:subClassOf ?grouping_class .
-  VALUES ?grouping_class { obo:GO_0032991 biopax:Protein obo:BFO_0000002} .
+  VALUES ?grouping_class { obo:GO_0032991 obo:CHEBI_36080 obo:BFO_0000002} .
   ?physical_entity obo:RO_0001025 ?location .
   ?location rdf:type ?location_class .
   ?anno_node owl:annotatedSource ?physical_entity .

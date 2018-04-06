@@ -25,8 +25,7 @@ where {
   	?r1output obo:BFO_0000051 ?r1outputPart . #has part 
   	?r1outputPart rdf:type ?P . 
   	?reaction2enabler rdf:type ?P . 
-    ?P rdfs:subClassOf ?proteinClass .
-    VALUES ?proteinClass { obo:CHEBI_36080 biopax:Protein}
+    ?P rdfs:subClassOf obo:CHEBI_36080 .
   }  
   #Now check case where R2 is enabled by a complex, R1 produces a complex as output, and the two share parts
   # idea is that R1 is modifying a complex required by R2 to function, hence stopping R2

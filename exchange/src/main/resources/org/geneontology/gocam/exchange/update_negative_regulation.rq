@@ -6,8 +6,8 @@ prefix biopax: <http://www.biopax.org/release/biopax-level3.owl#>
 
 insert { ?reactionZ obo:RO_0002023 ?reactionY }  #directly negatively regulated by 
 where {
-    ?reactionZ rdf:type biopax:Reaction .
-    ?reactionY rdf:type biopax:Reaction .
+    ?reactionZ rdf:type obo:GO_0003674 .
+    ?reactionY rdf:type obo:GO_0003674 .
     ?entityZ obo:RO_0002430  ?reactionZ .   #involved_in_negative_regulation_of 
     ?reactionY obo:RO_0002234 ?entityY .  #has output
    # ?entityZ rdfs:label ?zlabel .
@@ -17,7 +17,7 @@ where {
     ?entityZ rdf:type ?entity_class .
     ?entityY rdf:type ?entity_class . 
     ?entity_class rdfs:subClassOf ?grouping_class .
-  	VALUES ?grouping_class { obo:GO_0032991 biopax:Protein} # either protein complex or protein class 
+  	VALUES ?grouping_class { obo:GO_0032991 obo:CHEBI_36080} # either protein complex or protein class 
 }
 
 #filter(?outputLabel = ?inputLabel) .

@@ -28,7 +28,7 @@ where {
     ?entityY skos:exactMatch ?protein . 
     ?entityZ rdf:type ?uniprot .
     ?entityY rdf:type ?uniprot .
-    ?uniprot rdfs:subClassOf biopax:Protein . 
+    ?uniprot rdfs:subClassOf obo:CHEBI_36080 . 
    }
 }
 
