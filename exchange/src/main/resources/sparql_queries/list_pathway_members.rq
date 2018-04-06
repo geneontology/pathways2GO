@@ -1,25 +1,35 @@
 prefix owl: <http://www.w3.org/2002/07/owl#>
 prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
-#what genes are in the glycolysis pathway?
-select ?pathway ?reaction ?physical_entity where {
-  #Its this one <http://www.reactome.org/biopax/63/48887#Pathway1754>
-  ?pathway rdfs:label "Glycolysis". 
+prefix obo: <http://purl.obolibrary.org/obo/>
+#what genes are in the BMP Signaling pathway?
+select distinct ?uniprot  where {
+  #Signaling by BMP pathway in GO is obo:GO_0030509
+  #When there is no match will need to do text search or ?
+  ?pathway rdf:type obo:GO_0030509 .    
   #get the sub pathways via has part 
   #?pathway <http://purl.obolibrary.org/obo/BFO_0000051> ?subpath .
   #get the reactions in the pathway(s) via part of
   ?pathway <http://purl.obolibrary.org/obo/BFO_0000051> ?reaction .
-  #get the entities that 'enable' the reaction
-  ?reaction <http://purl.obolibrary.org/obo/RO_0002333> ?physical_entity .
-  #check for complexes 
-  #?physical_entity rdf:type <http://purl.obolibrary.org/obo/GO_0032991> .
-  #get parts recursively
-#  ?physical_entity <http://purl.obolibrary.org/obo/BFO_0000051>* ?entity_part
-  #filter out complexes 
-#  minus {?entity_part rdf:type <http://purl.obolibrary.org/obo/GO_0032991>}
-  #gather types
-#  ?entity_part rdf:type ?part_type       
-  #filter (?entity_part rdf:type owl:NamedIndividual)
-   }  
+  #get the entities that participate in any way in the reaction (as inputs, outputs, enablers, activators, etc.) ?rprop
+  #check for proteins
+  {
+    ?reaction ?rprop ?physical_entity . 
+    ?physical_entity rdf:type ?uniprot . 
+    ?uniprot rdfs:subClassOf <http://www.biopax.org/release/biopax-level3.owl#Protein> .
+  }
+  UNION 
+  {
+    ?reaction ?rprop ?aggregate_entity . 
+    # and protein parts of complexes <http://purl.obolibrary.org/obo/GO_0032991>
+    ?aggregate_entity rdf:type <http://purl.obolibrary.org/obo/GO_0032991> . 
+  	#get parts recursively with * (not currently necessary as complexes have been collapsed
+  	?aggregate_entity <http://purl.obolibrary.org/obo/BFO_0000051>* ?physical_entity . 
+    ?physical_entity rdf:type ?uniprot . 
+    ?uniprot rdfs:subClassOf <http://www.biopax.org/release/biopax-level3.owl#Protein> .
+   }
 
-limit 100
+  ?physical_entity rdfs:label ?entityLabel . 
+  ?rprop rdfs:label ?rpropLabel . 
+   }  
+ORDER BY ?uniprot 
