@@ -75,9 +75,9 @@ public class GoCAM {
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in,
 	directly_positively_regulated_by, directly_negatively_regulated_by, involved_in_regulation_of, involved_in_negative_regulation_of, involved_in_positive_regulation_of;
 	public static OWLClass 
-		bp_class, continuant_class, process_class, go_complex, molecular_function, 
-		eco_imported, eco_imported_auto, eco_inferred_auto, 
-		chebi_protein, chebi_gene;
+	bp_class, continuant_class, process_class, go_complex, molecular_function, 
+	eco_imported, eco_imported_auto, eco_inferred_auto, 
+	chebi_protein, chebi_gene;
 	OWLOntology go_cam_ont;
 	OWLDataFactory df;
 	OWLOntologyManager ontman;
@@ -163,7 +163,7 @@ public class GoCAM {
 		addLabel(chebi_protein, "chebi protein");
 		chebi_gene = df.getOWLClass(IRI.create(obo_iri + "CHEBI_33695"));
 		addLabel(chebi_gene, "chebi gene"); 
-		
+
 		skos_exact_match = df.getOWLAnnotationProperty(IRI.create("http://www.w3.org/2004/02/skos/core#exactMatch"));
 		//part of
 		part_of = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000050"));
@@ -215,10 +215,10 @@ public class GoCAM {
 		addLabel(involved_in_negative_regulation_of, "involved in negative regulation_of");
 		involved_in_positive_regulation_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002429"));
 		addLabel(involved_in_positive_regulation_of, "involved in positive regulation_of");
-		
+
 		involved_in_regulation_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002428"));
 		addLabel(involved_in_regulation_of, "involved in regulation of");
-		
+
 		//Annotate the ontology
 		OWLAnnotation title_anno = df.getOWLAnnotation(title_prop, df.getOWLLiteral(gocam_title));
 		OWLAxiom titleaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, title_anno);
@@ -244,7 +244,7 @@ public class GoCAM {
 		blazegraphdb = new Blazer(journal);
 		return blazegraphdb;
 	}
-	
+
 
 
 	public String getDate(String input_date) {
@@ -321,7 +321,7 @@ public class GoCAM {
 		//ontman.applyChanges();		
 		return anno;
 	}
-	
+
 	void addLabel(OWLEntity entity, String label) {
 		if(label==null) {
 			return;
@@ -343,16 +343,16 @@ public class GoCAM {
 	Set<String> getLabels(OWLEntity e){
 		Set<String> labels = new HashSet<String>();
 		for(OWLAnnotationAssertionAxiom a : go_cam_ont.getAnnotationAssertionAxioms(e.getIRI())) {
-		    if(a.getProperty().isLabel()) {
-		        if(a.getValue() instanceof OWLLiteral) {
-		            OWLLiteral val = (OWLLiteral) a.getValue();
-		            labels.add(val.getLiteral());
-		        }
-		    }
+			if(a.getProperty().isLabel()) {
+				if(a.getValue() instanceof OWLLiteral) {
+					OWLLiteral val = (OWLLiteral) a.getValue();
+					labels.add(val.getLiteral());
+				}
+			}
 		}
 		return labels;
 	}
-	
+
 	String getaLabel(OWLEntity e){
 		Set<String> labels = getLabels(e);
 		String label = "";
@@ -364,13 +364,13 @@ public class GoCAM {
 		}
 		return label;
 	}
-	
+
 
 	IRI makeEntityHashIri(Object entity) {
 		String uri = base_iri+entity.hashCode();
 		return IRI.create(uri);
 	}
-	
+
 	IRI makeRandomIri() {
 		String uri = base_iri+Math.random();
 		return IRI.create(uri);
@@ -386,7 +386,8 @@ public class GoCAM {
 	 * @param evidence_class
 	 * @param namespace_prefix (e.g. PMID)
 	 */
-	void addRefBackedObjectPropertyAssertion(OWLNamedIndividual source, OWLObjectProperty prop, OWLNamedIndividual target, Set<String> ids, OWLClass evidence_class, String namespace_prefix, Set<OWLAnnotation> other_annotations) {
+	void addRefBackedObjectPropertyAssertion(OWLNamedIndividual source, OWLObjectProperty prop, OWLNamedIndividual target, 
+			Set<String> ids, OWLClass evidence_class, String namespace_prefix, Set<OWLAnnotation> other_annotations) {
 		OWLObjectPropertyAssertionAxiom add_prop_axiom = null;
 		Set<OWLAnnotation> annos = new HashSet<OWLAnnotation>();
 		if(other_annotations!=null) {
@@ -410,27 +411,43 @@ public class GoCAM {
 			annos.add(anno);
 		}
 		//check if this is an update or a create
-		OWLOntologyWalker walker = new OWLOntologyWalker(Collections.singleton(go_cam_ont));
-		UpdateAnnotationsVisitor updater = new UpdateAnnotationsVisitor(walker, source.getIRI(), prop.getIRI(), target.getIRI());
-		walker.walkStructure(updater); 
-		if(updater.getAxioms()!=null&&updater.getAxioms().size()>0) {
-			//Its an update.
-			//need to remove the old one(s) but collect existing annotations.  
-			ontman.removeAxioms(go_cam_ont, updater.getAxioms());
-			if(updater.getAnnotations()!=null) {
-				annos.addAll(updater.getAnnotations());
+		OWLObjectPropertyAssertionAxiom check = df.getOWLObjectPropertyAssertionAxiom(prop, source, target, annos);
+		boolean annotated_axiom_exists = EntitySearcher.containsAxiom(check, go_cam_ont, false);
+		if(annotated_axiom_exists) {
+			return; //already have it
+		}else{
+			boolean axiom_exists = EntitySearcher.containsAxiomIgnoreAnnotations(check, go_cam_ont, false);
+			//axiom exists with different annotations so merge them
+			if(axiom_exists) {
+				//it is here to handle situations where we might add a new axiom that is the same as an existing axiom but with new annotations..
+				//rather than creating two, want to merge the annotations onto one.  
+				OWLOntologyWalker walker = new OWLOntologyWalker(Collections.singleton(go_cam_ont));
+				UpdateAnnotationsVisitor updater = new UpdateAnnotationsVisitor(walker, source.getIRI(), prop.getIRI(), target.getIRI());
+				walker.walkStructure(updater); 
+				if(updater.getAxioms()!=null&&updater.getAxioms().size()>0) {
+					//Its an update.
+					//need to remove the old one(s) but collect existing annotations.  
+					ontman.removeAxioms(go_cam_ont, updater.getAxioms());
+					if(updater.getAnnotations()!=null) {
+						annos.addAll(updater.getAnnotations());
+					}
+				}
 			}
+//			else {
+//				System.out.println("creating "+check);
+//			}
+			//now finally make the new one.
+			add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(prop, source, target, annos);
+			AddAxiom addAxiom = new AddAxiom(go_cam_ont, add_prop_axiom);
+			ontman.applyChange(addAxiom);
 		}
-		//now finally make the new one.
-		add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(prop, source, target, annos);
-		AddAxiom addAxiom = new AddAxiom(go_cam_ont, add_prop_axiom);
-		ontman.applyChange(addAxiom);
+		
 		return ;
 	}
 
-	
-	
-	
+
+
+
 	void addObjectPropertyAssertion(OWLIndividual source, OWLObjectProperty prop, OWLIndividual target, Set<OWLAnnotation> annotations) {
 		OWLObjectPropertyAssertionAxiom add_prop_axiom = null;
 		if(annotations!=null&&annotations.size()>0) {
@@ -500,7 +517,7 @@ public class GoCAM {
 		qrunner = new QRunner(tbox, null, add_inferences, add_property_definitions, add_class_definitions);
 		return qrunner;
 	}
-	
+
 	void addInferredEdges() throws OWLOntologyCreationException {
 		if(qrunner==null||qrunner.arachne==null) {
 			initializeQRunnerForTboxInference();
@@ -510,11 +527,11 @@ public class GoCAM {
 		//System.out.println("Making Jena model from inferred graph for query");
 		qrunner.jena = qrunner.makeJenaModel(qrunner.wm);
 	}
-	
-/**
- * Use sparql queries to inform modifications to the go-cam owl ontology 
- * assumes it is loaded with everything to start with a la qrunner = new QRunner(go_cam_ont); 
- */
+
+	/**
+	 * Use sparql queries to inform modifications to the go-cam owl ontology 
+	 * assumes it is loaded with everything to start with a la qrunner = new QRunner(go_cam_ont); 
+	 */
 	void applySparqlRules() {
 		Set<InferredEnabler> ies = qrunner.getInferredEnablers();
 		for(InferredEnabler ie : ies) {
@@ -543,7 +560,7 @@ public class GoCAM {
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 			this.addRefBackedObjectPropertyAssertion(r2, enabled_by, e, null, GoCAM.eco_inferred_auto, null, annos);
 			System.out.println(r2+" added enabled by "+e);
-			
+
 		}
 		//if subsequent rules need to compute over the results of previous rules, need to load the owl back into the rdf model
 		qrunner = new QRunner(go_cam_ont); 
@@ -583,8 +600,8 @@ public class GoCAM {
 			String o_label = "'"+this.getaLabel(o)+"'";
 			Set<OWLAnnotation> annos = getDefaultAnnotations();
 			String explain = "The relation "+r2_label+" "+o_label+" "+r1_label+" was inferred because:\n "+
-				 r1_label+" has inputs A and B, "+r1_label+" has output A/B complex, and " + 
-				 r2_label+" is enabled by B. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
+					r1_label+" has inputs A and B, "+r1_label+" has output A/B complex, and " + 
+					r2_label+" is enabled by B. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 			this.addObjectPropertyAssertion(r2, o, r1, annos);
 			this.addRefBackedObjectPropertyAssertion(r2, o, r1, null, GoCAM.eco_inferred_auto, null, annos);
@@ -617,13 +634,13 @@ public class GoCAM {
 		//use jena export
 		System.out.println("writing n triples: "+qrunner.nTriples());
 		qrunner.dumpModel(outfilefile, "TURTLE");
-//		else {
-//			//write with OWL API..		
-//			FileDocumentTarget outfile = new FileDocumentTarget(outfilefile);
-//			//ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());	
-//			ontman.setOntologyFormat(go_cam_ont, new TurtleDocumentFormat());	
-//			ontman.saveOntology(go_cam_ont,outfile);
-//		}
+		//		else {
+		//			//write with OWL API..		
+		//			FileDocumentTarget outfile = new FileDocumentTarget(outfilefile);
+		//			//ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());	
+		//			ontman.setOntologyFormat(go_cam_ont, new TurtleDocumentFormat());	
+		//			ontman.saveOntology(go_cam_ont,outfile);
+		//		}
 
 		//reads in file created above and converts to journal
 		//could optimize speed by going direct at some point if it matters
