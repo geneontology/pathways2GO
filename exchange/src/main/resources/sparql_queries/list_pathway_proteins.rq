@@ -1,0 +1,47 @@
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+prefix obo: <http://purl.obolibrary.org/obo/>
+#what genes are in the pathway? 
+# (count(distinct ?uniprot) as ?c)
+select distinct ?uniprot where {
+  #Signaling by BMP obo:GO_0030509
+  #Wnt Signaling GO:0016055 
+  ?pathway rdf:type obo:GO_0016055 . 
+  #get the sub pathways via has part if there are any 
+  #note that this ends up including ?pathway = ?subpath (its a part of itself) 
+  ?pathway obo:BFO_0000051* ?subpath .
+  #check that its a pathway (biological process)
+  ?subpath rdf:type obo:GO_0008150 .   
+   #get the reactions in the pathways and subpathways via has part - 
+  ?subpath obo:BFO_0000051 ?reaction . 
+  # get the participants in the reactions
+  #check for proteins
+  {
+    ?uniprot rdfs:subClassOf obo:CHEBI_36080 . # obo:CHEBI_36080 = protein
+    ?physical_entity rdf:type ?uniprot . 
+    ?physical_entity ?rprop ?reaction . 
+   # ?reaction rdf:type obo:GO_0003674 . #molecular function / 'reaction' # this needs the GO loaded to work - otherwise leaves out case where reaction is mapped to a specific function
+    #values ?rprop {obo:RO_0002327 obo:RO_0002428 obo:RO_0002430 obo:RO_0002429} . 
+  }
+  UNION 
+  {
+    ?uniprot rdfs:subClassOf obo:CHEBI_36080 .
+    ?physical_entity rdf:type ?uniprot . 
+    #get parts recursively with * (not currently necessary as complexes have been collapsed and using reasoned kb anyway) 
+    ?aggregate_entity obo:BFO_0000051 ?physical_entity .
+    # and protein parts of complexes <http://purl.obolibrary.org/obo/GO_0032991>
+    ?aggregate_entity rdf:type obo:GO_0032991 . 
+    ?aggregate_entity ?rprop ?reaction . 
+    #values ?rprop {obo:RO_0002327 obo:RO_0002428 obo:RO_0002430 obo:RO_0002429} . 
+    }
+  ?subpath rdfs:label ?subpathlabel .
+  ?reaction rdfs:label ?reactionlabel . 
+  ?reaction rdf:type ?t . 
+  filter(?subpathlabel = 'Ca2+ pathway') .
+  filter(?reactionlabel = 'Gbeta:gamma activation of PLC beta') . 
+}
+#GROUP BY ?reactionlabel 
+#ORDER BY ?c
+#ORDER BY ?subpathlabel ?reactionlabel 
+ 

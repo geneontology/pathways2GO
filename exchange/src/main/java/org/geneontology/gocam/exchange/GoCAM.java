@@ -365,13 +365,14 @@ public class GoCAM {
 		return label;
 	}
 
-
-	IRI makeEntityHashIri(Object entity) {
-		String uri = base_iri+entity.hashCode();
-		return IRI.create(uri);
-	}
-
-	IRI makeRandomIri() {
+	/**
+	 //TODO maybe... COuld use the minerva pattern that follows or implement something that makes purls etc.
+static String uniqueTop = Long.toHexString(Math.abs((System.currentTimeMillis()/1000)));
+static final AtomicLong instanceCounter = new AtomicLong(0L);
+final long counterValue = instanceCounter.getAndIncrement();
+	 * @return
+	 */
+	public static IRI makeRandomIri() {
 		String uri = base_iri+Math.random();
 		return IRI.create(uri);
 	}
@@ -396,7 +397,8 @@ public class GoCAM {
 		annos.addAll(getDefaultAnnotations());//prepare the database annotations like pubmed ids 
 		if(ids!=null) {			
 			for(String id : ids) {
-				IRI anno_iri = makeEntityHashIri(source.hashCode()+"_"+prop.hashCode()+"_"+target.hashCode()+"_"+namespace_prefix+"_"+id);
+			//	IRI anno_iri = makeEntityHashIri(source.hashCode()+"_"+prop.hashCode()+"_"+target.hashCode()+"_"+namespace_prefix+"_"+id);
+				IRI anno_iri = this.makeRandomIri();
 				OWLNamedIndividual evidence = makeAnnotatedIndividual(anno_iri);					
 				addTypeAssertion(evidence, evidence_class);
 				addLiteralAnnotations2Individual(anno_iri, GoCAM.source_prop, namespace_prefix+":"+id);
