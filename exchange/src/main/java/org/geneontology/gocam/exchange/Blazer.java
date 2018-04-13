@@ -28,7 +28,7 @@ import com.bigdata.rdf.sail.BigdataSailRepository;
 import com.bigdata.rdf.sail.BigdataSailRepositoryConnection;
 
 /**
- * This class mostly coped from BlazegraphMolecularModelManager in Minerva by @balhoff 
+ * This class mostly copied from BlazegraphMolecularModelManager in Minerva by @balhoff 
  * @author bgood
  *
  */

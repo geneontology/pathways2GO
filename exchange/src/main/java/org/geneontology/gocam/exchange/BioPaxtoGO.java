@@ -99,8 +99,8 @@ public class BioPaxtoGO {
 		//		"/Users/bgood/Desktop/test/clathrin-mediated-endocytosis.owl";
 		//		"/Users/bgood/Desktop/test/gap_junction.owl"; 
 		//"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
-		"/Users/bgood/Desktop/test/Wnt_example.owl";
-		//"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
+		//"/Users/bgood/Desktop/test/Wnt_example.owl";
+		"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
 		//"src/main/resources/reactome/Homo_sapiens.owl";
 		//"/Users/bgood/Downloads/biopax/homosapiens.owl";
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
@@ -119,19 +119,20 @@ public class BioPaxtoGO {
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";
 		boolean split_by_pathway = true;
 		boolean save_inferences = true;
-		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, save_inferences);
+		boolean expand_subpathways = true;
+		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, save_inferences, expand_subpathways);
 	} 
 
-	private void convertReactomeFile(String input_file, String output, boolean split_by_pathway, boolean save_inferences) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
+	private void convertReactomeFile(String input_file, String output, boolean split_by_pathway, boolean save_inferences, boolean expand_subpathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		boolean add_lego_import = false; //unless you never want to open the output in Protege always leave false..
 		String base_title = "FULL BMP Signaling";//"FULL TCF-dependent_signaling_in_response_to_Wnt"; 
 		String base_contributor = "https://orcid.org/0000-0002-7334-7852"; //Ben Good
 		String base_provider = "https://reactome.org";
 		String tag = "";
-		convert(input_file, output, split_by_pathway, add_lego_import, base_title, base_contributor, base_provider, tag, save_inferences);
+		convert(input_file, output, split_by_pathway, add_lego_import, base_title, base_contributor, base_provider, tag, save_inferences, expand_subpathways);
 	}
 
-	private void convertReactomeFolder(String input_folder, String output_folder, boolean save_inferences) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
+	private void convertReactomeFolder(String input_folder, String output_folder, boolean save_inferences, boolean expand_subpathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		boolean split_by_pathway = true;
 		boolean add_lego_import = false;
 		String base_title = "Reactome pathway ontology"; 
@@ -145,27 +146,11 @@ public class BioPaxtoGO {
 				String species = input_biopax.getName();
 				if(species.contains(".owl")) { //ignore other kinds of files.. like DS_STORE!
 					String output_file_stub = output_folder+"/reactome-"+species.replaceAll(".owl", "-");
-					convert(input_biopax.getAbsolutePath(), output_file_stub, split_by_pathway, add_lego_import, base_title, base_contributor, base_provider, species, save_inferences);
+					convert(input_biopax.getAbsolutePath(), output_file_stub, split_by_pathway, add_lego_import, base_title, base_contributor, base_provider, species, save_inferences, expand_subpathways);
 				}
 			}
 		} 
 	}
-
-	//need to avoid using non-obo vocabulary.. 
-//	private void setupBioPaxOntParts(GoCAM go_cam) {
-		//protein
-	//	protein_class = go_cam.df.getOWLClass(IRI.create(biopax_iri + "Protein")); 
-	//	go_cam.addLabel(protein_class, "Protein");
-	//	go_cam.addSubclassAssertion(protein_class, GoCAM.continuant_class, null);
-		//reaction
-//		reaction_class = go_cam.df.getOWLClass(IRI.create(biopax_iri + "Reaction")); 
-//		go_cam.addLabel(reaction_class, "Reaction");
-//		go_cam.addSubclassAssertion(reaction_class, GoCAM.process_class, null);
-		//pathway
-	//	pathway_class = go_cam.df.getOWLClass(IRI.create(biopax_iri + "Pathway")); 
-	//	go_cam.addLabel(pathway_class, "Pathway");
-	//	go_cam.addSubclassAssertion(pathway_class, GoCAM.process_class, null);
-//	}
 
 	/**
 	 * The main point of access for converting BioPAX level 3 OWL models into GO-CAM OWL models
@@ -186,8 +171,9 @@ public class BioPaxtoGO {
 	 */
 	private void convert(
 			String input_biopax, String converted, 
-			boolean split_by_pathway, boolean add_lego_import,
-			String base_title, String base_contributor, String base_provider, String tag, boolean save_inferences) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException  {
+			boolean split_out_by_pathway, boolean add_lego_import,
+			String base_title, String base_contributor, String base_provider, String tag, 
+			boolean save_inferences, boolean expand_subpathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException  {
 		//read biopax pathway(s)
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileInputStream f = new FileInputStream(input_biopax);
@@ -204,7 +190,6 @@ public class BioPaxtoGO {
 		String journal = converted+".jnl";
 		go_cam.path2bgjournal = journal;
 		Blazer blaze = go_cam.initializeBlazeGraph(journal);
-	//	setupBioPaxOntParts(go_cam);
 		QRunner qrunner = go_cam.initializeQRunnerForTboxInference();
 		//list pathways
 		int total_pathways = model.getObjects(Pathway.class).size();
@@ -212,7 +197,7 @@ public class BioPaxtoGO {
 			String reactome_id = null;
 			n_pathways++;
 			System.out.println(n_pathways+" of "+total_pathways+" Pathway:"+currentPathway.getName()); 
-			if(split_by_pathway) {
+			if(split_out_by_pathway) {
 				//then reinitialize for each pathway
 				reactome_id = null;
 				String contributor_link = "https://reactome.org";
@@ -235,109 +220,27 @@ public class BioPaxtoGO {
 				iri = "http://model.geneontology.org/"+base_ont_title.hashCode(); //using a URL encoded string here confused the UI code...
 				ont_iri = IRI.create(iri);	
 				go_cam = new GoCAM(ont_iri, base_ont_title, contributor_link, null, base_provider, add_lego_import);
-				go_cam.qrunner = qrunner; //re-use it..
+				//re-using sparql runner, no need to re-load the tbox each time 
+				go_cam.qrunner = qrunner; 
+				//journal is by default in 'append' mode - keeping the same journal reference add each pathway to same journal
 				go_cam.path2bgjournal = journal;
 				go_cam.blazegraphdb = blaze;
-		//		setupBioPaxOntParts(go_cam);
 			}
 
 			String uri = currentPathway.getUri();
 			//make the OWL individual representing the pathway so it can be used below
 			OWLNamedIndividual p = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(uri));
 			//define it (add types etc)
-			definePathwayEntity(go_cam, currentPathway, split_by_pathway);
+			definePathwayEntity(go_cam, currentPathway, reactome_id, expand_subpathways);
 			Set<String> pubids = getPubmedIds(currentPathway);
-
 			//get and set parent pathways
 			for(Pathway parent_pathway : currentPathway.getPathwayComponentOf()) {				
-				//System.out.println(currentPathway.getName()+" is a Component of Pathway:"+parent_pathway.getName()); 
 				OWLNamedIndividual parent = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(parent_pathway.getUri()));
 				go_cam.addRefBackedObjectPropertyAssertion(p, GoCAM.part_of, parent, pubids, GoCAM.eco_imported_auto,  "PMID", null);
-				definePathwayEntity(go_cam, parent_pathway, split_by_pathway);
+				definePathwayEntity(go_cam, parent_pathway, reactome_id, false);
 			}
-
-			//below mapped from Chris Mungall's
-			//prolog rules https://github.com/cmungall/pl-sysbio/blob/master/prolog/sysbio/bp2lego.pl
-			//looking at this, prolog/graph solution seems much more elegant... 
-
-			//get the steps of the pathway (process (aka event) can be either a pathway or a reaction) 
-
-			//Event directly_provides_input_for NextEvent
-			//<==	
-			//pathway pathway_order pathwayStep1
-			//pathwayStep1 step_process process
-			//pathwayStep1 next_step pathwayStep2
-			//PathwayStep2 step_process process2
-
-			Set<PathwayStep> steps = currentPathway.getPathwayOrder();
-			for(PathwayStep step1 : steps) {
-				Set<Process> events = step1.getStepProcess();
-				Set<PathwayStep> step2s = step1.getNextStep();
-				for(PathwayStep step2 : step2s) {
-					Set<Process> nextEvents = step2.getStepProcess();
-					for(Process event : events) {
-						for(Process nextEvent : nextEvents) {
-							//	Event directly_provides_input_for NextEvent
-							//	 <==
-							//		Step stepProcess Event,
-							//		Step nextStep NextStep,
-							//		NextStep stepProcess NextEvent,
-							//		biochemicalReaction(Event),
-							//		biochemicalReaction(NextEvent).
-							if((event.getModelInterface().equals(BiochemicalReaction.class))&&
-									(nextEvent.getModelInterface().equals(BiochemicalReaction.class))) {
-//								IRI e1_iri = IRI.create(event.getUri());
-//								IRI e2_iri = IRI.create(nextEvent.getUri());
-								IRI e1_iri = GoCAM.makeGoCamifiedIRI(event.getUri());
-								IRI e2_iri = GoCAM.makeGoCamifiedIRI(nextEvent.getUri());
-								
-								OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(e1_iri);
-								defineReactionEntity(go_cam, event, e1_iri);
-								OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(e2_iri);
-								defineReactionEntity(go_cam, nextEvent, e2_iri);
-								go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.provides_direct_input_for, e2, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, "Reactome", null);
-							}
-							//							else {
-							//
-							//							}
-							//							System.out.println(event+" could provide input for "+nextEvent);
-						}
-					}
-				}
-			}
-
-			//get the pieces of the pathway
-			//Process subsumes Pathway and Interaction (which is usually a reaction).  
-			//A pathway may have either or both reaction or pathway components.  
-			for(Process process : currentPathway.getPathwayComponent()) {
-				//System.out.println("Process "+ process.getName()+" of "+currentPathway.getName()); 
-				//If this subprocess is a Pathway, ignore it here as it will be processed in the all pathways loop 
-				//above and the part of relationship will be captured there via the .getPathwayComponentOf method
-				//Otherwise it will usually be a Reaction - which holds most of the information.  
-				//Conversion subsumes BiochemicalReaction, TransportWithBiochemicalReaction, ComplexAssembly, Degradation, GeneticInteraction, MolecularInteraction, TemplateReaction
-				//though the great majority are BiochemicalReaction
-				if(process instanceof Conversion 
-						|| process instanceof TemplateReaction
-						|| process instanceof GeneticInteraction 
-						|| process instanceof MolecularInteraction ){
-					defineReactionEntity(go_cam, process, null);
-					//add the child pathway (one level) when splitting up into individual pathways (unnesting)
-				}else if(split_by_pathway&&process.getModelInterface().equals(Pathway.class)){
-					//OWLNamedIndividual child = go_cam.df.getOWLNamedIndividual(IRI.create(process.getUri()));
-					OWLNamedIndividual child = go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(process.getUri()));
-					go_cam.addRefBackedObjectPropertyAssertion(p, GoCAM.has_part, child, pubids, GoCAM.eco_imported_auto, "PMID", null);
-					definePathwayEntity(go_cam, (Pathway)process, split_by_pathway);	
-				}else if((!split_by_pathway)&&process.getModelInterface().equals(Pathway.class)){
-					System.out.println("skipping over sub pathway for full pathway run");
-				}
-				else {
-					System.out.println("Unknown Process !"+process.getDisplayName());
-					System.out.println("Process URI.. "+process.getUri());			
-					System.out.println("Process model interface.. "+process.getModelInterface());	
-					System.exit(0);
-				}
-			}
-			if(split_by_pathway) {
+			//write results
+			if(split_out_by_pathway) {
 				String n = currentPathway.getDisplayName();
 				n = n.replaceAll("/", "-");	
 				n = n.replaceAll(" ", "_");
@@ -353,7 +256,7 @@ public class BioPaxtoGO {
 			} 
 		}	
 		//export all
-		if(!split_by_pathway) {
+		if(!split_out_by_pathway) {
 		//	layoutForNoctua(go_cam);
 			boolean is_logical = go_cam.validateGoCAM();	
 			go_cam.writeGoCAM(converted+".ttl", save_inferences, save2blazegraph, applySparqlRules);
@@ -361,22 +264,17 @@ public class BioPaxtoGO {
 				System.exit(0); //die if not logically consistent.  
 			}			
 		}
+		
 	}
 
 
-	private void definePathwayEntity(GoCAM go_cam, Pathway pathway, boolean split_by_pathway) {
-		//IRI pathway_iri = IRI.create(pathway.getUri());
+	private void definePathwayEntity(GoCAM go_cam, Pathway pathway, String reactome_id, boolean expand_subpathways) {
 		IRI pathway_iri = GoCAM.makeGoCamifiedIRI(pathway.getUri());
 		OWLNamedIndividual pathway_e = go_cam.makeAnnotatedIndividual(pathway_iri);
-		//tag it as from Reactome..
-		//go_cam.addTypeAssertion(pathway_e, pathway_class);
-		//in obo world its a biological process
+		//in obo world each pathway is a biological process
 		go_cam.addTypeAssertion(pathway_e, GoCAM.bp_class);
-		String name = pathway.getDisplayName();
-		if(!split_by_pathway) {
-			name="Full_"+name;
-		}
 		go_cam.addLabel(pathway_e, pathway.getDisplayName());
+	
 		//comments
 		for(String comment: pathway.getComment()) {
 			if(comment.startsWith("Authored:")||
@@ -387,11 +285,10 @@ public class BioPaxtoGO {
 				go_cam.addLiteralAnnotations2Individual(pathway_iri, GoCAM.rdfs_comment, comment);
 			}
 		}
-		//annotations and go
-		Set<Xref> xrefs = pathway.getXref();
-		//publications 
+		//references
 		Set<String> pubids = getPubmedIds(pathway);
-		boolean go_bp_set = false;
+		//annotations and go
+		Set<Xref> xrefs = pathway.getXref();	
 		for(Xref xref : xrefs) {
 			//dig out any xreferenced GO processes and assign them as types
 			if(xref.getModelInterface().equals(RelationshipXref.class)) {
@@ -406,13 +303,67 @@ public class BioPaxtoGO {
 					//addRefBackedObjectPropertyAssertion
 					go_cam.addSubclassAssertion(xref_go_parent, GoCAM.bp_class, null);
 					go_cam.addTypeAssertion(pathway_e, xref_go_parent);
-					go_bp_set = true;
 				}
 			}
 		}
-		if(!go_bp_set) {
-			go_cam.addTypeAssertion(pathway_e, GoCAM.bp_class);
+		
+		//reaction -> reaction connections
+		//TODO this would fit the 2nd step sparql rules.. would be more consistent to move it there and use the same pattern
+		//below mapped from Chris Mungall's
+		//prolog rules https://github.com/cmungall/pl-sysbio/blob/master/prolog/sysbio/bp2lego.pl
+		Set<PathwayStep> steps = pathway.getPathwayOrder();
+		for(PathwayStep step1 : steps) {
+			Set<Process> events = step1.getStepProcess();
+			Set<PathwayStep> step2s = step1.getNextStep();
+			for(PathwayStep step2 : step2s) {
+				Set<Process> nextEvents = step2.getStepProcess();
+				for(Process event : events) {
+					for(Process nextEvent : nextEvents) {
+						//	Event directly_provides_input_for NextEvent
+						if((event.getModelInterface().equals(BiochemicalReaction.class))&&
+								(nextEvent.getModelInterface().equals(BiochemicalReaction.class))) {
+							IRI e1_iri = GoCAM.makeGoCamifiedIRI(event.getUri());
+							IRI e2_iri = GoCAM.makeGoCamifiedIRI(nextEvent.getUri());
+							OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(e1_iri);
+							OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(e2_iri);
+							go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.provides_direct_input_for, e2, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, "Reactome", null);
+						}
+					}
+				}
+			}
 		}
+		//define the pieces of the pathway
+		//Process subsumes Pathway and Interaction (which is usually a reaction).  
+		//A pathway may have either or both reaction or pathway components.  
+		for(Process process : pathway.getPathwayComponent()) {
+			//If this subprocess is a Pathway, ignore it here as it will be processed in the all pathways loop 
+			//above and the part of relationship will be captured there via the .getPathwayComponentOf method
+			//Otherwise it will usually be a Reaction - which holds most of the information.  
+			//Conversion subsumes BiochemicalReaction, TransportWithBiochemicalReaction, ComplexAssembly, Degradation, GeneticInteraction, MolecularInteraction, TemplateReaction
+			//though the great majority are BiochemicalReaction
+			if(process instanceof Conversion 
+					|| process instanceof TemplateReaction
+					|| process instanceof GeneticInteraction 
+					|| process instanceof MolecularInteraction ){
+				System.out.println("defining "+pathway+" "+process);
+				defineReactionEntity(go_cam, process, null);
+				
+			//attach child pathways
+			}else if(process.getModelInterface().equals(Pathway.class)){
+				OWLNamedIndividual child = go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(process.getUri()));
+				go_cam.addRefBackedObjectPropertyAssertion(pathway_e, GoCAM.has_part, child, pubids, GoCAM.eco_imported_auto, "PMID", null);
+				if(expand_subpathways) {
+					definePathwayEntity(go_cam, (Pathway)process, reactome_id, expand_subpathways);	
+				}
+			}
+			else {
+				System.out.println("Unknown Process !"+process.getDisplayName());
+				System.out.println("Process URI.. "+process.getUri());			
+				System.out.println("Process model interface.. "+process.getModelInterface());	
+				System.exit(0);
+			}
+		}
+
 		return;
 	}
 
@@ -707,14 +658,6 @@ public class BioPaxtoGO {
 			}
 
 			if(entity instanceof Process) {
-				//connect interaction to its pathway(s) via has_part
-				Set<Pathway> pathways = ((Process) entity).getPathwayComponentOf();
-				for(Pathway pathway : pathways) {
-					//OWLNamedIndividual p = go_cam.df.getOWLNamedIndividual(IRI.create(pathway.getUri()));
-					OWLNamedIndividual p = go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(pathway.getUri()));
-					definePathwayEntity(go_cam, pathway, true);
-					go_cam.addRefBackedObjectPropertyAssertion(p, GoCAM.has_part, e, pubids, GoCAM.eco_imported_auto, "PMID", null);
-				}
 				//find controllers 
 				//			Event directly_inhibits NextEvent
 				//			   <==
