@@ -373,10 +373,14 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 * @return
 	 */
 	public static IRI makeRandomIri() {
-		String uri = base_iri+Math.random();
-		return IRI.create(uri);
+		String iri = base_iri+Math.random();
+		return IRI.create(iri);
 	}
 
+	public static IRI makeGoCamifiedIRI(String uri) {
+		String iri = base_iri+uri.hashCode();
+		return IRI.create(iri);
+	}
 	/**
 	 * Given a set of PubMed reference identifiers, the pieces of a triple, and an evidence class, create an evidence individual for each pmid, 
 	 * create a corresponding OWLAnnotation entity, make the triple along with all the annotations as evidence.  
