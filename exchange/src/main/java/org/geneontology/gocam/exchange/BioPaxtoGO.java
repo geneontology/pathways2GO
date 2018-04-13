@@ -118,7 +118,7 @@ public class BioPaxtoGO {
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";
 		boolean split_by_pathway = true;
-		boolean save_inferences = true;
+		boolean save_inferences = false;
 		boolean expand_subpathways = true;
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, save_inferences, expand_subpathways);
 	} 
@@ -232,13 +232,14 @@ public class BioPaxtoGO {
 			OWLNamedIndividual p = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(uri));
 			//define it (add types etc)
 			definePathwayEntity(go_cam, currentPathway, reactome_id, expand_subpathways);
-			Set<String> pubids = getPubmedIds(currentPathway);
+//			Set<String> pubids = getPubmedIds(currentPathway);
 			//get and set parent pathways
-			for(Pathway parent_pathway : currentPathway.getPathwayComponentOf()) {				
-				OWLNamedIndividual parent = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(parent_pathway.getUri()));
-				go_cam.addRefBackedObjectPropertyAssertion(p, GoCAM.part_of, parent, pubids, GoCAM.eco_imported_auto,  "PMID", null);
-				definePathwayEntity(go_cam, parent_pathway, reactome_id, false);
-			}
+			//currently viewing one model as a complete thing - leaving out outgoing connections.  
+//			for(Pathway parent_pathway : currentPathway.getPathwayComponentOf()) {				
+//				OWLNamedIndividual parent = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(parent_pathway.getUri()));
+//				go_cam.addRefBackedObjectPropertyAssertion(p, GoCAM.part_of, parent, pubids, GoCAM.eco_imported_auto,  "PMID", null);
+//				definePathwayEntity(go_cam, parent_pathway, reactome_id, false);
+//			}
 			//write results
 			if(split_out_by_pathway) {
 				String n = currentPathway.getDisplayName();
@@ -336,22 +337,19 @@ public class BioPaxtoGO {
 		//Process subsumes Pathway and Interaction (which is usually a reaction).  
 		//A pathway may have either or both reaction or pathway components.  
 		for(Process process : pathway.getPathwayComponent()) {
-			//If this subprocess is a Pathway, ignore it here as it will be processed in the all pathways loop 
-			//above and the part of relationship will be captured there via the .getPathwayComponentOf method
-			//Otherwise it will usually be a Reaction - which holds most of the information.  
 			//Conversion subsumes BiochemicalReaction, TransportWithBiochemicalReaction, ComplexAssembly, Degradation, GeneticInteraction, MolecularInteraction, TemplateReaction
 			//though the great majority are BiochemicalReaction
+			//whatever it is, its a part of the pathway
+			OWLNamedIndividual child = go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(process.getUri()));
+			go_cam.addRefBackedObjectPropertyAssertion(pathway_e, GoCAM.has_part, child, pubids, GoCAM.eco_imported_auto, "PMID", null);
+			//attach reactions that make up the pathway
 			if(process instanceof Conversion 
 					|| process instanceof TemplateReaction
 					|| process instanceof GeneticInteraction 
 					|| process instanceof MolecularInteraction ){
-				System.out.println("defining "+pathway+" "+process);
-				defineReactionEntity(go_cam, process, null);
-				
+				defineReactionEntity(go_cam, process, GoCAM.makeGoCamifiedIRI(process.getUri()));				
 			//attach child pathways
-			}else if(process.getModelInterface().equals(Pathway.class)){
-				OWLNamedIndividual child = go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(process.getUri()));
-				go_cam.addRefBackedObjectPropertyAssertion(pathway_e, GoCAM.has_part, child, pubids, GoCAM.eco_imported_auto, "PMID", null);
+			}else if(process.getModelInterface().equals(Pathway.class)){				
 				if(expand_subpathways) {
 					definePathwayEntity(go_cam, (Pathway)process, reactome_id, expand_subpathways);	
 				}
