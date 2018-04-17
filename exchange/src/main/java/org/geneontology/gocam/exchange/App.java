@@ -77,7 +77,7 @@ public class App {
 		OWLAxiom axiom2 = df.getOWLAnnotationAssertionAxiom(source_iri, anno);
 		man.addAxiom(o, axiom2);
 
-		writeOntology("/Users/bgood/Desktop/test/test.ttl", o);
+		writeOntology("report/blablabla.ttl", o);
 
 		
 	//	IRI prop_iri = IRI.create("http://purl.obolibrary.org/obo/RO_0002333");

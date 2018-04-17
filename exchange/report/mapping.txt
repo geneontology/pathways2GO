@@ -1,0 +1,1 @@
+Reactome label	Reactome id	GO id	go_node_type	reactome_node_type
