@@ -616,28 +616,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 		System.out.println("Added "+ir2_neg.size()+" neg inhibitory binding reg triples");
 	}
 
-	void writeGoCAM(String outfilename, boolean add_inferred, boolean save2blazegraph, boolean applySparqlRules) throws OWLOntologyStorageException, OWLOntologyCreationException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
+	void writeGoCAM(String outfilename, boolean save2blazegraph) throws OWLOntologyStorageException, OWLOntologyCreationException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		File outfilefile = new File(outfilename);	
-		//synchronize jena model <- with owl-api model	 
-		//go_cam_ont should have everything we want at this point, including any imports
-		qrunner = new QRunner(go_cam_ont); 
-		if(applySparqlRules) {
-			System.out.println("Before sparql inference -  triples: "+qrunner.nTriples());
-			Set<String> ids = new HashSet<String>();
-			applySparqlRules();
-			//sparql rules make additions to go_cam_ont
-			qrunner = new QRunner(go_cam_ont); 
-			System.out.println("After sparql inference -  triples: "+qrunner.nTriples());
-			//taking this out for now.  Perhaps will spur a better layout someday..
-			//int n_removed = qrunner.deleteEntityLocations();
-			//System.out.println("Removed "+n_removed+" entity location triples");
-		}				
-		if(add_inferred) {
-			System.out.println("preparing model starting with (unreasoned) triples: "+qrunner.nTriples());
-			//apply Arachne to tbox rules and add inferences to qrunner.jena rdf model
-			addInferredEdges();
-			System.out.println("total triples after inference: "+qrunner.nTriples());
-		}
 		//use jena export
 		System.out.println("writing n triples: "+qrunner.nTriples());
 		qrunner.dumpModel(outfilefile, "TURTLE");

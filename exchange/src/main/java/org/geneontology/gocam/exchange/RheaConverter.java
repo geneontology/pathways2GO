@@ -35,7 +35,8 @@ public class RheaConverter {
 	 */
 	public static void main(String[] args) throws FileNotFoundException {
 		String input_biopax = 
-				"/Users/bgood/gocam_input/rhea/rhea-biopax_lite.owl";
+				//"/Users/bgood/gocam_input/rhea/rhea-biopax_lite.owl";rhea-biopax_full
+				"/Users/bgood/gocam_input/rhea/rhea-biopax_full.owl";
 		String converted = 
 				"/Users/bgood/Desktop/test/rhea/rhea-go.ttl";
 		String output_biopax = 
@@ -64,7 +65,7 @@ public class RheaConverter {
 				break;
 			}
 		}
-		handler.convertToOWL(sample, new FileOutputStream("/Users/bgood/Desktop/test/rhea/sample.owl"));
+		handler.convertToOWL(sample, new FileOutputStream("/Users/bgood/Desktop/test/rhea/sample_full.owl"));
 	}
 
 }
