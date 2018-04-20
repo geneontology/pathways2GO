@@ -100,24 +100,24 @@ public class BioPaxtoGO {
 		//		bp2g.convertReactomeFolder(input_folder, output_folder);
 
 		String input_biopax = 
-				//		"/Users/bgood/Desktop/test/clathrin-mediated-endocytosis.owl";
-				//		"/Users/bgood/Desktop/test/gap_junction.owl"; 
-				//"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
-				"/Users/bgood/Desktop/test/Wnt_example.owl";
-		//"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
+		//		"/Users/bgood/Desktop/test/abacavir_metabolism.owl";
+		//		"/Users/bgood/Desktop/test/gap_junction.owl"; 
+		//"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
+		//		"/Users/bgood/Desktop/test/Wnt_example.owl";
+		"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
 		//"src/main/resources/reactome/Homo_sapiens.owl";
 		//"/Users/bgood/Downloads/biopax/homosapiens.owl";
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = 
-				//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
-				"/Users/bgood/Desktop/test/Wnt_output/converted-";
+		//		"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
+		//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
+		//		"/Users/bgood/Desktop/test/Wnt_output/converted-";
 		//		"/Users/bgood/Desktop/test/gap_junction_output/converted-";
 		//"/Users/bgood/Desktop/test/bmp_output/converted-";
-		//"/Users/bgood/Desktop/test/Wnt_output/converted-wnt-by-Paul-rules-no-loc-";
-		//"/Users/bgood/Desktop/test_input/converted-";
+		"/Users/bgood/Desktop/test_input/converted-";
 		//"/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-";
-		//"/Users/bgood/reactome-go-cam-models/human-reasoned/reactome-homosapiens-";
+		//"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";
@@ -280,8 +280,10 @@ public class BioPaxtoGO {
 	 * @throws IOException
 	 */
 	private void wrapAndWrite(String outfilename, GoCAM go_cam, boolean save_inferences, boolean save2blazegraph) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {		
-		System.out.println("Before sparql inference -  triples: "+go_cam.qrunner.nTriples());
+		//make sure sparql kb in sync with ontology
+		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
 		//infer new edges based on sparql matching
+		System.out.println("Before sparql inference -  triples: "+go_cam.qrunner.nTriples());
 		go_cam.applySparqlRules();
 		//sparql rules make additions to go_cam_ont
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
@@ -291,9 +293,8 @@ public class BioPaxtoGO {
 			System.out.println("preparing model starting with (unreasoned) triples: "+go_cam.qrunner.nTriples());
 			//apply Arachne to tbox rules and add inferences to qrunner.jena rdf model
 			go_cam.addInferredEdges();
-			System.out.println("total triples after inference: "+go_cam.qrunner.nTriples());
-		}
-		layoutForNoctuaV2(go_cam);			
+			System.out.println("total triples after OWL inference: "+go_cam.qrunner.nTriples());
+		}		
 		//synchronize jena model <- with owl-api model	 
 		//go_cam_ont should have everything we want at this point, including any imports
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
@@ -302,6 +303,7 @@ public class BioPaxtoGO {
 			//this does not update the go_cam_ontology right now.  
 			int n_removed = go_cam.qrunner.deleteEntityLocations();
 			System.out.println("Removed "+n_removed+" entity location triples");
+			layoutForNoctuaVersion1(go_cam);	
 		}
 		go_cam.writeGoCAM(outfilename, save2blazegraph);
 		if(!is_logical) {
@@ -361,31 +363,6 @@ public class BioPaxtoGO {
 		}
 		report.close();
 
-		//reaction -> reaction connections
-		//TODO this would fit the 2nd step sparql rules.. would be more consistent to move it there and use the same pattern
-		//below mapped from Chris Mungall's
-		//prolog rules https://github.com/cmungall/pl-sysbio/blob/master/prolog/sysbio/bp2lego.pl
-		Set<PathwayStep> steps = pathway.getPathwayOrder();
-		for(PathwayStep step1 : steps) {
-			Set<Process> events = step1.getStepProcess();
-			Set<PathwayStep> step2s = step1.getNextStep();
-			for(PathwayStep step2 : step2s) {
-				Set<Process> nextEvents = step2.getStepProcess();
-				for(Process event : events) {
-					for(Process nextEvent : nextEvents) {
-						//	Event directly_provides_input_for NextEvent
-						if((event.getModelInterface().equals(BiochemicalReaction.class))&&
-								(nextEvent.getModelInterface().equals(BiochemicalReaction.class))) {
-							IRI e1_iri = GoCAM.makeGoCamifiedIRI(event.getUri());
-							IRI e2_iri = GoCAM.makeGoCamifiedIRI(nextEvent.getUri());
-							OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(e1_iri);
-							OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(e2_iri);
-							go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.provides_direct_input_for, e2, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, "Reactome", null);
-						}
-					}
-				}
-			}
-		}
 		//define the pieces of the pathway
 		//Process subsumes Pathway and Interaction (which is usually a reaction).  
 		//A pathway may have either or both reaction or pathway components.  
@@ -412,6 +389,38 @@ public class BioPaxtoGO {
 				System.out.println("Process URI.. "+process.getUri());			
 				System.out.println("Process model interface.. "+process.getModelInterface());	
 				System.exit(0);
+			}
+		}
+		//reaction -> reaction connections
+		//TODO this would fit the 2nd step sparql rules.. would be more consistent to move it there and use the same pattern
+		//below mapped from Chris Mungall's
+		//prolog rules https://github.com/cmungall/pl-sysbio/blob/master/prolog/sysbio/bp2lego.pl
+		Set<PathwayStep> steps = pathway.getPathwayOrder();
+		for(PathwayStep step1 : steps) {
+			Set<Process> events = step1.getStepProcess();
+			Set<PathwayStep> step2s = step1.getNextStep();
+			for(PathwayStep step2 : step2s) {
+				Set<Process> nextEvents = step2.getStepProcess();
+				for(Process event : events) {
+					for(Process nextEvent : nextEvents) {
+						//	Event directly_provides_input_for NextEvent
+						if((event.getModelInterface().equals(BiochemicalReaction.class))&&
+								(nextEvent.getModelInterface().equals(BiochemicalReaction.class))) {
+							IRI e1_iri = GoCAM.makeGoCamifiedIRI(event.getUri());
+							IRI e2_iri = GoCAM.makeGoCamifiedIRI(nextEvent.getUri());
+							OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(e1_iri);
+							OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(e2_iri);
+							go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.provides_direct_input_for, e2, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, "Reactome", null);
+							//in some cases, the reaction may connect off to a different pathway and hence not be caught in above loop to define reaction entities
+							//e.g. Recruitment of SET1 methyltransferase complex  -> APC promotes disassembly of beta-catenin transactivation complex
+							//are connected yet in different pathways
+							//if its been defined, ought to at least have a label
+							if(go_cam.getaLabel(e2).equals("")){
+								defineReactionEntity(go_cam, nextEvent, e2_iri);		
+							}
+						}
+					}
+				}
 			}
 		}
 
@@ -546,9 +555,12 @@ public class BioPaxtoGO {
 						}						
 					}
 					//adds a unique class to describe this complex 
-					//commented as tbox modifications don't play well with Noctua/Minerva which expects only Abox in the model
-					//addComplexAsSimpleClass(go_cam, cnames, e, null);
-					//so instead we added a link to the original uri for linking and this for rough classification
+					//TODO generally tbox modifications don't play well with Noctua/Minerva which expects only Abox in the model
+					//but need to show something other than "molecular complex' for the nodes in the folded reaction view..
+					//so stuffing the names into the class..  yay.  
+					if(noctua_version == 1) { 
+						addComplexAsSimpleClass(go_cam, cnames, e, null);
+					}
 					go_cam.addTypeAssertion(e, GoCAM.go_complex);
 				}else { 
 					go_cam.addTypeAssertion(e,  GoCAM.chebi_protein);
@@ -655,7 +667,9 @@ public class BioPaxtoGO {
 				//assert it as a complex
 				go_cam.addTypeAssertion(e, GoCAM.go_complex);
 				//adds a unique class to describe this complex (no no to modify tbox..)
-				//addComplexAsSimpleClass(go_cam, cnames, e, null);
+				if(noctua_version == 1) { 
+					addComplexAsSimpleClass(go_cam, cnames, e, null);
+				}
 
 			}
 		}
@@ -707,13 +721,13 @@ public class BioPaxtoGO {
 			Set<Entity> participants = ((Interaction) entity).getParticipant();
 			for(Entity participant : participants) {
 				//figure out its nature and capture that
-				if(noctua_version == 1) {
-					IRI participant_iri = GoCAM.makeGoCamifiedIRI(participant.getUri()); //merge them with members of other reactions to improve display..						
-					defineReactionEntity(go_cam, participant, participant_iri);	
-				}else {
-					IRI participant_iri = GoCAM.makeGoCamifiedIRI(participant.getUri()+entity.getUri()); //keep the entities in this reaction uniquely identified.. (don't merge them with members of other reactions even if same class of thing)								
-					defineReactionEntity(go_cam, participant, participant_iri);		
-				}
+				//			if(noctua_version == 1) {
+				//				IRI participant_iri = GoCAM.makeGoCamifiedIRI(participant.getUri()); //merge them with members of other reactions to improve display..						
+				//				defineReactionEntity(go_cam, participant, participant_iri);	
+				//			}else {
+				IRI participant_iri = GoCAM.makeGoCamifiedIRI(participant.getUri()+entity.getUri()); //keep the entities in this reaction uniquely identified.. (don't merge them with members of other reactions even if same class of thing)								
+				defineReactionEntity(go_cam, participant, participant_iri);		
+				//			}
 			}
 			//link to participants in reaction
 			//biopax#left -> obo:input , biopax#right -> obo:output
@@ -743,11 +757,11 @@ public class BioPaxtoGO {
 				if(inputs!=null) {
 					for(PhysicalEntity input : inputs) {
 						IRI i_iri = null;
-						if(noctua_version==1) {
-							i_iri = GoCAM.makeGoCamifiedIRI(input.getUri()); //make them join up across reactions for display..
-						}else {
-							i_iri = GoCAM.makeGoCamifiedIRI(input.getUri()+entity.getUri());
-						}
+						//						if(noctua_version==1) {
+						//							i_iri = GoCAM.makeGoCamifiedIRI(input.getUri()); //make them join up across reactions for display..
+						//						}else {
+						i_iri = GoCAM.makeGoCamifiedIRI(input.getUri()+entity.getUri());
+						//						}
 						OWLNamedIndividual input_entity = go_cam.df.getOWLNamedIndividual(i_iri);
 						defineReactionEntity(go_cam, input, i_iri);
 						go_cam.addObjectPropertyAssertion(e, GoCAM.has_input, input_entity,go_cam.getDefaultAnnotations());
@@ -755,11 +769,11 @@ public class BioPaxtoGO {
 				if(outputs!=null) {
 					for(PhysicalEntity output : outputs) {
 						IRI o_iri = null;
-						if(noctua_version==1) {
-							o_iri = GoCAM.makeGoCamifiedIRI(output.getUri()); //make them join up across reactions for display..
-						}else {
-							o_iri = GoCAM.makeGoCamifiedIRI(output.getUri()+entity.getUri());
-						}
+						//						if(noctua_version==1) {
+						//							o_iri = GoCAM.makeGoCamifiedIRI(output.getUri()); //make them join up across reactions for display..
+						//						}else {
+						o_iri = GoCAM.makeGoCamifiedIRI(output.getUri()+entity.getUri());
+						//						}
 						OWLNamedIndividual output_entity = go_cam.df.getOWLNamedIndividual(o_iri);
 						defineReactionEntity(go_cam, output, o_iri);
 						go_cam.addObjectPropertyAssertion(e, GoCAM.has_output, output_entity, go_cam.getDefaultAnnotations());
@@ -806,11 +820,11 @@ public class BioPaxtoGO {
 					Set<Controller> controller_entities = controller.getController();
 					for(Controller controller_entity : controller_entities) {
 						IRI iri = null;
-						if(noctua_version==1) {
-							iri = GoCAM.makeGoCamifiedIRI(controller_entity.getUri()); //make them join up across reactions for display..
-						}else {
-							iri = GoCAM.makeGoCamifiedIRI(controller_entity.getUri()+entity.getUri());
-						}
+						//						if(noctua_version==1) {
+						//							iri = GoCAM.makeGoCamifiedIRI(controller_entity.getUri()); //make them join up across reactions for display..
+						//						}else {
+						iri = GoCAM.makeGoCamifiedIRI(controller_entity.getUri()+entity.getUri());
+						//						}
 						defineReactionEntity(go_cam, controller_entity, iri);
 						//the protein or complex
 						OWLNamedIndividual controller_e = go_cam.df.getOWLNamedIndividual(iri);
@@ -821,7 +835,20 @@ public class BioPaxtoGO {
 						//define relationship between controller entity and reaction
 						//if catalysis then always enabled by
 						if(is_catalysis) {
+							//make sure there is something there to define the node so it shows up in Noctua view
+							if(noctua_version == 1) {
+								Collection<OWLClassExpression> types = EntitySearcher.getTypes(controller_e, go_cam.go_cam_ont);
+								if(types==null||types.size()==0) {
+									String name = controller_entity.getDisplayName();
+									OWLClass named_class = go_cam.df.getOWLClass(IRI.create(GoCAM.base_iri+"unknown_"+(name.replaceAll(" ", "_"))));
+									go_cam.addSubclassAssertion(named_class, GoCAM.continuant_class, null);
+									go_cam.addTypeAssertion(controller_e, named_class);
+									go_cam.addLiteralAnnotations2Individual(controller_e.getIRI(), GoCAM.rdfs_comment, "Only defined as a Physical Entity.  No protein etc. identifier given by source.  Could be unknown, could be a family.");
+									go_cam.addLabel(controller_e, name);
+								}
+							}
 							go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, controller_e, controllerpubrefs, GoCAM.eco_imported_auto, "PMID", null);	
+
 						}else {
 							//otherwise look at text 
 							//					//define how the molecular function (process) relates to the reaction (process)
@@ -884,6 +911,14 @@ public class BioPaxtoGO {
 						go_cam.addTypeAssertion(placeInstance, place);
 						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.occurs_in, placeInstance, pubids, GoCAM.eco_imported_auto, "PMID", null);
 					}
+					//					if(noctua_version==1) {
+					//					//remove all location assertions for physical entities because they destroy noctua1.0 view
+					//					go_cam.go_cam_ont = stripLocations(EntitySearcher.getObjectPropertyValues(e, GoCAM.has_input, go_cam.go_cam_ont), go_cam.go_cam_ont, go_cam.df);
+					//					go_cam.go_cam_ont = stripLocations(EntitySearcher.getObjectPropertyValues(e, GoCAM.has_output, go_cam.go_cam_ont), go_cam.go_cam_ont, go_cam.df);
+					//					go_cam.go_cam_ont = stripLocations(EntitySearcher.getObjectPropertyValues(e, GoCAM.enabled_by, go_cam.go_cam_ont), go_cam.go_cam_ont, go_cam.df);
+					//					go_cam.go_cam_ont = stripLocations(EntitySearcher.getObjectPropertyValues(e, GoCAM.involved_in_negative_regulation_of, go_cam.go_cam_ont), go_cam.go_cam_ont, go_cam.df);
+					//					go_cam.go_cam_ont = stripLocations(EntitySearcher.getObjectPropertyValues(e, GoCAM.involved_in_positive_regulation_of, go_cam.go_cam_ont), go_cam.go_cam_ont, go_cam.df);
+					//				}
 				}else {
 					//System.out.println("1+++  "+reaction +" "+reaction_places);
 					for(OWLClass place : reaction_places) {
@@ -892,14 +927,6 @@ public class BioPaxtoGO {
 						go_cam.addLiteralAnnotations2Individual(e.getIRI(), GoCAM.rdfs_comment, "occurs_in "+plabel);
 					}
 				}
-//				if(noctua_version==1) {
-//					//remove all location assertions for physical entities because they destroy noctua1.0 view
-//					go_cam.go_cam_ont = stripLocations(EntitySearcher.getObjectPropertyValues(e, GoCAM.has_input, go_cam.go_cam_ont), go_cam.go_cam_ont, go_cam.df);
-//					go_cam.go_cam_ont = stripLocations(EntitySearcher.getObjectPropertyValues(e, GoCAM.has_output, go_cam.go_cam_ont), go_cam.go_cam_ont, go_cam.df);
-//					go_cam.go_cam_ont = stripLocations(EntitySearcher.getObjectPropertyValues(e, GoCAM.enabled_by, go_cam.go_cam_ont), go_cam.go_cam_ont, go_cam.df);
-//					go_cam.go_cam_ont = stripLocations(EntitySearcher.getObjectPropertyValues(e, GoCAM.involved_in_negative_regulation_of, go_cam.go_cam_ont), go_cam.go_cam_ont, go_cam.df);
-//					go_cam.go_cam_ont = stripLocations(EntitySearcher.getObjectPropertyValues(e, GoCAM.involved_in_positive_regulation_of, go_cam.go_cam_ont), go_cam.go_cam_ont, go_cam.df);
-//				}
 			}
 		}
 		report.close();
@@ -920,10 +947,10 @@ public class BioPaxtoGO {
 		for(String n : component_names) {
 			combo_name=combo_name+"_"+n;
 		}
-		OWLClass complex_class = go_cam.df.getOWLClass(GoCAM.makeRandomIri());
+		OWLClass complex_class = go_cam.df.getOWLClass(GoCAM.makeGoCamifiedIRI(combo_name));
 		Set<String> labels =  go_cam.getLabels(complex_i);
 		for(String label : labels) {
-			go_cam.addLabel(complex_class, label+"_c");
+			go_cam.addLabel(complex_class, label+" ");
 		}
 		go_cam.addSubclassAssertion(complex_class, GoCAM.go_complex, annotations);
 		go_cam.addTypeAssertion(complex_i, complex_class);
@@ -1098,115 +1125,17 @@ public class BioPaxtoGO {
 		return;
 	}
 
-
 	/**
-	 * Given knowledge of semantic structure of a GO-CAM, try to make a basic layout that is useful within the Noctua editor.
-	 * Tries to line up pathways/processes vertically on the left with reactions/functions associated with each one expanding horizontally
+	 * Given knowledge of semantic structure of a GO-CAM, try to make a basic layout that is useful within the Noctua editor as it stands in Version1.
+	 * In this implementation, all function node attributes should be 'folded' in the the UI. 
+	 * Attempt to line the function nodes up in some reasonable order..
 	 * @param go_cam
 	 */
-	private void layoutForNoctuaV1(GoCAM go_cam) {
-		removeRedundantLocations(go_cam);
+	private void layoutForNoctuaVersion1(GoCAM go_cam) {
+		//removeRedundantLocations(go_cam);
 		Iterator<OWLIndividual> pathways = EntitySearcher.getIndividuals(GoCAM.bp_class, go_cam.go_cam_ont).iterator();
-		int y_spacer = 450; int x_spacer = 650;
-		int y = 320; int x = 60;
-		while(pathways.hasNext()) {
-			OWLNamedIndividual pathway = (OWLNamedIndividual)pathways.next();
-			go_cam.addLiteralAnnotations2Individual(pathway.getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(x));
-			go_cam.addLiteralAnnotations2Individual(pathway.getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(y));   			
-			//horizontal line of related reactions
-			int reaction_x = x + x_spacer; 
-			int reaction_y = y;
-			Iterator<OWLIndividual> reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont).iterator();
-			while(reactions.hasNext()) {
-				OWLNamedIndividual reaction = (OWLNamedIndividual)reactions.next();
-				go_cam.addLiteralAnnotations2Individual(reaction.getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(reaction_x));
-				go_cam.addLiteralAnnotations2Individual(reaction.getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(reaction_y));
-				//up for input down for output
-				int input_x = reaction_x - 200;
-				int input_y = reaction_y - 200;
-				Iterator<OWLIndividual> inputs = EntitySearcher.getObjectPropertyValues(reaction, GoCAM.has_input, go_cam.go_cam_ont).iterator();
-				while(inputs.hasNext()) {
-					OWLNamedIndividual input = (OWLNamedIndividual)inputs.next();
-					go_cam.addLiteralAnnotations2Individual(input.getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(input_x));
-					go_cam.addLiteralAnnotations2Individual(input.getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(input_y));
-
-					int location_x = input_x;
-					int location_y = input_y - 100;
-					Iterator<OWLIndividual> locations = EntitySearcher.getObjectPropertyValues(input, GoCAM.located_in, go_cam.go_cam_ont).iterator();
-					while(locations.hasNext()) {
-						OWLNamedIndividual location = (OWLNamedIndividual)locations.next();
-						go_cam.addLiteralAnnotations2Individual(location.getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(location_x));
-						go_cam.addLiteralAnnotations2Individual(location.getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(location_y));
-						location_x = location_x + 50;
-					}	
-					input_x = input_x+200;
-				}
-				int output_x = reaction_x - 200;
-				int output_y = reaction_y + 300;
-				Iterator<OWLIndividual> outputs = EntitySearcher.getObjectPropertyValues(reaction, GoCAM.has_output, go_cam.go_cam_ont).iterator();
-				while(outputs.hasNext()) {
-					OWLNamedIndividual output = (OWLNamedIndividual)outputs.next();
-					go_cam.addLiteralAnnotations2Individual(output.getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(output_x));
-					go_cam.addLiteralAnnotations2Individual(output.getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(output_y));
-
-					int location_x = output_x;
-					int location_y = output_y + 100;
-					Iterator<OWLIndividual> locations = EntitySearcher.getObjectPropertyValues(output, GoCAM.located_in, go_cam.go_cam_ont).iterator();
-					while(locations.hasNext()) {
-						OWLNamedIndividual location = (OWLNamedIndividual)locations.next();
-						go_cam.addLiteralAnnotations2Individual(location.getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(location_x));
-						go_cam.addLiteralAnnotations2Individual(location.getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(location_y));
-						location_y = location_y + 50;
-					}					
-					output_x = output_x+200;
-				}
-				//up left for enabled 
-				int enabler_x = reaction_x - 400;
-				int enabler_y = reaction_y - 200;
-
-				Iterator<OWLIndividual> enablers = EntitySearcher.getObjectPropertyValues(reaction, GoCAM.enabled_by, go_cam.go_cam_ont).iterator();
-				if(enablers!=null) {
-					while(enablers.hasNext()) {
-						OWLNamedIndividual enabler = (OWLNamedIndividual)enablers.next();
-						//check if already has a location (e.g. as an input)
-						long n = ((Stream<OWLIndividual>) EntitySearcher.getAnnotationObjects(enabler.getIRI(), go_cam.go_cam_ont, GoCAM.x_prop)).count();
-						if(n==0) {
-							go_cam.addLiteralAnnotations2Individual(enabler.getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(enabler_x));
-							go_cam.addLiteralAnnotations2Individual(enabler.getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(enabler_y));					
-							int location_x = enabler_x;
-							int location_y = enabler_y - 100;
-							Iterator<OWLIndividual> locations = EntitySearcher.getObjectPropertyValues(enabler, GoCAM.located_in, go_cam.go_cam_ont).iterator();
-							while(locations.hasNext()) {
-								OWLNamedIndividual location = (OWLNamedIndividual)locations.next();
-								go_cam.addLiteralAnnotations2Individual(location.getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(location_x));
-								go_cam.addLiteralAnnotations2Individual(location.getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(location_y));
-								location_y = location_y - 50;
-							}					
-							enabler_x = enabler_x+50;
-							enabler_y = enabler_y+100;
-						}
-					}
-				}
-
-				reaction_x = reaction_x+x_spacer;
-			}
-
-			y = y+y_spacer;
-		}
-	}
-
-	/**
-	 * Given knowledge of semantic structure of a GO-CAM, try to make a basic layout that is useful within the Noctua editor.
-	 * Tries to line up pathways/processes hotizontally on the top with reactions/functions associated with each one expanding vertically down
-	 * When a reaction provides_input_for another reaction, try to line these up so the order flows from left to right.
-	 * Try to group inputs above, outputs below and enablers - see @layoutReactionComponents
-	 * @param go_cam
-	 */
-	private void layoutForNoctuaV2(GoCAM go_cam) {
-		removeRedundantLocations(go_cam);
-		Iterator<OWLIndividual> pathways = EntitySearcher.getIndividuals(GoCAM.bp_class, go_cam.go_cam_ont).iterator();
-		int y_spacer = 450; int x_spacer = 650;
-		int y = 50; int x = 500;
+		int y_spacer = 350; int x_spacer = 450;
+		int y = 50; int x = 200;
 		//generally only one pathway represented with reactions - others just links off via part of
 		//draw them in a line across the top 
 		while(pathways.hasNext()) {
@@ -1220,7 +1149,66 @@ public class BioPaxtoGO {
 			int reaction_x = x; 
 			int reaction_y = y + y_spacer;
 			Iterator<OWLIndividual> reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont).iterator();
-			//find out if there is a logical root - a reaction with no provides_direct_iput_for relations coming into it
+			//find out if there is a logical root - a reaction with no provides_direct_input_for relations coming into it
+			Set<OWLIndividual> roots = new HashSet<OWLIndividual>();
+			while(reactions.hasNext()) {
+				OWLIndividual react = reactions.next();
+				roots.add(react);
+			}
+			reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont).iterator();
+			while(reactions.hasNext()) {	
+				OWLIndividual react = reactions.next();
+				Iterator<OWLIndividual> targets = EntitySearcher.getObjectPropertyValues(react, GoCAM.provides_direct_input_for, go_cam.go_cam_ont).iterator();
+				while(targets.hasNext()) {
+					OWLIndividual target = targets.next();			
+					roots.remove(target);				
+				}
+			}
+			//if there is a root or roots.. do a sideways bread first layout
+			if(roots.size()>0) {
+				for(OWLIndividual root : roots) {
+					layoutHorizontalTree(reaction_x, reaction_y, x_spacer, y_spacer, (OWLNamedIndividual)root, GoCAM.provides_direct_input_for, go_cam);
+					reaction_y = reaction_y + y_spacer;
+				}				
+			}else { // do loop layout.  
+				reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont).iterator();
+				if(reactions.hasNext()) {
+					System.out.println(pathway + "Loop layout!");
+					OWLNamedIndividual loopstart = (OWLNamedIndividual) reactions.next();
+					layoutLoopish(reaction_x, reaction_y, x_spacer, y_spacer, loopstart, GoCAM.provides_direct_input_for, go_cam);		
+				}
+			}
+			x = x+x_spacer;
+		}
+	}
+
+
+	/**
+	 * Given knowledge of semantic structure of a GO-CAM, try to make a basic layout that is useful within the Noctua editor.
+	 * Tries to line up pathways/processes hotizontally on the top with reactions/functions associated with each one expanding vertically down
+	 * When a reaction provides_input_for another reaction, try to line these up so the order flows from left to right.
+	 * Try to group inputs above, outputs below and enablers - see @layoutReactionComponents
+	 * @param go_cam
+	 */
+	private void layoutForNoctua(GoCAM go_cam) {
+		//removeRedundantLocations(go_cam);
+		Iterator<OWLIndividual> pathways = EntitySearcher.getIndividuals(GoCAM.bp_class, go_cam.go_cam_ont).iterator();
+		int y_spacer = 350; int x_spacer = 450;
+		int y = 50; int x = 200;
+		//generally only one pathway represented with reactions - others just links off via part of
+		//draw them in a line across the top 
+		while(pathways.hasNext()) {
+			OWLNamedIndividual pathway = (OWLNamedIndividual)pathways.next();
+
+			go_cam.addLiteralAnnotations2Individual(pathway.getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(x));
+			go_cam.addLiteralAnnotations2Individual(pathway.getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(y));   			
+
+			//find reactions that are part of this pathway
+			//CLUNKY.. fighting query.. need to find a better way - maybe sparql... 
+			int reaction_x = x; 
+			int reaction_y = y + y_spacer;
+			Iterator<OWLIndividual> reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont).iterator();
+			//find out if there is a logical root - a reaction with no provides_direct_input_for relations coming into it
 			Set<OWLIndividual> roots = new HashSet<OWLIndividual>();
 			while(reactions.hasNext()) {
 				OWLIndividual react = reactions.next();
@@ -1283,6 +1271,7 @@ public class BioPaxtoGO {
 			layoutPartsAndlocations(input, input_x, input_y, go_cam);	
 			input_x = input_x+200;
 		}
+		// down for output
 		int output_x = reaction_x - 200;
 		int output_y = reaction_y + 300;
 		Iterator<OWLIndividual> outputs = EntitySearcher.getObjectPropertyValues(reaction, GoCAM.has_output, go_cam.go_cam_ont).iterator();
@@ -1333,6 +1322,36 @@ public class BioPaxtoGO {
 				}
 			}
 		}
+		//TODO
+		//involved in negative / positive regulation of 
+		//left and down
+		int negative_regulator_x = reaction_x - 400;
+		int negative_regulator_y = reaction_y + 200;
+		Iterator<OWLIndividual> neg_regulators = EntitySearcher.getObjectPropertyValues(reaction, GoCAM.involved_in_negative_regulation_of, go_cam.go_cam_ont).iterator();
+		if(neg_regulators!=null) {
+			while(neg_regulators.hasNext()) {
+				OWLNamedIndividual regulator = (OWLNamedIndividual)neg_regulators.next();
+				Collection<OWLAnnotation> c = EntitySearcher.getAnnotationObjects(regulator.getIRI(), go_cam.go_cam_ont, GoCAM.x_prop);				
+				if(c.size()==0) {
+					go_cam.addLiteralAnnotations2Individual(regulator.getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(negative_regulator_x));
+					go_cam.addLiteralAnnotations2Individual(regulator.getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(negative_regulator_y));									
+				}
+			}
+		}
+		int positive_regulator_x = reaction_x - 400;
+		int positive_regulator_y = reaction_y + 200;
+		Iterator<OWLIndividual> pos_regulators = EntitySearcher.getObjectPropertyValues(reaction, GoCAM.involved_in_positive_regulation_of, go_cam.go_cam_ont).iterator();
+		if(pos_regulators!=null) {
+			while(pos_regulators.hasNext()) {
+				OWLNamedIndividual regulator = (OWLNamedIndividual)pos_regulators.next();
+				Collection<OWLAnnotation> c = EntitySearcher.getAnnotationObjects(regulator.getIRI(), go_cam.go_cam_ont, GoCAM.x_prop);				
+				if(c.size()==0) {
+					go_cam.addLiteralAnnotations2Individual(regulator.getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(positive_regulator_x));
+					go_cam.addLiteralAnnotations2Individual(regulator.getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(positive_regulator_y));									
+				}
+			}
+		}
+
 	}
 
 	/**

@@ -11,6 +11,7 @@ delete {
   ?anno_node ?prop ?c 
 }
 where {
+#limits location removal to physical entities
   ?physical_entity rdf:type ?entity_class . 
   ?entity_class rdfs:subClassOf ?grouping_class .
   VALUES ?grouping_class { obo:GO_0032991 obo:CHEBI_36080 obo:BFO_0000002} .

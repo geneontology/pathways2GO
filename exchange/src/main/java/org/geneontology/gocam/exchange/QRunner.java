@@ -246,7 +246,8 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		Set<InferredRegulator> ir = new HashSet<InferredRegulator>();
 		String query = null;
 		try {		
-			query = IOUtils.toString(App.class.getResourceAsStream("query2update_regulation_2.rq"), StandardCharsets.UTF_8);
+			//TODO revisit this query post May 2018 meeting...  weakened it as Noctua1.0 version of this took out complex has_part relations
+			query = IOUtils.toString(App.class.getResourceAsStream("query2update_regulation_2_noctua1.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL update from jar \n"+e);
 		}
