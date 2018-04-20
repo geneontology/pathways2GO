@@ -72,7 +72,7 @@ public class QRunner {
 	}
 
 	public QRunner(OWLOntology abox) {
-		System.out.println("Setting up Jena model for query.  Only including Abox ontology, no reasoning");
+		System.out.println("Setting up Jena model for query.  Only including input Abox ontology, no reasoning");
 		jena = makeJenaModel(abox, null);
 	}
 
@@ -260,7 +260,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			Resource reaction1 = qs.getResource("reaction1"); 
 			Resource reaction2 = qs.getResource("reaction2"); 
 			//reaction1  regulated somehow by reaction 2
-			ir.add(new InferredRegulator(reaction1.getURI(), GoCAM.directly_negatively_regulated_by.getIRI().toString(), reaction2.getURI()));
+			ir.add(new InferredRegulator(reaction1.getURI(), GoCAM.directly_negatively_regulates.getIRI().toString(), reaction2.getURI()));
 		}
 		qe.close();
 		return ir;
@@ -282,6 +282,20 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		int n_after = count(count);
 		n= n_after-n_before;
 		return n;
+	}
+	
+	void deletePathwayHasPart() {
+		String update = null;
+		try {
+			update = IOUtils.toString(App.class.getResourceAsStream("delete_process_has_part_relations.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL update from jar \n"+e);
+		}
+		//before
+		System.out.println("Before has_part zap "+nTriples());
+		UpdateAction.parseExecute(update, jena) ;
+		System.out.println("After has_part zap "+nTriples());
+		return;
 	}
 	
 	int count(String sparql_count_query) {

@@ -73,7 +73,8 @@ public class GoCAM {
 	state_prop, evidence_prop, provided_by_prop, x_prop, y_prop, rdfs_label, rdfs_comment, source_prop;
 	public static OWLObjectProperty part_of, has_part, has_input, has_output, 
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in,
-	directly_positively_regulated_by, directly_negatively_regulated_by, involved_in_regulation_of, involved_in_negative_regulation_of, involved_in_positive_regulation_of;
+	directly_positively_regulated_by, directly_negatively_regulated_by, involved_in_regulation_of, involved_in_negative_regulation_of, involved_in_positive_regulation_of,
+	directly_negatively_regulates, directly_positively_regulates;
 	public static OWLClass 
 	bp_class, continuant_class, process_class, go_complex, molecular_function, 
 	eco_imported, eco_imported_auto, eco_inferred_auto, 
@@ -207,8 +208,16 @@ public class GoCAM {
 		//directly positively regulated by RO_0002024
 		directly_negatively_regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002023"));
 		addLabel(directly_negatively_regulated_by, "directly negatively regulated by");
+		//RO_0002630
+		directly_negatively_regulates = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002630"));
+		addLabel(directly_negatively_regulates, "directly negatively regulates");
+		
 		directly_positively_regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002024"));
 		addLabel(directly_positively_regulated_by, "directly positively regulated by");
+		
+		directly_positively_regulates = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002629"));
+		addLabel(directly_positively_regulates, "directly positively regulates");
+		
 		//RO_0002430 involved_in_negative_regulation_of
 		//RO_0002429 involved_in_positive_regulation_of
 		involved_in_negative_regulation_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002430"));
@@ -574,23 +583,23 @@ final long counterValue = instanceCounter.getAndIncrement();
 		Set<InferredRegulator> ir1 = qrunner.getInferredRegulatorsQ1();
 		for(InferredRegulator ir : ir1) {
 			//create ?reaction2 obo:RO_0002333 ?input
-			OWLNamedIndividual r1 = this.makeAnnotatedIndividual(ir.reaction1_uri);
-			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ir.reaction2_uri);
-			OWLObjectProperty o = GoCAM.directly_negatively_regulated_by;
-			String reg = "negative regulation of";
+			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ir.reaction1_uri);
+			OWLNamedIndividual r1 = this.makeAnnotatedIndividual(ir.reaction2_uri);
+			OWLObjectProperty o = GoCAM.directly_negatively_regulates;
+			String reg = "negatively regulates";
 			if(ir.prop_uri.equals("http://purl.obolibrary.org/obo/RO_0002429")) {
-				o = GoCAM.directly_positively_regulated_by;
-				reg = "positive regulation of";
+				o = GoCAM.directly_positively_regulates;
+				reg = "positively regulates";
 			}
-			String r2_label = "'"+this.getaLabel(r2)+"'";
 			String r1_label = "'"+this.getaLabel(r1)+"'";
+			String r2_label = "'"+this.getaLabel(r2)+"'";
 			String o_label = "'"+this.getaLabel(o)+"'";
 			Set<OWLAnnotation> annos = getDefaultAnnotations();
-			String explain = "The relation "+r1_label+" "+o_label+" "+r2_label+" was inferred because: "
-					+r2_label+" has output A and A is involved in "+reg+" "+r1_label+". See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
+			String explain = "The relation "+r2_label+" "+o_label+" "+r1_label+" was inferred because: "
+					+r1_label+" has output A and A is involved in "+reg+" "+r2_label+". See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 			this.addRefBackedObjectPropertyAssertion(r1, o, r2, null, GoCAM.eco_inferred_auto, null, annos);
-			System.out.println("reg1 "+r1+" "+o+" "+r2);
+			System.out.println("reg1 "+r2+" "+o+" "+r1);
 		}
 		//if subsequent rules need to compute over the results of previous rules, need to load the owl back into the rdf model
 		qrunner = new QRunner(go_cam_ont); 
@@ -598,20 +607,20 @@ final long counterValue = instanceCounter.getAndIncrement();
 		Set<InferredRegulator> ir2_neg = qrunner.getInferredRegulatorsQ2();
 		for(InferredRegulator ir : ir2_neg) {
 			//create ?reaction2 obo:RO_0002333 ?input
-			OWLNamedIndividual r1 = this.makeAnnotatedIndividual(ir.reaction1_uri);
-			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ir.reaction2_uri);
+			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ir.reaction1_uri);
+			OWLNamedIndividual r1 = this.makeAnnotatedIndividual(ir.reaction2_uri);
 			OWLObjectProperty o = df.getOWLObjectProperty(IRI.create(ir.prop_uri));
-			String r2_label = "'"+this.getaLabel(r2)+"'";
 			String r1_label = "'"+this.getaLabel(r1)+"'";
+			String r2_label = "'"+this.getaLabel(r2)+"'";
 			String o_label = "'"+this.getaLabel(o)+"'";
 			Set<OWLAnnotation> annos = getDefaultAnnotations();
-			String explain = "The relation "+r2_label+" "+o_label+" "+r1_label+" was inferred because:\n "+
-					r1_label+" has inputs A and B, "+r1_label+" has output A/B complex, and " + 
-					r2_label+" is enabled by B. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
+			String explain = "The relation "+r1_label+" "+o_label+" "+r2_label+" was inferred because:\n "+
+					r2_label+" has inputs A and B, "+r2_label+" has output A/B complex, and " + 
+					r1_label+" is enabled by B. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
-			this.addObjectPropertyAssertion(r2, o, r1, annos);
+			//this.addObjectPropertyAssertion(r1, o, r2, annos);
 			this.addRefBackedObjectPropertyAssertion(r2, o, r1, null, GoCAM.eco_inferred_auto, null, annos);
-			System.out.println("reg2 "+r2+" "+o+" "+r1);
+			System.out.println("reg2 "+r1+" "+o+" "+r2);
 		}		
 		System.out.println("Added "+ir2_neg.size()+" neg inhibitory binding reg triples");
 	}

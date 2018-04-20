@@ -1,0 +1,17 @@
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+prefix obo: <http://purl.obolibrary.org/obo/>
+
+delete {
+  ?pathway obo:BFO_0000051 ?reaction . 
+  ?anno_node ?prop ?c . 
+  ?c ?prop2 ?d 
+} where{
+  ?pathway obo:BFO_0000051 ?reaction . 
+  ?reaction rdf:type obo:GO_0003674 .
+  ?pathway rdf:type obo:GO_0008150 .
+  ?anno_node owl:annotatedProperty obo:BFO_0000051  .
+  ?anno_node owl:annotatedSource ?pathway .
+  ?anno_node owl:annotatedTarget ?reaction .
+  ?anno_node ?prop ?c 
+  }

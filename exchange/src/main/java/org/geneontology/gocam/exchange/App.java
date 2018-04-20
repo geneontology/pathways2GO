@@ -56,32 +56,9 @@ public class App {
 	//	String maximal_lego = "src/main/resources/org/geneontology/gocam/exchange/go-lego-full.owl";	
 
 	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
-		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
-		OWLDataFactory df = man.getOWLDataFactory();
-		OWLOntology o = man.createOntology();
-		IRI source_iri = IRI.create("http://test123");
-		IRI prop_iri = IRI.create("http://purl.obolibrary.org/obo/RO_0002333");
-		IRI target_iri = IRI.create("http://www.reactome.org/biopax/63/201451#Protein29-842491573");
 		
-//		OWLObjectPropertyAssertionAxiom back = df.getOWLObjectPropertyAssertionAxiom(
-//				df.getOWLObjectProperty(prop_iri), 
-//				df.getOWLNamedIndividual(source_iri), 
-//				df.getOWLNamedIndividual(target_iri));
-//		man.addAxiom(o, back);
-		
-		OWLAnnotation anno = df.getOWLAnnotation(df.getOWLAnnotationProperty(prop_iri), df.getOWLLiteral("bla"));
-		OWLAxiom axiom = df.getOWLAnnotationAssertionAxiom(source_iri, anno);
-		man.addAxiom(o, axiom);
-		
-		OWLAnnotation anno2 = df.getOWLAnnotation(df.getOWLAnnotationProperty(prop_iri), df.getOWLLiteral("bla"));
-		OWLAxiom axiom2 = df.getOWLAnnotationAssertionAxiom(source_iri, anno);
-		man.addAxiom(o, axiom2);
-
-		writeOntology("report/blablabla.ttl", o);
 
 		
-	//	IRI prop_iri = IRI.create("http://purl.obolibrary.org/obo/RO_0002333");
-	//	IRI target_iri = IRI.create("http://www.reactome.org/biopax/63/201451#Protein29-842491573");
 	}
 
 

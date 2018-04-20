@@ -55,6 +55,7 @@ import org.biopax.paxtools.model.level3.Xref;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
+import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationValue;
@@ -112,10 +113,9 @@ public class BioPaxtoGO {
 		String converted = 
 		//		"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
 		//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
-		//		"/Users/bgood/Desktop/test/Wnt_output/converted-";
+				"/Users/bgood/Desktop/test/Wnt_output/converted-";
 		//		"/Users/bgood/Desktop/test/gap_junction_output/converted-";
 		//"/Users/bgood/Desktop/test/bmp_output/converted-";
-		"/Users/bgood/Desktop/test_input/converted-";
 		//"/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-";
 		//"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
@@ -299,11 +299,16 @@ public class BioPaxtoGO {
 		//go_cam_ont should have everything we want at this point, including any imports
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
 		if(noctua_version == 1) {
-			//locations massively cloud the editor view
-			//this does not update the go_cam_ontology right now.  
-			int n_removed = go_cam.qrunner.deleteEntityLocations();
-			System.out.println("Removed "+n_removed+" entity location triples");
+			//adds coordinates to go_con_ont model 
 			layoutForNoctuaVersion1(go_cam);	
+			//add them into the rdf 
+			go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
+			//do rdf-only pruning - don't reinitialize runner after this as these changes don't get put into ontology
+			//remove has_part relations linking process to reactions.  redundant as all reactions are part of the main process right now and clouds view
+			//delete not quite working - leaving in evidence nodes.. 
+			//go_cam.qrunner.deletePathwayHasPart();
+			//remove any locations on physical entities. screws display
+			go_cam.qrunner.deleteEntityLocations();
 		}
 		go_cam.writeGoCAM(outfilename, save2blazegraph);
 		if(!is_logical) {
@@ -371,6 +376,11 @@ public class BioPaxtoGO {
 			//though the great majority are BiochemicalReaction
 			//whatever it is, its a part of the pathway
 			OWLNamedIndividual child = go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(process.getUri()));
+			if(noctua_version == 1) {
+				//this will add something to see what happened as the has_part lines are going to get blown away.
+				go_cam.addLiteralAnnotations2Individual(child.getIRI(), GoCAM.rdfs_comment, pathway.getDisplayName()+" has_part "+process.getDisplayName());
+				go_cam.addLiteralAnnotations2Individual(child.getIRI(), GoCAM.rdfs_comment, process.getDisplayName()+" references PMIDS: "+pubids);
+			}
 			go_cam.addRefBackedObjectPropertyAssertion(pathway_e, GoCAM.has_part, child, pubids, GoCAM.eco_imported_auto, "PMID", null);
 			//attach reactions that make up the pathway
 			if(process instanceof Conversion 
@@ -1125,63 +1135,6 @@ public class BioPaxtoGO {
 		return;
 	}
 
-	/**
-	 * Given knowledge of semantic structure of a GO-CAM, try to make a basic layout that is useful within the Noctua editor as it stands in Version1.
-	 * In this implementation, all function node attributes should be 'folded' in the the UI. 
-	 * Attempt to line the function nodes up in some reasonable order..
-	 * @param go_cam
-	 */
-	private void layoutForNoctuaVersion1(GoCAM go_cam) {
-		//removeRedundantLocations(go_cam);
-		Iterator<OWLIndividual> pathways = EntitySearcher.getIndividuals(GoCAM.bp_class, go_cam.go_cam_ont).iterator();
-		int y_spacer = 350; int x_spacer = 450;
-		int y = 50; int x = 200;
-		//generally only one pathway represented with reactions - others just links off via part of
-		//draw them in a line across the top 
-		while(pathways.hasNext()) {
-			OWLNamedIndividual pathway = (OWLNamedIndividual)pathways.next();
-
-			go_cam.addLiteralAnnotations2Individual(pathway.getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(x));
-			go_cam.addLiteralAnnotations2Individual(pathway.getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(y));   			
-
-			//find reactions that are part of this pathway
-			//CLUNKY.. fighting query.. need to find a better way - maybe sparql... 
-			int reaction_x = x; 
-			int reaction_y = y + y_spacer;
-			Iterator<OWLIndividual> reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont).iterator();
-			//find out if there is a logical root - a reaction with no provides_direct_input_for relations coming into it
-			Set<OWLIndividual> roots = new HashSet<OWLIndividual>();
-			while(reactions.hasNext()) {
-				OWLIndividual react = reactions.next();
-				roots.add(react);
-			}
-			reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont).iterator();
-			while(reactions.hasNext()) {	
-				OWLIndividual react = reactions.next();
-				Iterator<OWLIndividual> targets = EntitySearcher.getObjectPropertyValues(react, GoCAM.provides_direct_input_for, go_cam.go_cam_ont).iterator();
-				while(targets.hasNext()) {
-					OWLIndividual target = targets.next();			
-					roots.remove(target);				
-				}
-			}
-			//if there is a root or roots.. do a sideways bread first layout
-			if(roots.size()>0) {
-				for(OWLIndividual root : roots) {
-					layoutHorizontalTree(reaction_x, reaction_y, x_spacer, y_spacer, (OWLNamedIndividual)root, GoCAM.provides_direct_input_for, go_cam);
-					reaction_y = reaction_y + y_spacer;
-				}				
-			}else { // do loop layout.  
-				reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont).iterator();
-				if(reactions.hasNext()) {
-					System.out.println(pathway + "Loop layout!");
-					OWLNamedIndividual loopstart = (OWLNamedIndividual) reactions.next();
-					layoutLoopish(reaction_x, reaction_y, x_spacer, y_spacer, loopstart, GoCAM.provides_direct_input_for, go_cam);		
-				}
-			}
-			x = x+x_spacer;
-		}
-	}
-
 
 	/**
 	 * Given knowledge of semantic structure of a GO-CAM, try to make a basic layout that is useful within the Noctua editor.
@@ -1190,8 +1143,63 @@ public class BioPaxtoGO {
 	 * Try to group inputs above, outputs below and enablers - see @layoutReactionComponents
 	 * @param go_cam
 	 */
-	private void layoutForNoctua(GoCAM go_cam) {
-		//removeRedundantLocations(go_cam);
+//	private void layoutForNoctuaVersion1(GoCAM go_cam) {
+//		//removeRedundantLocations(go_cam);
+//		Iterator<OWLIndividual> pathways = EntitySearcher.getIndividuals(GoCAM.bp_class, go_cam.go_cam_ont).iterator();
+//		int y_spacer = 350; int x_spacer = 450;
+//		int y = 50; int x = 200;
+//		//generally only one pathway represented with reactions - others just links off via part of
+//		//draw them in a line across the top 
+//		while(pathways.hasNext()) {
+//			OWLNamedIndividual pathway = (OWLNamedIndividual)pathways.next();
+//			go_cam.addLiteralAnnotations2Individual(pathway.getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(x));
+//			go_cam.addLiteralAnnotations2Individual(pathway.getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(y));   			
+//			//find reactions that are part of this pathway
+//			//CLUNKY.. fighting query.. need to find a better way - maybe sparql... 
+//			int reaction_x = x; 
+//			int reaction_y = y + y_spacer;
+//			Iterator<OWLIndividual> reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont).iterator();
+//		
+//			//find out if there is a logical root - a reaction with no provides_direct_input_for relations coming into it
+//			Set<OWLIndividual> roots = new HashSet<OWLIndividual>();
+//			while(reactions.hasNext()) {
+//				OWLIndividual react = reactions.next();
+//				roots.add(react);
+//			}
+//			reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont).iterator();
+//			while(reactions.hasNext()) {	
+//				OWLIndividual react = reactions.next();
+//				Iterator<OWLIndividual> targets = EntitySearcher.getObjectPropertyValues(react, GoCAM.provides_direct_input_for, go_cam.go_cam_ont).iterator();
+//				while(targets.hasNext()) {
+//					OWLIndividual target = targets.next();			
+//					roots.remove(target);				
+//				}
+//			}
+//			//if there is a root or roots.. do a sideways bread first layout
+//			if(roots.size()>0) {
+//				for(OWLIndividual root : roots) {
+//					layoutHorizontalTree(reaction_x, reaction_y, x_spacer, y_spacer, (OWLNamedIndividual)root, GoCAM.provides_direct_input_for, go_cam);
+//					reaction_y = reaction_y + y_spacer;
+//				}				
+//			}else { // do loop layout.  
+//				reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont).iterator();
+//				if(reactions.hasNext()) {
+//					System.out.println(pathway + "Loop layout!");
+//					OWLNamedIndividual loopstart = (OWLNamedIndividual) reactions.next();
+//					layoutLoopish(reaction_x, reaction_y, x_spacer, y_spacer, loopstart, GoCAM.provides_direct_input_for, go_cam);		
+//				}
+//			}
+//			x = x+x_spacer;
+//		}
+//	}
+	
+	/**
+	 * Given knowledge of semantic structure of a GO-CAM, try to make a basic layout that is useful within the Noctua editor as it stands in Version1 (May 2018).
+	 * In this implementation, all function node attributes should be fully 'folded' in the the UI. 
+	 * Attempt to line the function nodes up in some reasonable order..
+	 * @param go_cam
+	 */
+	private void layoutForNoctuaVersion1(GoCAM go_cam) {
 		Iterator<OWLIndividual> pathways = EntitySearcher.getIndividuals(GoCAM.bp_class, go_cam.go_cam_ont).iterator();
 		int y_spacer = 350; int x_spacer = 450;
 		int y = 50; int x = 200;
@@ -1200,42 +1208,62 @@ public class BioPaxtoGO {
 		while(pathways.hasNext()) {
 			OWLNamedIndividual pathway = (OWLNamedIndividual)pathways.next();
 
-			go_cam.addLiteralAnnotations2Individual(pathway.getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(x));
-			go_cam.addLiteralAnnotations2Individual(pathway.getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(y));   			
+			int h = 800; // x coordinate of circle center
+			int k = 700; // y coordinate of circle center (y going down for web layout)
+			
+			go_cam.addLiteralAnnotations2Individual(pathway.getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(h));
+			go_cam.addLiteralAnnotations2Individual(pathway.getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(k));   			
 
 			//find reactions that are part of this pathway
 			//CLUNKY.. fighting query.. need to find a better way - maybe sparql... 
 			int reaction_x = x; 
 			int reaction_y = y + y_spacer;
-			Iterator<OWLIndividual> reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont).iterator();
+			Collection<OWLIndividual> reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont);
 			//find out if there is a logical root - a reaction with no provides_direct_input_for relations coming into it
 			Set<OWLIndividual> roots = new HashSet<OWLIndividual>();
-			while(reactions.hasNext()) {
-				OWLIndividual react = reactions.next();
+			for(OWLIndividual react : reactions) {
 				roots.add(react);
 			}
-			reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont).iterator();
-			while(reactions.hasNext()) {	
-				OWLIndividual react = reactions.next();
-				Iterator<OWLIndividual> targets = EntitySearcher.getObjectPropertyValues(react, GoCAM.provides_direct_input_for, go_cam.go_cam_ont).iterator();
-				while(targets.hasNext()) {
-					OWLIndividual target = targets.next();			
+			for(OWLIndividual react : reactions) {
+				Collection<OWLIndividual> targets = EntitySearcher.getObjectPropertyValues(react, GoCAM.provides_direct_input_for, go_cam.go_cam_ont);
+				for(OWLIndividual target : targets) {		
+					roots.remove(target);				
+				}
+				targets = EntitySearcher.getObjectPropertyValues(react, GoCAM.directly_negatively_regulates, go_cam.go_cam_ont);
+				for(OWLIndividual target : targets) {		
+					roots.remove(target);				
+				}
+				targets = EntitySearcher.getObjectPropertyValues(react, GoCAM.directly_positively_regulates, go_cam.go_cam_ont);
+				for(OWLIndividual target : targets) {		
 					roots.remove(target);				
 				}
 			}
-			//if there is a root or roots.. do a sideways bread first layout
-			if(roots.size()>0) {
-				for(OWLIndividual root : roots) {
-					layoutHorizontalTree(reaction_x, reaction_y, x_spacer, y_spacer, (OWLNamedIndividual)root, GoCAM.provides_direct_input_for, go_cam);
-					reaction_y = reaction_y + y_spacer;
-				}				
-			}else { // do loop layout.  
-				reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont).iterator();
-				if(reactions.hasNext()) {
-					System.out.println(pathway + "Loop layout!");
-					OWLNamedIndividual loopstart = (OWLNamedIndividual) reactions.next();
-					layoutLoopish(reaction_x, reaction_y, x_spacer, y_spacer, loopstart, GoCAM.provides_direct_input_for, go_cam);		
+			//add regulators to node list
+			Set<OWLIndividual> regulators = new HashSet<OWLIndividual>();
+			for(OWLIndividual r : reactions) {
+				Collection<OWLAxiom> axioms = EntitySearcher.getReferencingAxioms((OWLEntity) r, go_cam.go_cam_ont);
+				for(OWLAxiom axiom : axioms) {
+					if(axiom.isOfType(AxiomType.OBJECT_PROPERTY_ASSERTION)){
+						OWLObjectPropertyAssertionAxiom op = (OWLObjectPropertyAssertionAxiom) axiom;
+						if(op.getProperty().equals(GoCAM.involved_in_negative_regulation_of)||
+								op.getProperty().equals(GoCAM.involved_in_positive_regulation_of)) {
+							regulators.add(op.getSubject());
+						}
+					}				
 				}
+			}
+			reactions.addAll(regulators);
+			//if there is a root or roots.. do a sideways horizontal line graph
+//			if(roots.size()>0) {
+//				for(OWLIndividual root : roots) {
+//					layoutHorizontalTreeNoctuaVersion1(reaction_x, reaction_y, x_spacer, y_spacer, (OWLNamedIndividual)root, GoCAM.provides_direct_input_for, go_cam);
+//					reaction_y = reaction_y + y_spacer;
+//				}				
+//			}else { // do circle layout 
+				if(reactions!=null) {					
+					System.out.println(pathway + "Circle layout!");
+					layoutCircle(reactions, go_cam);		
+//				}
 			}
 			x = x+x_spacer;
 		}
@@ -1327,6 +1355,7 @@ public class BioPaxtoGO {
 		//left and down
 		int negative_regulator_x = reaction_x - 400;
 		int negative_regulator_y = reaction_y + 200;
+		//this doesn't make sense... 
 		Iterator<OWLIndividual> neg_regulators = EntitySearcher.getObjectPropertyValues(reaction, GoCAM.involved_in_negative_regulation_of, go_cam.go_cam_ont).iterator();
 		if(neg_regulators!=null) {
 			while(neg_regulators.hasNext()) {
@@ -1412,6 +1441,25 @@ public class BioPaxtoGO {
 			child_y = child_y - y_spacer - 200;
 		}	
 	}
+	
+
+	private void layoutCircle(Collection<OWLIndividual> reactions, GoCAM go_cam) {
+		int h = 800; // x coordinate of circle center
+		int k = 700; // y coordinate of circle center (y going down for web layout)
+		int r = 600; //radius of circle 
+		int n = reactions.size(); //number nodes to draw 
+		double step = 2*Math.PI/n; //radians to move about circle per step 
+		int x = 0; int y = 0; double theta = 0;
+		for(OWLIndividual reaction_node : reactions) {
+			x = Math.round((long)(h + r*Math.cos(theta)));
+			y = Math.round((long)(k - r*Math.sin(theta))); 
+			theta = theta + step;
+			IRI node_iri = reaction_node.asOWLNamedIndividual().getIRI();
+			go_cam.addLiteralAnnotations2Individual(node_iri, GoCAM.x_prop, go_cam.df.getOWLLiteral(x));
+			go_cam.addLiteralAnnotations2Individual(node_iri, GoCAM.y_prop, go_cam.df.getOWLLiteral(y));
+			System.out.println(x+" "+y+" "+go_cam.getaLabel(reaction_node.asOWLNamedIndividual()));
+		}
+	}
 
 	/**
 	 * Have we already given the node a location?
@@ -1458,4 +1506,23 @@ public class BioPaxtoGO {
 			child_y = child_y + y_spacer;		
 		}
 	}
+	
+	private void layoutHorizontalTreeNoctuaVersion1(int start_x, int start_y, int x_spacer, int y_spacer, OWLNamedIndividual reaction_root, OWLObjectProperty edge_type, GoCAM go_cam) {
+		//don't fly into infinity and beyond!
+		if(mapHintPresent(reaction_root, go_cam)) {
+			return;
+		}
+		go_cam.addLiteralAnnotations2Individual(reaction_root.getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(start_x));
+		go_cam.addLiteralAnnotations2Individual(reaction_root.getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(start_y));
+		//recurse through children
+		Iterator<OWLIndividual> children = EntitySearcher.getObjectPropertyValues(reaction_root, edge_type, go_cam.go_cam_ont).iterator();
+		int child_x = start_x + x_spacer;
+		int child_y = start_y;
+		while(children.hasNext()) {
+			OWLNamedIndividual child = (OWLNamedIndividual) children.next();
+			layoutHorizontalTree(child_x, child_y, x_spacer, y_spacer, child, edge_type, go_cam);
+			child_y = child_y + y_spacer;		
+		}
+	}
+	
 }
