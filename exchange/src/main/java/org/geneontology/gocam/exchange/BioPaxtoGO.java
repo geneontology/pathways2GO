@@ -192,6 +192,10 @@ public class BioPaxtoGO {
 		boolean save2blazegraph = true;
 		String journal = converted+".jnl";
 		go_cam.path2bgjournal = journal;
+		//clean out any prior data in store
+		FileWriter clean = new FileWriter(journal, false);
+		clean.write("");
+		clean.close();
 		Blazer blaze = go_cam.initializeBlazeGraph(journal);
 		QRunner tbox_qrunner = go_cam.initializeQRunnerForTboxInference();
 		//for report
@@ -305,9 +309,8 @@ public class BioPaxtoGO {
 			go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
 			//do rdf-only pruning - don't reinitialize runner after this as these changes don't get put into ontology
 			//remove has_part relations linking process to reactions.  redundant as all reactions are part of the main process right now and clouds view
-			//delete not quite working - leaving in evidence nodes.. 
-			//go_cam.qrunner.deletePathwayHasPart();
-			//remove any locations on physical entities. screws display
+			go_cam.qrunner.deletePathwayHasPart();
+			//remove any locations on physical entities. screws display as entities can't be folded into function nodes
 			go_cam.qrunner.deleteEntityLocations();
 		}
 		go_cam.writeGoCAM(outfilename, save2blazegraph);
@@ -1254,16 +1257,17 @@ public class BioPaxtoGO {
 			}
 			reactions.addAll(regulators);
 			//if there is a root or roots.. do a sideways horizontal line graph
-//			if(roots.size()>0) {
-//				for(OWLIndividual root : roots) {
-//					layoutHorizontalTreeNoctuaVersion1(reaction_x, reaction_y, x_spacer, y_spacer, (OWLNamedIndividual)root, GoCAM.provides_direct_input_for, go_cam);
-//					reaction_y = reaction_y + y_spacer;
-//				}				
-//			}else { // do circle layout 
+			if(roots.size()>0) {
+				for(OWLIndividual root : roots) {
+					System.out.println(pathway + "Grid layout!");
+					layoutHorizontalTreeNoctuaVersion1(reaction_x, reaction_y, x_spacer, y_spacer, (OWLNamedIndividual)root, GoCAM.provides_direct_input_for, go_cam);
+					reaction_y = reaction_y + y_spacer;
+				}				
+			}else { // do circle layout 
 				if(reactions!=null) {					
 					System.out.println(pathway + "Circle layout!");
 					layoutCircle(reactions, go_cam);		
-//				}
+				}
 			}
 			x = x+x_spacer;
 		}

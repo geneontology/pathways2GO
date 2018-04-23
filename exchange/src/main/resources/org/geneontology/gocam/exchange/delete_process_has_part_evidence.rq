@@ -6,8 +6,8 @@ prefix evidence: <http://geneontology.org/lego/evidence>
 prefix dc: <http://purl.org/dc/elements/1.1/>
 
 delete {
-  ?pathway obo:BFO_0000051 ?reaction . 
-  ?anno_node ?prop ?value 
+  ?anno_node evidence: ?value . 
+  ?value ?prop2 ?value2 
 } 
  where{
   ?pathway obo:BFO_0000051 ?reaction . 
@@ -16,5 +16,6 @@ delete {
   ?anno_node owl:annotatedSource ?pathway .
   ?anno_node owl:annotatedTarget ?reaction .
   ?anno_node owl:annotatedProperty obo:BFO_0000051  .
-  ?anno_node ?prop ?value . #dc:date|providedBy:|dc:contributor|rdf:type|evidence:
+  ?anno_node evidence: ?value . 
+  ?value ?prop2 ?value2 
   }

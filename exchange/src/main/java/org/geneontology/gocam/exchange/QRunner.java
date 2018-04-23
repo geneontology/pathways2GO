@@ -285,16 +285,20 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 	}
 	
 	void deletePathwayHasPart() {
-		String update = null;
+		String update1 = null;
+		String update2 = null;
 		try {
-			update = IOUtils.toString(App.class.getResourceAsStream("delete_process_has_part_relations.rq"), StandardCharsets.UTF_8);
+			update1 = IOUtils.toString(App.class.getResourceAsStream("delete_process_has_part_evidence.rq"), StandardCharsets.UTF_8);
+			update2 = IOUtils.toString(App.class.getResourceAsStream("delete_process_has_part_relations.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL update from jar \n"+e);
 		}
 		//before
-		System.out.println("Before has_part zap "+nTriples());
-		UpdateAction.parseExecute(update, jena) ;
-		System.out.println("After has_part zap "+nTriples());
+		System.out.println("Before has_part zap 1 "+nTriples());
+		UpdateAction.parseExecute(update1, jena) ;
+		System.out.println("Before has_part zap 2 "+nTriples());
+		UpdateAction.parseExecute(update2, jena) ;
+		System.out.println("After has_part zap12 "+nTriples());
 		return;
 	}
 	

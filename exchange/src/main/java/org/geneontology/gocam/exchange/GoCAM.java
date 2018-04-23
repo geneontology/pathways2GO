@@ -630,14 +630,6 @@ final long counterValue = instanceCounter.getAndIncrement();
 		//use jena export
 		System.out.println("writing n triples: "+qrunner.nTriples());
 		qrunner.dumpModel(outfilefile, "TURTLE");
-		//		else {
-		//			//write with OWL API..		
-		//			FileDocumentTarget outfile = new FileDocumentTarget(outfilefile);
-		//			//ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());	
-		//			ontman.setOntologyFormat(go_cam_ont, new TurtleDocumentFormat());	
-		//			ontman.saveOntology(go_cam_ont,outfile);
-		//		}
-
 		//reads in file created above and converts to journal
 		//could optimize speed by going direct at some point if it matters
 		if(save2blazegraph) {
