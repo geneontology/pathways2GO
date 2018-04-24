@@ -85,6 +85,7 @@ public class BioPaxtoGO {
 	public static final IRI biopax_iri = IRI.create("http://www.biopax.org/release/biopax-level3.owl#");
 	final String mapping_report_file = "report/mapping.txt";
 	int noctua_version = 1;
+	String blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";
 	/**
 	 * @param args
 	 * @throws OWLOntologyCreationException 
@@ -101,20 +102,20 @@ public class BioPaxtoGO {
 		//		bp2g.convertReactomeFolder(input_folder, output_folder);
 
 		String input_biopax = 
-		//		"/Users/bgood/Desktop/test/abacavir_metabolism.owl";
-		//		"/Users/bgood/Desktop/test/gap_junction.owl"; 
-		//"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
-		//		"/Users/bgood/Desktop/test/Wnt_example.owl";
-		"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
+				//		"/Users/bgood/Desktop/test/abacavir_metabolism.owl";
+						"/Users/bgood/Desktop/test/gap_junction.owl"; 
+				//"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
+				//		"/Users/bgood/Desktop/test/Wnt_example.owl";
+				//"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
 		//"src/main/resources/reactome/Homo_sapiens.owl";
 		//"/Users/bgood/Downloads/biopax/homosapiens.owl";
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = 
-		//		"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
-		//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
-				"/Users/bgood/Desktop/test/Wnt_output/converted-";
-		//		"/Users/bgood/Desktop/test/gap_junction_output/converted-";
+				//		"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
+				//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
+				//"/Users/bgood/Desktop/test/Wnt_output/converted-";
+				"/Users/bgood/Desktop/test/gap_junction_output/converted-";
 		//"/Users/bgood/Desktop/test/bmp_output/converted-";
 		//"/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-";
 		//"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
@@ -190,7 +191,10 @@ public class BioPaxtoGO {
 		GoCAM go_cam = new GoCAM(ont_iri, base_ont_title, base_contributor, null, base_provider, add_lego_import);
 		//for blazegraph output
 		boolean save2blazegraph = true;
-		String journal = converted+".jnl";
+		String journal = blazegraph_output_journal;
+		if(journal.equals("")) {
+			journal = converted+".jnl";
+		}
 		go_cam.path2bgjournal = journal;
 		//clean out any prior data in store
 		FileWriter clean = new FileWriter(journal, false);
@@ -573,8 +577,9 @@ public class BioPaxtoGO {
 					//so stuffing the names into the class..  yay.  
 					if(noctua_version == 1) { 
 						addComplexAsSimpleClass(go_cam, cnames, e, null);
+					}else {
+						go_cam.addTypeAssertion(e, GoCAM.go_complex);
 					}
-					go_cam.addTypeAssertion(e, GoCAM.go_complex);
 				}else { 
 					go_cam.addTypeAssertion(e,  GoCAM.chebi_protein);
 				}
@@ -677,11 +682,12 @@ public class BioPaxtoGO {
 						}
 					}
 				}
-				//assert it as a complex
-				go_cam.addTypeAssertion(e, GoCAM.go_complex);
 				//adds a unique class to describe this complex (no no to modify tbox..)
 				if(noctua_version == 1) { 
 					addComplexAsSimpleClass(go_cam, cnames, e, null);
+				}else {
+					//assert it as a complex
+					go_cam.addTypeAssertion(e, GoCAM.go_complex);
 				}
 
 			}
@@ -770,11 +776,7 @@ public class BioPaxtoGO {
 				if(inputs!=null) {
 					for(PhysicalEntity input : inputs) {
 						IRI i_iri = null;
-						//						if(noctua_version==1) {
-						//							i_iri = GoCAM.makeGoCamifiedIRI(input.getUri()); //make them join up across reactions for display..
-						//						}else {
 						i_iri = GoCAM.makeGoCamifiedIRI(input.getUri()+entity.getUri());
-						//						}
 						OWLNamedIndividual input_entity = go_cam.df.getOWLNamedIndividual(i_iri);
 						defineReactionEntity(go_cam, input, i_iri);
 						go_cam.addObjectPropertyAssertion(e, GoCAM.has_input, input_entity,go_cam.getDefaultAnnotations());
@@ -782,11 +784,7 @@ public class BioPaxtoGO {
 				if(outputs!=null) {
 					for(PhysicalEntity output : outputs) {
 						IRI o_iri = null;
-						//						if(noctua_version==1) {
-						//							o_iri = GoCAM.makeGoCamifiedIRI(output.getUri()); //make them join up across reactions for display..
-						//						}else {
 						o_iri = GoCAM.makeGoCamifiedIRI(output.getUri()+entity.getUri());
-						//						}
 						OWLNamedIndividual output_entity = go_cam.df.getOWLNamedIndividual(o_iri);
 						defineReactionEntity(go_cam, output, o_iri);
 						go_cam.addObjectPropertyAssertion(e, GoCAM.has_output, output_entity, go_cam.getDefaultAnnotations());
@@ -833,11 +831,7 @@ public class BioPaxtoGO {
 					Set<Controller> controller_entities = controller.getController();
 					for(Controller controller_entity : controller_entities) {
 						IRI iri = null;
-						//						if(noctua_version==1) {
-						//							iri = GoCAM.makeGoCamifiedIRI(controller_entity.getUri()); //make them join up across reactions for display..
-						//						}else {
-						iri = GoCAM.makeGoCamifiedIRI(controller_entity.getUri()+entity.getUri());
-						//						}
+						iri = GoCAM.makeGoCamifiedIRI(controller_entity.getUri()+entity.getUri()+"controller");
 						defineReactionEntity(go_cam, controller_entity, iri);
 						//the protein or complex
 						OWLNamedIndividual controller_e = go_cam.df.getOWLNamedIndividual(iri);
@@ -1146,56 +1140,56 @@ public class BioPaxtoGO {
 	 * Try to group inputs above, outputs below and enablers - see @layoutReactionComponents
 	 * @param go_cam
 	 */
-//	private void layoutForNoctuaVersion1(GoCAM go_cam) {
-//		//removeRedundantLocations(go_cam);
-//		Iterator<OWLIndividual> pathways = EntitySearcher.getIndividuals(GoCAM.bp_class, go_cam.go_cam_ont).iterator();
-//		int y_spacer = 350; int x_spacer = 450;
-//		int y = 50; int x = 200;
-//		//generally only one pathway represented with reactions - others just links off via part of
-//		//draw them in a line across the top 
-//		while(pathways.hasNext()) {
-//			OWLNamedIndividual pathway = (OWLNamedIndividual)pathways.next();
-//			go_cam.addLiteralAnnotations2Individual(pathway.getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(x));
-//			go_cam.addLiteralAnnotations2Individual(pathway.getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(y));   			
-//			//find reactions that are part of this pathway
-//			//CLUNKY.. fighting query.. need to find a better way - maybe sparql... 
-//			int reaction_x = x; 
-//			int reaction_y = y + y_spacer;
-//			Iterator<OWLIndividual> reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont).iterator();
-//		
-//			//find out if there is a logical root - a reaction with no provides_direct_input_for relations coming into it
-//			Set<OWLIndividual> roots = new HashSet<OWLIndividual>();
-//			while(reactions.hasNext()) {
-//				OWLIndividual react = reactions.next();
-//				roots.add(react);
-//			}
-//			reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont).iterator();
-//			while(reactions.hasNext()) {	
-//				OWLIndividual react = reactions.next();
-//				Iterator<OWLIndividual> targets = EntitySearcher.getObjectPropertyValues(react, GoCAM.provides_direct_input_for, go_cam.go_cam_ont).iterator();
-//				while(targets.hasNext()) {
-//					OWLIndividual target = targets.next();			
-//					roots.remove(target);				
-//				}
-//			}
-//			//if there is a root or roots.. do a sideways bread first layout
-//			if(roots.size()>0) {
-//				for(OWLIndividual root : roots) {
-//					layoutHorizontalTree(reaction_x, reaction_y, x_spacer, y_spacer, (OWLNamedIndividual)root, GoCAM.provides_direct_input_for, go_cam);
-//					reaction_y = reaction_y + y_spacer;
-//				}				
-//			}else { // do loop layout.  
-//				reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont).iterator();
-//				if(reactions.hasNext()) {
-//					System.out.println(pathway + "Loop layout!");
-//					OWLNamedIndividual loopstart = (OWLNamedIndividual) reactions.next();
-//					layoutLoopish(reaction_x, reaction_y, x_spacer, y_spacer, loopstart, GoCAM.provides_direct_input_for, go_cam);		
-//				}
-//			}
-//			x = x+x_spacer;
-//		}
-//	}
-	
+	//	private void layoutForNoctuaVersion1(GoCAM go_cam) {
+	//		//removeRedundantLocations(go_cam);
+	//		Iterator<OWLIndividual> pathways = EntitySearcher.getIndividuals(GoCAM.bp_class, go_cam.go_cam_ont).iterator();
+	//		int y_spacer = 350; int x_spacer = 450;
+	//		int y = 50; int x = 200;
+	//		//generally only one pathway represented with reactions - others just links off via part of
+	//		//draw them in a line across the top 
+	//		while(pathways.hasNext()) {
+	//			OWLNamedIndividual pathway = (OWLNamedIndividual)pathways.next();
+	//			go_cam.addLiteralAnnotations2Individual(pathway.getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(x));
+	//			go_cam.addLiteralAnnotations2Individual(pathway.getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(y));   			
+	//			//find reactions that are part of this pathway
+	//			//CLUNKY.. fighting query.. need to find a better way - maybe sparql... 
+	//			int reaction_x = x; 
+	//			int reaction_y = y + y_spacer;
+	//			Iterator<OWLIndividual> reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont).iterator();
+	//		
+	//			//find out if there is a logical root - a reaction with no provides_direct_input_for relations coming into it
+	//			Set<OWLIndividual> roots = new HashSet<OWLIndividual>();
+	//			while(reactions.hasNext()) {
+	//				OWLIndividual react = reactions.next();
+	//				roots.add(react);
+	//			}
+	//			reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont).iterator();
+	//			while(reactions.hasNext()) {	
+	//				OWLIndividual react = reactions.next();
+	//				Iterator<OWLIndividual> targets = EntitySearcher.getObjectPropertyValues(react, GoCAM.provides_direct_input_for, go_cam.go_cam_ont).iterator();
+	//				while(targets.hasNext()) {
+	//					OWLIndividual target = targets.next();			
+	//					roots.remove(target);				
+	//				}
+	//			}
+	//			//if there is a root or roots.. do a sideways bread first layout
+	//			if(roots.size()>0) {
+	//				for(OWLIndividual root : roots) {
+	//					layoutHorizontalTree(reaction_x, reaction_y, x_spacer, y_spacer, (OWLNamedIndividual)root, GoCAM.provides_direct_input_for, go_cam);
+	//					reaction_y = reaction_y + y_spacer;
+	//				}				
+	//			}else { // do loop layout.  
+	//				reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont).iterator();
+	//				if(reactions.hasNext()) {
+	//					System.out.println(pathway + "Loop layout!");
+	//					OWLNamedIndividual loopstart = (OWLNamedIndividual) reactions.next();
+	//					layoutLoopish(reaction_x, reaction_y, x_spacer, y_spacer, loopstart, GoCAM.provides_direct_input_for, go_cam);		
+	//				}
+	//			}
+	//			x = x+x_spacer;
+	//		}
+	//	}
+
 	/**
 	 * Given knowledge of semantic structure of a GO-CAM, try to make a basic layout that is useful within the Noctua editor as it stands in Version1 (May 2018).
 	 * In this implementation, all function node attributes should be fully 'folded' in the the UI. 
@@ -1204,16 +1198,19 @@ public class BioPaxtoGO {
 	 */
 	private void layoutForNoctuaVersion1(GoCAM go_cam) {
 		Iterator<OWLIndividual> pathways = EntitySearcher.getIndividuals(GoCAM.bp_class, go_cam.go_cam_ont).iterator();
-		int y_spacer = 350; int x_spacer = 450;
+		int y_spacer = 300; int x_spacer = 450;
 		int y = 50; int x = 200;
 		//generally only one pathway represented with reactions - others just links off via part of
 		//draw them in a line across the top 
 		while(pathways.hasNext()) {
 			OWLNamedIndividual pathway = (OWLNamedIndividual)pathways.next();
 
-			int h = 800; // x coordinate of circle center
-			int k = 700; // y coordinate of circle center (y going down for web layout)
-			
+			//making Pathway basically just a label for what people are looking at
+			//all has_part connections taken out to clear up view
+			//put it at top left
+			int h = 20; 
+			int k = 20; 
+
 			go_cam.addLiteralAnnotations2Individual(pathway.getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(h));
 			go_cam.addLiteralAnnotations2Individual(pathway.getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(k));   			
 
@@ -1222,25 +1219,25 @@ public class BioPaxtoGO {
 			int reaction_x = x; 
 			int reaction_y = y + y_spacer;
 			Collection<OWLIndividual> reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont);
-			//find out if there is a logical root - a reaction with no provides_direct_input_for relations coming into it
-			Set<OWLIndividual> roots = new HashSet<OWLIndividual>();
-			for(OWLIndividual react : reactions) {
-				roots.add(react);
-			}
-			for(OWLIndividual react : reactions) {
-				Collection<OWLIndividual> targets = EntitySearcher.getObjectPropertyValues(react, GoCAM.provides_direct_input_for, go_cam.go_cam_ont);
-				for(OWLIndividual target : targets) {		
-					roots.remove(target);				
-				}
-				targets = EntitySearcher.getObjectPropertyValues(react, GoCAM.directly_negatively_regulates, go_cam.go_cam_ont);
-				for(OWLIndividual target : targets) {		
-					roots.remove(target);				
-				}
-				targets = EntitySearcher.getObjectPropertyValues(react, GoCAM.directly_positively_regulates, go_cam.go_cam_ont);
-				for(OWLIndividual target : targets) {		
-					roots.remove(target);				
-				}
-			}
+			//			//find out if there is a logical root - a reaction with no provides_direct_input_for relations coming into it
+			//			Set<OWLIndividual> roots = new HashSet<OWLIndividual>();
+			//			for(OWLIndividual react : reactions) {
+			//				roots.add(react);
+			//			}
+			//			for(OWLIndividual react : reactions) {
+			//				Collection<OWLIndividual> targets = EntitySearcher.getObjectPropertyValues(react, GoCAM.provides_direct_input_for, go_cam.go_cam_ont);
+			//				for(OWLIndividual target : targets) {		
+			//					roots.remove(target);				
+			//				}
+			//				targets = EntitySearcher.getObjectPropertyValues(react, GoCAM.directly_negatively_regulates, go_cam.go_cam_ont);
+			//				for(OWLIndividual target : targets) {		
+			//					roots.remove(target);				
+			//				}
+			//				targets = EntitySearcher.getObjectPropertyValues(react, GoCAM.directly_positively_regulates, go_cam.go_cam_ont);
+			//				for(OWLIndividual target : targets) {		
+			//					roots.remove(target);				
+			//				}
+			//			}
 			//add regulators to node list
 			Set<OWLIndividual> regulators = new HashSet<OWLIndividual>();
 			for(OWLIndividual r : reactions) {
@@ -1256,13 +1253,53 @@ public class BioPaxtoGO {
 				}
 			}
 			reactions.addAll(regulators);
+
+			//classify reactions: root of causal chain, member of chain, island
+			Set<OWLIndividual> islands = new HashSet<OWLIndividual>();
+			Set<OWLIndividual> chain_roots = new HashSet<OWLIndividual>();
+			Set<OWLIndividual> chain_members = new HashSet<OWLIndividual>();
+			for(OWLIndividual r : reactions) {
+				int incoming = 0;
+				int outgoing = 0;
+				Collection<OWLAxiom> axioms = EntitySearcher.getReferencingAxioms((OWLEntity) r, go_cam.go_cam_ont);
+				for(OWLAxiom axiom : axioms) {
+					if(axiom.isOfType(AxiomType.OBJECT_PROPERTY_ASSERTION)){
+						OWLObjectPropertyAssertionAxiom op = (OWLObjectPropertyAssertionAxiom) axiom;
+						//causal only
+						//TODO would be fun to actually use the RO and a little inference to make this list..  
+						if(op.getProperty().equals(GoCAM.directly_negatively_regulates)||
+								op.getProperty().equals(GoCAM.directly_positively_regulates)||
+								op.getProperty().equals(GoCAM.directly_negatively_regulated_by)||
+								op.getProperty().equals(GoCAM.directly_positively_regulated_by)||
+								op.getProperty().equals(GoCAM.provides_direct_input_for)) {
+							if(op.getSubject().equals(r)) {
+								outgoing++;
+							}else if(op.getObject().equals(r)) {
+								incoming++;
+							}
+						}
+					}				
+				}
+				if(incoming==0&&outgoing==0) {
+					islands.add(r);
+				}
+				else if(incoming==0&&outgoing>0) {
+					chain_roots.add(r);
+				}else if(incoming>0) {
+					chain_members.add(r);
+				}
+
+			}
+
 			//if there is a root or roots.. do a sideways horizontal line graph
-			if(roots.size()>0) {
-				for(OWLIndividual root : roots) {
-					System.out.println(pathway + "Grid layout!");
-					layoutHorizontalTreeNoctuaVersion1(reaction_x, reaction_y, x_spacer, y_spacer, (OWLNamedIndividual)root, GoCAM.provides_direct_input_for, go_cam);
-					reaction_y = reaction_y + y_spacer;
-				}				
+			if(chain_roots.size()>0) {
+				System.out.println(pathway + "Chain layout!");
+				layoutChain(250, 20, 350, 500, chain_roots, chain_members, islands, go_cam);
+				//				for(OWLIndividual root : chain_roots) {
+				//					System.out.println(pathway + "Grid layout!");
+				//					layoutHorizontalTreeNoctuaVersion1(reaction_x, reaction_y, x_spacer, y_spacer, (OWLNamedIndividual)root, GoCAM.provides_direct_input_for, go_cam);
+				//					reaction_y = reaction_y + y_spacer;
+				//				}				
 			}else { // do circle layout 
 				if(reactions!=null) {					
 					System.out.println(pathway + "Circle layout!");
@@ -1272,6 +1309,64 @@ public class BioPaxtoGO {
 			x = x+x_spacer;
 		}
 	}
+
+	private void layoutChain(int x, int y, int x_spacer, int y_spacer, Set<OWLIndividual> chain_roots, Set<OWLIndividual> chain_members, Set<OWLIndividual> islands, GoCAM go_cam) {
+		int max_y = 0;
+		int r = 0;
+		int r2_start = 75;
+		for(OWLIndividual root : chain_roots) {
+			if(r%2==0) {
+				max_y = layoutHorizontalLine(x, y, x_spacer, y_spacer, root, go_cam);
+			}else {
+				max_y = layoutHorizontalLine(r2_start, y, x_spacer, y_spacer, root, go_cam);
+			}
+			y = max_y+y_spacer;
+			r++;
+		}	
+		if(r%2!=0) {
+			x = r2_start;
+		}
+		for(OWLIndividual island : islands) {
+			go_cam.addLiteralAnnotations2Individual(((OWLNamedIndividual) island).getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(x));
+			go_cam.addLiteralAnnotations2Individual(((OWLNamedIndividual) island).getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(y));
+			x+=x_spacer;
+		}
+	}
+
+	private int layoutHorizontalLine(int x, int y, int x_spacer, int y_spacer, OWLIndividual node, GoCAM go_cam) {
+		//don't fly into infinity and beyond!
+		if(mapHintPresent((OWLNamedIndividual) node, go_cam)) {		
+			return y;
+		}
+		//layout the node
+		go_cam.addLiteralAnnotations2Individual(((OWLNamedIndividual) node).getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(x));
+		go_cam.addLiteralAnnotations2Individual(((OWLNamedIndividual) node).getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(y));
+		//recursively lay out children
+		Collection<OWLIndividual> children = EntitySearcher.getObjectPropertyValues(node, GoCAM.provides_direct_input_for, go_cam.go_cam_ont);
+		if(children.size()==0) {
+			Collection<OWLAxiom> axioms = EntitySearcher.getReferencingAxioms((OWLEntity) node, go_cam.go_cam_ont);
+			for(OWLAxiom axiom : axioms) {
+				if(axiom.isOfType(AxiomType.OBJECT_PROPERTY_ASSERTION)){
+					if(node.equals(((OWLObjectPropertyAssertionAxiom) axiom).getSubject())){
+						children.add(((OWLObjectPropertyAssertionAxiom) axiom).getObject());
+					}
+				}					
+			}
+		}
+		int nrows = 0;
+		//typically there will only be one, but... 
+		for(OWLIndividual child : children) {
+			layoutHorizontalLine(x+x_spacer, y, x_spacer, y_spacer, child, go_cam);
+			nrows++;
+			y = y+y_spacer;
+		}
+		if(nrows==1) {
+			return y-y_spacer;
+		}
+		return y;
+	}
+
+
 
 	/**
 	 * Try to make a consistent layout for the standard components of a biopax reaction as represented in a go-cam.
@@ -1445,7 +1540,7 @@ public class BioPaxtoGO {
 			child_y = child_y - y_spacer - 200;
 		}	
 	}
-	
+
 
 	private void layoutCircle(Collection<OWLIndividual> reactions, GoCAM go_cam) {
 		int h = 800; // x coordinate of circle center
@@ -1510,7 +1605,7 @@ public class BioPaxtoGO {
 			child_y = child_y + y_spacer;		
 		}
 	}
-	
+
 	private void layoutHorizontalTreeNoctuaVersion1(int start_x, int start_y, int x_spacer, int y_spacer, OWLNamedIndividual reaction_root, OWLObjectProperty edge_type, GoCAM go_cam) {
 		//don't fly into infinity and beyond!
 		if(mapHintPresent(reaction_root, go_cam)) {
@@ -1528,5 +1623,5 @@ public class BioPaxtoGO {
 			child_y = child_y + y_spacer;		
 		}
 	}
-	
+
 }
