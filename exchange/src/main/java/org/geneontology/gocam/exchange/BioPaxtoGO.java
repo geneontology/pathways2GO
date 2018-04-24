@@ -103,10 +103,10 @@ public class BioPaxtoGO {
 
 		String input_biopax = 
 				//		"/Users/bgood/Desktop/test/abacavir_metabolism.owl";
-						"/Users/bgood/Desktop/test/gap_junction.owl"; 
-				//"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
-				//		"/Users/bgood/Desktop/test/Wnt_example.owl";
-				//"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
+				//"/Users/bgood/Desktop/test/gap_junction.owl"; 
+		//"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
+		//		"/Users/bgood/Desktop/test/Wnt_example.owl";
+		"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
 		//"src/main/resources/reactome/Homo_sapiens.owl";
 		//"/Users/bgood/Downloads/biopax/homosapiens.owl";
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
@@ -114,8 +114,8 @@ public class BioPaxtoGO {
 		String converted = 
 				//		"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
 				//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
-				//"/Users/bgood/Desktop/test/Wnt_output/converted-";
-				"/Users/bgood/Desktop/test/gap_junction_output/converted-";
+				"/Users/bgood/Desktop/test/Wnt_output/converted-";
+				//"/Users/bgood/Desktop/test/gap_junction_output/converted-";
 		//"/Users/bgood/Desktop/test/bmp_output/converted-";
 		//"/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-";
 		//"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
@@ -247,7 +247,7 @@ public class BioPaxtoGO {
 			//make the OWL individual representing the pathway so it can be used below
 			OWLNamedIndividual p = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(uri));
 			//define it (add types etc)
-			definePathwayEntity(go_cam, currentPathway, reactome_id, expand_subpathways);
+			definePathwayEntity(go_cam, currentPathway, reactome_id, expand_subpathways, true);
 			//			Set<String> pubids = getPubmedIds(currentPathway);
 			//get and set parent pathways
 			//currently viewing one model as a complete thing - leaving out outgoing connections.  
@@ -259,6 +259,9 @@ public class BioPaxtoGO {
 			//write results
 			if(split_out_by_pathway) {
 				String n = currentPathway.getDisplayName();
+				if(n.equals("Negative regulation of TCF-dependent signaling by DVL-interacting proteins")) {
+					System.out.println("pause..");
+				}
 				n = n.replaceAll("/", "-");	
 				n = n.replaceAll(" ", "_");
 				String outfilename = converted+n+".ttl";	
@@ -324,14 +327,21 @@ public class BioPaxtoGO {
 		}
 	}
 
-	private void definePathwayEntity(GoCAM go_cam, Pathway pathway, String reactome_id, boolean expand_subpathways) throws IOException {
+	private void definePathwayEntity(GoCAM go_cam, Pathway pathway, String reactome_id, boolean expand_subpathways, boolean add_components) throws IOException {
 		FileWriter report = new FileWriter(mapping_report_file, true);
 		IRI pathway_iri = GoCAM.makeGoCamifiedIRI(pathway.getUri());
 		OWLNamedIndividual pathway_e = go_cam.makeAnnotatedIndividual(pathway_iri);
-		//in obo world each pathway is a biological process
-		go_cam.addTypeAssertion(pathway_e, GoCAM.bp_class);
 		go_cam.addLabel(pathway_e, pathway.getDisplayName());
-
+		if(add_components) {
+			//in obo world each pathway is a biological process
+			go_cam.addTypeAssertion(pathway_e, GoCAM.bp_class);
+		}//if not adding component this is only being used to show context for some other pathway
+		else if(noctua_version == 1){
+			OWLClass justaname = go_cam.df.getOWLClass(GoCAM.makeGoCamifiedIRI(pathway.getUri()+"class"));
+			go_cam.addLabel(justaname, pathway.getDisplayName());
+			go_cam.addSubclassAssertion(justaname, GoCAM.bp_class, null);
+			go_cam.addTypeAssertion(pathway_e, justaname);
+		}
 		//comments
 		for(String comment: pathway.getComment()) {
 			if(comment.startsWith("Authored:")||
@@ -375,72 +385,71 @@ public class BioPaxtoGO {
 		}
 		report.close();
 
-		//define the pieces of the pathway
-		//Process subsumes Pathway and Interaction (which is usually a reaction).  
-		//A pathway may have either or both reaction or pathway components.  
-		for(Process process : pathway.getPathwayComponent()) {
-			//Conversion subsumes BiochemicalReaction, TransportWithBiochemicalReaction, ComplexAssembly, Degradation, GeneticInteraction, MolecularInteraction, TemplateReaction
-			//though the great majority are BiochemicalReaction
-			//whatever it is, its a part of the pathway
-			OWLNamedIndividual child = go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(process.getUri()));
-			if(noctua_version == 1) {
-				//this will add something to see what happened as the has_part lines are going to get blown away.
-				go_cam.addLiteralAnnotations2Individual(child.getIRI(), GoCAM.rdfs_comment, pathway.getDisplayName()+" has_part "+process.getDisplayName());
-				go_cam.addLiteralAnnotations2Individual(child.getIRI(), GoCAM.rdfs_comment, process.getDisplayName()+" references PMIDS: "+pubids);
-			}
-			go_cam.addRefBackedObjectPropertyAssertion(pathway_e, GoCAM.has_part, child, pubids, GoCAM.eco_imported_auto, "PMID", null);
-			//attach reactions that make up the pathway
-			if(process instanceof Conversion 
-					|| process instanceof TemplateReaction
-					|| process instanceof GeneticInteraction 
-					|| process instanceof MolecularInteraction ){
-				defineReactionEntity(go_cam, process, GoCAM.makeGoCamifiedIRI(process.getUri()));				
-				//attach child pathways
-			}else if(process.getModelInterface().equals(Pathway.class)){				
-				if(expand_subpathways) {
-					definePathwayEntity(go_cam, (Pathway)process, reactome_id, expand_subpathways);	
+		if(add_components) {
+			//define the pieces of the pathway
+			//Process subsumes Pathway and Interaction (which is usually a reaction).  
+			//A pathway may have either or both reaction or pathway components.  
+			for(Process process : pathway.getPathwayComponent()) {
+				//Conversion subsumes BiochemicalReaction, TransportWithBiochemicalReaction, ComplexAssembly, Degradation, GeneticInteraction, MolecularInteraction, TemplateReaction
+				//though the great majority are BiochemicalReaction
+				//whatever it is, its a part of the pathway
+				OWLNamedIndividual child = go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(process.getUri()));
+				if(noctua_version == 1) {
+					//this will add something to see what happened as the has_part lines are going to get blown away.
+					go_cam.addLiteralAnnotations2Individual(child.getIRI(), GoCAM.rdfs_comment, pathway.getDisplayName()+" has_part "+process.getDisplayName());
+					go_cam.addLiteralAnnotations2Individual(child.getIRI(), GoCAM.rdfs_comment, process.getDisplayName()+" references PMIDS: "+pubids);
+				}
+				go_cam.addRefBackedObjectPropertyAssertion(pathway_e, GoCAM.has_part, child, pubids, GoCAM.eco_imported_auto, "PMID", null);
+				//attach reactions that make up the pathway
+				if(process instanceof Conversion 
+						|| process instanceof TemplateReaction
+						|| process instanceof GeneticInteraction 
+						|| process instanceof MolecularInteraction ){
+					defineReactionEntity(go_cam, process, GoCAM.makeGoCamifiedIRI(process.getUri()));				
+					//attach child pathways
+				}else if(process.getModelInterface().equals(Pathway.class)){				
+					definePathwayEntity(go_cam, (Pathway)process, reactome_id, expand_subpathways, false);	
+				}
+				else {
+					System.out.println("Unknown Process !"+process.getDisplayName());
+					System.out.println("Process URI.. "+process.getUri());			
+					System.out.println("Process model interface.. "+process.getModelInterface());	
+					System.exit(0);
 				}
 			}
-			else {
-				System.out.println("Unknown Process !"+process.getDisplayName());
-				System.out.println("Process URI.. "+process.getUri());			
-				System.out.println("Process model interface.. "+process.getModelInterface());	
-				System.exit(0);
-			}
-		}
-		//reaction -> reaction connections
-		//TODO this would fit the 2nd step sparql rules.. would be more consistent to move it there and use the same pattern
-		//below mapped from Chris Mungall's
-		//prolog rules https://github.com/cmungall/pl-sysbio/blob/master/prolog/sysbio/bp2lego.pl
-		Set<PathwayStep> steps = pathway.getPathwayOrder();
-		for(PathwayStep step1 : steps) {
-			Set<Process> events = step1.getStepProcess();
-			Set<PathwayStep> step2s = step1.getNextStep();
-			for(PathwayStep step2 : step2s) {
-				Set<Process> nextEvents = step2.getStepProcess();
-				for(Process event : events) {
-					for(Process nextEvent : nextEvents) {
-						//	Event directly_provides_input_for NextEvent
-						if((event.getModelInterface().equals(BiochemicalReaction.class))&&
-								(nextEvent.getModelInterface().equals(BiochemicalReaction.class))) {
-							IRI e1_iri = GoCAM.makeGoCamifiedIRI(event.getUri());
-							IRI e2_iri = GoCAM.makeGoCamifiedIRI(nextEvent.getUri());
-							OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(e1_iri);
-							OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(e2_iri);
-							go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.provides_direct_input_for, e2, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, "Reactome", null);
-							//in some cases, the reaction may connect off to a different pathway and hence not be caught in above loop to define reaction entities
-							//e.g. Recruitment of SET1 methyltransferase complex  -> APC promotes disassembly of beta-catenin transactivation complex
-							//are connected yet in different pathways
-							//if its been defined, ought to at least have a label
-							if(go_cam.getaLabel(e2).equals("")){
-								defineReactionEntity(go_cam, nextEvent, e2_iri);		
+			//reaction -> reaction connections
+			//TODO this would fit the 2nd step sparql rules.. would be more consistent to move it there and use the same pattern
+			//below mapped from Chris Mungall's
+			//prolog rules https://github.com/cmungall/pl-sysbio/blob/master/prolog/sysbio/bp2lego.pl
+			Set<PathwayStep> steps = pathway.getPathwayOrder();
+			for(PathwayStep step1 : steps) {
+				Set<Process> events = step1.getStepProcess();
+				Set<PathwayStep> step2s = step1.getNextStep();
+				for(PathwayStep step2 : step2s) {
+					Set<Process> nextEvents = step2.getStepProcess();
+					for(Process event : events) {
+						for(Process nextEvent : nextEvents) {
+							//	Event directly_provides_input_for NextEvent
+							if((event.getModelInterface().equals(BiochemicalReaction.class))&&
+									(nextEvent.getModelInterface().equals(BiochemicalReaction.class))) {
+								IRI e1_iri = GoCAM.makeGoCamifiedIRI(event.getUri());
+								IRI e2_iri = GoCAM.makeGoCamifiedIRI(nextEvent.getUri());
+								OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(e1_iri);
+								OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(e2_iri);
+								go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.provides_direct_input_for, e2, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, "Reactome", null);
+								//in some cases, the reaction may connect off to a different pathway and hence not be caught in above loop to define reaction entities
+								//e.g. Recruitment of SET1 methyltransferase complex  -> APC promotes disassembly of beta-catenin transactivation complex
+								//are connected yet in different pathways
+								//if its been defined, ought to at least have a label
+								if(go_cam.getaLabel(e2).equals("")){
+									defineReactionEntity(go_cam, nextEvent, e2_iri);		
+								}
 							}
 						}
 					}
 				}
 			}
 		}
-
 		return;
 	}
 
@@ -1215,45 +1224,18 @@ public class BioPaxtoGO {
 			go_cam.addLiteralAnnotations2Individual(pathway.getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(k));   			
 
 			//find reactions that are part of this pathway
-			//CLUNKY.. fighting query.. need to find a better way - maybe sparql... 
-			int reaction_x = x; 
-			int reaction_y = y + y_spacer;
-			Collection<OWLIndividual> reactions = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont);
-			//			//find out if there is a logical root - a reaction with no provides_direct_input_for relations coming into it
-			//			Set<OWLIndividual> roots = new HashSet<OWLIndividual>();
-			//			for(OWLIndividual react : reactions) {
-			//				roots.add(react);
-			//			}
-			//			for(OWLIndividual react : reactions) {
-			//				Collection<OWLIndividual> targets = EntitySearcher.getObjectPropertyValues(react, GoCAM.provides_direct_input_for, go_cam.go_cam_ont);
-			//				for(OWLIndividual target : targets) {		
-			//					roots.remove(target);				
-			//				}
-			//				targets = EntitySearcher.getObjectPropertyValues(react, GoCAM.directly_negatively_regulates, go_cam.go_cam_ont);
-			//				for(OWLIndividual target : targets) {		
-			//					roots.remove(target);				
-			//				}
-			//				targets = EntitySearcher.getObjectPropertyValues(react, GoCAM.directly_positively_regulates, go_cam.go_cam_ont);
-			//				for(OWLIndividual target : targets) {		
-			//					roots.remove(target);				
-			//				}
-			//			}
-			//add regulators to node list
-			Set<OWLIndividual> regulators = new HashSet<OWLIndividual>();
-			for(OWLIndividual r : reactions) {
-				Collection<OWLAxiom> axioms = EntitySearcher.getReferencingAxioms((OWLEntity) r, go_cam.go_cam_ont);
-				for(OWLAxiom axiom : axioms) {
-					if(axiom.isOfType(AxiomType.OBJECT_PROPERTY_ASSERTION)){
-						OWLObjectPropertyAssertionAxiom op = (OWLObjectPropertyAssertionAxiom) axiom;
-						if(op.getProperty().equals(GoCAM.involved_in_negative_regulation_of)||
-								op.getProperty().equals(GoCAM.involved_in_positive_regulation_of)) {
-							regulators.add(op.getSubject());
-						}
-					}				
+			Collection<OWLIndividual> reactions_and_subpathways = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont);
+			Set<OWLIndividual> reactions = new HashSet<OWLIndividual>();
+			
+			for(OWLIndividual r : reactions_and_subpathways) {
+				for(OWLClassExpression type :EntitySearcher.getTypes(r, go_cam.go_cam_ont)) {
+					OWLClass c = type.asOWLClass();
+					if(c.equals(GoCAM.molecular_function)) {
+						reactions.add(r);
+						break;
+					}
 				}
 			}
-			reactions.addAll(regulators);
-
 			//classify reactions: root of causal chain, member of chain, island
 			Set<OWLIndividual> islands = new HashSet<OWLIndividual>();
 			Set<OWLIndividual> chain_roots = new HashSet<OWLIndividual>();
