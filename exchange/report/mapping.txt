@@ -1,4 +1,966 @@
 Reactome label	Reactome id	GO id	go_node_type	reactome_node_type
-Negative regulation of TCF-dependent signaling by DVL-interacting proteins	R-HSA-5368598	none	BP	Pathway
-CXXC4 binds DVL to prevent AXIN binding	R-HSA-5368582	none	BP?	reaction
-DVL binds CCDC88C	R-HSA-5368588	none	BP?	reaction
+Organic anion transport	R-HSA-561048	none	BP	Pathway
+SLC22A12 exchanges extracellular urate for cytosolic LACT	R-HSA-561253	GO_0015143	MF	controller
+SLC22A12 exchanges extracellular urate for cytosolic LACT	R-HSA-561253	none	BP?	reaction
+OAT1-3 transport organic anions with antiport of dicarboxylic acids	R-HSA-561041	GO_0015301	MF	controller
+OAT1-3 transport organic anions with antiport of dicarboxylic acids	R-HSA-561041	none	BP?	reaction
+OAT2 and OAT4 mediate transport of sulphate conjugates	R-HSA-561059	GO_0015347	MF	controller
+OAT2 and OAT4 mediate transport of sulphate conjugates	R-HSA-561059	none	BP?	reaction
+Transport of vitamins, nucleosides, and related molecules	R-HSA-425397	none	BP	Pathway
+Na+-dependent multivitamin transporter	R-HSA-429581	GO_0008523	MF	controller
+Na+-dependent multivitamin transporter	R-HSA-429581	none	BP?	reaction
+SLC33A1 transports Ac-CoA from cytosol to Golgi lumen	R-HSA-727759	GO_0008521	MF	controller
+SLC33A1 transports Ac-CoA from cytosol to Golgi lumen	R-HSA-727759	none	BP?	reaction
+Transport of fatty acids	R-HSA-425397	GO_0015909	BP	Pathway
+Transport of organic anions	R-HSA-425397	GO_0043252	BP	Pathway
+Transport of nucleosides and free purine and pyrimidine bases across the plasma membrane	R-HSA-425397	none	BP	Pathway
+Transport of nucleotide sugars	R-HSA-425397	none	BP	Pathway
+Organic cation transport	R-HSA-549127	none	BP	Pathway
+OCT2 mediates tubular secretion of organic cations in the kidney	R-HSA-561054	GO_0015101	MF	controller
+OCT2 mediates tubular secretion of organic cations in the kidney	R-HSA-561054	none	BP?	reaction
+OCT3 mediates renal clearance of organic cations	R-HSA-549304	GO_0015101	MF	controller
+OCT3 mediates renal clearance of organic cations	R-HSA-549304	none	BP?	reaction
+OCT2 mediates tubular uptake of organic cations in the kidney	R-HSA-549279	none	MF	controller
+OCT2 mediates tubular uptake of organic cations in the kidney	R-HSA-549279	GO_0015101	MF	controller
+OCT2 mediates tubular uptake of organic cations in the kidney	R-HSA-549279	none	BP?	reaction
+OCT1 transports organic cations into hepatic cells	R-HSA-549129	GO_0015101	MF	controller
+OCT1 transports organic cations into hepatic cells	R-HSA-549129	none	BP?	reaction
+OCT1 transports organic cations out of hepatic cells	R-HSA-549322	GO_0015101	MF	controller
+OCT1 transports organic cations out of hepatic cells	R-HSA-549322	none	BP?	reaction
+SLC22A4, 5,15,16 cotransport CAR, Na+ from extracellular region to cytosol	R-HSA-549297	GO_0015226	MF	controller
+SLC22A4, 5,15,16 cotransport CAR, Na+ from extracellular region to cytosol	R-HSA-549297	none	BP?	reaction
+SLC22A18 exchanges extracellular organic cations for cytosolic H+	R-HSA-597628	GO_0015307	MF	controller
+SLC22A18 exchanges extracellular organic cations for cytosolic H+	R-HSA-597628	none	BP?	reaction
+OCT3 mediates renal uptake of organic cations	R-HSA-561072	GO_0015101	MF	controller
+OCT3 mediates renal uptake of organic cations	R-HSA-561072	none	BP?	reaction
+SLC22A4 cotransports ERGT, Na+ from extracellular region to cytosol	R-HSA-549241	none	MF	controller
+SLC22A4 cotransports ERGT, Na+ from extracellular region to cytosol	R-HSA-549241	GO_0008513	MF	controller
+SLC22A4 cotransports ERGT, Na+ from extracellular region to cytosol	R-HSA-549241	none	BP?	reaction
+Transport of fatty acids	R-HSA-804914	GO_0015909	BP	Pathway
+SLC27A1,4,6 transport LCFAs from extracellular region to cytosol	R-HSA-879585	GO_0015245	MF	controller
+SLC27A1,4,6 transport LCFAs from extracellular region to cytosol	R-HSA-879585	none	BP?	reaction
+LCNs bind lipids	R-HSA-5229283	none	BP?	reaction
+Transport of organic anions	R-HSA-879518	GO_0043252	BP	Pathway
+PGT transports prostaglandins	R-HSA-879528	GO_0015132	MF	controller
+PGT transports prostaglandins	R-HSA-879528	none	BP?	reaction
+Transport (influx) of glycocholate and taurocholate by OATP-C	R-HSA-194083	GO_0015125	MF	controller
+Transport (influx) of glycocholate and taurocholate by OATP-C	R-HSA-194083	none	BP?	reaction
+SLCOs, SLC16A2 transport T3,T4 from extracellular region to cytosol	R-HSA-879575	GO_0015349	MF	controller
+SLCOs, SLC16A2 transport T3,T4 from extracellular region to cytosol	R-HSA-879575	none	BP?	reaction
+Transport (influx) of bile salts and acids by OATP-A	R-HSA-194130	GO_0015125	MF	controller
+Transport (influx) of bile salts and acids by OATP-A	R-HSA-194130	none	BP?	reaction
+SLCO1B3 transports ALB:(GCCA, TCCA) from extracellular region to cytosol	R-HSA-194079	GO_0015125	MF	controller
+SLCO1B3 transports ALB:(GCCA, TCCA) from extracellular region to cytosol	R-HSA-194079	none	BP?	reaction
+SLCO4C1 mediates the transport of digoxin	R-HSA-879594	GO_0015347	MF	controller
+SLCO4C1 mediates the transport of digoxin	R-HSA-879594	none	BP?	reaction
+SLCO2B1 has a narrow substrate specificity	R-HSA-879562	GO_0015347	MF	controller
+SLCO2B1 has a narrow substrate specificity	R-HSA-879562	none	BP?	reaction
+SLCO3A1 isoform 1 has abroad substrate specificity	R-HSA-879584	GO_0015347	MF	controller
+SLCO3A1 isoform 1 has abroad substrate specificity	R-HSA-879584	none	BP?	reaction
+Transport of nucleosides and free purine and pyrimidine bases across the plasma membrane	R-HSA-83936	none	BP	Pathway
+Concentrative transport (import) of a nucleoside and two sodium ions by solute carrier family 28 (sodium-coupled nucleoside transporter), member 3	R-HSA-109538	GO_0005415	MF	controller
+Concentrative transport (import) of a nucleoside and two sodium ions by solute carrier family 28 (sodium-coupled nucleoside transporter), member 3	R-HSA-109538	none	BP?	reaction
+Concentrative transport (import) of nucleosides plus sodium ions by solute carrier family 28 (sodium-coupled nucleoside transporter), member 2	R-HSA-109539	GO_0005415	MF	controller
+Concentrative transport (import) of nucleosides plus sodium ions by solute carrier family 28 (sodium-coupled nucleoside transporter), member 2	R-HSA-109539	none	BP?	reaction
+Equilibrative transport (import) of adenosine and biogenic amines by solute carrier family 29 (nucleoside transporters), member 4	R-HSA-727740	GO_0005337	MF	controller
+Equilibrative transport (import) of adenosine and biogenic amines by solute carrier family 29 (nucleoside transporters), member 4	R-HSA-727740	none	BP?	reaction
+Concentrative transport (import) of a nucleoside and a sodium ions by solute carrier family 28 (sodium-coupled nucleoside transporter), member 1	R-HSA-109530	GO_0005415	MF	controller
+Concentrative transport (import) of a nucleoside and a sodium ions by solute carrier family 28 (sodium-coupled nucleoside transporter), member 1	R-HSA-109530	none	BP?	reaction
+Equilibrative transport (export) of adenosine and biogenic amines by solute carrier family 29 (nucleoside transporters), member 4	R-HSA-727768	GO_0005337	MF	controller
+Equilibrative transport (export) of adenosine and biogenic amines by solute carrier family 29 (nucleoside transporters), member 4	R-HSA-727768	none	BP?	reaction
+SLC29A3 transports nucleosides from lysosomal lumen to cytosol	R-HSA-727749	GO_0005337	MF	controller
+SLC29A3 transports nucleosides from lysosomal lumen to cytosol	R-HSA-727749	none	BP?	reaction
+SLC29A3 transports nucleosides from cytosol to lysosomal lumen	R-HSA-727767	GO_0005337	MF	controller
+SLC29A3 transports nucleosides from cytosol to lysosomal lumen	R-HSA-727767	none	BP?	reaction
+Equilibrative transport (import) of nucleosides and free bases by solute carrier family 29 (nucleoside transporters), member 1	R-HSA-109536	GO_0005337	MF	controller
+Equilibrative transport (import) of nucleosides and free bases by solute carrier family 29 (nucleoside transporters), member 1	R-HSA-109536	none	BP?	reaction
+Equilibrative transport (import) of nucleosides and free bases by solute carrier family 29 (nucleoside transporters), member 2	R-HSA-109527	GO_0005337	MF	controller
+Equilibrative transport (import) of nucleosides and free bases by solute carrier family 29 (nucleoside transporters), member 2	R-HSA-109527	none	BP?	reaction
+Equilibrative transport (export) of nucleosides and free bases by solute carrier family 29 (nucleoside transporters), member 1	R-HSA-109534	GO_0005337	MF	controller
+Equilibrative transport (export) of nucleosides and free bases by solute carrier family 29 (nucleoside transporters), member 1	R-HSA-109534	none	BP?	reaction
+Equilibrative transport (export) of nucleosides and free bases by solute carrier family 29 (nucleoside transporters), member 2	R-HSA-109529	GO_0005337	MF	controller
+Equilibrative transport (export) of nucleosides and free bases by solute carrier family 29 (nucleoside transporters), member 2	R-HSA-109529	none	BP?	reaction
+Transport of nucleotide sugars	R-HSA-727802	none	BP	Pathway
+SLC35A1 exchanges CMP-Neu5Ac for CMP	R-HSA-727807	GO_0005456	MF	controller
+SLC35A1 exchanges CMP-Neu5Ac for CMP	R-HSA-727807	none	BP?	reaction
+SLC35A2 exchanges UDP-Gal, UDP-GalNAc for UMP	R-HSA-735702	GO_0005459	MF	controller
+SLC35A2 exchanges UDP-Gal, UDP-GalNAc for UMP	R-HSA-735702	none	BP?	reaction
+SLC35D2 exchanges UDP-sugars for UMP	R-HSA-744231	GO_0005338	MF	controller
+SLC35D2 exchanges UDP-sugars for UMP	R-HSA-744231	none	BP?	reaction
+SLC35D2 mediates the antiport of GDP-mannose in exchange for GMP	R-HSA-744230	GO_0005338	MF	controller
+SLC35D2 mediates the antiport of GDP-mannose in exchange for GMP	R-HSA-744230	none	BP?	reaction
+SLC35C1 transport UDP-Fuc from cytosol to Golgi lumen	R-HSA-742345	GO_0005457	MF	controller
+SLC35C1 transport UDP-Fuc from cytosol to Golgi lumen	R-HSA-742345	none	BP?	reaction
+SLC35D1 hexamer transports UDP-GlcA, UDP-GlcNAc from cytosol to endoplasmic reticulum lumen	R-HSA-174368	GO_0005461	MF	controller
+SLC35D1 hexamer transports UDP-GlcA, UDP-GlcNAc from cytosol to endoplasmic reticulum lumen	R-HSA-174368	none	BP?	reaction
+SLC35B4 mediates the transport of UDP-xylose into the Golgi lumen	R-HSA-742373	GO_0005464	MF	controller
+SLC35B4 mediates the transport of UDP-xylose into the Golgi lumen	R-HSA-742373	none	BP?	reaction
+SLC35B4 mediates the transport of UDP-N-acetylglucosamine into the Golgi lumen	R-HSA-742354	GO_0005462	MF	controller
+SLC35B4 mediates the transport of UDP-N-acetylglucosamine into the Golgi lumen	R-HSA-742354	none	BP?	reaction
+SLC35A3 exchanges UDP-GlcNAc for UMP	R-HSA-741450	GO_0005462	MF	controller
+SLC35A3 exchanges UDP-GlcNAc for UMP	R-HSA-741450	none	BP?	reaction
+SLC35B2,3 transport cytosolic PAPS to Golgi lumen	R-HSA-741449	GO_0046964	MF	controller
+SLC35B2,3 transport cytosolic PAPS to Golgi lumen	R-HSA-741449	none	BP?	reaction
+Vasopressin regulates renal water homeostasis via Aquaporins	R-HSA-432040	GO_0003091	BP	Pathway
+Phosphorylation of Aquaporin-2 by Protein Kinase A (PKA)	R-HSA-432232	GO_0004691	MF	controller
+Phosphorylation of Aquaporin-2 by Protein Kinase A (PKA)	R-HSA-432232	none	BP?	reaction
+cAMP binds PKA tetramer	R-HSA-8951727	none	BP?	reaction
+cAMP induces dissociation of inactive PKA tetramers	R-HSA-111925	none	BP?	reaction
+G alpha (s) activates adenylate cyclase	R-HSA-163617	none	BP?	reaction
+Activated Adenylate cyclase catalyses cAMP synthesis	R-HSA-164377	GO_0004016	MF	controller
+Activated Adenylate cyclase catalyses cAMP synthesis	R-HSA-164377	none	BP?	reaction
+AVP:AVPR2:heterotrimeric G(s) complex exchanges GDP for GTP	R-HSA-432195	none	BP?	reaction
+Aquaporin-3 passively transports water out of cell	R-HSA-445714	GO_0015250	MF	controller
+Aquaporin-3 passively transports water out of cell	R-HSA-445714	none	BP?	reaction
+Heterotrimeric G(s) complex dissociates	R-HSA-422320	none	BP?	reaction
+Aquaporin-4 passively transports water out of cell	R-HSA-432067	GO_0015250	MF	controller
+Aquaporin-4 passively transports water out of cell	R-HSA-432067	none	BP?	reaction
+AVP(20-28) binds AVPR2	R-HSA-392263	none	BP?	reaction
+p-S256-Aquaporin-2 passively transports water into cell	R-HSA-432065	GO_0015250	MF	controller
+p-S256-Aquaporin-2 passively transports water into cell	R-HSA-432065	none	BP?	reaction
+AVP:AVPR2 Complex binds inactive heterotrimeric G(s) complex	R-HSA-432188	none	BP?	reaction
+Aquaporin-1 passively transports water out of cell	R-HSA-432054	GO_0015250	MF	controller
+Aquaporin-1 passively transports water out of cell	R-HSA-432054	none	BP?	reaction
+Translocation of Aquaporin-2 from intracellular vesicles to the apical plasma membrane	R-HSA-432237	GO_0000146	MF	controller
+Translocation of Aquaporin-2 from intracellular vesicles to the apical plasma membrane	R-HSA-432237	none	BP?	reaction
+Aquaporin-1 passively transports water into cell	R-HSA-432010	GO_0015250	MF	controller
+Aquaporin-1 passively transports water into cell	R-HSA-432010	none	BP?	reaction
+Aquaporin-mediated transport	R-HSA-445717	GO_0006833	BP	Pathway
+Transport of glycerol from adipocytes to the liver by Aquaporins	R-HSA-445717	GO_0015793	BP	Pathway
+Vasopressin regulates renal water homeostasis via Aquaporins	R-HSA-445717	GO_0003091	BP	Pathway
+Passive transport by Aquaporins	R-HSA-445717	GO_0006833	BP	Pathway
+Passive transport by Aquaporins	R-HSA-432047	GO_0006833	BP	Pathway
+Aquaporins passively transport glycerol out of cells	R-HSA-507871	GO_0015254	MF	controller
+Aquaporins passively transport glycerol out of cells	R-HSA-507871	none	BP?	reaction
+Aquaporins passively transport urea into cells	R-HSA-507875	GO_0015265	MF	controller
+Aquaporins passively transport urea into cells	R-HSA-507875	none	BP?	reaction
+Aquaporin-6 passively transports anions out of vesicles	R-HSA-432036	GO_0005253	MF	controller
+Aquaporin-6 passively transports anions out of vesicles	R-HSA-432036	none	BP?	reaction
+Aquaporins passively transport glycerol into cells	R-HSA-507869	GO_0015254	MF	controller
+Aquaporins passively transport glycerol into cells	R-HSA-507869	none	BP?	reaction
+Aquaporins passively transport water out of cells	R-HSA-507870	GO_0015250	MF	controller
+Aquaporins passively transport water out of cells	R-HSA-507870	none	BP?	reaction
+Aquaporin-6 passively transports anions into vesicles	R-HSA-432034	GO_0005253	MF	controller
+Aquaporin-6 passively transports anions into vesicles	R-HSA-432034	none	BP?	reaction
+Aquaporins passively transport water into cells	R-HSA-507868	GO_0015250	MF	controller
+Aquaporins passively transport water into cells	R-HSA-507868	none	BP?	reaction
+Aquaporins passively transport urea out of cells	R-HSA-507873	GO_0015265	MF	controller
+Aquaporins passively transport urea out of cells	R-HSA-507873	none	BP?	reaction
+Transferrin endocytosis and recycling	R-HSA-917977	GO_0033572	BP	Pathway
+Separation of endosome from the plasma membrane	R-HSA-917807	none	BP?	reaction
+TFRC dimer binds 2xholoTF	R-HSA-917987	none	BP?	reaction
+TFR2 dimer binds 2xholoTF	R-HSA-5691150	none	BP?	reaction
+apo-Transferrin dissociates from the receptor complex	R-HSA-917839	none	BP?	reaction
+HFE binds TFRC dimer	R-HSA-5691154	none	BP?	reaction
+Iron diffuses out of the endosome	R-HSA-917936	GO_0005381	MF	controller
+Iron diffuses out of the endosome	R-HSA-917936	none	BP?	reaction
+apoTF:TFRC dimer translocates from endosome membrane to plasma membrane	R-HSA-917814	none	BP?	reaction
+Fe3+ dissociates from holoTF:TFRC dimer	R-HSA-917835	none	BP?	reaction
+Reduction of Fe3+ in the endosome	R-HSA-917811	GO_0016723	MF	controller
+Reduction of Fe3+ in the endosome	R-HSA-917811	none	BP?	reaction
+ATP6AP1 binds V-ATPase	R-HSA-5252133	none	BP?	reaction
+Acidification of Tf:TfR1 containing endosome	R-HSA-917841	GO_0015078	MF	controller
+Acidification of Tf:TfR1 containing endosome	R-HSA-917841	none	BP?	reaction
+Ion channel transport	R-HSA-983712	GO_0034220	BP	Pathway
+Ion transport by P-type ATPases	R-HSA-983712	GO_0034220	BP	Pathway
+Stimuli-sensing channels	R-HSA-983712	none	BP	Pathway
+ATP6AP1 binds V-ATPase	R-HSA-5252133	none	BP?	reaction
+Transport of glycerol from adipocytes to the liver by Aquaporins	R-HSA-432030	GO_0015793	BP	Pathway
+Aquaporin-7 passively transports glycerol out of cell	R-HSA-432074	GO_0015254	MF	controller
+Aquaporin-7 passively transports glycerol out of cell	R-HSA-432074	none	BP?	reaction
+Aquaporin-9 passively transports glycerol into cell	R-HSA-432049	GO_0015254	MF	controller
+Aquaporin-9 passively transports glycerol into cell	R-HSA-432049	none	BP?	reaction
+Iron uptake and transport	R-HSA-917937	GO_0006879	BP	Pathway
+Transferrin endocytosis and recycling	R-HSA-917937	GO_0033572	BP	Pathway
+Fe3+ dissociates from SLC22A17:LCN2:2,5DHBA	R-HSA-5671707	GO_0022857	MF	controller
+Fe3+ dissociates from SLC22A17:LCN2:2,5DHBA	R-HSA-5671707	none	BP?	reaction
+Reduction of extracellular Fe3+	R-HSA-917805	GO_0016722	MF	controller
+Reduction of extracellular Fe3+	R-HSA-917805	none	BP?	reaction
+Oxidation of Fe2+ by ceruloplasmin	R-HSA-917891	GO_0004322	MF	controller
+Oxidation of Fe2+ by ceruloplasmin	R-HSA-917891	none	BP?	reaction
+LCN2:2,5DHBA binds Fe3+	R-HSA-5229273	none	BP?	reaction
+SLC22A17 binds LCN2:2,5DHBA:Fe3+	R-HSA-5246444	none	BP?	reaction
+Ferroportin mediates iron efflux on macrophages	R-HSA-904830	GO_0005381	MF	controller
+Ferroportin mediates iron efflux on macrophages	R-HSA-904830	none	BP?	reaction
+Export of heme to the blood by ABCG2	R-HSA-917979	GO_0015232	MF	controller
+Export of heme to the blood by ABCG2	R-HSA-917979	none	BP?	reaction
+SKP1:FBXL5:CUL1:NEDD8 ubiquitinylates IREB2	R-HSA-5691108	GO_0004842	MF	controller
+SKP1:FBXL5:CUL1:NEDD8 ubiquitinylates IREB2	R-HSA-5691108	none	BP?	reaction
+Ferritin Complex oxidises 4Fe2+ to Fe(3+)O(OH)	R-HSA-1562626	GO_0004322	MF	controller
+Ferritin Complex oxidises 4Fe2+ to Fe(3+)O(OH)	R-HSA-1562626	none	BP?	reaction
+FTMT 24mer oxidises 4Fe2+ to 4Fe(3+)O(OH)	R-HSA-5691107	GO_0004322	MF	controller
+FTMT 24mer oxidises 4Fe2+ to 4Fe(3+)O(OH)	R-HSA-5691107	none	BP?	reaction
+SLC11A2 cotransports Fe2+, H+ from extracellular region to cytosol	R-HSA-435349	GO_0005381	MF	controller
+SLC11A2 cotransports Fe2+, H+ from extracellular region to cytosol	R-HSA-435349	none	BP?	reaction
+HMOX1,2 cleave heme	R-HSA-189398	GO_0004392	MF	controller
+HMOX1,2 cleave heme	R-HSA-189398	none	BP?	reaction
+CUL1, SKP1, FBXL5 bind	R-HSA-5691167	none	BP?	reaction
+SLC40A1:HEPH:6Cu2+ transports Fe2+ from cytosol to extracellular region	R-HSA-442368	GO_0015093	MF	controller
+SLC40A1:HEPH:6Cu2+ transports Fe2+ from cytosol to extracellular region	R-HSA-442368	none	BP?	reaction
+Export of heme to the blood by FLVCR	R-HSA-917892	GO_0015232	MF	controller
+Export of heme to the blood by FLVCR	R-HSA-917892	none	BP?	reaction
+NEDD8 binds CUL1 (in SKP1:CUL1:FXBL5)	R-HSA-5691176	none	BP?	reaction
+apoTF binds 2Fe3+ to form holoTF	R-HSA-917888	none	BP?	reaction
+ACO1, IREB2 bind IREs in TFRC, ALAD, FTL, FTH1 mRNAs	R-HSA-5690886	none	MF	controller
+ACO1, IREB2 bind IREs in TFRC, ALAD, FTL, FTH1 mRNAs	R-HSA-5690886	none	BP?	reaction
+SLC46A1 transports FeHM from extracellular region to cytosol	R-HSA-917870	GO_0015232	MF	controller
+SLC46A1 transports FeHM from extracellular region to cytosol	R-HSA-917870	none	BP?	reaction
+CANDI binds CUL1	R-HSA-5691131	none	BP?	reaction
+ACO1 binds 4Fe-4S	R-HSA-5690873	none	BP?	reaction
+Oxidation of Fe2+ by hephaestin	R-HSA-917933	GO_0004322	MF	controller
+Oxidation of Fe2+ by hephaestin	R-HSA-917933	none	BP?	reaction
+ACO1:4Fe-4S isomerises CIT to ISCIT	R-HSA-5690911	GO_0003994	MF	controller
+ACO1:4Fe-4S isomerises CIT to ISCIT	R-HSA-5690911	none	BP?	reaction
+TFRC dimer binds 2xholoTF	R-HSA-917987	none	BP?	reaction
+TRP channels	R-HSA-3295583	GO_0070588	BP	Pathway
+TRPM4,5 transport extracellular Na+ to cytosol	R-HSA-3295580	GO_0005272	MF	controller
+TRPM4,5 transport extracellular Na+ to cytosol	R-HSA-3295580	none	BP?	reaction
+TRPs transport extracellular Ca2+ to cytosol	R-HSA-3295579	none	MF	controller
+TRPs transport extracellular Ca2+ to cytosol	R-HSA-3295579	GO_0005262	MF	controller
+TRPs transport extracellular Ca2+ to cytosol	R-HSA-3295579	none	BP?	reaction
+O2/CO2 exchange in erythrocytes	R-HSA-1480926	GO_0015701	BP	Pathway
+Erythrocytes take up carbon dioxide and release oxygen	R-HSA-1480926	GO_0015701	BP	Pathway
+Erythrocytes take up oxygen and release carbon dioxide	R-HSA-1480926	GO_0015701	BP	Pathway
+Ion transport by P-type ATPases	R-HSA-936837	GO_0034220	BP	Pathway
+ATP7B transports cytosolic Cu2+ to Golgi lumen	R-HSA-936895	GO_0043682	MF	controller
+ATP7B transports cytosolic Cu2+ to Golgi lumen	R-HSA-936895	none	BP?	reaction
+ATP13A1 transports Mn2+ from cytosol to ER lumen	R-HSA-5692462	GO_0015410	MF	controller
+ATP13A1 transports Mn2+ from cytosol to ER lumen	R-HSA-5692462	none	BP?	reaction
+PMCA extrusion of Ca2+ 	R-HSA-418309	GO_0005388	MF	controller
+PMCA extrusion of Ca2+ 	R-HSA-418309	none	BP?	reaction
+ATP13A2 transports cations from cytosol to lysosomal lumen	R-HSA-5692480	GO_0019829	MF	controller
+ATP13A2 transports cations from cytosol to lysosomal lumen	R-HSA-5692480	none	BP?	reaction
+CUTC binds Cu+	R-HSA-5334788	none	BP?	reaction
+ATP7A transports cytosolic Cu2+ to extracellular region	R-HSA-936802	GO_0004008	MF	controller
+ATP7A transports cytosolic Cu2+ to extracellular region	R-HSA-936802	none	BP?	reaction
+P-type ATPases type IV transport internal-facing APLs to external side of the plasma membrane	R-HSA-947591	GO_0004012	MF	controller
+P-type ATPases type IV transport internal-facing APLs to external side of the plasma membrane	R-HSA-947591	none	BP?	reaction
+ATP13A4,5 transport divalent ions from extracellular region to cytosol	R-HSA-5251989	GO_0019829	MF	controller
+ATP13A4,5 transport divalent ions from extracellular region to cytosol	R-HSA-5251989	none	BP?	reaction
+ATP4A/12A:ATP4B exchanges K+ for H+	R-HSA-937311	GO_0008900	MF	controller
+ATP4A/12A:ATP4B exchanges K+ for H+	R-HSA-937311	none	BP?	reaction
+P-type ATPase type IV subfamily transporters may mediate phospholipid transfer	R-HSA-939763	GO_0004012	MF	controller
+P-type ATPase type IV subfamily transporters may mediate phospholipid transfer	R-HSA-939763	none	BP?	reaction
+ATP2C1/2:Mg2+ transport cytosolic Ca2+ to Golgi lumen	R-HSA-936883	GO_0005388	MF	controller
+ATP2C1/2:Mg2+ transport cytosolic Ca2+ to Golgi lumen	R-HSA-936883	none	BP?	reaction
+ATP1A:ATP1B:FXYD exchanges Na+ for K+	R-HSA-936897	GO_0005391	MF	controller
+ATP1A:ATP1B:FXYD exchanges Na+ for K+	R-HSA-936897	none	BP?	reaction
+Sequestration of Ca2+ to dense tubular network lumen	R-HSA-418365	GO_0005388	MF	controller
+Sequestration of Ca2+ to dense tubular network lumen	R-HSA-418365	none	BP?	reaction
+Sequestration of Ca2+ to intracellular stores	R-HSA-427910	GO_0005388	MF	controller
+Sequestration of Ca2+ to intracellular stores	R-HSA-427910	none	BP?	reaction
+Stimuli-sensing channels	R-HSA-2672351	none	BP	Pathway
+CLCN4/5/6 exchange Cl- for H+	R-HSA-2730692	GO_0015297	MF	controller
+CLCN4/5/6 exchange Cl- for H+	R-HSA-2730692	none	BP?	reaction
+CLCN7:OSTM1 exchanges Cl- for H+	R-HSA-2730959	GO_0015297	MF	controller
+CLCN7:OSTM1 exchanges Cl- for H+	R-HSA-2730959	none	BP?	reaction
+CLCN1/2/KA/KB transport cytosolic Cl- to extracellular region	R-HSA-2744228	GO_0005247	MF	controller
+CLCN1/2/KA/KB transport cytosolic Cl- to extracellular region	R-HSA-2744228	none	BP?	reaction
+CLCN3 exchanges Cl- for H+	R-HSA-2731002	GO_0015297	MF	controller
+CLCN3 exchanges Cl- for H+	R-HSA-2731002	none	BP?	reaction
+TRP channels	R-HSA-2672351	GO_0070588	BP	Pathway
+SLC9C1 exchanges Na+ for H+	R-HSA-2872463	GO_0015385	MF	controller
+SLC9C1 exchanges Na+ for H+	R-HSA-2872463	none	BP?	reaction
+SLC9B1/C2 exchange Na+ for H+	R-HSA-2872444	GO_0015385	MF	controller
+SLC9B1/C2 exchange Na+ for H+	R-HSA-2872444	none	BP?	reaction
+SLC9B2 exchanges Na+, Li+ for H+	R-HSA-2889070	GO_0005451	MF	controller
+SLC9B2 exchanges Na+, Li+ for H+	R-HSA-2889070	none	BP?	reaction
+UNC79:UNC80:NALCN transports cytosolic Na+ to extracellular region	R-HSA-2730664	GO_0005272	MF	controller
+UNC79:UNC80:NALCN transports cytosolic Na+ to extracellular region	R-HSA-2730664	none	BP?	reaction
+SLC17A3-1 cotransports extracellular Na+ and Pi to cytosol	R-HSA-2872498	GO_0005436	MF	controller
+SLC17A3-1 cotransports extracellular Na+ and Pi to cytosol	R-HSA-2872498	none	BP?	reaction
+SLC17A3-2 transports cytosolic urate to extracellular region	R-HSA-2872497	GO_0015143	MF	controller
+SLC17A3-2 transports cytosolic urate to extracellular region	R-HSA-2872497	none	BP?	reaction
+ANOs transport cytosolic Cl- to extracellular region	R-HSA-2684901	GO_0005229	MF	controller
+ANOs transport cytosolic Cl- to extracellular region	R-HSA-2684901	none	BP?	reaction
+BESTs transport cytosolic HCO3- to extracellular region	R-HSA-2752067	GO_0015106	MF	controller
+BESTs transport cytosolic HCO3- to extracellular region	R-HSA-2752067	none	BP?	reaction
+TPCN1/2 transport lysosomal Ca2+ to cytosol 	R-HSA-2685505	GO_0072345	MF	controller
+TPCN1/2 transport lysosomal Ca2+ to cytosol 	R-HSA-2685505	none	BP?	reaction
+RYR tetramers transport Ca2+ from sarcoplasmic reticulum lumen to cytosol	R-HSA-2855020	GO_0005219	MF	controller
+RYR tetramers transport Ca2+ from sarcoplasmic reticulum lumen to cytosol	R-HSA-2855020	none	BP?	reaction
+SCNN channels transport extracellular Na+ to cytosol	R-HSA-2672334	GO_0015280	MF	controller
+SCNN channels transport extracellular Na+ to cytosol	R-HSA-2672334	none	BP?	reaction
+TTYH2/3 transport cytosolic Cl- to extracellular region	R-HSA-2744242	GO_0005229	MF	controller
+TTYH2/3 transport cytosolic Cl- to extracellular region	R-HSA-2744242	none	BP?	reaction
+RAF1:SGK:TSC22D3:WPP ubiquitinates SCNN channels	R-HSA-2682349	GO_0004842	MF	controller
+RAF1:SGK:TSC22D3:WPP ubiquitinates SCNN channels	R-HSA-2682349	none	BP?	reaction
+BESTs transport cytosolic Cl- to extracellular region	R-HSA-2744361	none	MF	controller
+BESTs transport cytosolic Cl- to extracellular region	R-HSA-2744361	GO_0005229	MF	controller
+BESTs transport cytosolic Cl- to extracellular region	R-HSA-2744361	none	BP?	reaction
+ASICs bind STOML3, (STOM)	R-HSA-8863494	none	BP?	reaction
+CLCAs self cleave	R-HSA-5333671	none	MF	controller
+CLCAs self cleave	R-HSA-5333671	GO_0004222	MF	controller
+CLCAs self cleave	R-HSA-5333671	none	BP?	reaction
+ASICs transport extracellular Na+ to cytosol	R-HSA-2671885	none	MF	controller
+ASICs transport extracellular Na+ to cytosol	R-HSA-2671885	none	MF	controller
+ASICs transport extracellular Na+ to cytosol	R-HSA-2671885	none	MF	controller
+ASICs transport extracellular Na+ to cytosol	R-HSA-2671885	GO_0044736	MF	controller
+ASICs transport extracellular Na+ to cytosol	R-HSA-2671885	none	BP?	reaction
+TTYH1 transports cytosolic Cl- to extracellular region	R-HSA-2744349	GO_0005254	MF	controller
+TTYH1 transports cytosolic Cl- to extracellular region	R-HSA-2744349	none	BP?	reaction
+Erythrocytes take up carbon dioxide and release oxygen	R-HSA-1237044	GO_0015701	BP	Pathway
+AQP1 passively tranlocates carbon dioxide from the extracellular region to the cytosol	R-HSA-1237042	GO_0035379	MF	controller
+AQP1 passively tranlocates carbon dioxide from the extracellular region to the cytosol	R-HSA-1237042	none	BP?	reaction
+RhAG passively translocates carbon dioxide from the extracellular region to the cytosol	R-HSA-1237069	GO_0035379	MF	controller
+RhAG passively translocates carbon dioxide from the extracellular region to the cytosol	R-HSA-1237069	none	BP?	reaction
+H2O + CO2 -> H+ + HCO3-	R-HSA-1237047	GO_0004089	MF	controller
+H2O + CO2 -> H+ + HCO3-	R-HSA-1237047	none	BP?	reaction
+CYB5Rs reduce MetHb to HbA	R-HSA-6806831	GO_0004128	MF	controller
+CYB5Rs reduce MetHb to HbA	R-HSA-6806831	none	BP?	reaction
+SLC4A1 exchanges cytosolic HCO3- for extracellular Cl-	R-HSA-1237038	GO_0005452	MF	controller
+SLC4A1 exchanges cytosolic HCO3- for extracellular Cl-	R-HSA-1237038	none	BP?	reaction
+Bohr Effect	R-HSA-1237325	none	BP?	reaction
+Carbonic anhydrase I/II hydrates carbon dioxide	R-HSA-1475435	GO_0004089	MF	controller
+Carbonic anhydrase I/II hydrates carbon dioxide	R-HSA-1475435	none	BP?	reaction
+H+ + HCO3- -> H2O + CO2	R-HSA-1237059	GO_0004089	MF	controller
+H+ + HCO3- -> H2O + CO2	R-HSA-1237059	none	BP?	reaction
+Erythrocytes take up oxygen and release carbon dioxide	R-HSA-1247673	GO_0015701	BP	Pathway
+H+ + HCO3- -> H2O + CO2	R-HSA-1237059	GO_0004089	MF	controller
+H+ + HCO3- -> H2O + CO2	R-HSA-1237059	none	BP?	reaction
+AQP1 passively translocates carbon dioxide from the cytosol to the extracellular region	R-HSA-1247649	GO_0035379	MF	controller
+AQP1 passively translocates carbon dioxide from the cytosol to the extracellular region	R-HSA-1247649	none	BP?	reaction
+RhAG passively translocates carbon dioxide from the cytosol to the extracellular region	R-HSA-1247645	GO_0035379	MF	controller
+RhAG passively translocates carbon dioxide from the cytosol to the extracellular region	R-HSA-1247645	none	BP?	reaction
+Band 3 Anion Exchanger (AE1, SLC4A1) exchanges cytosolic chloride for extracellular bicarbonate	R-HSA-1247665	GO_0005452	MF	controller
+Band 3 Anion Exchanger (AE1, SLC4A1) exchanges cytosolic chloride for extracellular bicarbonate	R-HSA-1247665	none	BP?	reaction
+Carbonic anhydrase I/II dehydrates bicarbonate	R-HSA-1475436	GO_0004089	MF	controller
+Carbonic anhydrase I/II dehydrates bicarbonate	R-HSA-1475436	none	BP?	reaction
+Haldane Effect	R-HSA-1247668	none	BP?	reaction
+Lipoprotein metabolism	R-HSA-174824	GO_0071827	BP	Pathway
+Plasma lipoprotein assembly	R-HSA-174824	GO_0034377	BP	Pathway
+Plasma lipoprotein clearance	R-HSA-174824	GO_0034381	BP	Pathway
+Plasma lipoprotein remodeling	R-HSA-174824	GO_0034369	BP	Pathway
+Plasma lipoprotein assembly	R-HSA-8963898	GO_0034377	BP	Pathway
+HDL assembly	R-HSA-8963898	GO_0034380	BP	Pathway
+Chylomicron assembly	R-HSA-8963898	GO_0034378	BP	Pathway
+VLDL assembly	R-HSA-8963898	GO_0034379	BP	Pathway
+Mitochondrial calcium ion transport	R-HSA-8949215	GO_0006851	BP	Pathway
+SLC8B1 (NCLX) exchanges sodium (mitochondrial intermembrane space) for calcium (mitochondrial matrix)	R-HSA-8949688	GO_0005432	MF	controller
+SLC8B1 (NCLX) exchanges sodium (mitochondrial intermembrane space) for calcium (mitochondrial matrix)	R-HSA-8949688	none	BP?	reaction
+Processing of SMDT1	R-HSA-8949215	none	BP	Pathway
+MCU translocates calcium from the mitochondrial intermembrane space to the mitochondrial matrix	R-HSA-8949178	GO_0005262	MF	controller
+MCU translocates calcium from the mitochondrial intermembrane space to the mitochondrial matrix	R-HSA-8949178	none	BP?	reaction
+VDAC1,2,3 translocate calcium from the cytosol to the mitochondrial intermembrane space	R-HSA-8949145	GO_0005262	MF	controller
+VDAC1,2,3 translocate calcium from the cytosol to the mitochondrial intermembrane space	R-HSA-8949145	none	BP?	reaction
+LETM1 exchanges protons (mitochondrial intermembrane space) for calcium (mitochondrial matrix)	R-HSA-8949687	GO_0015369	MF	controller
+LETM1 exchanges protons (mitochondrial intermembrane space) for calcium (mitochondrial matrix)	R-HSA-8949687	none	BP?	reaction
+SLC8A3 (NCX3) exchanges sodium (cytosol) for calcium (mitochondrial intermembrane space)	R-HSA-8949703	GO_0005432	MF	controller
+SLC8A3 (NCX3) exchanges sodium (cytosol) for calcium (mitochondrial intermembrane space)	R-HSA-8949703	none	BP?	reaction
+Processing of SMDT1	R-HSA-8949664	none	BP	Pathway
+YME1L1 proteolyzes unassembled proSMDT1	R-HSA-8949668	GO_0004222	MF	controller
+YME1L1 proteolyzes unassembled proSMDT1	R-HSA-8949668	none	BP?	reaction
+SMDT1 assists in assembling MCU, MCUB, MICU1, MICU2 (or MICU3) yielding the MCU complex	R-HSA-8953461	none	BP?	reaction
+AFG3L2 (m-AAA protease) degrades SMDT1 that is not assembled in MCU	R-HSA-8949659	GO_0004222	MF	controller
+AFG3L2 (m-AAA protease) degrades SMDT1 that is not assembled in MCU	R-HSA-8949659	none	BP?	reaction
+C2orf47:AFG3L2 binds the transit peptide of SMDT1	R-HSA-8949661	none	BP?	reaction
+PMPCA:PMPCB cleaves the transit peptide of proSMDT1 (proEMRE)	R-HSA-8949649	GO_0004222	MF	controller
+PMPCA:PMPCB cleaves the transit peptide of proSMDT1 (proEMRE)	R-HSA-8949649	none	BP?	reaction
+MCU translocates calcium from the mitochondrial intermembrane space to the mitochondrial matrix	R-HSA-8949178	GO_0005262	MF	controller
+MCU translocates calcium from the mitochondrial intermembrane space to the mitochondrial matrix	R-HSA-8949178	none	BP?	reaction
+HDL assembly	R-HSA-8963896	GO_0034380	BP	Pathway
+pre-beta HDL binds membrane-associated cholesterol and phospholipid to form a discoidal HDL particle	R-HSA-349657	none	BP?	reaction
+ABCA1-mediated transport of intracellular phospholipid to the cell surface	R-HSA-216757	GO_0005548	MF	controller
+ABCA1-mediated transport of intracellular phospholipid to the cell surface	R-HSA-216757	none	BP?	reaction
+Apolipoprotein A-I binds membrane-associated cholesterol and phospholipid to form a discoidal HDL particle	R-HSA-216756	none	BP?	reaction
+4xPALM-C-p-2S-ABCA1 tetramer binds APOA1	R-HSA-216727	none	BP?	reaction
+ABCA1-mediated transport of intracellular cholesterol to the cell surface	R-HSA-216723	GO_0017127	MF	controller
+ABCA1-mediated transport of intracellular cholesterol to the cell surface	R-HSA-216723	none	BP?	reaction
+4xPALM-C-ABCA1 tetramer translocates from ER membrane to plasma membrane	R-HSA-5682103	none	BP?	reaction
+PKA phosphorylates 4xPALM-C-p-2S-ABCA1 tetramer	R-HSA-5682101	GO_0004674	MF	controller
+PKA phosphorylates 4xPALM-C-p-2S-ABCA1 tetramer	R-HSA-5682101	none	BP?	reaction
+BMP1-3:Zn2+ cleaves pro-APOA1 to APOA1	R-HSA-264758	none	MF	controller
+BMP1-3:Zn2+ cleaves pro-APOA1 to APOA1	R-HSA-264758	GO_0004222	MF	controller
+BMP1-3:Zn2+ cleaves pro-APOA1 to APOA1	R-HSA-264758	none	BP?	reaction
+ZDHCC8 transfers PALM from PALM-CoA to ABCA1 tetramer	R-HSA-5682084	GO_0019706	MF	controller
+ZDHCC8 transfers PALM from PALM-CoA to ABCA1 tetramer	R-HSA-5682084	none	BP?	reaction
+LCAT + discoidal HDL <=> LCAT:discoidal HDL complex	R-HSA-264678	none	BP?	reaction
+Discoidal HDL binds membrane-associated free cholesterol	R-HSA-266089	none	BP?	reaction
+Plasma lipoprotein remodeling	R-HSA-8963899	GO_0034369	BP	Pathway
+HDL remodeling	R-HSA-8963899	GO_0034375	BP	Pathway
+Assembly of active LPL and LIPC lipase complexes	R-HSA-8963899	GO_0051004	BP	Pathway
+Chylomicron remodeling	R-HSA-8963899	GO_0034371	BP	Pathway
+LDL remodeling	R-HSA-8963899	GO_0034374	BP	Pathway
+Chylomicron assembly	R-HSA-8963888	GO_0034378	BP	Pathway
+Degradation of newly synthesized ApoB-48	R-HSA-174731	none	BP?	reaction
+Exocytosis of nascent chylomicrons	R-HSA-174587	none	MF	controller
+Exocytosis of nascent chylomicrons	R-HSA-174587	none	BP?	reaction
+nascent chylomicron + spherical HDL:apoC-II:apoC-III:apoE =>spherical HDL + chylomicron	R-HSA-174660	none	BP?	reaction
+ApoB-48 + 40 triacylglycerol + 60 phospholipid => ApoB-48:TG:PL complex	R-HSA-174786	GO_0005319	MF	controller
+ApoB-48 + 40 triacylglycerol + 60 phospholipid => ApoB-48:TG:PL complex	R-HSA-174786	none	BP?	reaction
+ApoB-48:TG:PL complex + 100 triacylglycerols + ApoA-I + ApoA-IV => nascent chylomicron	R-HSA-174741	none	MF	controller
+ApoB-48:TG:PL complex + 100 triacylglycerols + ApoA-I + ApoA-IV => nascent chylomicron	R-HSA-174741	none	BP?	reaction
+chylomicron => TG-depleted chylomicron + 50 long-chain fatty acids + 50 diacylglycerols	R-HSA-174757	GO_0004465	MF	controller
+chylomicron => TG-depleted chylomicron + 50 long-chain fatty acids + 50 diacylglycerols	R-HSA-174757	none	BP?	reaction
+VLDL assembly	R-HSA-8866423	GO_0034379	BP	Pathway
+pre-VLDL binds lipids to form VLDL	R-HSA-8866304	none	BP?	reaction
+VLDL translocates from SER lumen to extracellular region	R-HSA-8866327	none	BP?	reaction
+MTTP lipidates APOB-100, forming a pre-VLDL	R-HSA-8866329	GO_0005319	MF	controller
+MTTP lipidates APOB-100, forming a pre-VLDL	R-HSA-8866329	none	BP?	reaction
+pre-VLDL translocates from RER membrane to SER lumen	R-HSA-8866308	none	BP?	reaction
+VLDL binds APOC1 and APOC4	R-HSA-8866321	none	BP?	reaction
+VLDLR binds VLDL	R-HSA-8854462	none	BP?	reaction
+APOBR dimer binds VLDLs	R-HSA-8854408	none	BP?	reaction
+Assembly of active LPL and LIPC lipase complexes	R-HSA-8963889	GO_0051004	BP	Pathway
+LIPC dimer binds heparin	R-HSA-6785213	none	BP?	reaction
+LMF1,2 bind LIPC dimer	R-HSA-6785181	none	BP?	reaction
+LMF1,2 transport LIPC dimer from ER lumen to extracellular region	R-HSA-6785178	none	BP?	reaction
+CREB3L3 (1-?) translocates from cytosol to nucleoplasm	R-HSA-6784648	none	BP?	reaction
+APOA4,APOA5,APOC2,CIDEC,FGF21 genes express APOA4,APOA5,APOC2,CIDEC,FGF21 proteins	R-HSA-6784622	none	MF	controller
+APOA4,APOA5,APOC2,CIDEC,FGF21 genes express APOA4,APOA5,APOC2,CIDEC,FGF21 proteins	R-HSA-6784622	none	BP?	reaction
+PCSK5 mediates dissociation of 2 x LPL from GPIHBP1:HSPG:LPL dimer	R-HSA-6784676	none	MF	controller
+PCSK5 mediates dissociation of 2 x LPL from GPIHBP1:HSPG:LPL dimer	R-HSA-6784676	GO_0004175	MF	controller
+PCSK5 mediates dissociation of 2 x LPL from GPIHBP1:HSPG:LPL dimer	R-HSA-6784676	none	BP?	reaction
+MBTPS1,2 cleaves CREB3L3 to CREB3L3(1-?) and CREB3L3(?-461)	R-HSA-6784620	GO_0004222	MF	controller
+MBTPS1,2 cleaves CREB3L3 to CREB3L3(1-?) and CREB3L3(?-461)	R-HSA-6784620	none	BP?	reaction
+ANGPTL8 binds ANGPTL3	R-HSA-8856525	none	BP?	reaction
+PCSK6,FURIN mediate dissociation of 2 x LPL from GPIHBP1:HSPG:LPL dimer	R-HSA-6784628	none	MF	controller
+PCSK6,FURIN mediate dissociation of 2 x LPL from GPIHBP1:HSPG:LPL dimer	R-HSA-6784628	GO_0004175	MF	controller
+PCSK6,FURIN mediate dissociation of 2 x LPL from GPIHBP1:HSPG:LPL dimer	R-HSA-6784628	none	BP?	reaction
+HSPG binds LPL dimer	R-HSA-6784861	none	BP?	reaction
+LIPC dimer hydrolyses TAG to DAG and FA	R-HSA-5694109	GO_0004806	MF	controller
+LIPC dimer hydrolyses TAG to DAG and FA	R-HSA-5694109	none	BP?	reaction
+GPIHBP1 binds HSPG:LPL dimer	R-HSA-8857928	none	BP?	reaction
+chylomicron => TG-depleted chylomicron + 50 long-chain fatty acids + 50 diacylglycerols	R-HSA-174757	GO_0004465	MF	controller
+chylomicron => TG-depleted chylomicron + 50 long-chain fatty acids + 50 diacylglycerols	R-HSA-174757	none	BP?	reaction
+Miscellaneous transport and binding events	R-HSA-5223345	GO_0055085	BP	Pathway
+TUSC3 transports Mg2+ from extracellular region to cytosol	R-HSA-5339528	GO_0015095	MF	controller
+TUSC3 transports Mg2+ from extracellular region to cytosol	R-HSA-5339528	none	BP?	reaction
+CSN polymer binds CaPO4	R-HSA-5340124	none	BP?	reaction
+NIPAs transport Mg2+ from extracellular region to cytosol	R-HSA-5336453	GO_0015095	MF	controller
+NIPAs transport Mg2+ from extracellular region to cytosol	R-HSA-5336453	none	BP?	reaction
+MAGT1 transports Mg2+ from extracellular region to cytosol	R-HSA-5339538	GO_0015095	MF	controller
+MAGT1 transports Mg2+ from extracellular region to cytosol	R-HSA-5339538	none	BP?	reaction
+MMGT1 transports Mg2+ from cytosol to Golgi lumen	R-HSA-5336454	GO_0015095	MF	controller
+MMGT1 transports Mg2+ from cytosol to Golgi lumen	R-HSA-5336454	none	BP?	reaction
+MRS2 transports Mg2+ from cytosol to mitochondrial matrix	R-HSA-5336466	GO_0015095	MF	controller
+MRS2 transports Mg2+ from cytosol to mitochondrial matrix	R-HSA-5336466	none	BP?	reaction
+ANKH transports PPi from cytosol to extracellular region	R-HSA-5226964	GO_0030504	MF	controller
+ANKH transports PPi from cytosol to extracellular region	R-HSA-5226964	none	BP?	reaction
+CTNS cotransports CySS-, H+ from lysosomal lumen to cytosol	R-HSA-5340130	GO_0015184	MF	controller
+CTNS cotransports CySS-, H+ from lysosomal lumen to cytosol	R-HSA-5340130	none	BP?	reaction
+AZGP1 binds PIP	R-HSA-5252072	none	BP?	reaction
+ADD1:ADD2 binds DMTN	R-HSA-5226979	none	BP?	reaction
+VRAC heteromer transports I-, Cl- from cytosol to extracellular region	R-HSA-8941543	GO_0005225	MF	controller
+VRAC heteromer transports I-, Cl- from cytosol to extracellular region	R-HSA-8941543	none	BP?	reaction
+ADD1:ADD3 binds DMTN	R-HSA-5226999	none	BP?	reaction
+PQLC2 transports L-Arg,L-His,L-Lys from lysosomal lumen to cytosol	R-HSA-8932851	GO_0015174	MF	controller
+PQLC2 transports L-Arg,L-His,L-Lys from lysosomal lumen to cytosol	R-HSA-8932851	none	BP?	reaction
+Chylomicron clearance	R-HSA-8964026	GO_0034382	BP	Pathway
+chylomicron remnant:apoE:LDLR complex [coated vesicle membrane] => chylomicron remnant:apoE:LDLR complex [endosome membrane]	R-HSA-174808	none	BP?	reaction
+chylomicron remnant:apoE:LDLR complex => chylomicron remnant:apoE + LDLR	R-HSA-174624	none	BP?	reaction
+chylomicron remnant:apoE:LDLR complex [plasma membrane] => chylomicron remnant:apoE:LDLR complex [clathrin-coated vesicle] (LDLRAP1-dependent)	R-HSA-174706	none	MF	controller
+chylomicron remnant:apoE:LDLR complex [plasma membrane] => chylomicron remnant:apoE:LDLR complex [clathrin-coated vesicle] (LDLRAP1-dependent)	R-HSA-174706	none	BP?	reaction
+chylomicron remnant:apoE complex + LDLR => chylomicron remnant:apoE:LDLR complex	R-HSA-174657	none	MF	controller
+chylomicron remnant:apoE complex + LDLR => chylomicron remnant:apoE:LDLR complex	R-HSA-174657	none	BP?	reaction
+Recycling of LDLR to plasma membrane	R-HSA-171087	none	BP?	reaction
+VLDL clearance	R-HSA-8964046	GO_0034447	BP	Pathway
+LSR trimer binds VLDL	R-HSA-8933292	none	BP?	reaction
+VLDLR binds VLDL	R-HSA-8854462	none	BP?	reaction
+APOBR dimer binds VLDLs	R-HSA-8854408	none	BP?	reaction
+HDL remodeling	R-HSA-8964058	GO_0034375	BP	Pathway
+Spherical HDL binds C and E apolipoproteins	R-HSA-266303	none	BP?	reaction
+Spherical HDL binds membrane-associated free cholesterol and phospholipids	R-HSA-266299	none	MF	controller
+Spherical HDL binds membrane-associated free cholesterol and phospholipids	R-HSA-266299	none	BP?	reaction
+ABCG1-mediated transport of intracellular cholesterol to the cell surface	R-HSA-266082	GO_0017127	MF	controller
+ABCG1-mediated transport of intracellular cholesterol to the cell surface	R-HSA-266082	none	BP?	reaction
+LCAT:discoidal HDL complex <=> LCAT + discoidal HDL	R-HSA-264689	none	BP?	reaction
+Discoidal HDL binds membrane-associated free cholesterol	R-HSA-266089	none	BP?	reaction
+LIPG dimer hydrolyzes HDL-associated TAG to DAG and LCFA	R-HSA-8980228	GO_0004465	MF	controller
+LIPG dimer hydrolyzes HDL-associated TAG to DAG and LCFA	R-HSA-8980228	none	BP?	reaction
+LCAT + discoidal HDL <=> LCAT:discoidal HDL complex	R-HSA-264678	none	BP?	reaction
+CETP-mediated lipid exchange: spherical HDL gains triacylglycerol	R-HSA-266328	none	BP?	reaction
+CETP + spherical HDL + torcetrapib => CETP:spherical HDL:torcetrapib complex	R-HSA-349404	none	BP?	reaction
+LCAT + spherical HDL <=> LCAT:spherical HDL complex	R-HSA-266315	none	BP?	reaction
+LCAT:spherical HDL complex <=> LCAT + spherical HDL	R-HSA-266310	none	BP?	reaction
+cholesterol + phosphatidylcholine (lecithin) => cholesterol ester + 2-lysophosphatidylcholine (lysolecithin)	R-HSA-264695	GO_0004607	MF	controller
+cholesterol + phosphatidylcholine (lecithin) => cholesterol ester + 2-lysophosphatidylcholine (lysolecithin)	R-HSA-264695	none	BP?	reaction
+Serum albumin binds 2-lysophosphatidylcholine	R-HSA-264679	none	BP?	reaction
+CETP-mediated lipid exchange: LDL gains cholesterol ester	R-HSA-266350	none	MF	controller
+CETP-mediated lipid exchange: LDL gains cholesterol ester	R-HSA-266350	none	BP?	reaction
+Plasma lipoprotein clearance	R-HSA-8964043	GO_0034381	BP	Pathway
+Chylomicron clearance	R-HSA-8964043	GO_0034382	BP	Pathway
+VLDL clearance	R-HSA-8964043	GO_0034447	BP	Pathway
+VLDLR internalisation and degradation	R-HSA-8964043	GO_0032802	BP	Pathway
+LDL clearance	R-HSA-8964043	GO_0034383	BP	Pathway
+HDL clearance	R-HSA-8964043	GO_0034384	BP	Pathway
+VLDLR internalisation and degradation	R-HSA-8866427	GO_0032802	BP	Pathway
+MYLIP dimer ubiquitinates VLDLR on Lys-839	R-HSA-8854628	none	MF	controller
+MYLIP dimer ubiquitinates VLDLR on Lys-839	R-HSA-8854628	GO_0061630	MF	controller
+MYLIP dimer ubiquitinates VLDLR on Lys-839	R-HSA-8854628	none	BP?	reaction
+VLDLR:PCSK9 binds Clathrin-coated vesicles	R-HSA-8855131	none	BP?	reaction
+VLDLR:PCSK9:Clathrin-coated vesicle translocates from the plasma membrane to lysosomal membrane	R-HSA-8855130	none	BP?	reaction
+VLDLR binds PCSK9	R-HSA-8855111	none	BP?	reaction
+Intracellular oxygen transport	R-HSA-8981607	GO_0015671	BP	Pathway
+CYGB binds O2	R-HSA-5340214	none	BP?	reaction
+CYGB:O2 dissociates	R-HSA-8982617	none	BP?	reaction
+Neuroglobin binds oxygen	R-HSA-8981610	none	BP?	reaction
+Neuroglobin:oxygen dissociates	R-HSA-8981621	none	BP?	reaction
+Myoglobin binds oxygen	R-HSA-8981606	none	BP?	reaction
+Myoglobin:oxygen dissociates	R-HSA-8981622	none	BP?	reaction
+LDL clearance	R-HSA-8964038	GO_0034383	BP	Pathway
+CES3 hydrolyses CHEST to CHOL and LCFA(-)	R-HSA-8937442	GO_0052689	MF	controller
+CES3 hydrolyses CHEST to CHOL and LCFA(-)	R-HSA-8937442	none	BP?	reaction
+CHEST translocates from ER membrane to lipid particle	R-HSA-8876731	none	BP?	reaction
+NCEH1 hydrolyzes cholesterol esters	R-HSA-6813720	GO_0004771	MF	controller
+NCEH1 hydrolyzes cholesterol esters	R-HSA-6813720	none	BP?	reaction
+CHOL translocates from lysosome membrane to ER membrane	R-HSA-8876485	none	BP?	reaction
+SOAT1,2 transfer acyl group to CHOL forming CHEST	R-HSA-8876696	GO_0034736	MF	controller
+SOAT1,2 transfer acyl group to CHOL forming CHEST	R-HSA-8876696	none	BP?	reaction
+NPC2 binds CHOL	R-HSA-8876472	none	BP?	reaction
+Degradation of PCSK9:LDLR:Clathrin-coated vesicle	R-HSA-6784738	none	BP?	reaction
+NPC2 transfers CHOL to NPC1	R-HSA-8876484	none	BP?	reaction
+LDL translocates from endosome lumen to lysosome lumen	R-HSA-8876366	none	BP?	reaction
+PCSK9:LDLR bind to Clathrin	R-HSA-6784735	none	BP?	reaction
+LIPA hydrolyses sterol esters to sterols and fatty acids	R-HSA-8865667	GO_0004771	MF	controller
+LIPA hydrolyses sterol esters to sterols and fatty acids	R-HSA-8865667	none	BP?	reaction
+PCSK9:LDLR:Clathrin-coated vesicle transport from plasma membrane to endolysosome	R-HSA-6784729	none	BP?	reaction
+Movement of LDL:LDLR complex to early endosome	R-HSA-171059	none	BP?	reaction
+Recycling of LDLR to plasma membrane	R-HSA-171087	none	BP?	reaction
+LDLR:LDL complex => LDLR + LDL	R-HSA-171106	none	BP?	reaction
+PCSK9 binds LDLR	R-HSA-6784734	none	BP?	reaction
+LDL + LDLR => LDL:LDLR complex	R-HSA-171122	none	BP?	reaction
+Internalization of LDL:LDLR complex (LDLRAP1-independent)	R-HSA-171141	none	MF	controller
+Internalization of LDL:LDLR complex (LDLRAP1-independent)	R-HSA-171141	none	BP?	reaction
+LSR trimer binds LDL	R-HSA-8933258	none	BP?	reaction
+ABCA1-mediated transport of intracellular cholesterol to the cell surface	R-HSA-216723	GO_0017127	MF	controller
+ABCA1-mediated transport of intracellular cholesterol to the cell surface	R-HSA-216723	none	BP?	reaction
+chylomicron remnant:apoE complex + LDLR => chylomicron remnant:apoE:LDLR complex	R-HSA-174657	none	MF	controller
+chylomicron remnant:apoE complex + LDLR => chylomicron remnant:apoE:LDLR complex	R-HSA-174657	none	BP?	reaction
+HDL clearance	R-HSA-8964011	GO_0034384	BP	Pathway
+apoA-I binds to CUBN:AMN	R-HSA-264848	none	BP?	reaction
+spherical HDL and SR-BI receptor form a complex at the cell surface	R-HSA-349637	none	BP?	reaction
+Disassembly of SR-BI-bound spherical HDL	R-HSA-349638	none	BP?	reaction
+HDLBP binds HDL	R-HSA-8858252	none	BP?	reaction
+Endocytosis and degradation of apoA-I	R-HSA-264834	none	BP?	reaction
+pre-beta HDL binds membrane-associated cholesterol and phospholipid to form a discoidal HDL particle	R-HSA-349657	none	BP?	reaction
+Chylomicron remodeling	R-HSA-8963901	GO_0034371	BP	Pathway
+TG-depleted chylomicron + spherical HDL => chylomicron remnant + spherical HDL:apoA-I:apoA-II:apoA-IV:apoC-II:apoC-III	R-HSA-174690	none	BP?	reaction
+chylomicron remnant + apoE => chylomicron remnant:apoE complex	R-HSA-174739	none	BP?	reaction
+chylomicron => TG-depleted chylomicron + 50 long-chain fatty acids + 50 diacylglycerols	R-HSA-174757	GO_0004465	MF	controller
+chylomicron => TG-depleted chylomicron + 50 long-chain fatty acids + 50 diacylglycerols	R-HSA-174757	none	BP?	reaction
+chylomicron remnant:apoE complex + LDLR => chylomicron remnant:apoE:LDLR complex	R-HSA-174657	none	MF	controller
+chylomicron remnant:apoE complex + LDLR => chylomicron remnant:apoE:LDLR complex	R-HSA-174657	none	BP?	reaction
+LDL remodeling	R-HSA-8964041	GO_0034374	BP	Pathway
+CETP-mediated lipid exchange: LDL gains cholesterol ester	R-HSA-266350	none	MF	controller
+CETP-mediated lipid exchange: LDL gains cholesterol ester	R-HSA-266350	none	BP?	reaction
+apolipoprotein(a) + LDL => Lp(a)	R-HSA-176879	none	BP?	reaction
+CETP-mediated lipid exchange: spherical HDL gains triacylglycerol	R-HSA-266328	none	BP?	reaction
+Cation-coupled Chloride cotransporters	R-HSA-426117	none	BP	Pathway
+Na+, K+/2Cl- cotransport	R-HSA-426086	GO_0008511	MF	controller
+Na+, K+/2Cl- cotransport	R-HSA-426086	none	BP?	reaction
+Na+/Cl- cotransport	R-HSA-426130	GO_0015378	MF	controller
+Na+/Cl- cotransport	R-HSA-426130	none	BP?	reaction
+K+/Cl- cotransport	R-HSA-426155	GO_0015379	MF	controller
+K+/Cl- cotransport	R-HSA-426155	none	BP?	reaction
+Type II Na+/Pi cotransporters	R-HSA-427589	none	BP	Pathway
+SLC34A3 cotransports Pi, 2Na+	R-HSA-427645	GO_0015321	MF	controller
+SLC34A3 cotransports Pi, 2Na+	R-HSA-427645	none	BP?	reaction
+Electrogenic Na+/Pi cotransport	R-HSA-427656	GO_0015321	MF	controller
+Electrogenic Na+/Pi cotransport	R-HSA-427656	none	BP?	reaction
+Amino acid transport across the plasma membrane	R-HSA-352230	GO_0006865	BP	Pathway
+SLC1A4-mediated exchange of extracellular threonine for cytosolic alanine, serine, or cysteine	R-HSA-352371	GO_0015171	MF	controller
+SLC1A4-mediated exchange of extracellular threonine for cytosolic alanine, serine, or cysteine	R-HSA-352371	none	BP?	reaction
+SLC1A4-mediated exchange of extracellular serine for cytosolic alanine, threonine, or cysteine	R-HSA-352347	GO_0015171	MF	controller
+SLC1A4-mediated exchange of extracellular serine for cytosolic alanine, threonine, or cysteine	R-HSA-352347	none	BP?	reaction
+SLC16A10-mediated uptake of aromatic amino acids	R-HSA-352158	GO_0015171	MF	controller
+SLC16A10-mediated uptake of aromatic amino acids	R-HSA-352158	none	BP?	reaction
+SLC36A2 cotransports Gly, L-Pro with H+ from extracellular region to cytosol	R-HSA-375405	GO_0015171	MF	controller
+SLC36A2 cotransports Gly, L-Pro with H+ from extracellular region to cytosol	R-HSA-375405	none	BP?	reaction
+SLC36A1-mediated uptake of glycine, proline, and alanine	R-HSA-375417	GO_0015171	MF	controller
+SLC36A1-mediated uptake of glycine, proline, and alanine	R-HSA-375417	none	BP?	reaction
+SLC1A5-mediated exchange of glutamine and alanine across the plasma membrane	R-HSA-352385	GO_0015171	MF	controller
+SLC1A5-mediated exchange of glutamine and alanine across the plasma membrane	R-HSA-352385	none	BP?	reaction
+SLC1A5-mediated exchange of alanine and glutamine across the plasma membrane	R-HSA-352379	GO_0015171	MF	controller
+SLC1A5-mediated exchange of alanine and glutamine across the plasma membrane	R-HSA-352379	none	BP?	reaction
+SLC38A4 (ATA3)-mediated uptake of arginine and lysine	R-HSA-352136	GO_0015171	MF	controller
+SLC38A4 (ATA3)-mediated uptake of arginine and lysine	R-HSA-352136	none	BP?	reaction
+SLC7A1 (CAT-1)-mediated uptake of cationic amino acids	R-HSA-375776	GO_0015171	MF	controller
+SLC7A1 (CAT-1)-mediated uptake of cationic amino acids	R-HSA-375776	none	BP?	reaction
+SLC38A3-mediated uptake of glutamine, histidine, asparagine, and alanine	R-HSA-352174	GO_0015171	MF	controller
+SLC38A3-mediated uptake of glutamine, histidine, asparagine, and alanine	R-HSA-352174	none	BP?	reaction
+SLC6A19-mediated uptake of neutral amino acids	R-HSA-375473	GO_0015171	MF	controller
+SLC6A19-mediated uptake of neutral amino acids	R-HSA-375473	none	BP?	reaction
+SLC38A2 (ATA2)-mediated uptake of neutral amino acids	R-HSA-352108	GO_0015171	MF	controller
+SLC38A2 (ATA2)-mediated uptake of neutral amino acids	R-HSA-352108	none	BP?	reaction
+SLC6A14-mediated uptake of basic and neutral amino acids and of beta-alanine	R-HSA-375487	GO_0015171	MF	controller
+SLC6A14-mediated uptake of basic and neutral amino acids and of beta-alanine	R-HSA-375487	none	BP?	reaction
+SLC38A1 (ATA1)-mediated uptake of neutral amino acids	R-HSA-352119	GO_0015171	MF	controller
+SLC38A1 (ATA1)-mediated uptake of neutral amino acids	R-HSA-352119	none	BP?	reaction
+SLC36A4 transports extracellular L-Pro to the cytosol	R-HSA-8870354	GO_0015193	MF	controller
+SLC36A4 transports extracellular L-Pro to the cytosol	R-HSA-8870354	GO_1904271	BP?	reaction
+SLC43A1 (LAT3)-mediated uptake of large neutral amino acids	R-HSA-352103	GO_0015171	MF	controller
+SLC43A1 (LAT3)-mediated uptake of large neutral amino acids	R-HSA-352103	none	BP?	reaction
+SLC38A5-mediated uptake of glutamine, histidine, asparagine, and serine	R-HSA-352182	GO_0015171	MF	controller
+SLC38A5-mediated uptake of glutamine, histidine, asparagine, and serine	R-HSA-352182	none	BP?	reaction
+SLC43A2 (LAT4)-mediated uptake of large neutral amino acids	R-HSA-352107	GO_0015171	MF	controller
+SLC43A2 (LAT4)-mediated uptake of large neutral amino acids	R-HSA-352107	none	BP?	reaction
+SLC7A3 (CAT-3)-mediated uptake of cationic amino acids	R-HSA-375770	GO_0015171	MF	controller
+SLC7A3 (CAT-3)-mediated uptake of cationic amino acids	R-HSA-375770	none	BP?	reaction
+SLC7A2, isoform B (CAT-2B)-mediated uptake of cationic amino acids	R-HSA-375768	GO_0015171	MF	controller
+SLC7A2, isoform B (CAT-2B)-mediated uptake of cationic amino acids	R-HSA-375768	none	BP?	reaction
+SLC7A2, isoform A (CAT-2A)-mediated uptake of cationic amino acids	R-HSA-375790	GO_0015171	MF	controller
+SLC7A2, isoform A (CAT-2A)-mediated uptake of cationic amino acids	R-HSA-375790	none	BP?	reaction
+SLC6A20 cotransports L-Pro, Na+ from the extracellular region to cytosol	R-HSA-352052	GO_0015171	MF	controller
+SLC6A20 cotransports L-Pro, Na+ from the extracellular region to cytosol	R-HSA-352052	none	BP?	reaction
+SLC7A7:SLC3A2 exchanges L-Arg for L-Leu, Na+ across the plasma membrane	R-HSA-379415	GO_0015171	MF	controller
+SLC7A7:SLC3A2 exchanges L-Arg for L-Leu, Na+ across the plasma membrane	R-HSA-379415	none	BP?	reaction
+SLC6A18 transports Gly from extracellular region to cytosol	R-HSA-351963	GO_0015171	MF	controller
+SLC6A18 transports Gly from extracellular region to cytosol	R-HSA-351963	none	BP?	reaction
+SLC7A6 (y+LAT2)-mediated exchange of extracellular leucine for cytosolic arginine	R-HSA-379426	GO_0015171	MF	controller
+SLC7A6 (y+LAT2)-mediated exchange of extracellular leucine for cytosolic arginine	R-HSA-379426	none	BP?	reaction
+SLC6A15-mediated amino acid uptake	R-HSA-352059	GO_0015171	MF	controller
+SLC6A15-mediated amino acid uptake	R-HSA-352059	none	BP?	reaction
+SLC7A11-mediated exchange of extracellular cysteine and cytosolic glutamate	R-HSA-378513	GO_0015171	MF	controller
+SLC7A11-mediated exchange of extracellular cysteine and cytosolic glutamate	R-HSA-378513	none	BP?	reaction
+SLC6A12 (BGT-1)-mediated uptake of GABA and betaine	R-HSA-352029	GO_0015171	MF	controller
+SLC6A12 (BGT-1)-mediated uptake of GABA and betaine	R-HSA-352029	none	BP?	reaction
+SLC7A10-mediated uptake of small neutral amino acids	R-HSA-376200	GO_0015171	MF	controller
+SLC7A10-mediated uptake of small neutral amino acids	R-HSA-376200	none	BP?	reaction
+SLC1A4-mediated exchange of extracellular alanine for cytosolic serine, threonine, or cysteine	R-HSA-352364	GO_0015171	MF	controller
+SLC1A4-mediated exchange of extracellular alanine for cytosolic serine, threonine, or cysteine	R-HSA-352364	none	BP?	reaction
+SLC7A8-mediated uptake of neutral amino acids	R-HSA-352191	GO_0015171	MF	controller
+SLC7A8-mediated uptake of neutral amino acids	R-HSA-352191	none	BP?	reaction
+SLC7A5-mediated uptake of neutral amino acids	R-HSA-352232	GO_0015171	MF	controller
+SLC7A5-mediated uptake of neutral amino acids	R-HSA-352232	GO_1902475	BP?	reaction
+SLC25A29 transports basic amino acids from cytosol to mitochondrial matrix	R-HSA-8959781	GO_0015174	MF	controller
+SLC25A29 transports basic amino acids from cytosol to mitochondrial matrix	R-HSA-8959781	none	BP?	reaction
+SLC6A6-mediated uptake of taurine and beta-alanine	R-HSA-351987	GO_0015171	MF	controller
+SLC6A6-mediated uptake of taurine and beta-alanine	R-HSA-351987	none	BP?	reaction
+SLC7A9:SLC3A1 exchanges L-Arg, CySS-, L-Lys for L-Leu	R-HSA-379432	GO_0015171	MF	controller
+SLC7A9:SLC3A1 exchanges L-Arg, CySS-, L-Lys for L-Leu	R-HSA-379432	none	BP?	reaction
+SLC1A4-mediated exchange of extracellular cysteine for cytosolic alanine, serine, or threonine	R-HSA-352354	GO_0015171	MF	controller
+SLC1A4-mediated exchange of extracellular cysteine for cytosolic alanine, serine, or threonine	R-HSA-352354	none	BP?	reaction
+Multifunctional anion exchangers	R-HSA-427601	none	BP	Pathway
+SLC5A12 cotransports Na+ with LACT, PYR, NCA from extracellular region to cytosol	R-HSA-8876312	GO_0005343	MF	controller
+SLC5A12 cotransports Na+ with LACT, PYR, NCA from extracellular region to cytosol	R-HSA-8876312	none	BP?	reaction
+SLC26A11 transports SO4(2-) from extracellular region to cytosol	R-HSA-8875871	GO_0015116	MF	controller
+SLC26A11 transports SO4(2-) from extracellular region to cytosol	R-HSA-8875871	none	BP?	reaction
+SLC26A4 transports I- from cytosol to extracellular region	R-HSA-5627802	GO_0015111	MF	controller
+SLC26A4 transports I- from cytosol to extracellular region	R-HSA-5627802	none	BP?	reaction
+Group 3 - Selective Cl- transport	R-HSA-427570	GO_0005254	MF	controller
+Group 3 - Selective Cl- transport	R-HSA-427570	none	BP?	reaction
+SLC26A3,6 exchange Cl- for HCO3-	R-HSA-427666	GO_0005452	MF	controller
+SLC26A3,6 exchange Cl- for HCO3-	R-HSA-427666	none	BP?	reaction
+SLC26A1,2 cotransport SO4(2-), H+ from extracellular region to cytosol	R-HSA-427555	GO_0015116	MF	controller
+SLC26A1,2 cotransport SO4(2-), H+ from extracellular region to cytosol	R-HSA-427555	none	BP?	reaction
+Sodium-coupled phosphate cotransporters	R-HSA-427652	none	BP	Pathway
+Type II Na+/Pi cotransporters	R-HSA-427652	none	BP	Pathway
+Type III Na+/Pi cotransport	R-HSA-427605	GO_0015321	MF	controller
+Type III Na+/Pi cotransport	R-HSA-427605	none	BP?	reaction
+Proton/oligopeptide cotransporters	R-HSA-427975	none	BP	Pathway
+Proton-coupled histidine and di-peptide cotransport	R-HSA-428007	GO_0015333	MF	controller
+Proton-coupled histidine and di-peptide cotransport	R-HSA-428007	none	BP?	reaction
+Proton-coupled di- and tri-peptide cotransport	R-HSA-427998	GO_0015333	MF	controller
+Proton-coupled di- and tri-peptide cotransport	R-HSA-427998	none	BP?	reaction
+Cellular hexose transport	R-HSA-189200	GO_0008645	BP	Pathway
+Glucose is secreted across the plasma membrane	R-HSA-450095	GO_0055056	MF	controller
+Glucose is secreted across the plasma membrane	R-HSA-450095	none	BP?	reaction
+Co-transport (influx) of glucose and Na+ ions by SLC5As, NAGLT1	R-HSA-429613	GO_0005412	MF	controller
+Co-transport (influx) of glucose and Na+ ions by SLC5As, NAGLT1	R-HSA-429613	none	BP?	reaction
+GLUT3 (SLC2A3) tetramer transports Glc from extracellular region to cytosol	R-HSA-8981564	GO_0055056	MF	controller
+GLUT3 (SLC2A3) tetramer transports Glc from extracellular region to cytosol	R-HSA-8981564	GO_1904659	BP?	reaction
+GLUT1:ATP tetramer dissociates to GLUT1 tetramer and 4xATP	R-HSA-450092	GO_0010827	BP?	reaction
+SLC45A3 transports Glc from extracellular region to cytosol	R-HSA-8875902	GO_0051119	MF	controller
+SLC45A3 transports Glc from extracellular region to cytosol	R-HSA-8875902	none	BP?	reaction
+GLUT2 (SLC2A2) tetramer transports Glc from extracellular region to cytosol	R-HSA-8981574	GO_0055056	MF	controller
+GLUT2 (SLC2A2) tetramer transports Glc from extracellular region to cytosol	R-HSA-8981574	GO_1904659	BP?	reaction
+SLC50A1 transports Glc from cytosol to extracellular region	R-HSA-8876319	GO_0051119	MF	controller
+SLC50A1 transports Glc from cytosol to extracellular region	R-HSA-8876319	none	BP?	reaction
+GLUT1 (SLC2A1) tetramer transports Glc from extracellular region to cytosol	R-HSA-5339524	GO_0055056	MF	controller
+GLUT1 (SLC2A1) tetramer transports Glc from extracellular region to cytosol	R-HSA-5339524	GO_1904659	BP?	reaction
+SLC5A2 cotransports Na+ and glucose from extracellular region to cytosol	R-HSA-189208	GO_0005412	MF	controller
+SLC5A2 cotransports Na+ and glucose from extracellular region to cytosol	R-HSA-189208	none	BP?	reaction
+GLUT1 tetramer binds 4xATP	R-HSA-450088	GO_0010827	BP?	reaction
+SLC5A10 cotransports Na+ with Man, Fru from extracellular region to cytosol	R-HSA-8876283	GO_0015370	MF	controller
+SLC5A10 cotransports Na+ with Man, Fru from extracellular region to cytosol	R-HSA-8876283	none	BP?	reaction
+GLUT7 and GLUT11 transport glucose and fructose	R-HSA-428779	GO_0051119	MF	controller
+GLUT7 and GLUT11 transport glucose and fructose	R-HSA-428779	none	BP?	reaction
+GLUT14 (SLC2A14) tetramer transports Glc from extracellular region to cytosol	R-HSA-8981553	GO_0055056	MF	controller
+GLUT14 (SLC2A14) tetramer transports Glc from extracellular region to cytosol	R-HSA-8981553	GO_1904659	BP?	reaction
+SLC2A9 transports Fru, Glc, urate	R-HSA-429036	GO_0022857	MF	controller
+SLC2A9 transports Fru, Glc, urate	R-HSA-429036	none	BP?	reaction
+Glucose transport by class III GLUTs	R-HSA-429094	GO_0055056	MF	controller
+Glucose transport by class III GLUTs	R-HSA-429094	none	BP?	reaction
+Co-transport (influx) of glucose/mannose and Na+ ions by SGLT4	R-HSA-429567	GO_0005362	MF	controller
+Co-transport (influx) of glucose/mannose and Na+ ions by SGLT4	R-HSA-429567	none	BP?	reaction
+GLUT4 (SLC2A4) tetramer transports Glc from extracellular region to cytosol	R-HSA-8981570	GO_0055056	MF	controller
+GLUT4 (SLC2A4) tetramer transports Glc from extracellular region to cytosol	R-HSA-8981570	GO_1904659	BP?	reaction
+Organic anion transporters	R-HSA-428643	none	BP	Pathway
+Na+/I- cotransport (influx) by the Na+/I- symporter	R-HSA-429591	GO_0008507	MF	controller
+Na+/I- cotransport (influx) by the Na+/I- symporter	R-HSA-429591	none	BP?	reaction
+Type I Na+-coupled phosphate co-transport	R-HSA-428609	GO_0015321	MF	controller
+Type I Na+-coupled phosphate co-transport	R-HSA-428609	none	BP?	reaction
+Proton-coupled sialic acid co-transport	R-HSA-428585	GO_0015538	MF	controller
+Proton-coupled sialic acid co-transport	R-HSA-428585	none	BP?	reaction
+Vesicular glutamate transport	R-HSA-428052	GO_0005313	MF	controller
+Vesicular glutamate transport	R-HSA-428052	none	BP?	reaction
+malate [mitochondrial matrix] + orthophosphate [cytosol] <=> malate [cytosol] + orthophosphate [mitochondrial matrix]	R-HSA-372843	GO_0005310	MF	controller
+malate [mitochondrial matrix] + orthophosphate [cytosol] <=> malate [cytosol] + orthophosphate [mitochondrial matrix]	R-HSA-372843	none	BP?	reaction
+Sulfate is exported to the cytosol in exchange for dicarboxylate	R-HSA-1614546	GO_0005310	MF	controller
+Sulfate is exported to the cytosol in exchange for dicarboxylate	R-HSA-1614546	none	BP?	reaction
+Na+-dependent monocarboxylate transport by SMCT	R-HSA-429749	GO_0008028	MF	controller
+Na+-dependent monocarboxylate transport by SMCT	R-HSA-429749	none	BP?	reaction
+Passive I- efflux mediated by SMCT1	R-HSA-429767	GO_0022803	MF	controller
+Passive I- efflux mediated by SMCT1	R-HSA-429767	none	BP?	reaction
+SLC25A18,A22 cotransport Glu, H+ from cytosol to mitochondrial matrix	R-HSA-8875623	GO_0005280	MF	controller
+SLC25A18,A22 cotransport Glu, H+ from cytosol to mitochondrial matrix	R-HSA-8875623	none	BP?	reaction
+Proton-coupled neutral amino acid transporters	R-HSA-428559	none	BP	Pathway
+SLC36A2 cotransports Gly, L-Pro with H+ from extracellular region to cytosol	R-HSA-375405	GO_0015171	MF	controller
+SLC36A2 cotransports Gly, L-Pro with H+ from extracellular region to cytosol	R-HSA-375405	none	BP?	reaction
+SLC36A1-mediated uptake of glycine, proline, and alanine	R-HSA-375417	GO_0015171	MF	controller
+SLC36A1-mediated uptake of glycine, proline, and alanine	R-HSA-375417	none	BP?	reaction
+Transport of bile salts and organic acids, metal ions and amine compounds	R-HSA-425366	none	BP	Pathway
+Inositol transporters	R-HSA-425366	GO_0015798	BP	Pathway
+Sodium- and chloride-dependent choline transport by CHT	R-HSA-429594	GO_0015220	MF	controller
+Sodium- and chloride-dependent choline transport by CHT	R-HSA-429594	none	BP?	reaction
+Sodium-coupled sulphate, di- and tri-carboxylate transporters	R-HSA-425366	none	BP	Pathway
+HUT2 and HUT11 mediate urea transport in kidney and erythrocytes respectively	R-HSA-444126	GO_0015204	MF	controller
+HUT2 and HUT11 mediate urea transport in kidney and erythrocytes respectively	R-HSA-444126	none	BP?	reaction
+Proton-coupled monocarboxylate transport	R-HSA-425366	none	BP	Pathway
+Metal ion SLC transporters	R-HSA-425366	none	BP	Pathway
+SOAT can transport taurolithocholate-3-sulphate	R-HSA-433089	GO_0008508	MF	controller
+SOAT can transport taurolithocholate-3-sulphate	R-HSA-433089	none	BP?	reaction
+Rhesus glycoproteins mediate ammonium transport.	R-HSA-425366	none	BP	Pathway
+Organic cation/anion/zwitterion transport	R-HSA-425366	none	BP	Pathway
+Na+/Cl- dependent neurotransmitter transporters	R-HSA-425366	none	BP	Pathway
+CTL1-5 can mediate the uptake of choline	R-HSA-444433	GO_0015220	MF	controller
+CTL1-5 can mediate the uptake of choline	R-HSA-444433	none	BP?	reaction
+MATEs mediate extrusion of xenobiotics	R-HSA-434650	GO_0015307	MF	controller
+MATEs mediate extrusion of xenobiotics	R-HSA-434650	none	BP?	reaction
+Inositol transporters	R-HSA-429593	GO_0015798	BP	Pathway
+Co-transport (influx) of myo-inositol/D-chiro-inositol and two Na+ ions by SGLT6	R-HSA-429571	GO_0015166	MF	controller
+Co-transport (influx) of myo-inositol/D-chiro-inositol and two Na+ ions by SGLT6	R-HSA-429571	none	BP?	reaction
+HMIT co-transports myo-inositol with a proton	R-HSA-429101	GO_0005366	MF	controller
+HMIT co-transports myo-inositol with a proton	R-HSA-429101	none	BP?	reaction
+Co-transport (influx) of myo-inositol and two Na+ ions by SMIT	R-HSA-429663	GO_0005367	MF	controller
+Co-transport (influx) of myo-inositol and two Na+ ions by SMIT	R-HSA-429663	none	BP?	reaction
+Sodium-coupled sulphate, di- and tri-carboxylate transporters	R-HSA-433137	none	BP	Pathway
+NaDC3 co-transports the dicarboxylic acid succinate and three sodium ion	R-HSA-433101	GO_0015362	MF	controller
+NaDC3 co-transports the dicarboxylic acid succinate and three sodium ion	R-HSA-433101	none	BP?	reaction
+NACT co-transports trivalent citrate and a sodium ion	R-HSA-433104	GO_0015137	MF	controller
+NACT co-transports trivalent citrate and a sodium ion	R-HSA-433104	none	BP?	reaction
+NaS2 co-transports sulphate and two sodium ions	R-HSA-433099	GO_0015382	MF	controller
+NaS2 co-transports sulphate and two sodium ions	R-HSA-433099	none	BP?	reaction
+NaDC1 co-transports dicarboxylic acids and a sodium ion	R-HSA-433131	GO_0015361	MF	controller
+NaDC1 co-transports dicarboxylic acids and a sodium ion	R-HSA-433131	none	BP?	reaction
+NaS1 co-transports sulphate and a sodium ion	R-HSA-433114	GO_0015382	MF	controller
+NaS1 co-transports sulphate and a sodium ion	R-HSA-433114	none	BP?	reaction
+Zinc transporters	R-HSA-435354	none	BP	Pathway
+Zinc efflux and compartmentalization by the SLC30 family	R-HSA-435354	none	BP	Pathway
+Zinc influx into cells by the SLC39 gene family	R-HSA-435354	none	BP	Pathway
+Zinc efflux and compartmentalization by the SLC30 family	R-HSA-435368	none	BP	Pathway
+ZnT5 transports zinc into secretory granules in pancreatic beta cells	R-HSA-437085	GO_0005385	MF	controller
+ZnT5 transports zinc into secretory granules in pancreatic beta cells	R-HSA-437085	none	BP?	reaction
+ZnT2 facilitates zinc vesicular sequestration	R-HSA-435375	GO_0005385	MF	controller
+ZnT2 facilitates zinc vesicular sequestration	R-HSA-435375	none	BP?	reaction
+ZnT3 transports zinc into synaptic vesicles	R-HSA-437084	GO_0005385	MF	controller
+ZnT3 transports zinc into synaptic vesicles	R-HSA-437084	none	BP?	reaction
+ZnT1 mediates the efflux of zinc from the cell	R-HSA-435366	GO_0005385	MF	controller
+ZnT1 mediates the efflux of zinc from the cell	R-HSA-435366	none	BP?	reaction
+SLC30A8 transports Zn2+ from cytosol to secretory granule	R-HSA-437136	GO_0005385	MF	controller
+SLC30A8 transports Zn2+ from cytosol to secretory granule	R-HSA-437136	none	BP?	reaction
+ZnT6 transports zinc into the golgi apparatus	R-HSA-437139	GO_0005385	MF	controller
+ZnT6 transports zinc into the golgi apparatus	R-HSA-437139	none	BP?	reaction
+ZnT7 transports zinc into the golgi apparatus	R-HSA-437129	GO_0005385	MF	controller
+ZnT7 transports zinc into the golgi apparatus	R-HSA-437129	none	BP?	reaction
+Proton-coupled monocarboxylate transport	R-HSA-433692	none	BP	Pathway
+MCTs mediate proton-coupled transport of monocarboxylates and ketone bodies	R-HSA-433698	GO_0008028	MF	controller
+MCTs mediate proton-coupled transport of monocarboxylates and ketone bodies	R-HSA-433698	none	BP?	reaction
+Metal ion SLC transporters	R-HSA-425410	none	BP	Pathway
+MagT transporters mediate magnesium uptake into cells	R-HSA-442661	GO_0015095	MF	controller
+MagT transporters mediate magnesium uptake into cells	R-HSA-442661	none	BP?	reaction
+Zinc transporters	R-HSA-425410	none	BP	Pathway
+SLC31A1 transports Cu2+ from extracellular region to cytosol	R-HSA-437300	GO_0005375	MF	controller
+SLC31A1 transports Cu2+ from extracellular region to cytosol	R-HSA-437300	none	BP?	reaction
+Ferroportin mediates iron efflux on macrophages	R-HSA-904830	GO_0005381	MF	controller
+Ferroportin mediates iron efflux on macrophages	R-HSA-904830	none	BP?	reaction
+SLC11A2 cotransports Fe2+, H+ from extracellular region to cytosol	R-HSA-435349	GO_0005381	MF	controller
+SLC11A2 cotransports Fe2+, H+ from extracellular region to cytosol	R-HSA-435349	none	BP?	reaction
+SLC40A1:HEPH:6Cu2+ transports Fe2+ from cytosol to extracellular region	R-HSA-442368	GO_0015093	MF	controller
+SLC40A1:HEPH:6Cu2+ transports Fe2+ from cytosol to extracellular region	R-HSA-442368	none	BP?	reaction
+NRAMP1 transports divalent metal ions across phagosomal membranes of macrophages	R-HSA-435171	GO_0051139	MF	controller
+NRAMP1 transports divalent metal ions across phagosomal membranes of macrophages	R-HSA-435171	none	BP?	reaction
+SLC30A10 transports Mn2+ from cytosol to extracellular region	R-HSA-8959798	GO_0005384	MF	controller
+SLC30A10 transports Mn2+ from cytosol to extracellular region	R-HSA-8959798	none	BP?	reaction
+Oxidation of Fe2+ by hephaestin	R-HSA-917933	GO_0004322	MF	controller
+Oxidation of Fe2+ by hephaestin	R-HSA-917933	none	BP?	reaction
+Rhesus glycoproteins mediate ammonium transport.	R-HSA-444411	none	BP	Pathway
+RhCG mediates ammonium efflux out of kidney collecting duct cells	R-HSA-446277	GO_0008519	MF	controller
+RhCG mediates ammonium efflux out of kidney collecting duct cells	R-HSA-446277	none	BP?	reaction
+RhBG mediates ammonium influx into kidney collecting duct cells	R-HSA-446278	GO_0008519	MF	controller
+RhBG mediates ammonium influx into kidney collecting duct cells	R-HSA-446278	none	BP?	reaction
+RhCG mediates ammonium influx into kidney collecting duct cells	R-HSA-444393	GO_0008519	MF	controller
+RhCG mediates ammonium influx into kidney collecting duct cells	R-HSA-444393	none	BP?	reaction
+RHAG transports NH4+ from cytosol to extracellular region (red blood cells)	R-HSA-444416	GO_0008519	MF	controller
+RHAG transports NH4+ from cytosol to extracellular region (red blood cells)	R-HSA-444416	none	BP?	reaction
+RhBG mediates ammonium effflux out of kidney collecting duct cells	R-HSA-444419	GO_0008519	MF	controller
+RhBG mediates ammonium effflux out of kidney collecting duct cells	R-HSA-444419	none	BP?	reaction
+Organic cation/anion/zwitterion transport	R-HSA-549132	none	BP	Pathway
+Organic anion transport	R-HSA-549132	none	BP	Pathway
+Organic cation transport	R-HSA-549132	none	BP	Pathway
+Zinc influx into cells by the SLC39 gene family	R-HSA-442380	none	BP	Pathway
+hZIP10 mediates zinc influx into cells	R-HSA-442345	GO_0005385	MF	controller
+hZIP10 mediates zinc influx into cells	R-HSA-442345	none	BP?	reaction
+ZIP7 mediates zinc efflux from the endoplasmic reticulum	R-HSA-442393	GO_0005385	MF	controller
+ZIP7 mediates zinc efflux from the endoplasmic reticulum	R-HSA-442393	none	BP?	reaction
+ZIP8 mediates zinc influx into cells	R-HSA-442387	GO_0005385	MF	controller
+ZIP8 mediates zinc influx into cells	R-HSA-442387	none	BP?	reaction
+hZIP5 mediates zinc uptake by cells	R-HSA-442405	GO_0005385	MF	controller
+hZIP5 mediates zinc uptake by cells	R-HSA-442405	none	BP?	reaction
+ZIP6 and ZIP14 mediate zinc influx into cells	R-HSA-442317	GO_0005385	MF	controller
+ZIP6 and ZIP14 mediate zinc influx into cells	R-HSA-442317	none	BP?	reaction
+SLC39A1-4 transports Zn2+ from extracellular region to cytosol	R-HSA-442422	GO_0005385	MF	controller
+SLC39A1-4 transports Zn2+ from extracellular region to cytosol	R-HSA-442422	none	BP?	reaction
+Na+/Cl- dependent neurotransmitter transporters	R-HSA-442660	none	BP	Pathway
+SLC6A20 cotransports L-Pro, Na+ from the extracellular region to cytosol	R-HSA-352052	GO_0015171	MF	controller
+SLC6A20 cotransports L-Pro, Na+ from the extracellular region to cytosol	R-HSA-352052	none	BP?	reaction
+SLC6A18 transports Gly from extracellular region to cytosol	R-HSA-351963	GO_0015171	MF	controller
+SLC6A18 transports Gly from extracellular region to cytosol	R-HSA-351963	none	BP?	reaction
+SLC6A15-mediated amino acid uptake	R-HSA-352059	GO_0015171	MF	controller
+SLC6A15-mediated amino acid uptake	R-HSA-352059	none	BP?	reaction
+SLC6A12 (BGT-1)-mediated uptake of GABA and betaine	R-HSA-352029	GO_0015171	MF	controller
+SLC6A12 (BGT-1)-mediated uptake of GABA and betaine	R-HSA-352029	none	BP?	reaction
+SLC6A19-mediated uptake of neutral amino acids	R-HSA-375473	GO_0015171	MF	controller
+SLC6A19-mediated uptake of neutral amino acids	R-HSA-375473	none	BP?	reaction
+SLC6A14-mediated uptake of basic and neutral amino acids and of beta-alanine	R-HSA-375487	GO_0015171	MF	controller
+SLC6A14-mediated uptake of basic and neutral amino acids and of beta-alanine	R-HSA-375487	none	BP?	reaction
+SLC6A6-mediated uptake of taurine and beta-alanine	R-HSA-351987	GO_0015171	MF	controller
+SLC6A6-mediated uptake of taurine and beta-alanine	R-HSA-351987	none	BP?	reaction
+VMAT1/2 can mediate the transport of biogenic amines	R-HSA-444160	GO_0008504	MF	controller
+VMAT1/2 can mediate the transport of biogenic amines	R-HSA-444160	none	BP?	reaction
+SLC6A5,9 cotransport Gly, Cl-, Na+ from extracellular region to cytosol	R-HSA-444120	GO_0015375	MF	controller
+SLC6A5,9 cotransport Gly, Cl-, Na+ from extracellular region to cytosol	R-HSA-444120	none	BP?	reaction
+PROT mediates L-proline uptake	R-HSA-444100	GO_0005298	MF	controller
+PROT mediates L-proline uptake	R-HSA-444100	none	BP?	reaction
+Reuptake of dopamine from the synaptic cleft into neurons	R-HSA-379393	GO_0008504	MF	controller
+Reuptake of dopamine from the synaptic cleft into neurons	R-HSA-379393	none	BP?	reaction
+Reuptake of serotonin from the synapse	R-HSA-380620	GO_0008504	MF	controller
+Reuptake of serotonin from the synapse	R-HSA-380620	none	BP?	reaction
+Uptake of Noradrenaline	R-HSA-374896	GO_0005326	MF	controller
+Uptake of Noradrenaline	R-HSA-374896	none	BP?	reaction
+NAT1 mediates norepinephrine uptake	R-HSA-443997	GO_0005334	MF	controller
+NAT1 mediates norepinephrine uptake	R-HSA-443997	none	BP?	reaction
+GAT1-3 mediate Na+/Cl- dependent GABA transport	R-HSA-444007	GO_0005332	MF	controller
+GAT1-3 mediate Na+/Cl- dependent GABA transport	R-HSA-444007	none	BP?	reaction
+ABC transporters in lipid homeostasis	R-HSA-1369062	none	BP	Pathway
+ABCAs mediate lipid efflux	R-HSA-1369028	GO_0005319	MF	controller
+ABCAs mediate lipid efflux	R-HSA-1369028	none	BP?	reaction
+ABCAs mediate lipid influx	R-HSA-1369052	GO_0005319	MF	controller
+ABCAs mediate lipid influx	R-HSA-1369052	none	BP?	reaction
+ABCA3 transports PC, PG from ER membrane to lamellar body	R-HSA-5683714	GO_0005319	MF	controller
+ABCA3 transports PC, PG from ER membrane to lamellar body	R-HSA-5683714	none	BP?	reaction
+ABCA5 transports CHOL from lysosomal lumen to cytosol	R-HSA-8848053	GO_0005319	MF	controller
+ABCA5 transports CHOL from lysosomal lumen to cytosol	R-HSA-8848053	none	BP?	reaction
+ABCA12 transports lipids from cytosol to extracellular region	R-HSA-5682285	GO_0005319	MF	controller
+ABCA12 transports lipids from cytosol to extracellular region	R-HSA-5682285	none	BP?	reaction
+PEX-19 docks ABCD1/D2/D3 to peroximal membrane	R-HSA-382613	none	BP?	reaction
+ABCA7:Apo1A-mediated phospholipid efflux	R-HSA-382553	GO_0005548	MF	controller
+ABCA7:Apo1A-mediated phospholipid efflux	R-HSA-382553	none	BP?	reaction
+ABCD1-3 dimers transfer LCFAs from cytosol to peroxisomal matrix	R-HSA-382575	GO_0005324	MF	controller
+ABCD1-3 dimers transfer LCFAs from cytosol to peroxisomal matrix	R-HSA-382575	none	BP?	reaction
+ABCG4 may mediate cholesterol efflux	R-HSA-1454928	GO_0017127	MF	controller
+ABCG4 may mediate cholesterol efflux	R-HSA-1454928	none	BP?	reaction
+ABCG1-mediated transport of intracellular cholesterol to the cell surface	R-HSA-266082	GO_0017127	MF	controller
+ABCG1-mediated transport of intracellular cholesterol to the cell surface	R-HSA-266082	none	BP?	reaction
+ABCG5:ABCG8-mediated export of cholesterol and phytosterols	R-HSA-265783	GO_0015248	MF	controller
+ABCG5:ABCG8-mediated export of cholesterol and phytosterols	R-HSA-265783	none	BP?	reaction
+Discoidal HDL binds membrane-associated free cholesterol	R-HSA-266089	none	BP?	reaction
+Spherical HDL binds membrane-associated free cholesterol and phospholipids	R-HSA-266299	none	MF	controller
+Spherical HDL binds membrane-associated free cholesterol and phospholipids	R-HSA-266299	none	BP?	reaction
+ABC-family proteins mediated transport	R-HSA-382556	GO_0055085	BP	Pathway
+HCO3- transport through ion channel	R-HSA-383190	GO_0017081	MF	controller
+HCO3- transport through ion channel	R-HSA-383190	none	BP?	reaction
+ABCA8,B1,B5 transport xenobiotics from cytosol to extracellular region	R-HSA-1467457	GO_0008559	MF	controller
+ABCA8,B1,B5 transport xenobiotics from cytosol to extracellular region	R-HSA-1467457	none	BP?	reaction
+KCNJ11:ABCC9 transports K+ from extracellular region to cytosol	R-HSA-5678261	GO_0005242	MF	controller
+KCNJ11:ABCC9 transports K+ from extracellular region to cytosol	R-HSA-5678261	none	BP?	reaction
+ABCF1 binds EIF2	R-HSA-5227009	none	BP?	reaction
+ABCB9 transports peptides from cytosol to lysosomal lumen	R-HSA-5223317	GO_0015421	MF	controller
+ABCB9 transports peptides from cytosol to lysosomal lumen	R-HSA-5223317	none	BP?	reaction
+Mitochondrial ABC transporters	R-HSA-382556	none	BP	Pathway
+ABCA4 mediates atRAL transport	R-HSA-1467466	GO_0005395	MF	controller
+ABCA4 mediates atRAL transport	R-HSA-1467466	none	BP?	reaction
+ABC transporters in lipid homeostasis	R-HSA-382556	none	BP	Pathway
+ABCC2 transports BMG,BDG from cytosol to extracellular region	R-HSA-5679041	GO_0015127	MF	controller
+ABCC2 transports BMG,BDG from cytosol to extracellular region	R-HSA-5679041	none	BP?	reaction
+misfolded CFTR is degraded by the 26S proteasome	R-HSA-8866553	GO_0004175	MF	controller
+misfolded CFTR is degraded by the 26S proteasome	R-HSA-8866553	none	BP?	reaction
+ABCB4 transports PC from plasma membrane to extracellular region	R-HSA-5678706	GO_0005548	MF	controller
+ABCB4 transports PC from plasma membrane to extracellular region	R-HSA-5678706	none	BP?	reaction
+VCP-catalyzed ATP hydrolysis promotes the translocation of misfolded CFTR into the cytosol	R-HSA-8866542	none	BP?	reaction
+The ABCC family mediates organic anion transport	R-HSA-1454916	GO_0043225	MF	controller
+The ABCC family mediates organic anion transport	R-HSA-1454916	none	BP?	reaction
+RNF5 and RNF185 ubiquitinate misfolded CFTR	R-HSA-8866546	GO_1904264	MF	controller
+RNF5 and RNF185 ubiquitinate misfolded CFTR	R-HSA-8866546	none	BP?	reaction
+CFTR binds components of the ERAD machinery for ubiquitination and degradation	R-HSA-8866551	none	BP?	reaction
+CFTR transports Cl- from cytosol to extracellular region	R-HSA-5678863	GO_0015108	MF	controller
+CFTR transports Cl- from cytosol to extracellular region	R-HSA-5678863	none	BP?	reaction
+CFTR transits to the plasma membrane	R-HSA-8866851	none	BP?	reaction
+Transport of small molecules	R-HSA-382551	GO_0006810	BP	Pathway
+Lipoprotein metabolism	R-HSA-382551	GO_0071827	BP	Pathway
+ABC-family proteins mediated transport	R-HSA-382551	GO_0055085	BP	Pathway
+Ion channel transport	R-HSA-382551	GO_0034220	BP	Pathway
+Mitochondrial calcium ion transport	R-HSA-382551	GO_0006851	BP	Pathway
+Iron uptake and transport	R-HSA-382551	GO_0006879	BP	Pathway
+O2/CO2 exchange in erythrocytes	R-HSA-382551	GO_0015701	BP	Pathway
+Intracellular oxygen transport	R-HSA-382551	GO_0015671	BP	Pathway
+Aquaporin-mediated transport	R-HSA-382551	GO_0006833	BP	Pathway
+Miscellaneous transport and binding events	R-HSA-382551	GO_0055085	BP	Pathway
+SLC-mediated transmembrane transport	R-HSA-382551	GO_0055085	BP	Pathway
+Sodium/Proton exchangers	R-HSA-425986	none	BP	Pathway
+Na+/H+ exchanger transport (at trans-golgi membrane)	R-HSA-426015	GO_0015385	MF	controller
+Na+/H+ exchanger transport (at trans-golgi membrane)	R-HSA-426015	none	BP?	reaction
+Na+/H+ exchanger transport (at early endosome membrane)	R-HSA-425983	GO_0015385	MF	controller
+Na+/H+ exchanger transport (at early endosome membrane)	R-HSA-425983	none	BP?	reaction
+Na+/H+ exchanger transport (at cell membrane)	R-HSA-425994	GO_0015385	MF	controller
+Na+/H+ exchanger transport (at cell membrane)	R-HSA-425994	none	BP?	reaction
+Na+/H+ exchanger transport (at late endosome membrane)	R-HSA-425965	GO_0015385	MF	controller
+Na+/H+ exchanger transport (at late endosome membrane)	R-HSA-425965	none	BP?	reaction
+Sodium/Calcium exchangers	R-HSA-425561	none	BP	Pathway
+K+-independent Li+/Ca2+ exchanger transport	R-HSA-425822	GO_0015368	MF	controller
+K+-independent Li+/Ca2+ exchanger transport	R-HSA-425822	none	BP?	reaction
+SLC24A5 exchanges cytosolic 4Na+ for Golgi luminal Ca2+, K+	R-HSA-5626316	GO_0008273	MF	controller
+SLC24A5 exchanges cytosolic 4Na+ for Golgi luminal Ca2+, K+	R-HSA-5626316	none	BP?	reaction
+SLC24A1-4 exchange extracellular 4Na+ for cytosolic Ca2+, K+	R-HSA-425678	GO_0008273	MF	controller
+SLC24A1-4 exchange extracellular 4Na+ for cytosolic Ca2+, K+	R-HSA-425678	none	BP?	reaction
+SLC8A1,2,3 exchange 3Na+ for Ca2+	R-HSA-425661	GO_0005432	MF	controller
+SLC8A1,2,3 exchange 3Na+ for Ca2+	R-HSA-425661	none	BP?	reaction
+Bicarbonate transporters	R-HSA-425381	GO_0015701	BP	Pathway
+Cl-/HCO3- exchanger transport	R-HSA-425482	GO_0005452	MF	controller
+Cl-/HCO3- exchanger transport	R-HSA-425482	none	BP?	reaction
+SLC4A4 cotransports Na+ with 3HCO3-	R-HSA-8878664	GO_0008510	MF	controller
+SLC4A4 cotransports Na+ with 3HCO3-	R-HSA-8878664	none	BP?	reaction
+SLC4A5,7,9 cotransport Na+ with 3HCO3-	R-HSA-425483	GO_0008510	MF	controller
+SLC4A5,7,9 cotransport Na+ with 3HCO3-	R-HSA-425483	none	BP?	reaction
+Na+-driven Cl-/HCO3- exchanger transport	R-HSA-425577	GO_0005452	MF	controller
+Na+-driven Cl-/HCO3- exchanger transport	R-HSA-425577	none	BP?	reaction
+Transport of inorganic cations/anions and amino acids/oligopeptides	R-HSA-425393	GO_0006811	BP	Pathway
+Cation-coupled Chloride cotransporters	R-HSA-425393	none	BP	Pathway
+Amino acid transport across the plasma membrane	R-HSA-425393	GO_0006865	BP	Pathway
+Multifunctional anion exchangers	R-HSA-425393	none	BP	Pathway
+Sodium-coupled phosphate cotransporters	R-HSA-425393	none	BP	Pathway
+Proton/oligopeptide cotransporters	R-HSA-425393	none	BP	Pathway
+Sodium/Proton exchangers	R-HSA-425393	none	BP	Pathway
+Organic anion transporters	R-HSA-425393	none	BP	Pathway
+Sodium/Calcium exchangers	R-HSA-425393	none	BP	Pathway
+Proton-coupled neutral amino acid transporters	R-HSA-425393	none	BP	Pathway
+Bicarbonate transporters	R-HSA-425393	GO_0015701	BP	Pathway
+Glutamate transport	R-HSA-428015	GO_0005314	MF	controller
+Glutamate transport	R-HSA-428015	none	BP?	reaction
+CTNS cotransports CySS-, H+ from lysosomal lumen to cytosol	R-HSA-5340130	GO_0015184	MF	controller
+CTNS cotransports CySS-, H+ from lysosomal lumen to cytosol	R-HSA-5340130	none	BP?	reaction
+SLC25A26 exchanges cytosolic AdoMet for mitochondrial AdoHcy	R-HSA-8855062	GO_0000095	MF	controller
+SLC25A26 exchanges cytosolic AdoMet for mitochondrial AdoHcy	R-HSA-8855062	none	BP?	reaction
+Vesicular inhibitory amino acid transport	R-HSA-428625	GO_0015495	MF	controller
+Vesicular inhibitory amino acid transport	R-HSA-428625	none	BP?	reaction
+SLC-mediated transmembrane transport	R-HSA-425407	GO_0055085	BP	Pathway
+Transport of vitamins, nucleosides, and related molecules	R-HSA-425407	none	BP	Pathway
+Cellular hexose transport	R-HSA-425407	GO_0008645	BP	Pathway
+Transport of inorganic cations/anions and amino acids/oligopeptides	R-HSA-425407	GO_0006811	BP	Pathway
+Transport of bile salts and organic acids, metal ions and amine compounds	R-HSA-425407	none	BP	Pathway
+Mitochondrial ABC transporters	R-HSA-1369007	none	BP	Pathway
+MTABC3 transports porphyrin into mitochondria	R-HSA-1369065	GO_0015232	MF	controller
+MTABC3 transports porphyrin into mitochondria	R-HSA-1369065	none	BP?	reaction
+ABC7, mABC1 and mABC2 mediate heme transport	R-HSA-382560	GO_0015232	MF	controller
+ABC7, mABC1 and mABC2 mediate heme transport	R-HSA-382560	none	BP?	reaction

@@ -105,13 +105,13 @@ public class BioPaxtoGO {
 		//		bp2g.convertReactomeFolder(input_folder, output_folder);
 
 		String input_biopax = 
-				"/Users/bgood/Desktop/test/transport_small_mlc.owl";
+			//	"/Users/bgood/Desktop/test/transport_small_mlc.owl";
 			//			"/Users/bgood/Desktop/test/abacavir_metabolism.owl";
 				//"/Users/bgood/Desktop/test/gap_junction.owl"; 
 		//		"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
 		//		"/Users/bgood/Desktop/test/Wnt_example.owl";
 		//"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
-		//"src/main/resources/reactome/Homo_sapiens.owl";
+		"src/main/resources/reactome/Homo_sapiens.owl";
 		//"/Users/bgood/Downloads/biopax/homosapiens.owl";
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
@@ -530,7 +530,8 @@ public class BioPaxtoGO {
 						UnificationXref uref = (UnificationXref)xref;	    			
 						//here we add the referenced GO class as a type.  
 						if(uref.getDb().equals("GENE ONTOLOGY")) {
-							OWLClass xref_go_loc = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + uref.getId().replaceAll(":", "_")));
+							IRI urefiri = GoCAM.makeGoCamifiedIRI(uref.getId().replaceAll(":", "_"));
+							OWLClass xref_go_loc = go_cam.df.getOWLClass(urefiri);
 							Set<XReferrable> refs = uref.getXrefOf();							
 							for(XReferrable ref : refs) {
 								location_term = ref.toString().replaceAll("CellularLocationVocabulary_", "");
@@ -858,7 +859,8 @@ public class BioPaxtoGO {
 								Collection<OWLClassExpression> types = EntitySearcher.getTypes(controller_e, go_cam.go_cam_ont);
 								if(types==null||types.size()==0) {
 									String name = controller_entity.getDisplayName();
-									OWLClass named_class = go_cam.df.getOWLClass(IRI.create(GoCAM.base_iri+"unknown_"+(name.replaceAll(" ", "_"))));
+									IRI named = GoCAM.makeGoCamifiedIRI("unknown_"+(name.replaceAll(" ", "_")));
+									OWLClass named_class = go_cam.df.getOWLClass(named);
 									go_cam.addSubclassAssertion(named_class, GoCAM.continuant_class, null);
 									go_cam.addTypeAssertion(controller_e, named_class);
 									go_cam.addLiteralAnnotations2Individual(controller_e.getIRI(), GoCAM.rdfs_comment, "Only defined as a Physical Entity.  No protein etc. identifier given by source.  Could be unknown, could be a family.");

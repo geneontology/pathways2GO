@@ -57,7 +57,10 @@ public class App {
 
 	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		
-
+		String abox_file = "src/main/resources/org/geneontology/gocam/exchange/57c82fad00000639.ttl";
+		String tbox_file = "/Users/bgood/Desktop/test/tbox_tmp.ttl";
+				//"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
+		App.testInference(abox_file, tbox_file);
 		
 	}
 
@@ -118,15 +121,14 @@ public class App {
 		q.dumpModel("/Users/bgood/reactome-go-cam-models/all_human_no_inference.ttl", "TURTLE");
 	}
 
-	public static void test1() throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException {
+	public static void testInference(String abox_file, String tbox_file) throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException {
 		//prepare an abox (taken from Arachne test case)
 		// https://github.com/balhoff/arachne/tree/master/src/test/resources/org/geneontology/rules
-		String abox_file = "src/main/resources/org/geneontology/gocam/exchange/57c82fad00000639.ttl";
 		OWLOntologyManager aman = OWLManager.createOWLOntologyManager();
 		OWLOntology abox = aman.loadOntologyFromOntologyDocument(new File(abox_file));	
 
 		//prepare tbox
-		String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
+		//String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
 		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
 		OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
 		boolean add_inferences = false;

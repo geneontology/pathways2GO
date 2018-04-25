@@ -27,6 +27,7 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.parameters.Imports;
 
 import scala.collection.JavaConverters;
@@ -58,6 +59,12 @@ public class ArachneAccessor {
 	 */
 	RuleEngine initializeRuleEngine(OWLOntology tbox) {
 		Set<Rule> rules = new HashSet<Rule>();
+		try {
+			App.writeOntology("/Users/bgood/Desktop/test/test123.ttl", tbox);
+		} catch (OWLOntologyStorageException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		rules.addAll(JavaConverters.setAsJavaSetConverter(OWLtoRules.translate(tbox, Imports.INCLUDED, true, true, true, true)).asJava());
 		//indirect rules add statements like this ?pr <http://arachne.geneontology.org/indirect_type> ?pr_type
 		//when an inferred type is added to link an instance to a superclass of one of its direct types
@@ -80,14 +87,12 @@ public class ArachneAccessor {
 			if(add_property_definitions) {
 				OWLOntology propOntology = OWLManager.createOWLOntologyManager().createOntology(tbox_ontology.getRBoxAxioms(Imports.INCLUDED));
 				Set<Statement> propStatements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(propOntology)).asJava();
-				System.out.println("tbox.getRBoxAxioms (propert axioms) triples: "+propStatements.size());
 				triples.addAll(propStatements.stream().map(s -> Bridge.tripleFromJena(s.asTriple())).collect(Collectors.toSet()));
 			}
 			if(add_class_definitions) {
 				//just adding class definitions, not property defs.. 
 				OWLOntology tboxOntology = OWLManager.createOWLOntologyManager().createOntology(tbox_ontology.getTBoxAxioms(Imports.INCLUDED));
 				Set<Statement> tboxStatements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(tboxOntology)).asJava();
-				System.out.println("tbox axioms triples: "+tboxStatements.size());
 				triples.addAll(tboxStatements.stream().map(s -> Bridge.tripleFromJena(s.asTriple())).collect(Collectors.toSet()));
 			}
 		} catch (OWLOntologyCreationException e) {
