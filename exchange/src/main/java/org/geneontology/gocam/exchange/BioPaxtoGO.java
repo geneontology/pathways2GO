@@ -10,11 +10,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -102,23 +105,25 @@ public class BioPaxtoGO {
 		//		bp2g.convertReactomeFolder(input_folder, output_folder);
 
 		String input_biopax = 
-				//		"/Users/bgood/Desktop/test/abacavir_metabolism.owl";
+				"/Users/bgood/Desktop/test/transport_small_mlc.owl";
+			//			"/Users/bgood/Desktop/test/abacavir_metabolism.owl";
 				//"/Users/bgood/Desktop/test/gap_junction.owl"; 
-		//"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
+		//		"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
 		//		"/Users/bgood/Desktop/test/Wnt_example.owl";
-		"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
+		//"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
 		//"src/main/resources/reactome/Homo_sapiens.owl";
 		//"/Users/bgood/Downloads/biopax/homosapiens.owl";
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = 
-				//		"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
+		//"/Users/bgood/Desktop/test/tmp/converted-";
+		//				"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
 				//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
-				"/Users/bgood/Desktop/test/Wnt_output/converted-";
+				//"/Users/bgood/Desktop/test/Wnt_output/converted-";
 				//"/Users/bgood/Desktop/test/gap_junction_output/converted-";
-		//"/Users/bgood/Desktop/test/bmp_output/converted-";
+		//		"/Users/bgood/Desktop/test/bmp_output/converted-";
 		//"/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-";
-		//"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
+		"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";
@@ -259,9 +264,6 @@ public class BioPaxtoGO {
 			//write results
 			if(split_out_by_pathway) {
 				String n = currentPathway.getDisplayName();
-				if(n.equals("Negative regulation of TCF-dependent signaling by DVL-interacting proteins")) {
-					System.out.println("pause..");
-				}
 				n = n.replaceAll("/", "-");	
 				n = n.replaceAll(" ", "_");
 				String outfilename = converted+n+".ttl";	
@@ -1226,7 +1228,7 @@ public class BioPaxtoGO {
 			//find reactions that are part of this pathway
 			Collection<OWLIndividual> reactions_and_subpathways = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont);
 			Set<OWLIndividual> reactions = new HashSet<OWLIndividual>();
-			
+
 			for(OWLIndividual r : reactions_and_subpathways) {
 				for(OWLClassExpression type :EntitySearcher.getTypes(r, go_cam.go_cam_ont)) {
 					OWLClass c = type.asOWLClass();
@@ -1243,24 +1245,13 @@ public class BioPaxtoGO {
 			for(OWLIndividual r : reactions) {
 				int incoming = 0;
 				int outgoing = 0;
-				Collection<OWLAxiom> axioms = EntitySearcher.getReferencingAxioms((OWLEntity) r, go_cam.go_cam_ont);
-				for(OWLAxiom axiom : axioms) {
-					if(axiom.isOfType(AxiomType.OBJECT_PROPERTY_ASSERTION)){
-						OWLObjectPropertyAssertionAxiom op = (OWLObjectPropertyAssertionAxiom) axiom;
-						//causal only
-						//TODO would be fun to actually use the RO and a little inference to make this list..  
-						if(op.getProperty().equals(GoCAM.directly_negatively_regulates)||
-								op.getProperty().equals(GoCAM.directly_positively_regulates)||
-								op.getProperty().equals(GoCAM.directly_negatively_regulated_by)||
-								op.getProperty().equals(GoCAM.directly_positively_regulated_by)||
-								op.getProperty().equals(GoCAM.provides_direct_input_for)) {
-							if(op.getSubject().equals(r)) {
-								outgoing++;
-							}else if(op.getObject().equals(r)) {
-								incoming++;
-							}
-						}
-					}				
+				Collection<OWLObjectPropertyAssertionAxiom> axioms = getCausalReferencingOPAxioms((OWLEntity) r, go_cam);
+				for(OWLObjectPropertyAssertionAxiom op : axioms) {
+					if(op.getSubject().equals(r)) {
+						outgoing++;
+					}else if(op.getObject().equals(r)) {
+						incoming++;
+					}		
 				}
 				if(incoming==0&&outgoing==0) {
 					islands.add(r);
@@ -1276,20 +1267,38 @@ public class BioPaxtoGO {
 			//if there is a root or roots.. do a sideways horizontal line graph
 			if(chain_roots.size()>0) {
 				System.out.println(pathway + "Chain layout!");
-				layoutChain(250, 20, 350, 500, chain_roots, chain_members, islands, go_cam);
-				//				for(OWLIndividual root : chain_roots) {
-				//					System.out.println(pathway + "Grid layout!");
-				//					layoutHorizontalTreeNoctuaVersion1(reaction_x, reaction_y, x_spacer, y_spacer, (OWLNamedIndividual)root, GoCAM.provides_direct_input_for, go_cam);
-				//					reaction_y = reaction_y + y_spacer;
-				//				}				
-			}else { // do circle layout 
+				layoutChain(250, 20, 350, 500, chain_roots, chain_members, islands, go_cam);	
+			}else if(chain_members.size()==0) {
+				layoutChain(250, 20, 200, 500, chain_roots, chain_members, islands, go_cam);	
+			}else{	
+				// do circle layout 
 				if(reactions!=null) {					
 					System.out.println(pathway + "Circle layout!");
-					layoutCircle(reactions, go_cam);		
+					layoutCircle(chain_members, islands, go_cam);		
 				}
 			}
 			x = x+x_spacer;
 		}
+	}
+
+	private Set<OWLObjectPropertyAssertionAxiom> getCausalReferencingOPAxioms(OWLEntity e, GoCAM go_cam){
+		Collection<OWLAxiom> axioms = EntitySearcher.getReferencingAxioms((OWLEntity) e, go_cam.go_cam_ont);
+		Set<OWLObjectPropertyAssertionAxiom> causal_axioms = new HashSet<OWLObjectPropertyAssertionAxiom>();
+		for(OWLAxiom axiom : axioms) {
+			if(axiom.isOfType(AxiomType.OBJECT_PROPERTY_ASSERTION)){
+				OWLObjectPropertyAssertionAxiom op = (OWLObjectPropertyAssertionAxiom) axiom;
+				//causal only
+				//TODO would be fun to actually use the RO and a little inference to make this list..  
+				if(op.getProperty().equals(GoCAM.directly_negatively_regulates)||
+						op.getProperty().equals(GoCAM.directly_positively_regulates)||
+						op.getProperty().equals(GoCAM.directly_negatively_regulated_by)||
+						op.getProperty().equals(GoCAM.directly_positively_regulated_by)||
+						op.getProperty().equals(GoCAM.provides_direct_input_for)) {
+					causal_axioms.add(op);
+				}
+			}				
+		}
+		return causal_axioms;
 	}
 
 	private void layoutChain(int x, int y, int x_spacer, int y_spacer, Set<OWLIndividual> chain_roots, Set<OWLIndividual> chain_members, Set<OWLIndividual> islands, GoCAM go_cam) {
@@ -1320,27 +1329,28 @@ public class BioPaxtoGO {
 		if(mapHintPresent((OWLNamedIndividual) node, go_cam)) {		
 			return y;
 		}
+		System.out.println("laying out "+go_cam.getaLabel((OWLEntity) node)+" "+node.toString()+x+" "+y+" "+x_spacer+" "+y_spacer);
 		//layout the node
 		go_cam.addLiteralAnnotations2Individual(((OWLNamedIndividual) node).getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(x));
 		go_cam.addLiteralAnnotations2Individual(((OWLNamedIndividual) node).getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(y));
 		//recursively lay out children
 		Collection<OWLIndividual> children = EntitySearcher.getObjectPropertyValues(node, GoCAM.provides_direct_input_for, go_cam.go_cam_ont);
 		if(children.size()==0) {
-			Collection<OWLAxiom> axioms = EntitySearcher.getReferencingAxioms((OWLEntity) node, go_cam.go_cam_ont);
-			for(OWLAxiom axiom : axioms) {
-				if(axiom.isOfType(AxiomType.OBJECT_PROPERTY_ASSERTION)){
-					if(node.equals(((OWLObjectPropertyAssertionAxiom) axiom).getSubject())){
-						children.add(((OWLObjectPropertyAssertionAxiom) axiom).getObject());
-					}
-				}					
+			Collection<OWLObjectPropertyAssertionAxiom> axioms = getCausalReferencingOPAxioms((OWLEntity) node, go_cam);
+			for(OWLObjectPropertyAssertionAxiom axiom : axioms) {
+				if(node.equals(((OWLObjectPropertyAssertionAxiom) axiom).getSubject())){
+					children.add(((OWLObjectPropertyAssertionAxiom) axiom).getObject());
+				}				
 			}
 		}
 		int nrows = 0;
 		//typically there will only be one, but... 
 		for(OWLIndividual child : children) {
-			layoutHorizontalLine(x+x_spacer, y, x_spacer, y_spacer, child, go_cam);
-			nrows++;
-			y = y+y_spacer;
+			if(!mapHintPresent((OWLNamedIndividual) child, go_cam)) {
+				layoutHorizontalLine(x+x_spacer, y, x_spacer, y_spacer, child, go_cam);
+				nrows++;
+				y = y+y_spacer;
+			}
 		}
 		if(nrows==1) {
 			return y-y_spacer;
@@ -1348,6 +1358,66 @@ public class BioPaxtoGO {
 		return y;
 	}
 
+	private void layoutCircle(Collection<OWLIndividual> chain_members, Collection<OWLIndividual> islands, GoCAM go_cam) {
+		//layout any unconnected nodes on the top for this one
+		int x = 250; int y = 20; int x_spacer = 75;
+		for(OWLIndividual island : islands) {
+			go_cam.addLiteralAnnotations2Individual(((OWLNamedIndividual) island).getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(x));
+			go_cam.addLiteralAnnotations2Individual(((OWLNamedIndividual) island).getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(y));
+			x+=x_spacer;
+		}		
+		
+		LinkedHashSet<OWLIndividual> ordered_chain = causalSort(chain_members, null, null, go_cam);
+		//add any stragglers.. give up on multiple loops for now. 
+		if(chain_members.size()>ordered_chain.size()) {
+			for(OWLIndividual member : chain_members) {
+				ordered_chain.add(member);//hashset should ensure non-redundancy
+			}
+		}
+		//TODO calculate based on n nodes
+		//currently reasonable approximation for small number of nodes
+		int h = 800; // x coordinate of circle center
+		int k = 700; // y coordinate of circle center (y going down for web layout)
+		int r = 600; //radius of circle 
+		int n = chain_members.size(); //number nodes to draw 
+		double step = 2*Math.PI/n; //radians to move about circle per step 
+		double theta = 0;
+		for(OWLIndividual reaction_node : ordered_chain) {
+			x = Math.round((long)(h + r*Math.cos(theta)));
+			y = Math.round((long)(k - r*Math.sin(theta))); 
+			theta = theta + step;
+			IRI node_iri = reaction_node.asOWLNamedIndividual().getIRI();
+			go_cam.addLiteralAnnotations2Individual(node_iri, GoCAM.x_prop, go_cam.df.getOWLLiteral(x));
+			go_cam.addLiteralAnnotations2Individual(node_iri, GoCAM.y_prop, go_cam.df.getOWLLiteral(y));
+		}
+	}
+	
+	private LinkedHashSet<OWLIndividual> causalSort(Collection<OWLIndividual> chain_members, LinkedHashSet<OWLIndividual> ordered_chain, OWLIndividual node, GoCAM go_cam){
+		if(ordered_chain==null&&node==null) {
+			//initialize
+			ordered_chain = new LinkedHashSet<OWLIndividual>();
+			node = chain_members.iterator().next();
+			ordered_chain.add(node);
+		}
+		//get causal child 
+		Collection<OWLIndividual> children = EntitySearcher.getObjectPropertyValues(node, GoCAM.provides_direct_input_for, go_cam.go_cam_ont);
+		if(children.size()==0) {
+			Collection<OWLObjectPropertyAssertionAxiom> axioms = getCausalReferencingOPAxioms((OWLEntity) node, go_cam);
+			for(OWLObjectPropertyAssertionAxiom axiom : axioms) {
+				if(node.equals(((OWLObjectPropertyAssertionAxiom) axiom).getSubject())){
+					children.add(((OWLObjectPropertyAssertionAxiom) axiom).getObject());
+				}				
+			}
+		}
+		//add one
+		if(children.size()>0) {
+			OWLIndividual next = children.iterator().next();
+			if(ordered_chain.add(next)) {
+				ordered_chain = causalSort(chain_members, ordered_chain, next, go_cam);
+			}
+		}
+		return ordered_chain;
+	}
 
 
 	/**
@@ -1524,23 +1594,7 @@ public class BioPaxtoGO {
 	}
 
 
-	private void layoutCircle(Collection<OWLIndividual> reactions, GoCAM go_cam) {
-		int h = 800; // x coordinate of circle center
-		int k = 700; // y coordinate of circle center (y going down for web layout)
-		int r = 600; //radius of circle 
-		int n = reactions.size(); //number nodes to draw 
-		double step = 2*Math.PI/n; //radians to move about circle per step 
-		int x = 0; int y = 0; double theta = 0;
-		for(OWLIndividual reaction_node : reactions) {
-			x = Math.round((long)(h + r*Math.cos(theta)));
-			y = Math.round((long)(k - r*Math.sin(theta))); 
-			theta = theta + step;
-			IRI node_iri = reaction_node.asOWLNamedIndividual().getIRI();
-			go_cam.addLiteralAnnotations2Individual(node_iri, GoCAM.x_prop, go_cam.df.getOWLLiteral(x));
-			go_cam.addLiteralAnnotations2Individual(node_iri, GoCAM.y_prop, go_cam.df.getOWLLiteral(y));
-			System.out.println(x+" "+y+" "+go_cam.getaLabel(reaction_node.asOWLNamedIndividual()));
-		}
-	}
+
 
 	/**
 	 * Have we already given the node a location?

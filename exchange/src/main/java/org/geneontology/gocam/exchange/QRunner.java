@@ -48,7 +48,7 @@ public class QRunner {
 	 */
 	public QRunner(OWLOntology tbox, OWLOntology abox, boolean add_inferences, boolean add_property_definitions, boolean add_class_definitions) {
 		if(add_inferences) {
-			System.out.println("Setting up Arachne reasoner, extracting rules from tbox");
+			System.out.println("Setting up Arachne reasoner for Qrunner, extracting rules from tbox");
 			if(abox!=null) {
 				//pull out any rules from abox.. and add to tbox
 				Set<OWLAxiom> littlet = abox.getTBoxAxioms(null);

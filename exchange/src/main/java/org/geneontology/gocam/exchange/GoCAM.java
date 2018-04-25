@@ -514,6 +514,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 * @throws OWLOntologyCreationException
 	 */
 	QRunner initializeQRunnerForTboxInference() throws OWLOntologyCreationException {
+		System.out.println("initializeQRunnerForTboxInference()");
 		//TODO either grab this from a PURL so its always up to date, or keep the referenced imported file in sync.  
 		String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
 		//<http://purl.obolibrary.org/obo/go/extensions/go-lego.owl>
@@ -527,6 +528,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 	}
 
 	QRunner initializeQRunner(OWLOntology tbox) throws OWLOntologyCreationException {
+		System.out.println("initializeQRunner()");
 		boolean add_inferences = true;
 		boolean add_property_definitions = false; boolean add_class_definitions = false;
 		qrunner = new QRunner(tbox, null, add_inferences, add_property_definitions, add_class_definitions);
