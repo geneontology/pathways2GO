@@ -105,22 +105,23 @@ public class BioPaxtoGO {
 		//		bp2g.convertReactomeFolder(input_folder, output_folder);
 
 		String input_biopax = 
-			//	"/Users/bgood/Desktop/test/transport_small_mlc.owl";
-			//			"/Users/bgood/Desktop/test/abacavir_metabolism.owl";
-				//"/Users/bgood/Desktop/test/gap_junction.owl"; 
+		//		"/Users/bgood/Desktop/test/abc_transporter.owl";
+		//	"/Users/bgood/Desktop/test/transport_small_mlc.owl";
+		//			"/Users/bgood/Desktop/test/abacavir_metabolism.owl";
+		//"/Users/bgood/Desktop/test/gap_junction.owl"; 
 		//		"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
 		//		"/Users/bgood/Desktop/test/Wnt_example.owl";
 		//"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
-		"src/main/resources/reactome/Homo_sapiens.owl";
-		//"/Users/bgood/Downloads/biopax/homosapiens.owl";
+		//"src/main/resources/reactome/Homo_sapiens.owl";
+		"/Users/bgood/Downloads/biopax/homosapiens.owl";
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = 
-		//"/Users/bgood/Desktop/test/tmp/converted-";
+		//		"/Users/bgood/Desktop/test/tmp/converted-";
 		//				"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
-				//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
-				//"/Users/bgood/Desktop/test/Wnt_output/converted-";
-				//"/Users/bgood/Desktop/test/gap_junction_output/converted-";
+		//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
+		//"/Users/bgood/Desktop/test/Wnt_output/converted-";
+		//"/Users/bgood/Desktop/test/gap_junction_output/converted-";
 		//		"/Users/bgood/Desktop/test/bmp_output/converted-";
 		//"/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-";
 		"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
@@ -551,159 +552,174 @@ public class BioPaxtoGO {
 					}
 				}
 			}
-		}	
-		//Protein	
-		if(entity.getModelInterface().equals(Protein.class)) {
-			Protein protein = (Protein)entity;
-			String id = getUniprotProteinId(protein);
-			if(id!=null) {
-				//create the specific protein class
-				OWLClass uniprotein_class = go_cam.df.getOWLClass(IRI.create(GoCAM.uniprot_iri + id)); 
-				go_cam.addSubclassAssertion(uniprotein_class, GoCAM.chebi_protein, null);										
-				//name the class with the uniprot id for now..
-				//NOTE different protein versions are grouped together into the same root class by the conversion
-				//e.g. Q9UKV3 gets the uniproteins ACIN1, ACIN1(1-1093), ACIN1(1094-1341)
-				go_cam.addLabel(uniprotein_class, id);
-				//until something is imported that understands the uniprot entities, assert that they are proteins
-				go_cam.addTypeAssertion(e,  uniprotein_class);
-			}else { //no entity reference so look for parts 
-				Set<PhysicalEntity> prot_parts = protein.getMemberPhysicalEntity();
-				if(prot_parts!=null) {					
-					//if its made of parts and it doesn't have its own unique protein name, call it a complex..	
-					Set<String> cnames = new HashSet<String>();
-					for(PhysicalEntity prot_part : prot_parts) {
-						cnames.add(prot_part.getDisplayName());
-						//hook up parts	
-						if(noctua_version == 1) { //Noctua view can't handle long parts lists so leave them out
-							go_cam.addLiteralAnnotations2Individual(e.getIRI(), GoCAM.rdfs_comment, "has_part "+prot_part.getDisplayName());
+			//now get more specific type information
+			//Protein	
+			if(entity.getModelInterface().equals(Protein.class)) {
+				Protein protein = (Protein)entity;
+				String id = getUniprotProteinId(protein);
+				if(id!=null) {
+					//create the specific protein class
+					OWLClass uniprotein_class = go_cam.df.getOWLClass(IRI.create(GoCAM.uniprot_iri + id)); 
+					go_cam.addSubclassAssertion(uniprotein_class, GoCAM.chebi_protein, null);										
+					//name the class with the uniprot id for now..
+					//NOTE different protein versions are grouped together into the same root class by the conversion
+					//e.g. Q9UKV3 gets the uniproteins ACIN1, ACIN1(1-1093), ACIN1(1094-1341)
+					go_cam.addLabel(uniprotein_class, id);
+					//until something is imported that understands the uniprot entities, assert that they are proteins
+					go_cam.addTypeAssertion(e,  uniprotein_class);
+				}else { //no entity reference so look for parts 
+					Set<PhysicalEntity> prot_parts = protein.getMemberPhysicalEntity();
+					if(prot_parts!=null) {					
+						//if its made of parts and it doesn't have its own unique protein name, call it a complex..	
+						Set<String> cnames = new HashSet<String>();
+						for(PhysicalEntity prot_part : prot_parts) {
+							cnames.add(prot_part.getDisplayName());
+							//hook up parts	
+							if(noctua_version == 1) { //Noctua view can't handle long parts lists so leave them out
+								go_cam.addLiteralAnnotations2Individual(e.getIRI(), GoCAM.rdfs_comment, "has_part "+prot_part.getDisplayName());
+							}else {
+								OWLNamedIndividual prot_part_entity = go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(prot_part.getUri()+entity.getUri())); //define it independently within this context
+								go_cam.addObjectPropertyAssertion(e, GoCAM.has_part, prot_part_entity, null);		
+								//define them = hopefully get out a name and a class for the sub protein.	
+								defineReactionEntity(go_cam, prot_part, prot_part_entity.getIRI());
+							}						
+						}
+						//adds a unique class to describe this complex 
+						//TODO generally tbox modifications don't play well with Noctua/Minerva which expects only Abox in the model
+						//but need to show something other than "molecular complex' for the nodes in the folded reaction view..
+						//so stuffing the names into the class..  yay.  
+						if(noctua_version == 1) { 
+							addComplexAsSimpleClass(go_cam, cnames, e, null);
 						}else {
-							OWLNamedIndividual prot_part_entity = go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(prot_part.getUri()+entity.getUri())); //define it independently within this context
-							go_cam.addObjectPropertyAssertion(e, GoCAM.has_part, prot_part_entity, null);		
-							//define them = hopefully get out a name and a class for the sub protein.	
-							defineReactionEntity(go_cam, prot_part, prot_part_entity.getIRI());
-						}						
+							go_cam.addTypeAssertion(e, GoCAM.go_complex);
+						}
+					}else { 
+						go_cam.addTypeAssertion(e,  GoCAM.chebi_protein);
 					}
-					//adds a unique class to describe this complex 
-					//TODO generally tbox modifications don't play well with Noctua/Minerva which expects only Abox in the model
-					//but need to show something other than "molecular complex' for the nodes in the folded reaction view..
-					//so stuffing the names into the class..  yay.  
+				}
+			}
+			//Dna (gene)
+			else if(entity.getModelInterface().equals(Dna.class)) {
+				Dna dna = (Dna)entity;
+				EntityReference entity_ref = dna.getEntityReference();	
+				if(entity_ref!=null) {
+					Set<Xref> p_xrefs = entity_ref.getXref();
+					for(Xref xref : p_xrefs) {
+						if(xref.getModelInterface().equals(UnificationXref.class)) {
+							UnificationXref uref = (UnificationXref)xref;	
+							if(uref.getDb().equals("ENSEMBL")) {
+								String id = uref.getId();
+								OWLClass dna_class = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + id)); 
+								go_cam.addSubclassAssertion(dna_class, GoCAM.continuant_class, null);										
+								//name the class with the gene id
+								go_cam.addLabel(dna_class, id);
+								//assert a continuant
+								go_cam.addTypeAssertion(e, dna_class);
+							}
+						}
+					}
+				}
+			}
+			//SmallMolecule
+			else if(entity.getModelInterface().equals(SmallMolecule.class)) {
+				SmallMolecule mlc = (SmallMolecule)entity;
+				EntityReference entity_ref = mlc.getEntityReference();	
+				boolean chebi_mlc = false;
+				if(entity_ref!=null) {
+					Set<Xref> p_xrefs = entity_ref.getXref();
+					for(Xref xref : p_xrefs) {
+						if(xref.getModelInterface().equals(UnificationXref.class)) {
+							UnificationXref uref = (UnificationXref)xref;	
+							if(uref.getDb().equals("ChEBI")) {
+								chebi_mlc = true;
+								String id = uref.getId().replace(":", "_");
+								OWLClass mlc_class = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + id)); 
+								go_cam.addSubclassAssertion(mlc_class, GoCAM.continuant_class, null);										
+								//name the class with the chebi id
+								go_cam.addLabel(mlc_class, id);
+								//assert its a chemical instance
+								go_cam.addTypeAssertion(e, mlc_class);
+							}
+						}
+					}
+				}
+			}
+			//Complex 
+			else if(entity.getModelInterface().equals(Complex.class)) {
+				Complex complex = (Complex)entity;
+				//recursively get all parts
+				Set<PhysicalEntity> level1 = complex.getComponent();
+				level1.addAll(complex.getMemberPhysicalEntity());
+				Set<PhysicalEntity> complex_parts = flattenNest(level1, null);
+				//Now decide if, in GO-CAM, it should be a complex or not
+				//If the complex has only 1 protein or only forms of the same protein, then just call it a protein
+				//Otherwise go ahead and make the complex
+				Set<String> prots = new HashSet<String>();
+				String id = null;
+				for(PhysicalEntity component : complex_parts) {
+					if(component.getModelInterface().equals(Protein.class)) {
+						id = getUniprotProteinId((Protein)component);
+						if(id!=null) {
+							prots.add(id);
+						}
+					}
+				}
+				if(prots.size()==1) {
+					//assert it as one protein 
+					OWLClass uniprotein_class = go_cam.df.getOWLClass(IRI.create(GoCAM.uniprot_iri + id)); 
+					go_cam.addSubclassAssertion(uniprotein_class, GoCAM.chebi_protein, null);										
+					go_cam.addLabel(uniprotein_class, id);
+					//until something is imported that understands the uniprot entities, assert that they are proteins
+					go_cam.addTypeAssertion(e, uniprotein_class);
+				}else {
+					//note that complex.getComponent() apparently violates the rules in its documentation which stipulate that it should return
+					//a flat representation of the parts of the complex (e.g. proteins) and not nested complexes (which the reactome biopax does here)
+					Set<String> cnames = new HashSet<String>();
+					for(PhysicalEntity component : complex_parts) {
+						//hook up parts	
+						if(component.getModelInterface().equals(Complex.class)){
+							System.out.println("No nested complexes please");
+							System.exit(0);
+						}else {
+							if(component.getMemberPhysicalEntity().size()>0) {
+								System.out.println("No nested complexes please.. failing on "+e);
+								System.exit(0);
+							}
+							cnames.add(component.getDisplayName());
+							//	IRI comp_uri = IRI.create(component.getUri()+e.hashCode());
+							IRI comp_uri = GoCAM.makeGoCamifiedIRI(component.getUri()+entity.getUri());
+							OWLNamedIndividual component_entity = go_cam.df.getOWLNamedIndividual(comp_uri);
+							if(noctua_version == 1) { //Noctua view can't handle long parts lists so leave them out
+								go_cam.addLiteralAnnotations2Individual(e.getIRI(), GoCAM.rdfs_comment, "has_part "+component.getDisplayName());
+							}else {
+								go_cam.addObjectPropertyAssertion(e, GoCAM.has_part, component_entity, null);
+								defineReactionEntity(go_cam, component, comp_uri);
+							}
+						}
+					}
+					//adds a unique class to describe this complex (no no to modify tbox..)
 					if(noctua_version == 1) { 
 						addComplexAsSimpleClass(go_cam, cnames, e, null);
 					}else {
+						//assert it as a complex
 						go_cam.addTypeAssertion(e, GoCAM.go_complex);
 					}
-				}else { 
-					go_cam.addTypeAssertion(e,  GoCAM.chebi_protein);
-				}
-			}
-		}
-		//Dna (gene)
-		else if(entity.getModelInterface().equals(Dna.class)) {
-			Dna dna = (Dna)entity;
-			EntityReference entity_ref = dna.getEntityReference();	
-			if(entity_ref!=null) {
-				Set<Xref> p_xrefs = entity_ref.getXref();
-				for(Xref xref : p_xrefs) {
-					if(xref.getModelInterface().equals(UnificationXref.class)) {
-						UnificationXref uref = (UnificationXref)xref;	
-						if(uref.getDb().equals("ENSEMBL")) {
-							String id = uref.getId();
-							OWLClass dna_class = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + id)); 
-							go_cam.addSubclassAssertion(dna_class, GoCAM.continuant_class, null);										
-							//name the class with the gene id
-							go_cam.addLabel(dna_class, id);
-							//assert a continuant
-							go_cam.addTypeAssertion(e, dna_class);
-						}
-					}
-				}
-			}
-		}
-		//SmallMolecule
-		else if(entity.getModelInterface().equals(SmallMolecule.class)) {
-			SmallMolecule mlc = (SmallMolecule)entity;
-			EntityReference entity_ref = mlc.getEntityReference();	
-			if(entity_ref!=null) {
-				Set<Xref> p_xrefs = entity_ref.getXref();
-				for(Xref xref : p_xrefs) {
-					if(xref.getModelInterface().equals(UnificationXref.class)) {
-						UnificationXref uref = (UnificationXref)xref;	
-						if(uref.getDb().equals("ChEBI")) {
-							String id = uref.getId().replace(":", "_");
-							OWLClass mlc_class = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + id)); 
-							go_cam.addSubclassAssertion(mlc_class, GoCAM.continuant_class, null);										
-							//name the class with the chebi id
-							go_cam.addLabel(mlc_class, id);
-							//assert its a chemical instance
-							go_cam.addTypeAssertion(e, mlc_class);
-						}
-					}
-				}
-			}
-		}
-		//Complex 
-		else if(entity.getModelInterface().equals(Complex.class)) {
-			Complex complex = (Complex)entity;
-			//recursively get all parts
-			Set<PhysicalEntity> level1 = complex.getComponent();
-			level1.addAll(complex.getMemberPhysicalEntity());
-			Set<PhysicalEntity> complex_parts = flattenNest(level1, null);
-			//Now decide if, in GO-CAM, it should be a complex or not
-			//If the complex has only 1 protein or only forms of the same protein, then just call it a protein
-			//Otherwise go ahead and make the complex
-			Set<String> prots = new HashSet<String>();
-			String id = null;
-			for(PhysicalEntity component : complex_parts) {
-				if(component.getModelInterface().equals(Protein.class)) {
-					id = getUniprotProteinId((Protein)component);
-					if(id!=null) {
-						prots.add(id);
-					}
-				}
-			}
-			if(prots.size()==1) {
-				//assert it as one protein 
-				OWLClass uniprotein_class = go_cam.df.getOWLClass(IRI.create(GoCAM.uniprot_iri + id)); 
-				go_cam.addSubclassAssertion(uniprotein_class, GoCAM.chebi_protein, null);										
-				go_cam.addLabel(uniprotein_class, id);
-				//until something is imported that understands the uniprot entities, assert that they are proteins
-				go_cam.addTypeAssertion(e, uniprotein_class);
-			}else {
-				//note that complex.getComponent() apparently violates the rules in its documentation which stipulate that it should return
-				//a flat representation of the parts of the complex (e.g. proteins) and not nested complexes (which the reactome biopax does here)
-				Set<String> cnames = new HashSet<String>();
-				for(PhysicalEntity component : complex_parts) {
-					//hook up parts	
-					if(component.getModelInterface().equals(Complex.class)){
-						System.out.println("No nested complexes please");
-						System.exit(0);
-					}else {
-						if(component.getMemberPhysicalEntity().size()>0) {
-							System.out.println("No nested complexes please.. failing on "+e);
-							System.exit(0);
-						}
-						cnames.add(component.getDisplayName());
-						//	IRI comp_uri = IRI.create(component.getUri()+e.hashCode());
-						IRI comp_uri = GoCAM.makeGoCamifiedIRI(component.getUri()+entity.getUri());
-						OWLNamedIndividual component_entity = go_cam.df.getOWLNamedIndividual(comp_uri);
-						if(noctua_version == 1) { //Noctua view can't handle long parts lists so leave them out
-							go_cam.addLiteralAnnotations2Individual(e.getIRI(), GoCAM.rdfs_comment, "has_part "+component.getDisplayName());
-						}else {
-							go_cam.addObjectPropertyAssertion(e, GoCAM.has_part, component_entity, null);
-							defineReactionEntity(go_cam, component, comp_uri);
-						}
-					}
-				}
-				//adds a unique class to describe this complex (no no to modify tbox..)
-				if(noctua_version == 1) { 
-					addComplexAsSimpleClass(go_cam, cnames, e, null);
-				}else {
-					//assert it as a complex
-					go_cam.addTypeAssertion(e, GoCAM.go_complex);
-				}
 
+				}
 			}
-		}
+			//make sure all physical things are minimally typed with some entity that is a continuant
+			Collection<OWLClassExpression> ptypes = EntitySearcher.getTypes(e, go_cam.go_cam_ont);		
+			if(ptypes.size()<1&&noctua_version==1) {
+				//fake it
+				IRI physicaliri = GoCAM.makeGoCamifiedIRI(entity.getUri()+"class");
+				OWLClass physical_class = go_cam.df.getOWLClass(physicaliri);
+				go_cam.addSubclassAssertion(physical_class, GoCAM.continuant_class, null);
+				go_cam.addLabel(physical_class, entity.getDisplayName());
+				go_cam.addTypeAssertion(e, physical_class);
+			}
+			
+			
+		}//end physical thing
 		//Interaction subsumes Conversion, GeneticInteraction, MolecularInteraction, TemplateReaction
 		//Conversion subsumes BiochemicalReaction, TransportWithBiochemicalReaction, ComplexAssembly, Degradation, GeneticInteraction, MolecularInteraction, TemplateReaction
 		//though the great majority are BiochemicalReaction
@@ -749,17 +765,11 @@ public class BioPaxtoGO {
 			//go_cam.addTypeAssertion(e, reaction_class);	
 			boolean mf_set = false;
 			//Create entities for reaction components
-			Set<Entity> participants = ((Interaction) entity).getParticipant();
-			for(Entity participant : participants) {
-				//figure out its nature and capture that
-				//			if(noctua_version == 1) {
-				//				IRI participant_iri = GoCAM.makeGoCamifiedIRI(participant.getUri()); //merge them with members of other reactions to improve display..						
-				//				defineReactionEntity(go_cam, participant, participant_iri);	
-				//			}else {
-				IRI participant_iri = GoCAM.makeGoCamifiedIRI(participant.getUri()+entity.getUri()); //keep the entities in this reaction uniquely identified.. (don't merge them with members of other reactions even if same class of thing)								
-				defineReactionEntity(go_cam, participant, participant_iri);		
-				//			}
-			}
+//			Set<Entity> participants = ((Interaction) entity).getParticipant();
+//			for(Entity participant : participants) {
+//				IRI participant_iri = GoCAM.makeGoCamifiedIRI(participant.getUri()+entity.getUri()); //keep the entities in this reaction uniquely identified.. (don't merge them with members of other reactions even if same class of thing)								
+//				defineReactionEntity(go_cam, participant, participant_iri);		
+//			}
 			//link to participants in reaction
 			//biopax#left -> obo:input , biopax#right -> obo:output
 			if(entity instanceof Conversion) {
@@ -788,7 +798,7 @@ public class BioPaxtoGO {
 				if(inputs!=null) {
 					for(PhysicalEntity input : inputs) {
 						IRI i_iri = null;
-						i_iri = GoCAM.makeGoCamifiedIRI(input.getUri()+entity.getUri());
+						i_iri = GoCAM.makeGoCamifiedIRI(input.getUri()+entity.getUri()+"i");
 						OWLNamedIndividual input_entity = go_cam.df.getOWLNamedIndividual(i_iri);
 						defineReactionEntity(go_cam, input, i_iri);
 						go_cam.addObjectPropertyAssertion(e, GoCAM.has_input, input_entity,go_cam.getDefaultAnnotations());
@@ -796,7 +806,7 @@ public class BioPaxtoGO {
 				if(outputs!=null) {
 					for(PhysicalEntity output : outputs) {
 						IRI o_iri = null;
-						o_iri = GoCAM.makeGoCamifiedIRI(output.getUri()+entity.getUri());
+						o_iri = GoCAM.makeGoCamifiedIRI(output.getUri()+entity.getUri()+"o");
 						OWLNamedIndividual output_entity = go_cam.df.getOWLNamedIndividual(o_iri);
 						defineReactionEntity(go_cam, output, o_iri);
 						go_cam.addObjectPropertyAssertion(e, GoCAM.has_output, output_entity, go_cam.getDefaultAnnotations());
@@ -1368,7 +1378,7 @@ public class BioPaxtoGO {
 			go_cam.addLiteralAnnotations2Individual(((OWLNamedIndividual) island).getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(y));
 			x+=x_spacer;
 		}		
-		
+
 		LinkedHashSet<OWLIndividual> ordered_chain = causalSort(chain_members, null, null, go_cam);
 		//add any stragglers.. give up on multiple loops for now. 
 		if(chain_members.size()>ordered_chain.size()) {
@@ -1393,7 +1403,7 @@ public class BioPaxtoGO {
 			go_cam.addLiteralAnnotations2Individual(node_iri, GoCAM.y_prop, go_cam.df.getOWLLiteral(y));
 		}
 	}
-	
+
 	private LinkedHashSet<OWLIndividual> causalSort(Collection<OWLIndividual> chain_members, LinkedHashSet<OWLIndividual> ordered_chain, OWLIndividual node, GoCAM go_cam){
 		if(ordered_chain==null&&node==null) {
 			//initialize

@@ -293,12 +293,8 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL update from jar \n"+e);
 		}
-		//before
-		System.out.println("Before has_part zap 1 "+nTriples());
 		UpdateAction.parseExecute(update1, jena) ;
-		System.out.println("Before has_part zap 2 "+nTriples());
 		UpdateAction.parseExecute(update2, jena) ;
-		System.out.println("After has_part zap12 "+nTriples());
 		return;
 	}
 	
