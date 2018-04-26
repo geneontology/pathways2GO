@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -41,6 +42,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.search.EntitySearcher;
+import org.semanticweb.owlapi.util.OWLEntityRemover;
 import org.semanticweb.owlapi.util.OWLOntologyWalker;
 import org.semanticweb.owlapi.util.OWLOntologyWalkerVisitor;
 import org.semanticweb.owlapi.util.OWLOntologyWalkerVisitorEx;
@@ -235,6 +237,41 @@ public class App {
 		//this could be inferred based on definition above, but since we know right now no need to run reasoner
 		go_cam.addTypeAssertion(complex_i, complex_class);
 		return complex_i;
+	}
+	
+	private OWLOntology stripLocations(Collection<OWLIndividual> thing_stream, OWLOntology go_cam_ont, OWLDataFactory df){
+		//things are the physical entities
+		Iterator<OWLIndividual> things = thing_stream.iterator();
+		while(things.hasNext()){
+			OWLIndividual thing = things.next();
+			//removes the reaction has_input/etc. thing relations
+			//Stream<OWLAxiom> location_axioms = EntitySearcher.getReferencingAxioms((OWLEntity) thing, go_cam_ont);
+			//go_cam_ont.removeAxioms(location_axioms);
+			Iterator<OWLIndividual> places = EntitySearcher.getObjectPropertyValues(thing, GoCAM.located_in, go_cam_ont).iterator(); 
+			while(places.hasNext()) {
+				OWLIndividual place = places.next();
+				//				OWLObjectPropertyAssertionAxiom location_axiom = df.getOWLObjectPropertyAssertionAxiom(located_in, thing, place);
+				//				go_cam_ont.remove(location_axiom);
+				OWLEntityRemover remover = new OWLEntityRemover(Collections.singleton(go_cam_ont));
+				remover.visit(place.asOWLNamedIndividual());
+				// or ind.accept(remover);
+				go_cam_ont.getOWLOntologyManager().applyChanges(remover.getChanges());
+			}
+			//strip part locations.. 
+			Iterator<OWLIndividual> parts = EntitySearcher.getObjectPropertyValues(thing, GoCAM.has_part, go_cam_ont).iterator();
+			while(parts.hasNext()) {
+				OWLIndividual part = parts.next();
+				Iterator<OWLIndividual> part_locations = EntitySearcher.getObjectPropertyValues(part, GoCAM.located_in, go_cam_ont).iterator();
+				while(part_locations.hasNext()) {
+					OWLIndividual part_location = part_locations.next();
+					OWLEntityRemover remover = new OWLEntityRemover(Collections.singleton(go_cam_ont));
+					remover.visit(part_location.asOWLNamedIndividual());
+					go_cam_ont.getOWLOntologyManager().applyChanges(remover.getChanges());
+				}
+			}
+
+		}
+		return go_cam_ont;
 	}
 	
 	static void writeOntology(String outfile, OWLOntology ont) throws OWLOntologyStorageException {
