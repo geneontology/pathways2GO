@@ -161,7 +161,7 @@ public class NoctuaLayout {
 		if(mapHintPresent((OWLNamedIndividual) node, go_cam)) {		
 			return y;
 		}
-		System.out.println("laying out "+go_cam.getaLabel((OWLEntity) node)+" "+node.toString()+x+" "+y+" "+x_spacer+" "+y_spacer);
+	//	System.out.println("laying out "+go_cam.getaLabel((OWLEntity) node)+" "+node.toString()+x+" "+y+" "+x_spacer+" "+y_spacer);
 		//layout the node
 		go_cam.addLiteralAnnotations2Individual(((OWLNamedIndividual) node).getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(x));
 		go_cam.addLiteralAnnotations2Individual(((OWLNamedIndividual) node).getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(y));

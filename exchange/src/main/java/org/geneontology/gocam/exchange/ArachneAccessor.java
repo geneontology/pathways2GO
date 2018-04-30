@@ -6,7 +6,9 @@ package org.geneontology.gocam.exchange;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,6 +43,7 @@ public class ArachneAccessor {
 
 	OWLOntology tbox_ontology;
 	RuleEngine ruleEngine;
+	Set<org.apache.jena.reasoner.rulesys.Rule> jena_rules;
 
 	/**
 	 * Arachne needs a tbox (defined classes from ontology) to get started.
@@ -59,18 +62,32 @@ public class ArachneAccessor {
 	 */
 	RuleEngine initializeRuleEngine(OWLOntology tbox) {
 		Set<Rule> rules = new HashSet<Rule>();
-		try {
-			App.writeOntology("/Users/bgood/Desktop/test/test123.ttl", tbox);
-		} catch (OWLOntologyStorageException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		rules.addAll(JavaConverters.setAsJavaSetConverter(OWLtoRules.translate(tbox, Imports.INCLUDED, true, true, true, true)).asJava());
 		//indirect rules add statements like this ?pr <http://arachne.geneontology.org/indirect_type> ?pr_type
 		//when an inferred type is added to link an instance to a superclass of one of its direct types
 		rules.addAll(JavaConverters.setAsJavaSetConverter(OWLtoRules.indirectRules(tbox)).asJava());
+		jena_rules = rules;
 		return new RuleEngine(Bridge.rulesFromJena(JavaConverters.asScalaSetConverter(rules).asScala()), true);
 	}
+	
+	/**
+	 * Return a RuleEngine encalsulating both whatever rules exist now and whatever rules exist in the provided ontology
+	 * @param tbox
+	 * @return
+	 */
+	RuleEngine makeExpandedRuleSet(OWLOntology newtbox) {
+		Set<Rule> rules = new HashSet<Rule>();
+		rules.addAll(JavaConverters.setAsJavaSetConverter(OWLtoRules.translate(newtbox, Imports.INCLUDED, true, true, true, true)).asJava());
+		//indirect rules add statements like this ?pr <http://arachne.geneontology.org/indirect_type> ?pr_type
+		//when an inferred type is added to link an instance to a superclass of one of its direct types
+		rules.addAll(JavaConverters.setAsJavaSetConverter(OWLtoRules.indirectRules(newtbox)).asJava());
+		//add to existing rule set
+		rules.addAll(jena_rules);
+		//make a new rule engine
+		RuleEngine rulen= new RuleEngine(Bridge.rulesFromJena(JavaConverters.asScalaSetConverter(rules).asScala()), true);
+		return rulen;
+	}
+	
 
 	/**
 	 * Return an Arachne working memory model including the provided abox, additional inferred edges, and optionally the

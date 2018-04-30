@@ -89,6 +89,11 @@ public class BioPaxtoGO {
 	final String mapping_report_file = "report/mapping.txt";
 	int noctua_version = 1;
 	String blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";
+	Set<String> nr_report_rows; //TODO do away with this and make a real report..
+	
+	public BioPaxtoGO(){
+		nr_report_rows = new HashSet<String>();
+	}
 	/**
 	 * @param args
 	 * @throws OWLOntologyCreationException 
@@ -105,26 +110,28 @@ public class BioPaxtoGO {
 		//		bp2g.convertReactomeFolder(input_folder, output_folder);
 
 		String input_biopax = 
-		//		"/Users/bgood/Desktop/test/abc_transporter.owl";
+	//			"/Users/bgood/Desktop/test/snRNP_Assembly.owl";
+	//			"/Users/bgood/Desktop/test/abc_transporter.owl";
 		//	"/Users/bgood/Desktop/test/transport_small_mlc.owl";
 		//			"/Users/bgood/Desktop/test/abacavir_metabolism.owl";
 		//"/Users/bgood/Desktop/test/gap_junction.owl"; 
 		//		"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
 		//		"/Users/bgood/Desktop/test/Wnt_example.owl";
-		//"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
+		"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
 		//"src/main/resources/reactome/Homo_sapiens.owl";
-		"/Users/bgood/Downloads/biopax/homosapiens.owl";
+		//"/Users/bgood/Downloads/biopax/homosapiens.owl";
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = 
-		//		"/Users/bgood/Desktop/test/tmp/converted-";
+	//	"/Users/bgood/Desktop/test/snRNP_Assembly/converted-";
+				"/Users/bgood/Desktop/test/tmp/converted-";
 		//				"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
 		//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
 		//"/Users/bgood/Desktop/test/Wnt_output/converted-";
 		//"/Users/bgood/Desktop/test/gap_junction_output/converted-";
 		//		"/Users/bgood/Desktop/test/bmp_output/converted-";
 		//"/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-";
-		"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
+		//"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";
@@ -207,11 +214,14 @@ public class BioPaxtoGO {
 		clean.write("");
 		clean.close();
 		Blazer blaze = go_cam.initializeBlazeGraph(journal);
-		QRunner tbox_qrunner = go_cam.initializeQRunnerForTboxInference();
+		String tbox_file = 
+		"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus.owl";
+		//"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
+		QRunner tbox_qrunner = go_cam.initializeQRunnerForTboxInference(tbox_file);
 		//for report
 		//initialize clean file
 		FileWriter report = new FileWriter(mapping_report_file, false);
-		report.write("Reactome label\tReactome id\tGO id\tgo_node_type\treactome_node_type\n");
+		report.write("reactome_node_type\tReactome label\tReactome id\tGO MF\tGO_BP\tcontroller_type\t\n");
 		report.close();
 		//list pathways
 		int total_pathways = model.getObjects(Pathway.class).size();
@@ -244,8 +254,6 @@ public class BioPaxtoGO {
 				iri = "http://model.geneontology.org/"+base_ont_title.hashCode(); //using a URL encoded string here confused the UI code...
 				ont_iri = IRI.create(iri);	
 				go_cam = new GoCAM(ont_iri, base_ont_title, contributor_link, null, base_provider, add_lego_import);
-				//re-using sparql runner, no need to re-load the tbox each time 
-				go_cam.qrunner = tbox_qrunner; 
 				//journal is by default in 'append' mode - keeping the same journal reference add each pathway to same journal
 				go_cam.path2bgjournal = journal;
 				go_cam.blazegraphdb = blaze;
@@ -272,14 +280,15 @@ public class BioPaxtoGO {
 				n = n.replaceAll("/", "-");	
 				n = n.replaceAll(" ", "_");
 				String outfilename = converted+n+".ttl";	
-				wrapAndWrite(outfilename, go_cam, save_inferences, save2blazegraph);
+				wrapAndWrite(outfilename, go_cam, tbox_qrunner, save_inferences, save2blazegraph);
 				//reset for next pathway.
 				go_cam.ontman.removeOntology(go_cam.go_cam_ont);
+				go_cam.qrunner = null;
 			} 
 		}	
 		//export all
 		if(!split_out_by_pathway) {
-			wrapAndWrite(converted+".ttl", go_cam, save_inferences, save2blazegraph);		
+			wrapAndWrite(converted+".ttl", go_cam, tbox_qrunner, save_inferences, save2blazegraph);		
 		}
 
 	}
@@ -297,24 +306,22 @@ public class BioPaxtoGO {
 	 * @throws RDFHandlerException
 	 * @throws IOException
 	 */
-	private void wrapAndWrite(String outfilename, GoCAM go_cam, boolean save_inferences, boolean save2blazegraph) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {		
-		//make sure sparql kb in sync with ontology
+	private void wrapAndWrite(String outfilename, GoCAM go_cam, QRunner tbox_qrunner, boolean save_inferences, boolean save2blazegraph) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {		
+		//set up a sparqlable kb in sync with ontology
+		System.out.println("setting up rdf model for sparql rules");
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
 		//infer new edges based on sparql matching
 		System.out.println("Before sparql inference -  triples: "+go_cam.qrunner.nTriples());
 		go_cam.applySparqlRules();
-		//sparql rules make additions to go_cam_ont
-		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
 		System.out.println("After sparql inference -  triples: "+go_cam.qrunner.nTriples());
-		boolean is_logical = go_cam.validateGoCAM();
-		if(save_inferences) {
-			System.out.println("preparing model starting with (unreasoned) triples: "+go_cam.qrunner.nTriples());
-			//apply Arachne to tbox rules and add inferences to qrunner.jena rdf model
-			go_cam.addInferredEdges();
-			System.out.println("total triples after OWL inference: "+go_cam.qrunner.nTriples());
-		}		
+		//sparql rules make additions to go_cam_ont, add them to the rdf model 
+		//set up to apply OWL inference to test for consistency and add classifications
+		//go_cam.go_cam_ont is ready and equals the Abox..
+		//don't want to reload tbox each time..
+		go_cam.applyArachneInference(tbox_qrunner);
+		boolean is_logical = go_cam.validateGoCAM();	
 		//synchronize jena model <- with owl-api model	 
-		//go_cam_ont should have everything we want at this point, including any imports
+		//go_cam_ont should have everything we want at this point
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
 		if(noctua_version == 1) {
 			//adds coordinates to go_cam_ont model 
@@ -364,7 +371,7 @@ public class BioPaxtoGO {
 		Set<String> pubids = getPubmedIds(pathway);
 		//annotations and go
 		Set<Xref> xrefs = pathway.getXref();	
-		boolean go_bp_set = false;
+		String go_bp = "";
 		for(Xref xref : xrefs) {
 			//dig out any xreferenced GO processes and assign them as types
 			if(xref.getModelInterface().equals(RelationshipXref.class)) {
@@ -380,16 +387,16 @@ public class BioPaxtoGO {
 					//addRefBackedObjectPropertyAssertion
 					go_cam.addSubclassAssertion(xref_go_parent, GoCAM.bp_class, null);
 					go_cam.addTypeAssertion(pathway_e, xref_go_parent);
-					go_bp_set = true;
 					//record mappings
-					report.write(pathway.getDisplayName()+"\t"+reactome_id+"\t"+goid+"\tBP\tPathway\n");
+					go_bp = go_bp+" "+goid;
 				}
 			}
 		}
 
-		//record lack of mappings
-		if(!go_bp_set) {
-			report.write(pathway.getDisplayName()+"\t"+reactome_id+"\tnone\tBP\tPathway\n");
+		//write mappings
+		String row = "Pathway\t"+pathway.getDisplayName()+"\t"+reactome_id+"\t\t"+go_bp+"\t\n";
+		if(nr_report_rows.add(row)) {
+			report.write(row);
 		}
 		report.close();
 
@@ -766,7 +773,9 @@ public class BioPaxtoGO {
 			//				}
 			//			}
 	
-			boolean mf_set = false;
+			String go_mf = "";
+			String go_bp = "";
+			String control_type = "";
 			//link to participants in reaction
 			if(entity instanceof Conversion) {
 				ConversionDirectionType direction = ((Conversion) entity).getConversionDirection();
@@ -812,10 +821,13 @@ public class BioPaxtoGO {
 				//find controllers 
 				Set<Control> controllers = ((Process) entity).getControlledOf();
 				for(Control controller : controllers) {
-					ControlType ctype = controller.getControlType();				
+					ControlType ctype = controller.getControlType();	
 					boolean is_catalysis = false;
 					if(controller.getModelInterface().equals(Catalysis.class)) {
 						is_catalysis = true;
+						control_type = control_type+" Catalysis";
+					}else {
+						control_type = control_type+" Non-catalytic-"+ctype.toString();
 					}
 					//controller 'entities' from biopax may map onto functions from go_cam
 					//check for reactome mappings
@@ -830,15 +842,10 @@ public class BioPaxtoGO {
 								OWLClass xref_go_func = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + goid));
 								//add the go function class as a type for the reaction instance being controlled here
 								go_cam.addTypeAssertion(e, xref_go_func);
-								mf_set = true;
-								//record mappings
-								report.write(entity.getDisplayName()+"\t"+reactome_id+"\t"+goid+"\tMF\tcontroller\tCatalysis="+is_catalysis+"\n");
+								go_mf = go_mf+" "+goid;
 							}
 						}
 					}	
-					if(!mf_set) {
-						report.write(entity.getDisplayName()+"\t"+reactome_id+"\tnone\tMF\tcontroller\tCatalysis="+is_catalysis+"\n");
-					}
 					
 					Set<Controller> controller_entities = controller.getController();
 					for(Controller controller_entity : controller_entities) {
@@ -871,7 +878,7 @@ public class BioPaxtoGO {
 
 						}else {
 							//otherwise look at text 
-							//					//define how the molecular function (process) relates to the reaction (process)
+							//define how the molecular function (process) relates to the reaction (process)
 							if(ctype.toString().startsWith("INHIBITION")){
 								go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.involved_in_negative_regulation_of, e, controllerpubrefs, GoCAM.eco_imported_auto, "PMID", null);	
 							}else if(ctype.toString().startsWith("ACTIVATION")){
@@ -883,7 +890,6 @@ public class BioPaxtoGO {
 						}
 					}
 				}
-				boolean reaction_mapped = false;
 				for(Xref xref : entity.getXref()) {
 					if(xref.getModelInterface().equals(RelationshipXref.class)) {
 						RelationshipXref ref = (RelationshipXref)xref;	    			
@@ -893,15 +899,16 @@ public class BioPaxtoGO {
 							OWLClass xref_go_func = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + goid));
 							//add the go class as a type for the reaction instance 
 							go_cam.addTypeAssertion(e, xref_go_func);
-							reaction_mapped = true;
-							//record mappings
-							report.write(entity.getDisplayName()+"\t"+reactome_id+"\t"+goid+"\tBP?\treaction\n");
+							go_bp = go_bp+" "+goid;
 						}
 					}
 				}	
-				if(!reaction_mapped) {
-					report.write(entity.getDisplayName()+"\t"+reactome_id+"\tnone\tBP?\treaction\n");
-				}
+				//capture mappings for this reaction
+				String row = "Reaction\t"+entity.getDisplayName()+"\t"+reactome_id+"\t"+go_mf+"\t"+go_bp+"\t"+control_type+"\n";
+				if(nr_report_rows.add(row)) {
+					report.write(row);
+				}		
+				
 				//want to stay in go tbox as much as possible - even if defaulting to root nodes.  
 				//always add it for now
 				go_cam.addTypeAssertion(e, GoCAM.molecular_function);	

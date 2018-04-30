@@ -15,6 +15,8 @@ import java.util.Set;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.RDFS;
+import org.geneontology.rules.engine.Explanation;
+import org.geneontology.rules.engine.Triple;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
@@ -58,12 +60,13 @@ public class App {
 	//	String maximal_lego = "src/main/resources/org/geneontology/gocam/exchange/go-lego-full.owl";	
 
 	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
-		
-		String abox_file = "src/main/resources/org/geneontology/gocam/exchange/57c82fad00000639.ttl";
-		String tbox_file = "/Users/bgood/Desktop/test/tbox_tmp.ttl";
-				//"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
+
+		String abox_file = "/Users/bgood/Desktop/test/snRNP_Assembly/converted-snRNP_Assembly.ttl";
+		String tbox_file = 
+		//		"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus.owl";
+		"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
 		App.testInference(abox_file, tbox_file);
-		
+
 	}
 
 
@@ -86,7 +89,7 @@ public class App {
 		System.out.println(ont.getAxiomCount());
 		Set<OWLAnnotation> annos = updater.getAnnotations();
 		//add new ones now..
-//		OWLAnnotation title_anno = df.getOWLAnnotation(title_prop, df.getOWLLiteral(gocam_title));
+		//		OWLAnnotation title_anno = df.getOWLAnnotation(title_prop, df.getOWLLiteral(gocam_title));
 		OWLAnnotationProperty comment = df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_COMMENT.getIRI());
 		OWLAnnotation comment1 = df.getOWLAnnotation(comment, df.getOWLLiteral("Yay I did it"));	
 		annos.add(comment1);
@@ -132,25 +135,14 @@ public class App {
 		//prepare tbox
 		//String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
 		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
+		System.out.println("Loading tbox ontology ");
 		OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
-		boolean add_inferences = false;
+		System.out.println("Building arachne for inference ");
+
+		boolean add_inferences = true;
 		boolean add_property_definitions = true;
 		boolean add_class_definitions = true;
-		QRunner no_inf = testInference(abox, tbox, add_inferences, add_property_definitions, add_class_definitions);
-		add_inferences = true;
 		QRunner inf = testInference(abox, tbox, add_inferences, add_property_definitions, add_class_definitions);
-		StmtIterator base = no_inf.jena.listStatements();
-		int missing = 0;
-		while(base.hasNext()) {
-			Statement s = base.next();
-			if(!inf.jena.contains(s)) {
-				missing++;
-				if(missing < 10) {
-					System.out.println("Missing from reasoned model:\n\t"+s);
-				}
-			}
-		}
-		System.out.println("Missing from reasoned model:"+missing);
 	}
 
 	//TODO Maybe someday unit tests..  
@@ -177,7 +169,23 @@ public class App {
 		if(add_inferences) {
 			System.out.println("inferred "+(q.wm.facts().size()-q.wm.asserted().size()));
 			System.out.println("All "+q.wm.facts().size());
-			//q.printFactsExplanations();
+			scala.collection.Iterator<Triple> triples = q.wm.facts().toList().iterator();
+			while(triples.hasNext()) {				
+				Triple triple = triples.next();
+				if(q.wm.asserted().contains(triple)) {
+					continue;
+				}else { //<http://arachne.geneontology.org/indirect_type>
+					if(triple.p().toString().equals("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>")) {
+						System.out.println("inferred "+triple.s()+" "+triple.p()+" "+triple.o());
+						scala.collection.immutable.Set<Explanation> explanations = q.wm.explain(triple);
+						scala.collection.Iterator<Explanation> e = explanations.iterator();
+						while(e.hasNext()) {
+							Explanation exp = e.next();
+							System.out.println(exp.toString());
+						}
+					}
+				}
+			}
 		}
 
 		//57c82fad00000639.ttl + ro-merged.owl no inference = 6630 triples
@@ -238,7 +246,7 @@ public class App {
 		go_cam.addTypeAssertion(complex_i, complex_class);
 		return complex_i;
 	}
-	
+
 	private OWLOntology stripLocations(Collection<OWLIndividual> thing_stream, OWLOntology go_cam_ont, OWLDataFactory df){
 		//things are the physical entities
 		Iterator<OWLIndividual> things = thing_stream.iterator();
@@ -273,10 +281,10 @@ public class App {
 		}
 		return go_cam_ont;
 	}
-	
+
 	static void writeOntology(String outfile, OWLOntology ont) throws OWLOntologyStorageException {
 		FileDocumentTarget outf = new FileDocumentTarget(new File(outfile));
-				//ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());	
+		//ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());	
 		ont.getOWLOntologyManager().setOntologyFormat(ont, new TurtleDocumentFormat());	
 		ont.getOWLOntologyManager().saveOntology(ont,outf);
 	}

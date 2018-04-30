@@ -76,6 +76,15 @@ public class QRunner {
 		jena = makeJenaModel(abox, null);
 	}
 
+//	public void updateAboxAndApplyRules(OWLOntology abox, boolean add_property_definitions, boolean add_class_definitions) {
+//		//this is needed to get the little type and subclass assignments made in go_cams to stitch things together
+//		arachne.makeExpandedRuleSet(abox);
+//		//now apply the rules to generate inferences
+//		wm = arachne.createInferredModel(abox, add_property_definitions, add_class_definitions);	
+//		//move triples to jena for query
+//		jena = makeJenaModel(wm);
+//	}
+	
 	Model makeJenaModel(WorkingMemory wm) {
 		Model model = ModelFactory.createDefaultModel();
 		model.add(JavaConverters.setAsJavaSetConverter(wm.facts()).asJava().stream()

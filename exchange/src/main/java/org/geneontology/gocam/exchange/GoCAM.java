@@ -13,11 +13,18 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.apache.jena.rdf.model.Statement;
 import org.biopax.paxtools.model.level3.PublicationXref;
 import org.biopax.paxtools.model.level3.Xref;
 import org.geneontology.gocam.exchange.QRunner.InferredEnabler;
 import org.geneontology.gocam.exchange.QRunner.InferredRegulator;
+import org.geneontology.jena.SesameJena;
+import org.geneontology.rules.engine.RuleEngine;
+import org.geneontology.rules.engine.Triple;
+import org.geneontology.rules.engine.WorkingMemory;
+import org.geneontology.rules.util.Bridge;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
@@ -58,6 +65,8 @@ import org.semanticweb.owlapi.search.EntitySearcher;
 import org.semanticweb.owlapi.util.OWLEntityRemover;
 import org.semanticweb.owlapi.util.OWLOntologyWalker;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
+
+import scala.collection.JavaConverters;
 
 /**
  * @author bgood
@@ -513,12 +522,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 * Sets up the inference rules from provided TBox
 	 * @throws OWLOntologyCreationException
 	 */
-	QRunner initializeQRunnerForTboxInference() throws OWLOntologyCreationException {
+	QRunner initializeQRunnerForTboxInference(String tbox_file) throws OWLOntologyCreationException {
 		System.out.println("initializeQRunnerForTboxInference()");
-		//TODO either grab this from a PURL so its always up to date, or keep the referenced imported file in sync.  
-		String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
-		//<http://purl.obolibrary.org/obo/go/extensions/go-lego.owl>
-		//String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/go-lego-noneo.owl";
 		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
 		OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
 		boolean add_inferences = true;
@@ -535,15 +540,15 @@ final long counterValue = instanceCounter.getAndIncrement();
 		return qrunner;
 	}
 
-	void addInferredEdges() throws OWLOntologyCreationException {
-		if(qrunner==null||qrunner.arachne==null) {
-			initializeQRunnerForTboxInference();
-		}
-		//System.out.println("Applying tbox rules to expand the gocam graph");
-		qrunner.wm = qrunner.arachne.createInferredModel(this.go_cam_ont, false, false);			
-		//System.out.println("Making Jena model from inferred graph for query");
-		qrunner.jena = qrunner.makeJenaModel(qrunner.wm);
-	}
+//	void addInferredEdges() throws OWLOntologyCreationException {
+//		if(qrunner==null||qrunner.arachne==null) {
+//			initializeQRunnerForTboxInference();
+//		}
+//		//System.out.println("Applying tbox rules to expand the gocam graph");
+//		qrunner.wm = qrunner.arachne.createInferredModel(this.go_cam_ont, false, false);			
+//		//System.out.println("Making Jena model from inferred graph for query");
+//		qrunner.jena = qrunner.makeJenaModel(qrunner.wm);
+//	}
 
 	/**
 	 * Use sparql queries to inform modifications to the go-cam owl ontology 
@@ -576,12 +581,13 @@ final long counterValue = instanceCounter.getAndIncrement();
 					+ r2_label+ " has input "+e_label+" .  The original has_input relation to "+e_label+" was replaced. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 			this.addRefBackedObjectPropertyAssertion(r2, enabled_by, e, null, GoCAM.eco_inferred_auto, null, annos);
-			System.out.println(r2+" added enabled by "+e);
+		//	System.out.println(r2+" added enabled by "+e);
 
 		}
 		//if subsequent rules need to compute over the results of previous rules, need to load the owl back into the rdf model
+		System.out.println("done with enabled by, adding to rdf model");
 		qrunner = new QRunner(go_cam_ont); 
-		System.out.println("Added "+ies.size()+" enabled_by triples");
+	//	System.out.println("Added "+ies.size()+" enabled_by triples");
 		Set<InferredRegulator> ir1 = qrunner.getInferredRegulatorsQ1();
 		for(InferredRegulator ir : ir1) {
 			//create ?reaction2 obo:RO_0002333 ?input
@@ -601,11 +607,12 @@ final long counterValue = instanceCounter.getAndIncrement();
 					+r1_label+" has output A and A is involved in "+reg+" "+r2_label+". See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 			this.addRefBackedObjectPropertyAssertion(r1, o, r2, null, GoCAM.eco_inferred_auto, null, annos);
-			System.out.println("reg1 "+r2+" "+o+" "+r1);
+//			System.out.println("reg1 "+r2+" "+o+" "+r1);
 		}
 		//if subsequent rules need to compute over the results of previous rules, need to load the owl back into the rdf model
+		System.out.println("done with directly asserted neg pos regulates, adding to rdf model");
 		qrunner = new QRunner(go_cam_ont); 
-		System.out.println("Added "+ir1.size()+" pos/neg reg triples");
+//		System.out.println("Added "+ir1.size()+" pos/neg reg triples");
 		Set<InferredRegulator> ir2_neg = qrunner.getInferredRegulatorsQ2();
 		for(InferredRegulator ir : ir2_neg) {
 			//create ?reaction2 obo:RO_0002333 ?input
@@ -622,9 +629,11 @@ final long counterValue = instanceCounter.getAndIncrement();
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 			//this.addObjectPropertyAssertion(r1, o, r2, annos);
 			this.addRefBackedObjectPropertyAssertion(r2, o, r1, null, GoCAM.eco_inferred_auto, null, annos);
-			System.out.println("reg2 "+r1+" "+o+" "+r2);
+//			System.out.println("reg2 "+r1+" "+o+" "+r2);
 		}		
-		System.out.println("Added "+ir2_neg.size()+" neg inhibitory binding reg triples");
+		qrunner = new QRunner(go_cam_ont); 
+		System.out.println("done with secondary negative regulates");
+//		System.out.println("Added "+ir2_neg.size()+" neg inhibitory binding reg triples");
 	}
 
 	void writeGoCAM(String outfilename, boolean save2blazegraph) throws OWLOntologyStorageException, OWLOntologyCreationException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
@@ -655,12 +664,13 @@ final long counterValue = instanceCounter.getAndIncrement();
 	boolean validateGoCAM() throws OWLOntologyCreationException {
 		boolean is_valid = false;
 		if(qrunner==null) {
-			this.initializeQRunnerForTboxInference();
+			System.out.println("qrunner must exist to run validation");
+			System.exit(0);
 		}
-		this.addInferredEdges();
-		is_valid = qrunner.isConsistent();
-		System.out.println("Total triples in validated model including tbox: "+qrunner.nTriples());
-		if(!is_valid) {
+		is_valid = qrunner.isConsistent();		
+		if(is_valid) {
+			System.out.println("GO-CAM model is consistent, Total triples in validated model including tbox: "+qrunner.nTriples());
+		}else {
 			System.out.println("GO-CAM model is not logically consistent, please inspect model and try again!\n Entities = OWL:Nothing include:\n");
 			Set<String> u = qrunner.getUnreasonableEntities();
 			for(String s : u) {
@@ -668,6 +678,22 @@ final long counterValue = instanceCounter.getAndIncrement();
 			}
 		}
 		return is_valid;
+	}
+
+	/**
+	 * given an existing QRunner (which contains an ArachneAccessor that should already be loaded with the base tbox)
+	 * add any additional rules from go_cam_ont and run the inference rules  
+	 * @param tbox_qrunner
+	 */
+	public void applyArachneInference(QRunner tbox_qrunner) {
+		//add any tbox in current go_cam model into rule set
+		RuleEngine rulen = tbox_qrunner.arachne.makeExpandedRuleSet(go_cam_ont);
+		Set<Statement> statements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(go_cam_ont)).asJava();		
+		Set<Triple> triples = statements.stream().map(s -> Bridge.tripleFromJena(s.asTriple())).collect(Collectors.toSet());
+		//apply inference
+		WorkingMemory wm = rulen.processTriples(JavaConverters.asScalaSetConverter(triples).asScala());
+		//move to jena for query
+		qrunner.jena = qrunner.makeJenaModel(wm);				
 	}
 
 }
