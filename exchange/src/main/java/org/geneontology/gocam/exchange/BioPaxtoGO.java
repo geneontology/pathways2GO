@@ -14,10 +14,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -89,10 +91,90 @@ public class BioPaxtoGO {
 	final String mapping_report_file = "report/mapping.txt";
 	int noctua_version = 1;
 	String blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";
-	Set<String> nr_report_rows; //TODO do away with this and make a real report..
+	GoMappingReport report;
+	
+	class GoMappingReport {
+		Map<Process,Set<String>> bp2go_mf = new HashMap<Process, Set<String>>();
+		Map<Process,Set<String>> bp2go_bp = new HashMap<Process, Set<String>>();
+		Map<Process,Set<String>> bp2go_controller = new HashMap<Process, Set<String>>();
+		
+		void writeReport() throws IOException{
+			Set<Process> all_processes = new HashSet<Process>(bp2go_mf.keySet());		
+			all_processes.addAll(new HashSet<Process>(bp2go_bp.keySet()));
+			all_processes.addAll(new HashSet<Process>(bp2go_controller.keySet()));
+			float n_reactions = 0; float n_pathways = 0; 
+			float n_reactions_tagged_mf = 0; float n_reactions_tagged_bp = 0; float n_reactions_tagged_both = 0; 
+			float n_pathways_tagged_mf = 0; float n_pathways_tagged_bp = 0; float n_pathways_tagged_both = 0; 
+			FileWriter report = new FileWriter(mapping_report_file, false);
+			report.write("Reactome Node Type\tReactome label\tGO MF\tGO_BP\tboth\tcontroller_type\t\n");
+			for(Process p : all_processes) {
+				Set<String> mf = bp2go_mf.get(p);
+				Set<String> bp = bp2go_bp.get(p);
+				Set<String> controllers = bp2go_controller.get(p);
+				String thingtype = ""; String both = ""; 
+				if(p instanceof Interaction) {
+					thingtype = "Reaction";
+					n_reactions++;
+					if(mf!=null&&mf.size()>0) {
+						n_reactions_tagged_mf++;
+					}
+					if(bp!=null&&bp.size()>0) {
+						n_reactions_tagged_bp++;
+					}
+					if(mf!=null&&mf.size()>0&&bp!=null&&bp.size()>0) {
+						n_reactions_tagged_both++;
+						both = "both";
+					}
+				}else if(p instanceof Pathway) {
+					thingtype = "Pathway";
+					n_pathways++;
+					if(mf!=null&&mf.size()>0) {
+						n_pathways_tagged_mf++;
+					}
+					if(bp!=null&&bp.size()>0) {
+						n_pathways_tagged_bp++;
+					}
+					if(mf!=null&&mf.size()>0&&bp!=null&&bp.size()>0) {
+						n_pathways_tagged_both++;
+						both = "both";
+					}
+				}
+				String mf_out = ""; String bp_out = ""; String control_out = "";
+				if(mf==null||mf.size()==0) {
+					mf_out = "none";
+				}else {
+					for(String m : mf) {
+						mf_out = m+" "+mf_out;
+					}
+				}
+				if(bp==null||bp.size()==0) {
+					bp_out = "none";
+				}else {
+					for(String b : bp) {
+						bp_out = b+" "+bp_out;
+					}
+				}
+				if(controllers==null||controllers.size()==0) {
+					control_out = "none";
+				}else {
+					for(String c : controllers) {
+						control_out = c+" "+control_out;
+					}
+				}
+				String row = thingtype+"\t"+p.getDisplayName()+"\t"+mf_out+"\t"+bp_out+"\t"+both+"\t"+control_out+"\n";
+				report.write(row);
+			}
+			report.close();
+			System.out.println("Pathways:"+n_pathways+" with bp:"+n_pathways_tagged_bp+" with mf:"+n_pathways_tagged_mf+" both:"+n_pathways_tagged_both);
+			System.out.println("% pathways no bp: "+((n_pathways-n_pathways_tagged_bp)/n_pathways));
+			System.out.println("Reactions:"+n_reactions+" with bp:"+n_reactions_tagged_bp+" with mf:"+n_reactions_tagged_mf+" both:"+n_reactions_tagged_both);
+			System.out.println("% reactions no mf: "+((n_reactions-n_reactions_tagged_mf)/n_reactions));
+			System.out.println("% reactions with no bp: "+((n_reactions-n_reactions_tagged_bp)/n_reactions));
+		}
+	}
 	
 	public BioPaxtoGO(){
-		nr_report_rows = new HashSet<String>();
+		report = new GoMappingReport();
 	}
 	/**
 	 * @param args
@@ -117,21 +199,20 @@ public class BioPaxtoGO {
 		//"/Users/bgood/Desktop/test/gap_junction.owl"; 
 		//		"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
 		//		"/Users/bgood/Desktop/test/Wnt_example.owl";
-		"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
-		//"src/main/resources/reactome/Homo_sapiens.owl";
+		//"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
+		"src/main/resources/reactome/Homo_sapiens.owl";
 		//"/Users/bgood/Downloads/biopax/homosapiens.owl";
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = 
 	//	"/Users/bgood/Desktop/test/snRNP_Assembly/converted-";
-				"/Users/bgood/Desktop/test/tmp/converted-";
+		//		"/Users/bgood/Desktop/test/tmp/converted-";
 		//				"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
 		//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
 		//"/Users/bgood/Desktop/test/Wnt_output/converted-";
 		//"/Users/bgood/Desktop/test/gap_junction_output/converted-";
 		//		"/Users/bgood/Desktop/test/bmp_output/converted-";
-		//"/Users/bgood/Documents/GitHub/my-noctua-models/models/reactome-homosapiens-";
-		//"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
+		"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";
@@ -139,6 +220,9 @@ public class BioPaxtoGO {
 		boolean save_inferences = false;
 		boolean expand_subpathways = false;  //this is a bad idea for high level nodes like 'Signaling Pathways'
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, save_inferences, expand_subpathways);
+		System.out.println("Writing report");
+		bp2g.report.writeReport();
+		System.out.println("All done");
 	} 
 
 	private void convertReactomeFile(String input_file, String output, boolean split_by_pathway, boolean save_inferences, boolean expand_subpathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
@@ -215,14 +299,9 @@ public class BioPaxtoGO {
 		clean.close();
 		Blazer blaze = go_cam.initializeBlazeGraph(journal);
 		String tbox_file = 
-		"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus.owl";
-		//"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
+		"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
+	//	"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
 		QRunner tbox_qrunner = go_cam.initializeQRunnerForTboxInference(tbox_file);
-		//for report
-		//initialize clean file
-		FileWriter report = new FileWriter(mapping_report_file, false);
-		report.write("reactome_node_type\tReactome label\tReactome id\tGO MF\tGO_BP\tcontroller_type\t\n");
-		report.close();
 		//list pathways
 		int total_pathways = model.getObjects(Pathway.class).size();
 		
@@ -284,13 +363,14 @@ public class BioPaxtoGO {
 				//reset for next pathway.
 				go_cam.ontman.removeOntology(go_cam.go_cam_ont);
 				go_cam.qrunner = null;
+				System.out.println("reseting for next pathway...");
 			} 
 		}	
 		//export all
 		if(!split_out_by_pathway) {
 			wrapAndWrite(converted+".ttl", go_cam, tbox_qrunner, save_inferences, save2blazegraph);		
 		}
-
+		System.out.println("done with file "+input_biopax);
 	}
 
 	/**
@@ -335,7 +415,9 @@ public class BioPaxtoGO {
 			//remove any locations on physical entities. screws display as entities can't be folded into function nodes
 			go_cam.qrunner.deleteEntityLocations();
 		}
+		System.out.println("writing....");
 		go_cam.writeGoCAM(outfilename, save2blazegraph);
+		System.out.println("done writing...");
 		if(!is_logical) {
 			System.out.println("Illogical go_cam..  stopping");
 			System.exit(0);
@@ -343,7 +425,6 @@ public class BioPaxtoGO {
 	}
 
 	private void definePathwayEntity(GoCAM go_cam, Pathway pathway, String reactome_id, boolean expand_subpathways, boolean add_components) throws IOException {
-		FileWriter report = new FileWriter(mapping_report_file, true);
 		IRI pathway_iri = GoCAM.makeGoCamifiedIRI(pathway.getUri());
 		OWLNamedIndividual pathway_e = go_cam.makeAnnotatedIndividual(pathway_iri);
 		go_cam.addLabel(pathway_e, pathway.getDisplayName());
@@ -371,7 +452,10 @@ public class BioPaxtoGO {
 		Set<String> pubids = getPubmedIds(pathway);
 		//annotations and go
 		Set<Xref> xrefs = pathway.getXref();	
-		String go_bp = "";
+		Set<String> mappedgo = report.bp2go_bp.get(pathway);
+		if(mappedgo==null) {
+			mappedgo = new HashSet<String>();
+		}
 		for(Xref xref : xrefs) {
 			//dig out any xreferenced GO processes and assign them as types
 			if(xref.getModelInterface().equals(RelationshipXref.class)) {
@@ -388,17 +472,12 @@ public class BioPaxtoGO {
 					go_cam.addSubclassAssertion(xref_go_parent, GoCAM.bp_class, null);
 					go_cam.addTypeAssertion(pathway_e, xref_go_parent);
 					//record mappings
-					go_bp = go_bp+" "+goid;
+					mappedgo.add(goid);
 				}
 			}
 		}
-
-		//write mappings
-		String row = "Pathway\t"+pathway.getDisplayName()+"\t"+reactome_id+"\t\t"+go_bp+"\t\n";
-		if(nr_report_rows.add(row)) {
-			report.write(row);
-		}
-		report.close();
+		//store mappings
+		report.bp2go_bp.put(pathway, mappedgo);
 
 		if(add_components) {
 			//define the pieces of the pathway
@@ -501,7 +580,6 @@ public class BioPaxtoGO {
 	 * @throws IOException 
 	 */
 	private void defineReactionEntity(GoCAM go_cam, Entity entity, IRI this_iri) throws IOException {
-		FileWriter report = new FileWriter(mapping_report_file, true);
 		//add entity to ontology, whatever it is
 		OWLNamedIndividual e = null;
 		if(this_iri!=null) {
@@ -773,9 +851,6 @@ public class BioPaxtoGO {
 			//				}
 			//			}
 	
-			String go_mf = "";
-			String go_bp = "";
-			String control_type = "";
 			//link to participants in reaction
 			if(entity instanceof Conversion) {
 				ConversionDirectionType direction = ((Conversion) entity).getConversionDirection();
@@ -817,7 +892,19 @@ public class BioPaxtoGO {
 					}}
 			}
 
-			if(entity instanceof Process) {
+			if(entity instanceof Process) {				
+				Set<String> go_mf = report.bp2go_mf.get(entity);
+				if(go_mf==null) {
+					go_mf = new HashSet<String>();
+				}
+				Set<String> go_bp = report.bp2go_bp.get(entity);
+				if(go_bp==null) {
+					go_bp = new HashSet<String>();
+				}
+				Set<String> control_type = report.bp2go_controller.get(entity);
+				if(control_type==null) {
+					control_type = new HashSet<String>();
+				}
 				//find controllers 
 				Set<Control> controllers = ((Process) entity).getControlledOf();
 				for(Control controller : controllers) {
@@ -825,9 +912,9 @@ public class BioPaxtoGO {
 					boolean is_catalysis = false;
 					if(controller.getModelInterface().equals(Catalysis.class)) {
 						is_catalysis = true;
-						control_type = control_type+" Catalysis";
+						control_type.add("Catalysis");
 					}else {
-						control_type = control_type+" Non-catalytic-"+ctype.toString();
+						control_type.add("Non-catalytic-"+ctype.toString());
 					}
 					//controller 'entities' from biopax may map onto functions from go_cam
 					//check for reactome mappings
@@ -842,7 +929,7 @@ public class BioPaxtoGO {
 								OWLClass xref_go_func = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + goid));
 								//add the go function class as a type for the reaction instance being controlled here
 								go_cam.addTypeAssertion(e, xref_go_func);
-								go_mf = go_mf+" "+goid;
+								go_mf.add(goid);
 							}
 						}
 					}	
@@ -890,24 +977,34 @@ public class BioPaxtoGO {
 						}
 					}
 				}
+				//If a reaction is xreffed directly to the GO it is mapping to a biological process
+				//this indicates the reaction is a part_of that process
+				//TODO this is funky as the reaction is already part of a pathway which itself may be mapped directly to a process
+				//seems that mapping ought to go on pathway, instead of both places
 				for(Xref xref : entity.getXref()) {
 					if(xref.getModelInterface().equals(RelationshipXref.class)) {
 						RelationshipXref ref = (RelationshipXref)xref;	    			
 						//here we add the referenced GO class as a type.  
 						if(ref.getDb().equals("GENE ONTOLOGY")) {
 							String goid = ref.getId().replaceAll(":", "_");
+							go_bp.add(goid);
 							OWLClass xref_go_func = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + goid));
-							//add the go class as a type for the reaction instance 
-							go_cam.addTypeAssertion(e, xref_go_func);
-							go_bp = go_bp+" "+goid;
+							//go_cam.addSubclassAssertion(xref_go_func, GoCAM.bp_class, null);
+							//the go class can not be a type for the reaction instance as we want to classify reactions as functions
+							//and MF disjoint from BP
+							//go_cam.addTypeAssertion(e, xref_go_func);
+							//so make a new individual, hook it to that class, link to it via part of 
+							OWLNamedIndividual bp_i = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(entity.getUri()+goid+"individual"));
+							go_cam.addLiteralAnnotations2Individual(bp_i.getIRI(), GoCAM.rdfs_comment, "Asserted direct link between reaction and biological process, independent of current pathway");
+							go_cam.addTypeAssertion(bp_i, xref_go_func);
+							go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.part_of, bp_i, null, GoCAM.eco_imported_auto, "", null);
 						}
 					}
 				}	
-				//capture mappings for this reaction
-				String row = "Reaction\t"+entity.getDisplayName()+"\t"+reactome_id+"\t"+go_mf+"\t"+go_bp+"\t"+control_type+"\n";
-				if(nr_report_rows.add(row)) {
-					report.write(row);
-				}		
+				//capture mappings for this reaction		
+				report.bp2go_mf.put((Process)entity, go_mf);
+				report.bp2go_bp.put((Process)entity, go_bp);
+				report.bp2go_controller.put((Process)entity, control_type);
 				
 				//want to stay in go tbox as much as possible - even if defaulting to root nodes.  
 				//always add it for now
@@ -944,7 +1041,6 @@ public class BioPaxtoGO {
 				}
 			}
 		}
-		report.close();
 		return;
 	}
 

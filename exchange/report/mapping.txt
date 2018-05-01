@@ -1,71 +1,83 @@
-reactome_node_type	Reactome label	Reactome id	GO MF	GO_BP	controller_type	
-Pathway	Negative regulation of TCF-dependent signaling by DVL-interacting proteins	R-HSA-5368598			
-Reaction	CXXC4 binds DVL to prevent AXIN binding	R-HSA-5368582			
-Reaction	DVL binds CCDC88C	R-HSA-5368588			
-Pathway	Negative regulation of TCF-dependent signaling by WNT ligand antagonists	R-HSA-3772470		 GO_0090090	
-Reaction	sFRP binds WNT3A and inhibits WNT:FZD binding	R-HSA-3772441			
-Reaction	DKK and KRM bind LRP5/6	R-HSA-3769401			
-Reaction	DKK promotes clathrin-dependent internalization of LRP6	R-HSA-5368586			
-Reaction	SOST binds LRP5/6	R-HSA-3769397			
-Reaction	WIF1 binds WNTs	R-HSA-3769370			
-Pathway	Binding of TCF/LEF:CTNNB1 to target gene promoters	R-HSA-4411364			
-Reaction	TCF7L1/TCF7L2/LEF1:CTNNB1 bind the MYC gene	R-HSA-4411367			 Non-catalytic-INHIBITION
-Reaction	TCF7L1/TCF7L2/LEF1:CTNNB1 promote transcription of the MYC gene	R-HSA-4411357			 Non-catalytic-ACTIVATION
-Reaction	TCF/LEF:CTNNB1 bind the AXIN2 gene	R-HSA-4411351			
-Reaction	TCF/LEF:CTNNB1 promote transcription of AXIN2	R-HSA-4411372			 Non-catalytic-ACTIVATION
-Pathway	Deactivation of the beta-catenin transactivating complex	R-HSA-3769402			
-Reaction	YWHAZ binds p-CBY:CTNNB1	R-HSA-3769393			
-Reaction	XPO1 binds the beta-catenin:CBY complex	R-HSA-3769391			
-Reaction	YWHAZ and XPO1 mediate the nuclear export of beta-catenin	R-HSA-3769392			
-Reaction	CTNNBIP1 binds beta-catenin	R-HSA-3772430			
-Reaction	XIAP binds TLE	R-HSA-3322431			
-Reaction	CHD8 binds beta-catenin to negatively regulate WNT-dependent gene expression	R-HSA-5368580			
-Reaction	XIAP monoubiquinates TLE	R-HSA-3322429	 GO_0061630		 Catalysis
-Reaction	Beta-catenin binds SOX proteins	R-HSA-5626938			
-Reaction	XIAP dissociates from ub-TLE	R-HSA-3322434			
-Reaction	TCF:Beta-catenin binds SOX proteins	R-HSA-5665608			
-Reaction	APC promotes disassembly of beta-catenin transactivation complex	R-HSA-3364042			
-Reaction	beta-catenin is replaced by repression complexes at the promoter	R-HSA-3361751			
-Reaction	CBY1 binds beta-catenin	R-HSA-3769383			
-Reaction	AKT phosphorylates CBY1	R-HSA-3769394	 GO_0004674		 Catalysis
-Pathway	Degradation of DVL	R-HSA-4641258		 GO_0090090	
-Reaction	DVL1 is ubiquitinated by HECW1	R-HSA-4641159	 GO_0061630		 Catalysis
-Reaction	Ubiquitinated DVL1 is degraded by the proteasome	R-HSA-4641260	 GO_0004175		 Catalysis
-Reaction	DACT1 binds DVL2	R-HSA-4641147			
-Reaction	DVL is bound by the CUL3:KLHL12:RBX1 ubiquitin ligase complex	R-HSA-1504213			
-Reaction	DVL is ubiquitinated by CUL3:KLHL12:RBX1	R-HSA-1504190	 GO_0061630		 Catalysis
-Reaction	Ubiquitinated DVL is degraded by the proteasome	R-HSA-1504193	 GO_0004175		 Catalysis
-Reaction	DVL1 is bound by the HECT ubiquitin ligase HECW1	R-HSA-4641155			
-Pathway	Degradation of AXIN	R-HSA-4641257		 GO_0090263	
-Reaction	Tankyrase binds AXIN	R-HSA-3640862			
-Reaction	Tankyrase ADP-ribosylates AXIN	R-HSA-3640858	 GO_0003950		 Catalysis
-Reaction	RNF146 binds RibC-AXIN:TNKS complex	R-HSA-3640844			
-Reaction	RNF146 ubiquitinates ADP-ribosylated AXIN	R-HSA-3640861	 GO_0061630		 Catalysis
-Reaction	Ub-RibC-AXIN is degraded by the proteasome	R-HSA-3640874	 GO_0004175		 Catalysis
-Reaction	SMURF2 binds AXIN	R-HSA-4641134			
-Reaction	AXIN is ubiquitinated by SMURF2	R-HSA-4641129	 GO_0061630		 Catalysis
-Reaction	Ubiquitinated AXIN is degraded by the proteasome	R-HSA-4641256	 GO_0004175		 Catalysis
-Reaction	USP34 deubiquitinates AXIN1,AXIN2	R-HSA-3640872	 GO_0036459		 Catalysis
-Pathway	Regulation of FZD by ubiquitination	R-HSA-4641263			
-Reaction	ZNRF3,RNF43 binds the FZD:LRP5/6 receptor complex	R-HSA-4641249			
-Reaction	ZNRF3 ubiquitinates FZD to promote its downregulation	R-HSA-4641253	 GO_0061630		 Catalysis
-Reaction	USP8 deubiquitinates FZD to potentiate WNT signaling	R-HSA-4641236	 GO_0004843		 Catalysis
-Reaction	RSPOs bind LGRs	R-HSA-4641206			
-Reaction	RSPO:LGR binds ZNRF3	R-HSA-4641205			
-Reaction	ZNRF3 autoubiquitinates to promote its internalization	R-HSA-4641246	 GO_0061630		 Catalysis
-Pathway	TCF dependent signaling in response to WNT	R-HSA-201681			
-Pathway	Negative regulation of TCF-dependent signaling by DVL-interacting proteins	R-HSA-201681			
-Pathway	Negative regulation of TCF-dependent signaling by WNT ligand antagonists	R-HSA-201681		 GO_0090090	
-Reaction	FZD recruits DVL to the receptor complex	R-HSA-1504188			
-Reaction	WNT binds to FZD and LRP5/6	R-HSA-1458875			 Non-catalytic-INHIBITION Non-catalytic-INHIBITION Non-catalytic-INHIBITION Non-catalytic-INHIBITION
-Reaction	Beta-catenin translocates to the nucleus	R-HSA-201669		 GO_0035411	
-Pathway	Deactivation of the beta-catenin transactivating complex	R-HSA-201681			
-Pathway	Degradation of DVL	R-HSA-201681		 GO_0090090	
-Pathway	Degradation of AXIN	R-HSA-201681		 GO_0090263	
-Pathway	Regulation of FZD by ubiquitination	R-HSA-201681			
-Reaction	Canonical WNT signaling through the atypical receptor RYK	R-HSA-5323545			
-Pathway	WNT mediated activation of DVL	R-HSA-201681			
-Pathway	Disassembly of the destruction complex and recruitment of AXIN to the membrane	R-HSA-201681		 GO_1904886	
-Pathway	Formation of the beta-catenin:TCF transactivating complex	R-HSA-201681		 GO_1904837	
-Reaction	DVL recruits GSK3beta:AXIN1 to the receptor complex	R-HSA-1504186			
-Reaction	Beta-catenin displaces TLE:HDAC1 from TCF/LEF	R-HSA-3299569			
+Reactome Node Type	Reactome label	GO MF	GO_BP	both	controller_type	
+Reaction	XPO1 binds the beta-catenin:CBY complex	none	none		none
+Pathway	Regulation of FZD by ubiquitination	none	none		none
+Reaction	YWHAZ and XPO1 mediate the nuclear export of beta-catenin	none	none		none
+Reaction	AKT phosphorylates CBY1	GO_0004674 	none		Catalysis 
+Reaction	YWHAZ binds p-CBY:CTNNB1	none	none		none
+Reaction	beta-catenin is replaced by repression complexes at the promoter	none	none		none
+Reaction	CBY1 binds beta-catenin	none	none		none
+Reaction	XIAP dissociates from ub-TLE	none	none		none
+Reaction	APC promotes disassembly of beta-catenin transactivation complex	none	none		none
+Reaction	DVL binds CCDC88C	none	none		none
+Reaction	Canonical WNT signaling through the atypical receptor RYK	none	none		none
+Reaction	CTNNBIP1 binds beta-catenin	none	none		none
+Reaction	CHD8 binds beta-catenin to negatively regulate WNT-dependent gene expression	none	none		none
+Reaction	Ubiquitinated DVL1 is degraded by the proteasome	GO_0004175 	none		Catalysis 
+Reaction	DACT1 binds DVL2	none	none		none
+Reaction	DVL1 is bound by the HECT ubiquitin ligase HECW1	none	none		none
+Reaction	DVL1 is ubiquitinated by HECW1	GO_0061630 	none		Catalysis 
+Reaction	DVL is ubiquitinated by CUL3:KLHL12:RBX1	GO_0061630 	none		Catalysis 
+Reaction	Ubiquitinated DVL is degraded by the proteasome	GO_0004175 	none		Catalysis 
+Reaction	TCF:Beta-catenin binds SOX proteins	none	none		none
+Reaction	DVL is bound by the CUL3:KLHL12:RBX1 ubiquitin ligase complex	none	none		none
+Reaction	Beta-catenin binds SOX proteins	none	none		none
+Pathway	TCF dependent signaling in response to WNT	none	none		none
+Pathway	WNT mediated activation of DVL	none	none		none
+Pathway	Disassembly of the destruction complex and recruitment of AXIN to the membrane	none	GO_1904886 		none
+Pathway	Formation of the beta-catenin:TCF transactivating complex	none	GO_1904837 		none
+Pathway	Binding of TCF/LEF:CTNNB1 to target gene promoters	none	none		none
+Pathway	Deactivation of the beta-catenin transactivating complex	none	none		none
+Reaction	Tankyrase binds AXIN	none	none		none
+Pathway	Degradation of DVL	none	GO_0090090 		none
+Pathway	Degradation of AXIN	none	GO_0090263 		none
+Reaction	ZNRF3,RNF43 binds the FZD:LRP5/6 receptor complex	none	none		none
+Reaction	Beta-catenin translocates to the nucleus	none	GO_0035411 		none
+Reaction	TCF7L1/TCF7L2/LEF1:CTNNB1 bind the MYC gene	none	none		Non-catalytic-INHIBITION 
+Reaction	ZNRF3 ubiquitinates FZD to promote its downregulation	GO_0061630 	none		Catalysis 
+Reaction	Ubiquitinated AXIN is degraded by the proteasome	GO_0004175 	none		Catalysis 
+Reaction	WNT3A stimulates the caveolin-dependent internalization of FZD5:p-LRP6	none	none		none
+Reaction	USP34 deubiquitinates AXIN1,AXIN2	GO_0036459 	none		Catalysis 
+Reaction	Beta-catenin is released from the destruction complex	none	none		Non-catalytic-ACTIVATION 
+Reaction	SMURF2 binds AXIN	none	none		none
+Reaction	Phosphorylation of LRP5/6 cytoplasmic domain by membrane-associated GSK3beta	GO_0004674 	none		Catalysis 
+Reaction	AXIN is ubiquitinated by SMURF2	GO_0061630 	none		Catalysis 
+Reaction	Phosphorylation of LRP5/6 cytoplasmic domain by CSNKI	GO_0004674 	none		Catalysis 
+Reaction	RNF146 ubiquitinates ADP-ribosylated AXIN	GO_0061630 	none		Catalysis 
+Reaction	Ub-RibC-AXIN is degraded by the proteasome	GO_0004175 	none		Catalysis 
+Reaction	Tankyrase ADP-ribosylates AXIN	GO_0003950 	none		Catalysis 
+Reaction	RNF146 binds RibC-AXIN:TNKS complex	none	none		none
+Reaction	TCF/LEF:CTNNB1 promote transcription of AXIN2	none	none		Non-catalytic-ACTIVATION 
+Reaction	Beta-catenin displaces TLE:HDAC1 from TCF/LEF	none	none		none
+Reaction	TCF7L1/TCF7L2/LEF1:CTNNB1 promote transcription of the MYC gene	none	none		Non-catalytic-ACTIVATION 
+Reaction	TCF/LEF:CTNNB1 bind the AXIN2 gene	none	none		none
+Reaction	CXXC4 binds DVL to prevent AXIN binding	none	none		none
+Reaction	SET1 complex trimethylates H3K4 at the MYC gene	GO_0042800 	none		Catalysis 
+Reaction	Beta-catenin recruits TRRAP/KAT5 HAT components	none	none		none
+Reaction	WIF1 binds WNTs	none	none		none
+Reaction	Beta-catenin recruits SMARCA4	none	none		none
+Reaction	sFRP binds WNT3A and inhibits WNT:FZD binding	none	none		none
+Reaction	Recruitment of SET1 methyltransferase complex	none	none		none
+Reaction	DKK promotes clathrin-dependent internalization of LRP6	none	none		none
+Reaction	Beta-catenin recruits CBP/p300	none	none		none
+Reaction	SOST binds LRP5/6	none	none		none
+Reaction	Beta-catenin recruits CDC73 and LEO1	none	none		none
+Reaction	ZNRF3 autoubiquitinates to promote its internalization	GO_0061630 	none		Catalysis 
+Reaction	DKK and KRM bind LRP5/6	none	none		none
+Reaction	Beta-catenin:TCF associates with BCL9 and PYGO	none	none		none
+Reaction	RSPOs bind LGRs	none	none		none
+Reaction	RSPO:LGR binds ZNRF3	none	none		none
+Pathway	Negative regulation of TCF-dependent signaling by DVL-interacting proteins	none	none		none
+Reaction	USP8 deubiquitinates FZD to potentiate WNT signaling	GO_0004843 	none		Catalysis 
+Pathway	Negative regulation of TCF-dependent signaling by WNT ligand antagonists	none	GO_0090090 		none
+Reaction	DVL recruits GSK3beta:AXIN1 to the receptor complex	none	none		none
+Reaction	PP2A dephosphorylates AXIN, APC and CTNNB1 in the destruction complex	GO_0004722 	none		Catalysis 
+Reaction	FRAT proteins bind GSK3beta	none	none		none
+Reaction	FZD recruits DVL to the receptor complex	none	none		none
+Reaction	DVL-associated PIP5K1B phosphorylates PI4P to PI(4,5)P2	GO_0016308 	none		Catalysis 
+Reaction	Phosphorylated DVL recruits PIP5K1B to the plasma membrane	none	none		none
+Reaction	WNT signaling stimulates CSNK1-dependent phosphorylation of DVL	GO_0004674 	none		Catalysis 
+Reaction	CSNK2-mediated phosphorylation of DVL	GO_0016301 	none		Catalysis 
+Reaction	WNT binds to FZD and LRP5/6	none	none		Non-catalytic-INHIBITION 
+Reaction	XIAP monoubiquinates TLE	GO_0061630 	none		Catalysis 
+Reaction	KAT5 HAT complex acetylates TCF4 gene at histone H4	GO_0004402 	none		Catalysis 
+Reaction	XIAP binds TLE	none	none		none
