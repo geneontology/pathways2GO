@@ -83,11 +83,11 @@ public class GoCAM {
 	public static OWLObjectProperty part_of, has_part, has_input, has_output, 
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in,
 	directly_positively_regulated_by, directly_negatively_regulated_by, involved_in_regulation_of, involved_in_negative_regulation_of, involved_in_positive_regulation_of,
-	directly_negatively_regulates, directly_positively_regulates;
+	directly_negatively_regulates, directly_positively_regulates, has_role;
 	public static OWLClass 
 	bp_class, continuant_class, process_class, go_complex, molecular_function, 
 	eco_imported, eco_imported_auto, eco_inferred_auto, 
-	chebi_protein, chebi_gene;
+	chebi_protein, chebi_gene, chemical_entity, chemical_role;
 	OWLOntology go_cam_ont;
 	OWLDataFactory df;
 	OWLOntologyManager ontman;
@@ -139,10 +139,16 @@ public class GoCAM {
 		y_prop = df.getOWLAnnotationProperty(IRI.create("http://geneontology.org/lego/hint/layout/y"));
 		rdfs_label = df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI());
 		rdfs_comment = df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_COMMENT.getIRI());
+		skos_exact_match = df.getOWLAnnotationProperty(IRI.create("http://www.w3.org/2004/02/skos/core#exactMatch"));
 
 		//Will add classes and relations as we need them now. 
 		//TODO Work on using imports later to ensure we don't produce incorrect ids..
 		//classes	
+		chemical_entity =df.getOWLClass(IRI.create(obo_iri+"CHEBI_24431"));
+		addLabel(chemical_entity, "chemical entity");
+		
+		chemical_role =df.getOWLClass(IRI.create(obo_iri+"CHEBI_50906"));
+		addLabel(chemical_role, "chemical role");
 		//biological process
 		bp_class = df.getOWLClass(IRI.create(obo_iri + "GO_0008150")); 
 		addLabel(bp_class, "Biological Process");
@@ -174,7 +180,6 @@ public class GoCAM {
 		chebi_gene = df.getOWLClass(IRI.create(obo_iri + "CHEBI_33695"));
 		addLabel(chebi_gene, "chebi gene"); 
 
-		skos_exact_match = df.getOWLAnnotationProperty(IRI.create("http://www.w3.org/2004/02/skos/core#exactMatch"));
 		//part of
 		part_of = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000050"));
 		addLabel(part_of, "part of"); 
@@ -236,7 +241,11 @@ public class GoCAM {
 
 		involved_in_regulation_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002428"));
 		addLabel(involved_in_regulation_of, "involved in regulation of");
-
+		
+		//RO:0000087
+		has_role = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0000087"));
+		addLabel(has_role, "has role");
+		
 		//Annotate the ontology
 		OWLAnnotation title_anno = df.getOWLAnnotation(title_prop, df.getOWLLiteral(gocam_title));
 		OWLAxiom titleaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, title_anno);
