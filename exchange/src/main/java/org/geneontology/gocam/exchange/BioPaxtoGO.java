@@ -176,7 +176,12 @@ public class BioPaxtoGO {
 
 	public BioPaxtoGO(){
 		report = new GoMappingReport();
-		onto = new Onto();
+		try {
+			onto = new Onto();
+		} catch (OWLOntologyCreationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	/**
 	 * @param args
@@ -194,6 +199,7 @@ public class BioPaxtoGO {
 		//		bp2g.convertReactomeFolder(input_folder, output_folder);
 
 		String input_biopax = 
+				"/Users/bgood/Desktop/test/stimuli_sensing.owl";
 				//			"/Users/bgood/Desktop/test/snRNP_Assembly.owl";
 				//			"/Users/bgood/Desktop/test/abc_transporter.owl";
 				//	"/Users/bgood/Desktop/test/transport_small_mlc.owl";
@@ -202,19 +208,19 @@ public class BioPaxtoGO {
 				//		"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
 				//		"/Users/bgood/Desktop/test/Wnt_example.owl";
 				//"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
-				"src/main/resources/reactome/Homo_sapiens.owl";
+				//"src/main/resources/reactome/Homo_sapiens.owl";
 		//"/Users/bgood/Downloads/biopax/homosapiens.owl";
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = 
 				//	"/Users/bgood/Desktop/test/snRNP_Assembly/converted-";
-				//		"/Users/bgood/Desktop/test/tmp/converted-";
+						"/Users/bgood/Desktop/test/tmp/converted-";
 				//				"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
 				//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
 				//"/Users/bgood/Desktop/test/Wnt_output/converted-";
 				//"/Users/bgood/Desktop/test/gap_junction_output/converted-";
 				//		"/Users/bgood/Desktop/test/bmp_output/converted-";
-				"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
+				//"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";
@@ -729,15 +735,15 @@ public class BioPaxtoGO {
 								if(onto.isChebiRole(chebi_uri)) {
 									go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_role, null);
 									OWLNamedIndividual rolei = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(entity.hashCode()+"chemical"));
-									go_cam.addTypeAssertion(rolei, mlc_class);
-									
+									go_cam.addTypeAssertion(rolei, mlc_class);									
 									//assert entity here is a chemical instance
 									go_cam.addTypeAssertion(e, GoCAM.chemical_entity);
 									//connect it to the role
 									go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_role, rolei, null, GoCAM.eco_imported_auto, null, null);
 									
-								}else { //presumable is chemical entity if not a role								
-									go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_entity, null);										
+								}else { //presumably its is chemical entity if not a role								
+									go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_entity, null);	
+									go_cam.addSubclassAssertion(mlc_class, GoCAM.continuant_class, null);
 									//name the class with the chebi id
 									go_cam.addLabel(mlc_class, id);
 									//assert its a chemical instance

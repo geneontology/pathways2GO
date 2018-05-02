@@ -1,83 +1,44 @@
 Reactome Node Type	Reactome label	GO MF	GO_BP	both	controller_type	
-Reaction	XPO1 binds the beta-catenin:CBY complex	none	none		none
-Pathway	Regulation of FZD by ubiquitination	none	none		none
-Reaction	YWHAZ and XPO1 mediate the nuclear export of beta-catenin	none	none		none
-Reaction	AKT phosphorylates CBY1	GO_0004674 	none		Catalysis 
-Reaction	YWHAZ binds p-CBY:CTNNB1	none	none		none
-Reaction	beta-catenin is replaced by repression complexes at the promoter	none	none		none
-Reaction	CBY1 binds beta-catenin	none	none		none
-Reaction	XIAP dissociates from ub-TLE	none	none		none
-Reaction	APC promotes disassembly of beta-catenin transactivation complex	none	none		none
-Reaction	DVL binds CCDC88C	none	none		none
-Reaction	Canonical WNT signaling through the atypical receptor RYK	none	none		none
-Reaction	CTNNBIP1 binds beta-catenin	none	none		none
-Reaction	CHD8 binds beta-catenin to negatively regulate WNT-dependent gene expression	none	none		none
-Reaction	Ubiquitinated DVL1 is degraded by the proteasome	GO_0004175 	none		Catalysis 
-Reaction	DACT1 binds DVL2	none	none		none
-Reaction	DVL1 is bound by the HECT ubiquitin ligase HECW1	none	none		none
-Reaction	DVL1 is ubiquitinated by HECW1	GO_0061630 	none		Catalysis 
-Reaction	DVL is ubiquitinated by CUL3:KLHL12:RBX1	GO_0061630 	none		Catalysis 
-Reaction	Ubiquitinated DVL is degraded by the proteasome	GO_0004175 	none		Catalysis 
-Reaction	TCF:Beta-catenin binds SOX proteins	none	none		none
-Reaction	DVL is bound by the CUL3:KLHL12:RBX1 ubiquitin ligase complex	none	none		none
-Reaction	Beta-catenin binds SOX proteins	none	none		none
-Pathway	TCF dependent signaling in response to WNT	none	none		none
-Pathway	WNT mediated activation of DVL	none	none		none
-Pathway	Disassembly of the destruction complex and recruitment of AXIN to the membrane	none	GO_1904886 		none
-Pathway	Formation of the beta-catenin:TCF transactivating complex	none	GO_1904837 		none
-Pathway	Binding of TCF/LEF:CTNNB1 to target gene promoters	none	none		none
-Pathway	Deactivation of the beta-catenin transactivating complex	none	none		none
-Reaction	Tankyrase binds AXIN	none	none		none
-Pathway	Degradation of DVL	none	GO_0090090 		none
-Pathway	Degradation of AXIN	none	GO_0090263 		none
-Reaction	ZNRF3,RNF43 binds the FZD:LRP5/6 receptor complex	none	none		none
-Reaction	Beta-catenin translocates to the nucleus	none	GO_0035411 		none
-Reaction	TCF7L1/TCF7L2/LEF1:CTNNB1 bind the MYC gene	none	none		Non-catalytic-INHIBITION 
-Reaction	ZNRF3 ubiquitinates FZD to promote its downregulation	GO_0061630 	none		Catalysis 
-Reaction	Ubiquitinated AXIN is degraded by the proteasome	GO_0004175 	none		Catalysis 
-Reaction	WNT3A stimulates the caveolin-dependent internalization of FZD5:p-LRP6	none	none		none
-Reaction	USP34 deubiquitinates AXIN1,AXIN2	GO_0036459 	none		Catalysis 
-Reaction	Beta-catenin is released from the destruction complex	none	none		Non-catalytic-ACTIVATION 
-Reaction	SMURF2 binds AXIN	none	none		none
-Reaction	Phosphorylation of LRP5/6 cytoplasmic domain by membrane-associated GSK3beta	GO_0004674 	none		Catalysis 
-Reaction	AXIN is ubiquitinated by SMURF2	GO_0061630 	none		Catalysis 
-Reaction	Phosphorylation of LRP5/6 cytoplasmic domain by CSNKI	GO_0004674 	none		Catalysis 
-Reaction	RNF146 ubiquitinates ADP-ribosylated AXIN	GO_0061630 	none		Catalysis 
-Reaction	Ub-RibC-AXIN is degraded by the proteasome	GO_0004175 	none		Catalysis 
-Reaction	Tankyrase ADP-ribosylates AXIN	GO_0003950 	none		Catalysis 
-Reaction	RNF146 binds RibC-AXIN:TNKS complex	none	none		none
-Reaction	TCF/LEF:CTNNB1 promote transcription of AXIN2	none	none		Non-catalytic-ACTIVATION 
-Reaction	Beta-catenin displaces TLE:HDAC1 from TCF/LEF	none	none		none
-Reaction	TCF7L1/TCF7L2/LEF1:CTNNB1 promote transcription of the MYC gene	none	none		Non-catalytic-ACTIVATION 
-Reaction	TCF/LEF:CTNNB1 bind the AXIN2 gene	none	none		none
-Reaction	CXXC4 binds DVL to prevent AXIN binding	none	none		none
-Reaction	SET1 complex trimethylates H3K4 at the MYC gene	GO_0042800 	none		Catalysis 
-Reaction	Beta-catenin recruits TRRAP/KAT5 HAT components	none	none		none
-Reaction	WIF1 binds WNTs	none	none		none
-Reaction	Beta-catenin recruits SMARCA4	none	none		none
-Reaction	sFRP binds WNT3A and inhibits WNT:FZD binding	none	none		none
-Reaction	Recruitment of SET1 methyltransferase complex	none	none		none
-Reaction	DKK promotes clathrin-dependent internalization of LRP6	none	none		none
-Reaction	Beta-catenin recruits CBP/p300	none	none		none
-Reaction	SOST binds LRP5/6	none	none		none
-Reaction	Beta-catenin recruits CDC73 and LEO1	none	none		none
-Reaction	ZNRF3 autoubiquitinates to promote its internalization	GO_0061630 	none		Catalysis 
-Reaction	DKK and KRM bind LRP5/6	none	none		none
-Reaction	Beta-catenin:TCF associates with BCL9 and PYGO	none	none		none
-Reaction	RSPOs bind LGRs	none	none		none
-Reaction	RSPO:LGR binds ZNRF3	none	none		none
-Pathway	Negative regulation of TCF-dependent signaling by DVL-interacting proteins	none	none		none
-Reaction	USP8 deubiquitinates FZD to potentiate WNT signaling	GO_0004843 	none		Catalysis 
-Pathway	Negative regulation of TCF-dependent signaling by WNT ligand antagonists	none	GO_0090090 		none
-Reaction	DVL recruits GSK3beta:AXIN1 to the receptor complex	none	none		none
-Reaction	PP2A dephosphorylates AXIN, APC and CTNNB1 in the destruction complex	GO_0004722 	none		Catalysis 
-Reaction	FRAT proteins bind GSK3beta	none	none		none
-Reaction	FZD recruits DVL to the receptor complex	none	none		none
-Reaction	DVL-associated PIP5K1B phosphorylates PI4P to PI(4,5)P2	GO_0016308 	none		Catalysis 
-Reaction	Phosphorylated DVL recruits PIP5K1B to the plasma membrane	none	none		none
-Reaction	WNT signaling stimulates CSNK1-dependent phosphorylation of DVL	GO_0004674 	none		Catalysis 
-Reaction	CSNK2-mediated phosphorylation of DVL	GO_0016301 	none		Catalysis 
-Reaction	WNT binds to FZD and LRP5/6	none	none		Non-catalytic-INHIBITION 
-Reaction	XIAP monoubiquinates TLE	GO_0061630 	none		Catalysis 
-Reaction	KAT5 HAT complex acetylates TCF4 gene at histone H4	GO_0004402 	none		Catalysis 
-Reaction	XIAP binds TLE	none	none		none
+Reaction	CLCN4/5/6 exchange Cl- for H+	GO_0015297 	none		Catalysis 
+Reaction	CLCN7:OSTM1 exchanges Cl- for H+	GO_0015297 	none		Catalysis 
+Reaction	CLCAs self cleave	GO_0004222 	none		Catalysis Non-catalytic-ACTIVATION 
+Reaction	TTYH1 transports cytosolic Cl- to extracellular region	GO_0005254 	none		Catalysis 
+Reaction	TPCN1/2 transport lysosomal Ca2+ to cytosol 	GO_0072345 	none		Catalysis Non-catalytic-ACTIVATION 
+Reaction	UNC79:UNC80:NALCN transports cytosolic Na+ to extracellular region	GO_0005272 	none		Non-catalytic-INHIBITION Catalysis 
+Reaction	CLCN1/2/KA/KB transport cytosolic Cl- to extracellular region	GO_0005247 	none		Catalysis 
+Reaction	CLCN3 exchanges Cl- for H+	GO_0015297 	none		Catalysis 
+Reaction	ATP4A/12A:ATP4B exchanges K+ for H+	GO_0008900 	none		Catalysis 
+Reaction	P-type ATPase type IV subfamily transporters may mediate phospholipid transfer	GO_0004012 	none		Catalysis 
+Reaction	ATP2C1/2:Mg2+ transport cytosolic Ca2+ to Golgi lumen	GO_0005388 	none		Catalysis 
+Reaction	ATP1A:ATP1B:FXYD exchanges Na+ for K+	GO_0005391 	none		Catalysis 
+Reaction	Sequestration of Ca2+ to dense tubular network lumen	GO_0005388 	none		Catalysis 
+Reaction	TTYH2/3 transport cytosolic Cl- to extracellular region	GO_0005229 	none		Catalysis Non-catalytic-ACTIVATION 
+Reaction	Sequestration of Ca2+ to intracellular stores	GO_0005388 	none		Non-catalytic-INHIBITION Catalysis Non-catalytic-ACTIVATION 
+Reaction	BESTs transport cytosolic Cl- to extracellular region	GO_0005229 	none		Catalysis Non-catalytic-ACTIVATION 
+Reaction	ATP7B transports cytosolic Cu2+ to Golgi lumen	GO_0043682 	none		Catalysis 
+Reaction	PMCA extrusion of Ca2+ 	GO_0005388 	none		Catalysis 
+Reaction	ATP7A transports cytosolic Cu2+ to extracellular region	GO_0004008 	none		Catalysis 
+Pathway	Ion channel transport	none	GO_0034220 		none
+Pathway	Ion transport by P-type ATPases	none	GO_0034220 		none
+Reaction	BESTs transport cytosolic HCO3- to extracellular region	GO_0015106 	none		Catalysis 
+Pathway	Stimuli-sensing channels	none	none		none
+Pathway	TRP channels	none	GO_0070588 		none
+Reaction	ATP13A1 transports Mn2+ from cytosol to ER lumen	GO_0015410 	none		Catalysis 
+Reaction	SLC9B2 exchanges Na+, Li+ for H+	GO_0005451 	none		Catalysis 
+Reaction	ATP13A2 transports cations from cytosol to lysosomal lumen	GO_0019829 	none		Catalysis 
+Reaction	SLC9C1 exchanges Na+ for H+	GO_0015385 	none		Catalysis 
+Reaction	ASICs bind STOML3, (STOM)	none	none		none
+Reaction	TRPs transport extracellular Ca2+ to cytosol	GO_0005262 	none		Catalysis Non-catalytic-ACTIVATION 
+Reaction	ASICs transport extracellular Na+ to cytosol	GO_0044736 	none		Non-catalytic-INHIBITION Catalysis 
+Reaction	TRPM4,5 transport extracellular Na+ to cytosol	GO_0005272 	none		Catalysis 
+Reaction	RYR tetramers transport Ca2+ from sarcoplasmic reticulum lumen to cytosol	GO_0005219 	none		Non-catalytic-INHIBITION Catalysis Non-catalytic-ACTIVATION 
+Reaction	P-type ATPases type IV transport internal-facing APLs to external side of the plasma membrane	GO_0004012 	none		Catalysis 
+Reaction	SLC17A3-1 cotransports extracellular Na+ and Pi to cytosol	GO_0005436 	none		Catalysis 
+Reaction	ATP13A4,5 transport divalent ions from extracellular region to cytosol	GO_0019829 	none		Catalysis 
+Reaction	SLC17A3-2 transports cytosolic urate to extracellular region	GO_0015143 	none		Catalysis 
+Reaction	CUTC binds Cu+	none	none		none
+Reaction	SLC9B1/C2 exchange Na+ for H+	GO_0015385 	none		Catalysis 
+Reaction	ATP6AP1 binds V-ATPase	none	none		none
+Reaction	SCNN channels transport extracellular Na+ to cytosol	GO_0015280 	none		Non-catalytic-INHIBITION Catalysis 
+Reaction	RAF1:SGK:TSC22D3:WPP ubiquitinates SCNN channels	GO_0004842 	none		Catalysis Non-catalytic-ACTIVATION 
+Reaction	ANOs transport cytosolic Cl- to extracellular region	GO_0005229 	none		Catalysis Non-catalytic-ACTIVATION 

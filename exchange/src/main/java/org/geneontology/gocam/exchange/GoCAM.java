@@ -144,8 +144,6 @@ public class GoCAM {
 		//Will add classes and relations as we need them now. 
 		//TODO Work on using imports later to ensure we don't produce incorrect ids..
 		//classes	
-		chemical_entity =df.getOWLClass(IRI.create(obo_iri+"CHEBI_24431"));
-		addLabel(chemical_entity, "chemical entity");
 		
 		chemical_role =df.getOWLClass(IRI.create(obo_iri+"CHEBI_50906"));
 		addLabel(chemical_role, "chemical role");
@@ -180,6 +178,9 @@ public class GoCAM {
 		chebi_gene = df.getOWLClass(IRI.create(obo_iri + "CHEBI_33695"));
 		addLabel(chebi_gene, "chebi gene"); 
 
+		chemical_entity =df.getOWLClass(IRI.create(obo_iri+"CHEBI_24431"));
+		addLabel(chemical_entity, "chemical entity");
+		
 		//part of
 		part_of = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000050"));
 		addLabel(part_of, "part of"); 
