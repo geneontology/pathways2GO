@@ -88,7 +88,6 @@ import org.semanticweb.owlapi.util.OWLEntityRemover;
 public class BioPaxtoGO {
 	//public static OWLClass reaction_class, pathway_class, protein_class;
 	public static final IRI biopax_iri = IRI.create("http://www.biopax.org/release/biopax-level3.owl#");
-	final String mapping_report_file = "report/mapping.txt";
 	int noctua_version = 1;
 	String blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";
 	GoMappingReport report;
@@ -98,8 +97,11 @@ public class BioPaxtoGO {
 		Map<Process,Set<String>> bp2go_mf = new HashMap<Process, Set<String>>();
 		Map<Process,Set<String>> bp2go_bp = new HashMap<Process, Set<String>>();
 		Map<Process,Set<String>> bp2go_controller = new HashMap<Process, Set<String>>();
+		Map<String, Integer> chebi_count = new HashMap<String, Integer>();
 
 		void writeReport() throws IOException{
+			String mapping_report_file = "report/mapping.txt";
+			String chebi_usage_file = "report/chebi_usage.txt";
 			Set<Process> all_processes = new HashSet<Process>(bp2go_mf.keySet());		
 			all_processes.addAll(new HashSet<Process>(bp2go_bp.keySet()));
 			all_processes.addAll(new HashSet<Process>(bp2go_controller.keySet()));
@@ -166,6 +168,13 @@ public class BioPaxtoGO {
 				report.write(row);
 			}
 			report.close();
+			FileWriter chebi_report = new FileWriter(chebi_usage_file);
+			chebi_report.write("chebi_uri\ttype\tcount\n");
+			for(String chebi : chebi_count.keySet()) {
+				chebi_report.write(chebi+"\t"+chebi_count.get(chebi)+"\n");
+			}
+			chebi_report.close();
+			
 			System.out.println("Pathways:"+n_pathways+" with bp:"+n_pathways_tagged_bp+" with mf:"+n_pathways_tagged_mf+" both:"+n_pathways_tagged_both);
 			System.out.println("% pathways no bp: "+((n_pathways-n_pathways_tagged_bp)/n_pathways));
 			System.out.println("Reactions:"+n_reactions+" with bp:"+n_reactions_tagged_bp+" with mf:"+n_reactions_tagged_mf+" both:"+n_reactions_tagged_both);
@@ -731,7 +740,7 @@ public class BioPaxtoGO {
 								String id = uref.getId().replace(":", "_");
 								String chebi_uri = GoCAM.obo_iri + id;
 								OWLClass mlc_class = go_cam.df.getOWLClass(IRI.create(chebi_uri)); 
-								
+								String chebi_report_key;
 								if(onto.isChebiRole(chebi_uri)) {
 									go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_role, null);
 									OWLNamedIndividual rolei = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(entity.hashCode()+"chemical"));
@@ -740,15 +749,23 @@ public class BioPaxtoGO {
 									go_cam.addTypeAssertion(e, GoCAM.chemical_entity);
 									//connect it to the role
 									go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_role, rolei, null, GoCAM.eco_imported_auto, null, null);
-									
+									chebi_report_key = chebi_uri+"\t"+entity.getDisplayName()+"\trole";
 								}else { //presumably its is chemical entity if not a role								
 									go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_entity, null);	
-									go_cam.addSubclassAssertion(mlc_class, GoCAM.continuant_class, null);
+									//go_cam.addSubclassAssertion(mlc_class, GoCAM.continuant_class, null);
 									//name the class with the chebi id
 									go_cam.addLabel(mlc_class, id);
 									//assert its a chemical instance
 									go_cam.addTypeAssertion(e, mlc_class);
+									chebi_report_key =  chebi_uri+"\t"+entity.getDisplayName()+"\tchemical";
 								}
+								//count it for report because suspect these might be problems to fix
+								Integer ncheb = report.chebi_count.get(chebi_report_key);
+								if(ncheb==null) {
+									ncheb = 0;
+								}
+								ncheb++;
+								report.chebi_count.put(chebi_report_key, ncheb);
 							}
 						}
 					}
