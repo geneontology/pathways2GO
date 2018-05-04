@@ -41,16 +41,16 @@ import scala.collection.JavaConverters;
  */
 public class ArachneAccessor {
 
-	OWLOntology tbox_ontology;
+	Collection<OWLOntology> tbox_ontologies;
 	RuleEngine ruleEngine;
 	Set<org.apache.jena.reasoner.rulesys.Rule> jena_rules;
 
 	/**
 	 * Arachne needs a tbox (defined classes from ontology) to get started.
 	 */
-	public ArachneAccessor(OWLOntology tbox) {
-		tbox_ontology = tbox;
-		ruleEngine = initializeRuleEngine(tbox);
+	public ArachneAccessor(Collection<OWLOntology> tbox) {
+		tbox_ontologies = tbox;
+		ruleEngine = initializeRuleEngine(tbox_ontologies);
 	}
 
 
@@ -60,18 +60,20 @@ public class ArachneAccessor {
 	 * @param tbox
 	 * @return
 	 */
-	RuleEngine initializeRuleEngine(OWLOntology tbox) {
+	RuleEngine initializeRuleEngine(Collection<OWLOntology> tbox) {
 		Set<Rule> rules = new HashSet<Rule>();
-		rules.addAll(JavaConverters.setAsJavaSetConverter(OWLtoRules.translate(tbox, Imports.INCLUDED, true, true, true, true)).asJava());
-		//indirect rules add statements like this ?pr <http://arachne.geneontology.org/indirect_type> ?pr_type
-		//when an inferred type is added to link an instance to a superclass of one of its direct types
-		rules.addAll(JavaConverters.setAsJavaSetConverter(OWLtoRules.indirectRules(tbox)).asJava());
+		for(OWLOntology o : tbox) {
+			rules.addAll(JavaConverters.setAsJavaSetConverter(OWLtoRules.translate(o, Imports.INCLUDED, true, true, true, true)).asJava());
+			//indirect rules add statements like this ?pr <http://arachne.geneontology.org/indirect_type> ?pr_type
+			//when an inferred type is added to link an instance to a superclass of one of its direct types
+			rules.addAll(JavaConverters.setAsJavaSetConverter(OWLtoRules.indirectRules(o)).asJava());
+		}
 		jena_rules = rules;
 		return new RuleEngine(Bridge.rulesFromJena(JavaConverters.asScalaSetConverter(rules).asScala()), true);
 	}
-	
+
 	/**
-	 * Return a RuleEngine encalsulating both whatever rules exist now and whatever rules exist in the provided ontology
+	 * Return a RuleEngine encapsulating both whatever rules exist now and whatever rules exist in the provided ontology
 	 * @param tbox
 	 * @return
 	 */
@@ -83,11 +85,12 @@ public class ArachneAccessor {
 		rules.addAll(JavaConverters.setAsJavaSetConverter(OWLtoRules.indirectRules(newtbox)).asJava());
 		//add to existing rule set
 		rules.addAll(jena_rules);
-		//make a new rule engine
+		//make a new rule engine 
+		//TODO this is on the slow side..
 		RuleEngine rulen= new RuleEngine(Bridge.rulesFromJena(JavaConverters.asScalaSetConverter(rules).asScala()), true);
 		return rulen;
 	}
-	
+
 
 	/**
 	 * Return an Arachne working memory model including the provided abox, additional inferred edges, and optionally the
@@ -102,23 +105,27 @@ public class ArachneAccessor {
 		Set<Triple> triples = statements.stream().map(s -> Bridge.tripleFromJena(s.asTriple())).collect(Collectors.toSet());
 		try {
 			if(add_property_definitions) {
-				OWLOntology propOntology = OWLManager.createOWLOntologyManager().createOntology(tbox_ontology.getRBoxAxioms(Imports.INCLUDED));
-				Set<Statement> propStatements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(propOntology)).asJava();
-				triples.addAll(propStatements.stream().map(s -> Bridge.tripleFromJena(s.asTriple())).collect(Collectors.toSet()));
+				for(OWLOntology tbox_ontology : this.tbox_ontologies) {
+					OWLOntology propOntology = OWLManager.createOWLOntologyManager().createOntology(tbox_ontology.getRBoxAxioms(Imports.INCLUDED));
+					Set<Statement> propStatements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(propOntology)).asJava();
+					triples.addAll(propStatements.stream().map(s -> Bridge.tripleFromJena(s.asTriple())).collect(Collectors.toSet()));
+				}
 			}
 			if(add_class_definitions) {
 				//just adding class definitions, not property defs.. 
-				OWLOntology tboxOntology = OWLManager.createOWLOntologyManager().createOntology(tbox_ontology.getTBoxAxioms(Imports.INCLUDED));
-				Set<Statement> tboxStatements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(tboxOntology)).asJava();
-				triples.addAll(tboxStatements.stream().map(s -> Bridge.tripleFromJena(s.asTriple())).collect(Collectors.toSet()));
+				for(OWLOntology tbox_ontology : this.tbox_ontologies) {
+					OWLOntology tboxOntology = OWLManager.createOWLOntologyManager().createOntology(tbox_ontology.getTBoxAxioms(Imports.INCLUDED));
+					Set<Statement> tboxStatements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(tboxOntology)).asJava();
+					triples.addAll(tboxStatements.stream().map(s -> Bridge.tripleFromJena(s.asTriple())).collect(Collectors.toSet()));
+				}
 			}
 		} catch (OWLOntologyCreationException e) {
 			System.out.println("Couldn't add rbox or tbox statements to triples.");
 			System.out.println(e);
 		}
-	//	System.out.println("triples before reasoning: "+triples.size());
+		//	System.out.println("triples before reasoning: "+triples.size());
 		WorkingMemory wm = ruleEngine.processTriples(JavaConverters.asScalaSetConverter(triples).asScala());
-	//	System.out.println("triples after reasoning: "+wm.facts().size());
+		//	System.out.println("triples after reasoning: "+wm.facts().size());
 		return wm; 
 	}
 
@@ -136,7 +143,7 @@ public class ArachneAccessor {
 		}
 		return;
 	}
-	
+
 	/**
 	 * Given a folder of .ttl files representing aboxes (OWL Individual declarations), 
 	 * use Arachne to apply the rules it extracted during its construction to add inferred edges to the Abox
@@ -180,7 +187,7 @@ public class ArachneAccessor {
 				.map(t -> model.asStatement(Bridge.jenaFromTriple(t))).collect(Collectors.toList()));
 		return model;
 	}
-	
+
 	/**
 	 * Given a directory of ttl files, merge them into one OWLOntology
 	 * @param input_folder
@@ -209,7 +216,7 @@ public class ArachneAccessor {
 		}
 		return metaont;
 	}
-	
+
 	/**
 	 * @param args
 	 */

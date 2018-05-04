@@ -43,6 +43,9 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.RemoveAxiom;
+import org.semanticweb.owlapi.reasoner.OWLReasoner;
+import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
+import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 import org.semanticweb.owlapi.search.EntitySearcher;
 import org.semanticweb.owlapi.util.OWLEntityRemover;
 import org.semanticweb.owlapi.util.OWLOntologyWalker;
@@ -61,14 +64,26 @@ public class App {
 
 	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 
-		String abox_file = "/Users/bgood/Desktop/test/snRNP_Assembly/converted-snRNP_Assembly.ttl";
-		String tbox_file = 
-		//		"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus.owl";
-		"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
-		App.testInference(abox_file, tbox_file);
-
+		testLoadTime();
 	}
 
+	public static void testLoadTime() throws OWLOntologyCreationException {
+		String ontf = "/Users/bgood/gocam_input/neo.owl";
+		long t0 = System.currentTimeMillis();
+		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
+		OWLDataFactory df = man.getOWLDataFactory();
+		System.out.println("loading");
+		OWLOntology ont = man.loadOntologyFromOntologyDocument(new File(ontf));
+		long t1 = System.currentTimeMillis();
+		System.out.println("loaded in "+(t1-t0)/1000+" seconds with n axioms = "+ont.getAxiomCount());
+		OWLClass test = df.getOWLClass(IRI.create(("http://identifiers.org/uniprot/Q16774")));
+		//4.5gb 66 seconds
+		 OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
+	     OWLReasoner r = reasonerFactory.createReasoner(ont);
+	     //5.12gb took 18 more seconds
+	     long t3 = System.currentTimeMillis();
+	     System.out.println("reasoner loaded in "+(t3-t1)/1000+" seconds");
+	}
 
 
 	public static void testUpdateAnnotations() throws OWLOntologyCreationException {
@@ -105,7 +120,7 @@ public class App {
 		String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
 		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
 		OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
-		ArachneAccessor a = new ArachneAccessor(tbox);
+		ArachneAccessor a = new ArachneAccessor(Collections.singleton(tbox));
 		boolean add_property_definitions = false;
 		boolean add_class_definitions = false;
 		a.reasonAllInFolder(input_folder, output_folder, add_property_definitions, add_class_definitions);
@@ -151,7 +166,7 @@ public class App {
 		//Test reading, reasoning, query
 
 		//build the graph
-		QRunner q = new QRunner(tbox, abox, add_inferences, add_property_definitions, add_class_definitions);
+		QRunner q = new QRunner(Collections.singleton(tbox), abox, add_inferences, add_property_definitions, add_class_definitions);
 		//ask it questions
 		boolean c = q.isConsistent();
 		System.out.println("Is it consistent? "+c);

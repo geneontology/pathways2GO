@@ -87,21 +87,29 @@ import org.semanticweb.owlapi.util.OWLEntityRemover;
  */
 public class BioPaxtoGO {
 	//public static OWLClass reaction_class, pathway_class, protein_class;
-	public static final IRI biopax_iri = IRI.create("http://www.biopax.org/release/biopax-level3.owl#");
+	//public static final IRI biopax_iri = IRI.create("http://www.biopax.org/release/biopax-level3.owl#");
+	public static final String goplus_file = 
+		"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
+	public static final String neo_file = 
+			"/Users/bgood/gocam_input/neo.owl";
+	Set<String> tbox_files;
+	//	"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
 	int noctua_version = 1;
 	String blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";
 	GoMappingReport report;
-	Onto onto;
-
+	GOPlus goplus;
+	
 	class GoMappingReport {
 		Map<Process,Set<String>> bp2go_mf = new HashMap<Process, Set<String>>();
 		Map<Process,Set<String>> bp2go_bp = new HashMap<Process, Set<String>>();
 		Map<Process,Set<String>> bp2go_controller = new HashMap<Process, Set<String>>();
 		Map<String, Integer> chebi_count = new HashMap<String, Integer>();
-
+		Set<String> deprecated_classes = new HashSet<String>();
+		
 		void writeReport() throws IOException{
 			String mapping_report_file = "report/mapping.txt";
 			String chebi_usage_file = "report/chebi_usage.txt";
+			String deprecated_file = "report/deprecated_terms_used.txt";
 			Set<Process> all_processes = new HashSet<Process>(bp2go_mf.keySet());		
 			all_processes.addAll(new HashSet<Process>(bp2go_bp.keySet()));
 			all_processes.addAll(new HashSet<Process>(bp2go_controller.keySet()));
@@ -174,6 +182,12 @@ public class BioPaxtoGO {
 				chebi_report.write(chebi+"\t"+chebi_count.get(chebi)+"\n");
 			}
 			chebi_report.close();
+			FileWriter dep_report = new FileWriter(deprecated_file);
+			dep_report.write("uri\ttype\n");
+			for(String d : deprecated_classes) {
+				dep_report.write(d+"\n");
+			}
+			dep_report.close();
 			
 			System.out.println("Pathways:"+n_pathways+" with bp:"+n_pathways_tagged_bp+" with mf:"+n_pathways_tagged_mf+" both:"+n_pathways_tagged_both);
 			System.out.println("% pathways no bp: "+((n_pathways-n_pathways_tagged_bp)/n_pathways));
@@ -185,8 +199,11 @@ public class BioPaxtoGO {
 
 	public BioPaxtoGO(){
 		report = new GoMappingReport();
+		tbox_files = new HashSet<String>();
+		tbox_files.add(goplus_file);
+		tbox_files.add(neo_file);
 		try {
-			onto = new Onto();
+			goplus = new GOPlus();
 		} catch (OWLOntologyCreationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -208,7 +225,7 @@ public class BioPaxtoGO {
 		//		bp2g.convertReactomeFolder(input_folder, output_folder);
 
 		String input_biopax = 
-				"/Users/bgood/Desktop/test/stimuli_sensing.owl";
+				//"/Users/bgood/Desktop/test/stimuli_sensing.owl";
 				//			"/Users/bgood/Desktop/test/snRNP_Assembly.owl";
 				//			"/Users/bgood/Desktop/test/abc_transporter.owl";
 				//	"/Users/bgood/Desktop/test/transport_small_mlc.owl";
@@ -216,7 +233,7 @@ public class BioPaxtoGO {
 				//"/Users/bgood/Desktop/test/gap_junction.owl"; 
 				//		"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
 				//		"/Users/bgood/Desktop/test/Wnt_example.owl";
-				//"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
+				"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
 				//"src/main/resources/reactome/Homo_sapiens.owl";
 		//"/Users/bgood/Downloads/biopax/homosapiens.owl";
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
@@ -315,10 +332,7 @@ public class BioPaxtoGO {
 		clean.write("");
 		clean.close();
 		Blazer blaze = go_cam.initializeBlazeGraph(journal);
-		String tbox_file = 
-				"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
-		//	"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
-		QRunner tbox_qrunner = go_cam.initializeQRunnerForTboxInference(tbox_file);
+		QRunner tbox_qrunner = go_cam.initializeQRunnerForTboxInference(tbox_files);
 		//list pathways
 		int total_pathways = model.getObjects(Pathway.class).size();
 
@@ -415,7 +429,8 @@ public class BioPaxtoGO {
 		//set up to apply OWL inference to test for consistency and add classifications
 		//go_cam.go_cam_ont is ready and equals the Abox..
 		//don't want to reload tbox each time..
-		go_cam.applyArachneInference(tbox_qrunner);
+		boolean rebuild_tbox_with_go_cam_ont = false;
+		go_cam.applyArachneInference(tbox_qrunner, rebuild_tbox_with_go_cam_ont);
 		boolean is_logical = go_cam.validateGoCAM();	
 		//synchronize jena model <- with owl-api model	 
 		//go_cam_ont should have everything we want at this point
@@ -483,7 +498,13 @@ public class BioPaxtoGO {
 				//here we add the referenced GO class as a type.  
 				if(r.getDb().equals("GENE ONTOLOGY")) {
 					String goid = r.getId().replaceAll(":", "_");
-					OWLClass xref_go_parent = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + goid));
+					//OWLClass xref_go_parent = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + goid));
+					String uri = GoCAM.obo_iri + goid;					
+					OWLClass xref_go_parent = goplus.getOboClass(uri, true);
+					boolean deprecated = goplus.isDeprecated(uri);
+					if(deprecated) {
+						report.deprecated_classes.add(uri+"\tBP");
+					}					
 					//add it into local hierarchy (temp pre import)	
 					//addRefBackedObjectPropertyAssertion
 					go_cam.addSubclassAssertion(xref_go_parent, GoCAM.bp_class, null);
@@ -638,8 +659,12 @@ public class BioPaxtoGO {
 						UnificationXref uref = (UnificationXref)xref;	    			
 						//here we add the referenced GO class as a type.  
 						if(uref.getDb().equals("GENE ONTOLOGY")) {
-							IRI urefiri = GoCAM.makeGoCamifiedIRI(uref.getId().replaceAll(":", "_"));
-							OWLClass xref_go_loc = go_cam.df.getOWLClass(urefiri);
+							String uri = GoCAM.obo_iri + uref.getId().replaceAll(":", "_");						
+							OWLClass xref_go_loc = goplus.getOboClass(uri, true);
+							boolean deprecated = goplus.isDeprecated(uri);
+							if(deprecated) {
+								report.deprecated_classes.add(xref_go_loc+"\tCC");
+							}
 							Set<XReferrable> refs = uref.getXrefOf();							
 							for(XReferrable ref : refs) {
 								location_term = ref.toString().replaceAll("CellularLocationVocabulary_", "");
@@ -739,9 +764,13 @@ public class BioPaxtoGO {
 							if(uref.getDb().equals("ChEBI")) {
 								String id = uref.getId().replace(":", "_");
 								String chebi_uri = GoCAM.obo_iri + id;
-								OWLClass mlc_class = go_cam.df.getOWLClass(IRI.create(chebi_uri)); 
+								OWLClass mlc_class = goplus.getOboClass(chebi_uri, true);
+								boolean deprecated = goplus.isDeprecated(chebi_uri);
+								if(deprecated) {
+									report.deprecated_classes.add(chebi_uri+"\tchebi");
+								}
 								String chebi_report_key;
-								if(onto.isChebiRole(chebi_uri)) {
+								if(goplus.isChebiRole(chebi_uri)) {
 									go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_role, null);
 									OWLNamedIndividual rolei = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(entity.hashCode()+"chemical"));
 									go_cam.addTypeAssertion(rolei, mlc_class);									
@@ -963,7 +992,11 @@ public class BioPaxtoGO {
 							//here we add the referenced GO class as a type.  
 							if(ref.getDb().equals("GENE ONTOLOGY")) {
 								String goid = ref.getId().replaceAll(":", "_");
-								OWLClass xref_go_func = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + goid));
+								String uri = GoCAM.obo_iri + goid;
+								OWLClass xref_go_func = goplus.getOboClass(uri, true);
+								if(goplus.isDeprecated(uri)) {
+									report.deprecated_classes.add(uri+"\tMF");
+								}
 								//add the go function class as a type for the reaction instance being controlled here
 								go_cam.addTypeAssertion(e, xref_go_func);
 								go_mf.add(goid);
@@ -1024,8 +1057,12 @@ public class BioPaxtoGO {
 						//here we add the referenced GO class as a type.  
 						if(ref.getDb().equals("GENE ONTOLOGY")) {
 							String goid = ref.getId().replaceAll(":", "_");
-							go_bp.add(goid);
-							OWLClass xref_go_func = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + goid));
+							go_bp.add(goid);							
+							String uri = GoCAM.obo_iri + goid;
+							OWLClass xref_go_func = goplus.getOboClass(uri, true);
+							if(goplus.isDeprecated(uri)) {
+								report.deprecated_classes.add(uri+"\tBP");
+							}
 							//go_cam.addSubclassAssertion(xref_go_func, GoCAM.bp_class, null);
 							//the go class can not be a type for the reaction instance as we want to classify reactions as functions
 							//and MF disjoint from BP

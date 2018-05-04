@@ -8,6 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -111,7 +113,8 @@ public class GoCAM {
 		ontman = OWLManager.createOWLOntologyManager();				
 		go_cam_ont = ontman.createOntology(ont_iri);
 		df = OWLManager.getOWLDataFactory();
-
+		
+//TODO basically never going to do this, maybe take it out..
 		if(add_lego_import) {
 			String lego_iri = "http://purl.obolibrary.org/obo/go/extensions/go-lego.owl";
 			OWLImportsDeclaration legoImportDeclaration = df.getOWLImportsDeclaration(IRI.create(lego_iri));
@@ -302,7 +305,7 @@ public class GoCAM {
 		addBasicAnnotations2Individual(iri, this.base_contributor, this.base_date, this.base_provider);
 		return i;
 	}
-
+	
 	void addBasicAnnotations2Individual(IRI individual_iri, String contributor_uri, String date, String provider_uri) {
 		addLiteralAnnotations2Individual(individual_iri, contributor_prop, contributor_uri);
 		addLiteralAnnotations2Individual(individual_iri, date_prop, getDate(date));
@@ -532,17 +535,21 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 * Sets up the inference rules from provided TBox
 	 * @throws OWLOntologyCreationException
 	 */
-	QRunner initializeQRunnerForTboxInference(String tbox_file) throws OWLOntologyCreationException {
+	QRunner initializeQRunnerForTboxInference(Set<String> tbox_files) throws OWLOntologyCreationException {
 		System.out.println("initializeQRunnerForTboxInference()");
 		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
-		OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
+		List<OWLOntology> tboxes = new ArrayList<OWLOntology>();
+		for(String tbox_file : tbox_files) {
+			OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
+			tboxes.add(tbox);
+		}
 		boolean add_inferences = true;
 		boolean add_property_definitions = false; boolean add_class_definitions = false;
-		qrunner = new QRunner(tbox, go_cam_ont, add_inferences, add_property_definitions, add_class_definitions);
+		qrunner = new QRunner(tboxes, go_cam_ont, add_inferences, add_property_definitions, add_class_definitions);
 		return qrunner;
 	}
 
-	QRunner initializeQRunner(OWLOntology tbox) throws OWLOntologyCreationException {
+	QRunner initializeQRunner(Collection<OWLOntology> tbox) throws OWLOntologyCreationException {
 		System.out.println("initializeQRunner()");
 		boolean add_inferences = true;
 		boolean add_property_definitions = false; boolean add_class_definitions = false;
@@ -695,15 +702,20 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 * add any additional rules from go_cam_ont and run the inference rules  
 	 * @param tbox_qrunner
 	 */
-	public void applyArachneInference(QRunner tbox_qrunner) {
-		//add any tbox in current go_cam model into rule set
-		RuleEngine rulen = tbox_qrunner.arachne.makeExpandedRuleSet(go_cam_ont);
-		Set<Statement> statements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(go_cam_ont)).asJava();		
-		Set<Triple> triples = statements.stream().map(s -> Bridge.tripleFromJena(s.asTriple())).collect(Collectors.toSet());
-		//apply inference
-		WorkingMemory wm = rulen.processTriples(JavaConverters.asScalaSetConverter(triples).asScala());
-		//move to jena for query
-		qrunner.jena = qrunner.makeJenaModel(wm);				
+	public void applyArachneInference(QRunner tbox_qrunner, boolean rebuild_tbox_with_go_cam_ont) {
+		WorkingMemory wm;
+		//slow
+		if(rebuild_tbox_with_go_cam_ont) {
+			RuleEngine rulen = tbox_qrunner.arachne.makeExpandedRuleSet(go_cam_ont);
+			Set<Statement> statements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(go_cam_ont)).asJava();
+			Set<Triple> triples = statements.stream().map(s -> Bridge.tripleFromJena(s.asTriple())).collect(Collectors.toSet());
+//			//apply inference
+			wm = rulen.processTriples(JavaConverters.asScalaSetConverter(triples).asScala());
+		}else {
+			wm = tbox_qrunner.arachne.createInferredModel(go_cam_ont,false, false);
+		}
+//		//move to jena for query
+		qrunner.jena = qrunner.makeJenaModel(wm);
 	}
 
 }

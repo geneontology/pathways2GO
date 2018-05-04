@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,8 +29,12 @@ import org.apache.jena.update.UpdateRequest;
 import org.geneontology.jena.SesameJena;
 import org.geneontology.rules.engine.WorkingMemory;
 import org.geneontology.rules.util.Bridge;
+import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import scala.collection.JavaConverters;
 
@@ -44,21 +49,25 @@ public class QRunner {
 	ArachneAccessor arachne;
 	WorkingMemory wm;
 	/**
+	 * @throws OWLOntologyCreationException 
 	 * 
 	 */
-	public QRunner(OWLOntology tbox, OWLOntology abox, boolean add_inferences, boolean add_property_definitions, boolean add_class_definitions) {
+	public QRunner(Collection<OWLOntology> tboxes, OWLOntology abox, boolean add_inferences, boolean add_property_definitions, boolean add_class_definitions) throws OWLOntologyCreationException {
 		if(add_inferences) {
 			System.out.println("Setting up Arachne reasoner for Qrunner, extracting rules from tbox");
 			if(abox!=null) {
 				//pull out any rules from abox.. and add to tbox
 				Set<OWLAxiom> littlet = abox.getTBoxAxioms(null);
 				if(littlet!=null) {
+					OWLOntologyManager man = OWLManager.createOWLOntologyManager();
+					OWLOntology t = man.createOntology();
 					for(OWLAxiom a : littlet) {
-						tbox.getOWLOntologyManager().addAxiom(tbox, a);
+						man.addAxiom(t, a);
 					}
+					tboxes.add(t);
 				}
 			}
-			arachne = new ArachneAccessor(tbox);
+			arachne = new ArachneAccessor(tboxes);
 			if(abox!=null) {
 				System.out.println("Applying rules to expand the abox graph");
 				wm = arachne.createInferredModel(abox, add_property_definitions, add_class_definitions);			

@@ -34,9 +34,11 @@ import com.google.common.base.Optional;
  * @author bgood
  *
  */
-public class Onto {
+public class GOPlus {
 	String go_loc = "/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
 	OWLOntology go;
+	OWLOntologyManager ontman;				
+	OWLDataFactory df;
 	Set<String> chebi_roles;
 	Set<String> chebi_chemicals;
 	Set<String> deprecated;
@@ -46,21 +48,23 @@ public class Onto {
 	 * @throws OWLOntologyCreationException 
 	 * 
 	 */
-	public Onto() throws OWLOntologyCreationException {
-
+	public GOPlus() throws OWLOntologyCreationException {
+		ontman = OWLManager.createOWLOntologyManager();	
+		df = OWLManager.getOWLDataFactory();
 		go = loadOntology(go_loc);
-		System.out.println("GO axioms "+go.getAxiomCount());
+			
+		System.out.println("GOPlus loaded, axioms "+go.getAxiomCount());
 		OWLReasoner go_reasoner = createReasoner(go);
 		
 		//make list of roles
-		OWLClass chebi_role = go.getOWLOntologyManager().getOWLDataFactory().getOWLClass(IRI.create(obo_base+"CHEBI_50906"));
+		OWLClass chebi_role = df.getOWLClass(IRI.create(obo_base+"CHEBI_50906"));
 		Set<OWLClass> roles = getSubClasses(chebi_role, false, go_reasoner);
 		chebi_roles = new HashSet<String>();
 		for(OWLClass r : roles) {
 			chebi_roles.add(r.getIRI().toString());
 		}
 		//make list of chemicals
-		OWLClass chebi_chemical = go.getOWLOntologyManager().getOWLDataFactory().getOWLClass(IRI.create(obo_base+"CHEBI_24431"));
+		OWLClass chebi_chemical = df.getOWLClass(IRI.create(obo_base+"CHEBI_24431"));
 		Set<OWLClass> chemicals = getSubClasses(chebi_chemical, false,go_reasoner);
 		chebi_chemicals = new HashSet<String>();
 		for(OWLClass c : chemicals) {
@@ -71,13 +75,13 @@ public class Onto {
 		Set<OWLClass> things = getSubClasses(thing, true, go_reasoner);
 		deprecated = new HashSet<String>();
 		replaced_by_map = new HashMap<String, String>();
-		OWLAnnotationProperty dep = go.getOWLOntologyManager().getOWLDataFactory().getOWLAnnotationProperty(IRI.create(OWL.DEPRECATED));
-		OWLAnnotationProperty term_replaced_by = go.getOWLOntologyManager().getOWLDataFactory().getOWLAnnotationProperty(IRI.create(obo_base+"IAO_0100001"));
+		OWLAnnotationProperty dep = df.getOWLAnnotationProperty(IRI.create(OWL.DEPRECATED));
+		OWLAnnotationProperty term_replaced_by = df.getOWLAnnotationProperty(IRI.create(obo_base+"IAO_0100001"));
 		for(OWLClass c : things) {
 			Collection<OWLAnnotation> annos = EntitySearcher.getAnnotationObjects(c, go, dep);
 			for(OWLAnnotation anno : annos) {
 				if(anno.isDeprecatedIRIAnnotation()) {
-					deprecated.add(c.toString());
+					deprecated.add(c.getIRI().toString());
 					//add to replaced by list if present
 					Collection<OWLAnnotation> replaced_by = EntitySearcher.getAnnotationObjects(c, go, term_replaced_by);
 					for(OWLAnnotation rep : replaced_by) {
@@ -94,10 +98,32 @@ public class Onto {
 	 * @throws OWLOntologyCreationException 
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException {
-		Onto o = new Onto();
-
+		GOPlus o = new GOPlus();
+		String test = o.obo_base+"GO_0000004";
+		System.out.println("ep "+o.isDeprecated(test));
+		OWLClass t = o.getOboClass(test, false);
+		System.out.println("ddd "+t);
+		System.out.println("ep2 "+o.isDeprecated(t.getIRI().toString()));
 	}
 
+	public OWLClass getOboClass(String iri, boolean follow_replaced_by) {
+		OWLClass c = null;
+		if(follow_replaced_by&&isDeprecated(iri)) {
+			String riri =  replacementUri(iri);
+			if(riri!=null) {
+				c = df.getOWLClass(IRI.create(riri));
+				System.out.println("replaced "+iri+" with "+riri);
+			}else {
+				// no replacement, use provided iri but sound alert
+				c = df.getOWLClass(IRI.create(iri)); 
+				System.err.println("Alert! Using deprecated iri without a replacement: "+iri);
+			}
+		}else {
+			c = df.getOWLClass(IRI.create(iri)); 
+		}
+		return c;
+	}
+	
 	public boolean isDeprecated(String uri) {
 		if(deprecated.contains(uri)) {
 			return true;
@@ -134,10 +160,7 @@ public class Onto {
     }
     
     OWLOntology loadOntology(String ontf) throws OWLOntologyCreationException {
-		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
-		OWLDataFactory df = man.getOWLDataFactory();
-		OWLOntology ont = man.loadOntologyFromOntologyDocument(new File(ontf));
-		return ont;
+		return ontman.loadOntologyFromOntologyDocument(new File(ontf));
     }
     
     Set<OWLClass> getSubClasses(OWLClassExpression classExpression, boolean direct, OWLReasoner reasoner) {
