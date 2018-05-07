@@ -57,6 +57,8 @@ import org.biopax.paxtools.model.level3.TemplateReaction;
 import org.biopax.paxtools.model.level3.UnificationXref;
 import org.biopax.paxtools.model.level3.XReferrable;
 import org.biopax.paxtools.model.level3.Xref;
+import org.geneontology.rules.engine.Triple;
+import org.geneontology.rules.engine.WorkingMemory;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
@@ -105,11 +107,15 @@ public class BioPaxtoGO {
 		Map<Process,Set<String>> bp2go_controller = new HashMap<Process, Set<String>>();
 		Map<String, Integer> chebi_count = new HashMap<String, Integer>();
 		Set<String> deprecated_classes = new HashSet<String>();
+		Set<String> inconsistent_models = new HashSet<String>();
+		Map<String,Map<String, Set<String>>> pathway_inferred_types = new HashMap<String,Map<String, Set<String>>>();
 		
 		void writeReport() throws IOException{
 			String mapping_report_file = "report/mapping.txt";
 			String chebi_usage_file = "report/chebi_usage.txt";
 			String deprecated_file = "report/deprecated_terms_used.txt";
+			String inconsistent_file = "report/inconsistent_models.txt";
+			String inference_file = "report/inferred_types.txt";
 			Set<Process> all_processes = new HashSet<Process>(bp2go_mf.keySet());		
 			all_processes.addAll(new HashSet<Process>(bp2go_bp.keySet()));
 			all_processes.addAll(new HashSet<Process>(bp2go_controller.keySet()));
@@ -188,6 +194,27 @@ public class BioPaxtoGO {
 				dep_report.write(d+"\n");
 			}
 			dep_report.close();
+			FileWriter logic_report = new FileWriter(inconsistent_file);
+			logic_report.write("Model Name\n");
+			for(String d : inconsistent_models) {
+				logic_report.write(d+"\n");
+			}
+			logic_report.close();
+			//Map<String,Map<String, Set<String>>> pathway_inferred_types
+			FileWriter inf_report = new FileWriter(inference_file);
+			inf_report.write("pathway\tindividual label\tindividual uri\tinferred_type\n");
+			for(String pathway : pathway_inferred_types.keySet()) {			
+				Map<String, Set<String>> thing_types = pathway_inferred_types.get(pathway);
+				for(String thing : thing_types.keySet()) {
+					Set<String> types = thing_types.get(thing);
+					for(String type : types) {
+						if(type.contains("GO_")) {//skip all the BFO stuff..
+							inf_report.write(pathway+"\t"+thing+"\t"+type+"\n");	
+						}
+					}
+				}
+			}
+			inf_report.close();
 			
 			System.out.println("Pathways:"+n_pathways+" with bp:"+n_pathways_tagged_bp+" with mf:"+n_pathways_tagged_mf+" both:"+n_pathways_tagged_both);
 			System.out.println("% pathways no bp: "+((n_pathways-n_pathways_tagged_bp)/n_pathways));
@@ -225,6 +252,7 @@ public class BioPaxtoGO {
 		//		bp2g.convertReactomeFolder(input_folder, output_folder);
 
 		String input_biopax = 
+				"/Users/bgood/Desktop/test/Dap.owl";
 				//"/Users/bgood/Desktop/test/stimuli_sensing.owl";
 				//			"/Users/bgood/Desktop/test/snRNP_Assembly.owl";
 				//			"/Users/bgood/Desktop/test/abc_transporter.owl";
@@ -233,9 +261,9 @@ public class BioPaxtoGO {
 				//"/Users/bgood/Desktop/test/gap_junction.owl"; 
 				//		"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
 				//		"/Users/bgood/Desktop/test/Wnt_example.owl";
-				"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
-				//"src/main/resources/reactome/Homo_sapiens.owl";
-		//"/Users/bgood/Downloads/biopax/homosapiens.owl";
+				//"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
+		//		"/Users/bgood/gocam_input/reactome/march2018/Homo_sapiens.owl";
+
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = 
@@ -246,7 +274,7 @@ public class BioPaxtoGO {
 				//"/Users/bgood/Desktop/test/Wnt_output/converted-";
 				//"/Users/bgood/Desktop/test/gap_junction_output/converted-";
 				//		"/Users/bgood/Desktop/test/bmp_output/converted-";
-				//"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
+	//			"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";
@@ -390,7 +418,7 @@ public class BioPaxtoGO {
 				n = n.replaceAll("/", "-");	
 				n = n.replaceAll(" ", "_");
 				String outfilename = converted+n+".ttl";	
-				wrapAndWrite(outfilename, go_cam, tbox_qrunner, save_inferences, save2blazegraph);
+				wrapAndWrite(outfilename, go_cam, tbox_qrunner, save_inferences, save2blazegraph, n);
 				//reset for next pathway.
 				go_cam.ontman.removeOntology(go_cam.go_cam_ont);
 				go_cam.qrunner = null;
@@ -399,7 +427,7 @@ public class BioPaxtoGO {
 		}	
 		//export all
 		if(!split_out_by_pathway) {
-			wrapAndWrite(converted+".ttl", go_cam, tbox_qrunner, save_inferences, save2blazegraph);		
+			wrapAndWrite(converted+".ttl", go_cam, tbox_qrunner, save_inferences, save2blazegraph, converted);		
 		}
 		System.out.println("done with file "+input_biopax);
 	}
@@ -417,7 +445,7 @@ public class BioPaxtoGO {
 	 * @throws RDFHandlerException
 	 * @throws IOException
 	 */
-	private void wrapAndWrite(String outfilename, GoCAM go_cam, QRunner tbox_qrunner, boolean save_inferences, boolean save2blazegraph) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {		
+	private void wrapAndWrite(String outfilename, GoCAM go_cam, QRunner tbox_qrunner, boolean save_inferences, boolean save2blazegraph, String pathwayname) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {		
 		//set up a sparqlable kb in sync with ontology
 		System.out.println("setting up rdf model for sparql rules");
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
@@ -430,8 +458,23 @@ public class BioPaxtoGO {
 		//go_cam.go_cam_ont is ready and equals the Abox..
 		//don't want to reload tbox each time..
 		boolean rebuild_tbox_with_go_cam_ont = false;
-		go_cam.applyArachneInference(tbox_qrunner, rebuild_tbox_with_go_cam_ont);
+		WorkingMemory wm = go_cam.applyArachneInference(tbox_qrunner, rebuild_tbox_with_go_cam_ont);
+		//checks for inferred things with rdf:type OWL:Nothing with a sparql query
 		boolean is_logical = go_cam.validateGoCAM();	
+		//checks for inferred classifications for reporting
+		boolean skip_indirect = true;
+		Map<String, Set<String>> inferred_types_by_uri = ArachneAccessor.getInferredTypes(wm, skip_indirect);
+		Map<String, Set<String>> inferred_types = new HashMap<String, Set<String>>();
+		//add labels
+		for(String uri : inferred_types_by_uri.keySet()) {
+			String u = uri.replace(">", "");
+			u = u.replace("<", "");
+			OWLEntity e = go_cam.df.getOWLNamedIndividual(IRI.create(u));
+			String label = go_cam.getaLabel(e);
+			label = label+"\t"+uri;
+			inferred_types.put(label,inferred_types_by_uri.get(uri));
+		}
+		report.pathway_inferred_types.put(pathwayname, inferred_types);
 		//synchronize jena model <- with owl-api model	 
 		//go_cam_ont should have everything we want at this point
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
@@ -451,11 +494,12 @@ public class BioPaxtoGO {
 		go_cam.writeGoCAM(outfilename, save2blazegraph);
 		System.out.println("done writing...");
 		if(!is_logical) {
-			System.out.println("Illogical go_cam..  stopping");
-			System.exit(0);
+			//System.out.println("Illogical go_cam..  stopping");
+			//System.exit(0);
+			report.inconsistent_models.add(outfilename);
 		}
 	}
-
+	
 	private void definePathwayEntity(GoCAM go_cam, Pathway pathway, String reactome_id, boolean expand_subpathways, boolean add_components) throws IOException {
 		IRI pathway_iri = GoCAM.makeGoCamifiedIRI(pathway.getUri());
 		OWLNamedIndividual pathway_e = go_cam.makeAnnotatedIndividual(pathway_iri);

@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,6 +25,7 @@ import org.biopax.paxtools.model.level3.Xref;
 import org.geneontology.gocam.exchange.QRunner.InferredEnabler;
 import org.geneontology.gocam.exchange.QRunner.InferredRegulator;
 import org.geneontology.jena.SesameJena;
+import org.geneontology.rules.engine.Explanation;
 import org.geneontology.rules.engine.RuleEngine;
 import org.geneontology.rules.engine.Triple;
 import org.geneontology.rules.engine.WorkingMemory;
@@ -700,9 +703,10 @@ final long counterValue = instanceCounter.getAndIncrement();
 	/**
 	 * given an existing QRunner (which contains an ArachneAccessor that should already be loaded with the base tbox)
 	 * add any additional rules from go_cam_ont and run the inference rules  
+	 * Sets the qrunner jena model to include all the inferred edges
 	 * @param tbox_qrunner
 	 */
-	public void applyArachneInference(QRunner tbox_qrunner, boolean rebuild_tbox_with_go_cam_ont) {
+	public WorkingMemory applyArachneInference(QRunner tbox_qrunner, boolean rebuild_tbox_with_go_cam_ont) {
 		WorkingMemory wm;
 		//slow
 		if(rebuild_tbox_with_go_cam_ont) {
@@ -716,6 +720,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 		}
 //		//move to jena for query
 		qrunner.jena = qrunner.makeJenaModel(wm);
+		//return wm to access inferences and explanations
+		return wm;
 	}
 
 }

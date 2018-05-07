@@ -1,83 +1,36 @@
 Reactome Node Type	Reactome label	GO MF	GO_BP	both	controller_type	
-Reaction	XPO1 binds the beta-catenin:CBY complex	none	none		none
-Pathway	Regulation of FZD by ubiquitination	none	none		none
-Reaction	YWHAZ and XPO1 mediate the nuclear export of beta-catenin	none	none		none
-Reaction	AKT phosphorylates CBY1	GO_0004674 	none		Catalysis 
-Reaction	YWHAZ binds p-CBY:CTNNB1	none	none		none
-Reaction	beta-catenin is replaced by repression complexes at the promoter	none	none		none
-Reaction	CBY1 binds beta-catenin	none	none		none
-Reaction	XIAP dissociates from ub-TLE	none	none		none
-Reaction	APC promotes disassembly of beta-catenin transactivation complex	none	none		none
-Reaction	DVL binds CCDC88C	none	none		none
-Reaction	Canonical WNT signaling through the atypical receptor RYK	none	none		none
-Reaction	CTNNBIP1 binds beta-catenin	none	none		none
-Reaction	CHD8 binds beta-catenin to negatively regulate WNT-dependent gene expression	none	none		none
-Reaction	Ubiquitinated DVL1 is degraded by the proteasome	GO_0004175 	none		Catalysis 
-Reaction	DACT1 binds DVL2	none	none		none
-Reaction	DVL1 is bound by the HECT ubiquitin ligase HECW1	none	none		none
-Reaction	DVL1 is ubiquitinated by HECW1	GO_0061630 	none		Catalysis 
-Reaction	DVL is ubiquitinated by CUL3:KLHL12:RBX1	GO_0061630 	none		Catalysis 
-Reaction	Ubiquitinated DVL is degraded by the proteasome	GO_0004175 	none		Catalysis 
-Reaction	TCF:Beta-catenin binds SOX proteins	none	none		none
-Reaction	DVL is bound by the CUL3:KLHL12:RBX1 ubiquitin ligase complex	none	none		none
-Reaction	Beta-catenin binds SOX proteins	none	none		none
-Pathway	TCF dependent signaling in response to WNT	none	none		none
-Pathway	WNT mediated activation of DVL	none	none		none
-Pathway	Disassembly of the destruction complex and recruitment of AXIN to the membrane	none	GO_1904886 		none
-Pathway	Formation of the beta-catenin:TCF transactivating complex	none	GO_1904837 		none
-Pathway	Binding of TCF/LEF:CTNNB1 to target gene promoters	none	none		none
-Pathway	Deactivation of the beta-catenin transactivating complex	none	none		none
-Reaction	Tankyrase binds AXIN	none	none		none
-Pathway	Degradation of DVL	none	GO_0090090 		none
-Pathway	Degradation of AXIN	none	GO_0090263 		none
-Reaction	ZNRF3,RNF43 binds the FZD:LRP5/6 receptor complex	none	none		none
-Reaction	Beta-catenin translocates to the nucleus	none	GO_0035411 		none
-Reaction	TCF7L1/TCF7L2/LEF1:CTNNB1 bind the MYC gene	none	none		Non-catalytic-INHIBITION 
-Reaction	ZNRF3 ubiquitinates FZD to promote its downregulation	GO_0061630 	none		Catalysis 
-Reaction	Ubiquitinated AXIN is degraded by the proteasome	GO_0004175 	none		Catalysis 
-Reaction	WNT3A stimulates the caveolin-dependent internalization of FZD5:p-LRP6	none	none		none
-Reaction	USP34 deubiquitinates AXIN1,AXIN2	GO_0036459 	none		Catalysis 
-Reaction	Beta-catenin is released from the destruction complex	none	none		Non-catalytic-ACTIVATION 
-Reaction	SMURF2 binds AXIN	none	none		none
-Reaction	Phosphorylation of LRP5/6 cytoplasmic domain by membrane-associated GSK3beta	GO_0004674 	none		Catalysis 
-Reaction	AXIN is ubiquitinated by SMURF2	GO_0061630 	none		Catalysis 
-Reaction	Phosphorylation of LRP5/6 cytoplasmic domain by CSNKI	GO_0004674 	none		Catalysis 
-Reaction	RNF146 ubiquitinates ADP-ribosylated AXIN	GO_0061630 	none		Catalysis 
-Reaction	Ub-RibC-AXIN is degraded by the proteasome	GO_0004175 	none		Catalysis 
-Reaction	Tankyrase ADP-ribosylates AXIN	GO_0003950 	none		Catalysis 
-Reaction	RNF146 binds RibC-AXIN:TNKS complex	none	none		none
-Reaction	TCF/LEF:CTNNB1 promote transcription of AXIN2	none	none		Non-catalytic-ACTIVATION 
-Reaction	Beta-catenin displaces TLE:HDAC1 from TCF/LEF	none	none		none
-Reaction	TCF7L1/TCF7L2/LEF1:CTNNB1 promote transcription of the MYC gene	none	none		Non-catalytic-ACTIVATION 
-Reaction	TCF/LEF:CTNNB1 bind the AXIN2 gene	none	none		none
-Reaction	CXXC4 binds DVL to prevent AXIN binding	none	none		none
-Reaction	SET1 complex trimethylates H3K4 at the MYC gene	GO_0042800 	none		Catalysis 
-Reaction	Beta-catenin recruits TRRAP/KAT5 HAT components	none	none		none
-Reaction	WIF1 binds WNTs	none	none		none
-Reaction	Beta-catenin recruits SMARCA4	none	none		none
-Reaction	sFRP binds WNT3A and inhibits WNT:FZD binding	none	none		none
-Reaction	Recruitment of SET1 methyltransferase complex	none	none		none
-Reaction	DKK promotes clathrin-dependent internalization of LRP6	none	none		none
-Reaction	Beta-catenin recruits CBP/p300	none	none		none
-Reaction	SOST binds LRP5/6	none	none		none
-Reaction	Beta-catenin recruits CDC73 and LEO1	none	none		none
-Reaction	ZNRF3 autoubiquitinates to promote its internalization	GO_0061630 	none		Catalysis 
-Reaction	DKK and KRM bind LRP5/6	none	none		none
-Reaction	Beta-catenin:TCF associates with BCL9 and PYGO	none	none		none
-Reaction	RSPOs bind LGRs	none	none		none
-Reaction	RSPO:LGR binds ZNRF3	none	none		none
-Pathway	Negative regulation of TCF-dependent signaling by DVL-interacting proteins	none	none		none
-Reaction	USP8 deubiquitinates FZD to potentiate WNT signaling	GO_0004843 	none		Catalysis 
-Pathway	Negative regulation of TCF-dependent signaling by WNT ligand antagonists	none	GO_0090090 		none
-Reaction	DVL recruits GSK3beta:AXIN1 to the receptor complex	none	none		none
-Reaction	PP2A dephosphorylates AXIN, APC and CTNNB1 in the destruction complex	GO_0004722 	none		Catalysis 
-Reaction	FRAT proteins bind GSK3beta	none	none		none
-Reaction	FZD recruits DVL to the receptor complex	none	none		none
-Reaction	DVL-associated PIP5K1B phosphorylates PI4P to PI(4,5)P2	GO_0016308 	none		Catalysis 
-Reaction	Phosphorylated DVL recruits PIP5K1B to the plasma membrane	none	none		none
-Reaction	WNT signaling stimulates CSNK1-dependent phosphorylation of DVL	GO_0004674 	none		Catalysis 
-Reaction	CSNK2-mediated phosphorylation of DVL	GO_0016301 	none		Catalysis 
-Reaction	WNT binds to FZD and LRP5/6	none	none		Non-catalytic-INHIBITION 
-Reaction	XIAP monoubiquinates TLE	GO_0061630 	none		Catalysis 
-Reaction	KAT5 HAT complex acetylates TCF4 gene at histone H4	GO_0004402 	none		Catalysis 
-Reaction	XIAP binds TLE	none	none		none
+Reaction	Interaction of DAP12 and TREM2	none	none		none
+Pathway	DAP12 interactions	none	none		none
+Reaction	Interaction of SIGLEC14/15/16 and DAP12	none	none		none
+Reaction	Interaction of DAP12 and IREM2	none	none		none
+Reaction	Interaction of DAP12 and CLM7	none	none		none
+Reaction	Phosphorylation of DAP12	GO_0004713 	none		Catalysis 
+Reaction	Recruitment of SYK to p-DAP12	none	none		none
+Reaction	Phosphorylation of SYK	GO_0004713 	none		Catalysis 
+Pathway	DAP12 signaling	none	none		none
+Reaction	Phosphorylation of PLC-gamma by p-BTK/p-SYK	GO_0004713 	none		Catalysis 
+Reaction	Release of p-PLCG1	none	none		none
+Reaction	Interaction of DAP12 and NKp44	none	none		none
+Reaction	Phosphorylation and activation of VAV2/VAV3 by SYK	GO_0004713 	none		Catalysis 
+Reaction	SIRP beta binds TYROBP	none	none		none
+Reaction	Activation of RAC1 by VAV2/3	GO_0005085 	none		Catalysis 
+Reaction	Interaction of DAP12 and TREM1	none	none		none
+Reaction	Recruitment of GADS:SLP-76 to p-5Y-LAT	none	none		none
+Reaction	Recruitment of PLC-gamma to SLP-76 and p-5Y-LAT	none	none		none
+Reaction	SOS mediated nucleotide exchange of RAS (SHC)	GO_0005088 	none		Catalysis 
+Reaction	Phosphorylation of SLP-76 by p-SYK	GO_0004713 	none		Catalysis 
+Reaction	Recruitment of VAV and BTK to p-SLP-76	none	none		none
+Reaction	Phosphorylation of BTK by p-SYK	GO_0004713 	none		Catalysis 
+Reaction	Interaction of DAP12 and KIR3DS1	none	none		none
+Reaction	Interaction of DAP12 and MDL-1	none	none		none
+Reaction	DAP12 interacts with NKG2C	none	none		none
+Reaction	Interaction of DAP12 and NKG2D	none	none		none
+Reaction	p85 regulatory unit of PI3K binds p-6Y-SYK	none	none		none
+Reaction	PI3K phosphorylates PIP2 to PIP3	GO_0046934 	none		Catalysis 
+Reaction	Phosphorylation of LAT by p-SYK	GO_0004713 	none		Catalysis 
+Reaction	Recruitment of GRB2:SOS to p-5Y-LAT	none	none		none
+Reaction	Dimerization of DAP12	none	none		none
+Reaction	Interaction of DAP12 and KIR2DS1	none	none		none
+Reaction	Interaction of DAP12 and KIR2DS2	none	none		none
+Reaction	Interaction of DAP12 and KIR2DS4	none	none		none
+Reaction	Interaction of DAP12 and KIR2DS5	none	none		none

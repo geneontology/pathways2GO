@@ -7,8 +7,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -51,6 +53,7 @@ public class ArachneAccessor {
 	public ArachneAccessor(Collection<OWLOntology> tbox) {
 		tbox_ontologies = tbox;
 		ruleEngine = initializeRuleEngine(tbox_ontologies);
+		
 	}
 
 
@@ -143,7 +146,47 @@ public class ArachneAccessor {
 		}
 		return;
 	}
-
+	//return a list of inferred instance classifications
+	public static Map<String, Set<String>> getInferredTypes(WorkingMemory wm, boolean remove_indirect_types){
+		Map<String, Set<String>> inferred = new HashMap<String, Set<String>>();		
+		Map<String, Set<String>> indirect = new HashMap<String, Set<String>>();
+		scala.collection.Iterator<Triple> triples = wm.facts().toList().iterator();
+		while(triples.hasNext()) {				
+			Triple triple = triples.next();
+			if(wm.asserted().contains(triple)) {
+				continue;
+			}else { //<http://arachne.geneontology.org/indirect_type>
+				if(triple.p().toString().equals("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>")) {
+					Set<String> types = inferred.get(triple.s().toString());
+					if(types==null) {
+						types = new HashSet<String>();
+					}
+					types.add(triple.o().toString());
+					inferred.put(triple.s().toString(), types);
+				}else if(remove_indirect_types&&triple.p().toString().equals("<http://arachne.geneontology.org/indirect_type>")) {
+					Set<String> types = indirect.get(triple.s().toString());
+					if(types==null) {
+						types = new HashSet<String>();
+					}
+					types.add(triple.o().toString());
+					indirect.put(triple.s().toString(), types);					
+				}
+			}
+		}
+		if(remove_indirect_types) {
+			for(String thing : indirect.keySet()) {
+				Set<String> indirect_types = indirect.get(thing);
+				Set<String> types = inferred.get(thing);
+				if(types!=null) {
+					types.removeAll(indirect_types);
+					inferred.put(thing, types);
+				}
+			}
+		}
+		
+		return inferred;
+	}
+	
 	/**
 	 * Given a folder of .ttl files representing aboxes (OWL Individual declarations), 
 	 * use Arachne to apply the rules it extracted during its construction to add inferred edges to the Abox
