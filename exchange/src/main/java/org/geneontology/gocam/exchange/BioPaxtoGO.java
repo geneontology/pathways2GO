@@ -95,7 +95,6 @@ public class BioPaxtoGO {
 	public static final String neo_file = 
 			"/Users/bgood/gocam_input/neo.owl";
 	Set<String> tbox_files;
-	//	"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
 	int noctua_version = 1;
 	String blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";
 	GoMappingReport report;
@@ -252,7 +251,7 @@ public class BioPaxtoGO {
 		//		bp2g.convertReactomeFolder(input_folder, output_folder);
 
 		String input_biopax = 
-				"/Users/bgood/Desktop/test/Dap.owl";
+				//"/Users/bgood/Desktop/test/class-a1-receptors.owl";
 				//"/Users/bgood/Desktop/test/stimuli_sensing.owl";
 				//			"/Users/bgood/Desktop/test/snRNP_Assembly.owl";
 				//			"/Users/bgood/Desktop/test/abc_transporter.owl";
@@ -260,21 +259,20 @@ public class BioPaxtoGO {
 				//			"/Users/bgood/Desktop/test/abacavir_metabolism.owl";
 				//"/Users/bgood/Desktop/test/gap_junction.owl"; 
 				//		"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
-				//		"/Users/bgood/Desktop/test/Wnt_example.owl";
 				//"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
-		//		"/Users/bgood/gocam_input/reactome/march2018/Homo_sapiens.owl";
+				"/Users/bgood/gocam_input/reactome/march2018/Homo_sapiens.owl";
 
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = 
-				//	"/Users/bgood/Desktop/test/snRNP_Assembly/converted-";
-						"/Users/bgood/Desktop/test/tmp/converted-";
+		//				"/Users/bgood/Desktop/test/tmp/converted-";
+		//	"/Users/bgood/Desktop/test/snRNP_Assembly/converted-";
 				//				"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
 				//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
-				//"/Users/bgood/Desktop/test/Wnt_output/converted-";
+				//"/Users/bgood/Desktop/test/Wnt_output/converted-n2-";
 				//"/Users/bgood/Desktop/test/gap_junction_output/converted-";
 				//		"/Users/bgood/Desktop/test/bmp_output/converted-";
-	//			"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
+				"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";
@@ -289,10 +287,13 @@ public class BioPaxtoGO {
 
 	private void convertReactomeFile(String input_file, String output, boolean split_by_pathway, boolean save_inferences, boolean expand_subpathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		boolean add_lego_import = false; //unless you never want to open the output in Protege always leave false..
-		String base_title = "FULL BMP Signaling";//"FULL TCF-dependent_signaling_in_response_to_Wnt"; 
+		String base_title = "FULL TCF-dependent signaling in response to Wnt";//"FULL TCF-dependent_signaling_in_response_to_Wnt"; 
 		String base_contributor = "https://orcid.org/0000-0002-7334-7852"; //Ben Good
 		String base_provider = "https://reactome.org";
 		String tag = "";
+		if(expand_subpathways) {
+			tag = "expanded";
+		}
 		convert(input_file, output, split_by_pathway, add_lego_import, base_title, base_contributor, base_provider, tag, save_inferences, expand_subpathways);
 	}
 
@@ -418,7 +419,7 @@ public class BioPaxtoGO {
 				n = n.replaceAll("/", "-");	
 				n = n.replaceAll(" ", "_");
 				String outfilename = converted+n+".ttl";	
-				wrapAndWrite(outfilename, go_cam, tbox_qrunner, save_inferences, save2blazegraph, n);
+				wrapAndWrite(outfilename, go_cam, tbox_qrunner, save_inferences, save2blazegraph, n, expand_subpathways);
 				//reset for next pathway.
 				go_cam.ontman.removeOntology(go_cam.go_cam_ont);
 				go_cam.qrunner = null;
@@ -427,7 +428,7 @@ public class BioPaxtoGO {
 		}	
 		//export all
 		if(!split_out_by_pathway) {
-			wrapAndWrite(converted+".ttl", go_cam, tbox_qrunner, save_inferences, save2blazegraph, converted);		
+			wrapAndWrite(converted+".ttl", go_cam, tbox_qrunner, save_inferences, save2blazegraph, converted, expand_subpathways);		
 		}
 		System.out.println("done with file "+input_biopax);
 	}
@@ -445,7 +446,7 @@ public class BioPaxtoGO {
 	 * @throws RDFHandlerException
 	 * @throws IOException
 	 */
-	private void wrapAndWrite(String outfilename, GoCAM go_cam, QRunner tbox_qrunner, boolean save_inferences, boolean save2blazegraph, String pathwayname) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {		
+	private void wrapAndWrite(String outfilename, GoCAM go_cam, QRunner tbox_qrunner, boolean save_inferences, boolean save2blazegraph, String pathwayname, boolean expand_subpathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {		
 		//set up a sparqlable kb in sync with ontology
 		System.out.println("setting up rdf model for sparql rules");
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
@@ -485,8 +486,12 @@ public class BioPaxtoGO {
 			//add them into the rdf 
 			go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
 			//do rdf-only pruning - don't reinitialize runner after this as these changes don't get put into ontology
-			//remove has_part relations linking process to reactions.  redundant as all reactions are part of the main process right now and clouds view
-			go_cam.qrunner.deletePathwayHasPart();
+			//remove has_part relations linking process to reactions.  
+			//redundant as all reactions are part of the main process right now and clouds view
+			//took this out as eliminates some useful inferences that can happen when people look at the models.  	
+//			if(!expand_subpathways) {
+//				go_cam.qrunner.deletePathwayHasPart();
+//			}
 			//remove any locations on physical entities. screws display as entities can't be folded into function nodes
 			go_cam.qrunner.deleteEntityLocations();
 		}
@@ -766,9 +771,12 @@ public class BioPaxtoGO {
 						//so stuffing the names into the class..  yay.  
 						if(noctua_version == 1) { 
 							addComplexAsSimpleClass(go_cam, cnames, e, null);
-						}else {
-							go_cam.addTypeAssertion(e, GoCAM.go_complex);
 						}
+						//else {
+						//though it clutters the display, this is needed to enable Arachne inference without adding tbox assertions from each model
+						//
+						go_cam.addTypeAssertion(e, GoCAM.go_complex);
+						//}
 					}else { 
 						go_cam.addTypeAssertion(e,  GoCAM.chebi_protein);
 					}
@@ -900,10 +908,11 @@ public class BioPaxtoGO {
 					//adds a unique class to describe this complex (no no to modify tbox..)
 					if(noctua_version == 1) { 
 						addComplexAsSimpleClass(go_cam, cnames, e, null);
-					}else {
-						//assert it as a complex
-						go_cam.addTypeAssertion(e, GoCAM.go_complex);
 					}
+					//else {
+						//assert it as a complex - needed for correct inference (without loading up the subclass assertion in the above)
+						go_cam.addTypeAssertion(e, GoCAM.go_complex);
+					//}
 
 				}
 			}
@@ -1174,7 +1183,6 @@ public class BioPaxtoGO {
 	private OWLNamedIndividual addComplexAsSimpleClass(GoCAM go_cam, Set<String> component_names, OWLNamedIndividual complex_i, Set<OWLAnnotation> annotations) {
 		String combo_name = "";
 		for(String n : component_names) {
-			combo_name=combo_name+"_"+n;
 		}
 		OWLClass complex_class = go_cam.df.getOWLClass(GoCAM.makeGoCamifiedIRI(combo_name));
 		Set<String> labels =  go_cam.getLabels(complex_i);

@@ -167,7 +167,7 @@ public class GoCAM {
 		addLabel(process_class, "Process");		
 		//complex GO_0032991
 		go_complex = df.getOWLClass(IRI.create(obo_iri + "GO_0032991")); 
-		addLabel(go_complex, "Macromolecular Complex");		
+		addLabel(go_complex, "protein-containing complex");		
 		//http://purl.obolibrary.org/obo/ECO_0000313
 		//"A type of imported information that is used in an automatic assertion."
 		eco_imported_auto = df.getOWLClass(IRI.create(obo_iri + "ECO_0000313")); 
