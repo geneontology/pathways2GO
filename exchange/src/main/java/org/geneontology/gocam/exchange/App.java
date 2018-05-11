@@ -63,9 +63,17 @@ public class App {
 	//	String maximal_lego = "src/main/resources/org/geneontology/gocam/exchange/go-lego-full.owl";	
 
 	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
-
-		testLoadTime();
+		String ontf = "/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-A_tetrasaccharide_linker_sequence_is_required_for_GAG_synthesis.ttl";
+		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
+		OWLOntology ont = man.loadOntologyFromOntologyDocument(new File(ontf));		
+//		ClassificationReport cr = new ClassificationReport(ont);
+//		System.out.println("bp "+cr.bp_count+" "+cr.bp_unclassified);
+//		System.out.println("mf "+cr.mf_count+" "+cr.mf_unclassified);
+//		System.out.println("cc "+cr.cc_count+" "+cr.cc_unclassified);
+//		System.out.println("complex "+cr.complex_count+" "+cr.complex_unclassified);
+		
 	}
+
 
 	public static void testLoadTime() throws OWLOntologyCreationException {
 		String ontf = "/Users/bgood/gocam_input/neo.owl";
@@ -78,11 +86,11 @@ public class App {
 		System.out.println("loaded in "+(t1-t0)/1000+" seconds with n axioms = "+ont.getAxiomCount());
 		OWLClass test = df.getOWLClass(IRI.create(("http://identifiers.org/uniprot/Q16774")));
 		//4.5gb 66 seconds
-		 OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
-	     OWLReasoner r = reasonerFactory.createReasoner(ont);
-	     //5.12gb took 18 more seconds
-	     long t3 = System.currentTimeMillis();
-	     System.out.println("reasoner loaded in "+(t3-t1)/1000+" seconds");
+		OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
+		OWLReasoner r = reasonerFactory.createReasoner(ont);
+		//5.12gb took 18 more seconds
+		long t3 = System.currentTimeMillis();
+		System.out.println("reasoner loaded in "+(t3-t1)/1000+" seconds");
 	}
 
 

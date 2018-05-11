@@ -177,6 +177,24 @@ public class QRunner {
 		return unreasonable;
 	}
 	
+	Set<String> getTypes(String i_uri) {
+		Set<String> types = new HashSet<String>();
+		String q = 
+				"prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " + 
+				"SELECT ?type WHERE { " 
+						+"<"+ i_uri + ">	rdf:type ?type  " + 
+				"   } ";
+		QueryExecution qe = QueryExecutionFactory.create(q, jena);
+		ResultSet results = qe.execSelect();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Resource r = qs.getResource("type");
+			types.add(r.getURI());
+		}
+		qe.close();
+		return types;
+	}
+	
 	/**
 #infer that an entity (either protein or protein complex) E enables a reaction R2
 #if R1 provides direct input for R2 

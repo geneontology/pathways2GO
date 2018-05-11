@@ -1,7 +1,0 @@
-chebi_uri	type	count
-http://purl.obolibrary.org/obo/CHEBI_16618	PIP3	chemical	2
-http://purl.obolibrary.org/obo/CHEBI_17552	GDP	chemical	2
-http://purl.obolibrary.org/obo/CHEBI_15996	GTP	chemical	2
-http://purl.obolibrary.org/obo/CHEBI_15422	ATP	chemical	9
-http://purl.obolibrary.org/obo/CHEBI_16761	ADP	chemical	9
-http://purl.obolibrary.org/obo/CHEBI_18348	PIP2	chemical	1

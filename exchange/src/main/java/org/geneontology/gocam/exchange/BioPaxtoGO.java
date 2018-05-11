@@ -107,6 +107,7 @@ public class BioPaxtoGO {
 		Map<String, Integer> chebi_count = new HashMap<String, Integer>();
 		Set<String> deprecated_classes = new HashSet<String>();
 		Set<String> inconsistent_models = new HashSet<String>();
+		Map<String, ReasonerReport> pathway_class_report = new HashMap<String, ReasonerReport>();
 		Map<String,Map<String, Set<String>>> pathway_inferred_types = new HashMap<String,Map<String, Set<String>>>();
 		
 		void writeReport() throws IOException{
@@ -115,6 +116,8 @@ public class BioPaxtoGO {
 			String deprecated_file = "report/deprecated_terms_used.txt";
 			String inconsistent_file = "report/inconsistent_models.txt";
 			String inference_file = "report/inferred_types.txt";
+			String reasoner_value_file = "report/reasoner_value.txt";
+			String summary_file = "report/ReportSummary.txt";
 			Set<Process> all_processes = new HashSet<Process>(bp2go_mf.keySet());		
 			all_processes.addAll(new HashSet<Process>(bp2go_bp.keySet()));
 			all_processes.addAll(new HashSet<Process>(bp2go_controller.keySet()));
@@ -215,11 +218,32 @@ public class BioPaxtoGO {
 			}
 			inf_report.close();
 			
-			System.out.println("Pathways:"+n_pathways+" with bp:"+n_pathways_tagged_bp+" with mf:"+n_pathways_tagged_mf+" both:"+n_pathways_tagged_both);
-			System.out.println("% pathways no bp: "+((n_pathways-n_pathways_tagged_bp)/n_pathways));
-			System.out.println("Reactions:"+n_reactions+" with bp:"+n_reactions_tagged_bp+" with mf:"+n_reactions_tagged_mf+" both:"+n_reactions_tagged_both);
-			System.out.println("% reactions no mf: "+((n_reactions-n_reactions_tagged_mf)/n_reactions));
-			System.out.println("% reactions with no bp: "+((n_reactions-n_reactions_tagged_bp)/n_reactions));
+			ReasonerReport inf_summary = new ReasonerReport();
+			FileWriter value_file = new FileWriter(reasoner_value_file);
+			value_file.write("pathway\tnew_bp\tnew_mf\tnew_cc\tnew_complex\tnew_total\n");
+			for(String pathway : pathway_class_report.keySet()) {
+				ReasonerReport r = pathway_class_report.get(pathway);
+				inf_summary.bp_new_class_count+=r.bp_new_class_count;
+				inf_summary.mf_new_class_count+=r.mf_new_class_count;
+				inf_summary.cc_new_class_count+=r.cc_new_class_count;
+				inf_summary.complex_new_class_count+=r.complex_new_class_count;
+				inf_summary.total_new_classified_instances+=r.total_new_classified_instances;
+				value_file.write(pathway+"\t"+r.bp_new_class_count+"\t"+r.mf_new_class_count+"\t"+r.cc_new_class_count+"\t"+r.complex_new_class_count+"\t"+r.total_new_classified_instances+"\n");
+			}
+			value_file.close();
+			FileWriter summary = new FileWriter(summary_file);			
+			summary.write("Without considering reasoning for instance classification - just looking at direct Reactome assertions...\n");
+			summary.write("Pathways:"+n_pathways+" with bp:"+n_pathways_tagged_bp+" with mf:"+n_pathways_tagged_mf+" both:"+n_pathways_tagged_both+"\n");
+			summary.write("% pathways no bp: "+((n_pathways-n_pathways_tagged_bp)/n_pathways)+"\n");
+			summary.write("Reactions:"+n_reactions+" with bp:"+n_reactions_tagged_bp+" with mf:"+n_reactions_tagged_mf+" both:"+n_reactions_tagged_both+"\n");
+			summary.write("% reactions no mf: "+((n_reactions-n_reactions_tagged_mf)/n_reactions)+"\n");
+			summary.write("% reactions with no bp: "+((n_reactions-n_reactions_tagged_bp)/n_reactions)+"\n");
+			summary.write("\nFor unclassified instances, reasoner can add "+inf_summary.total_new_classified_instances+" non-trivial (not BFO, non-root GO) classifications for:\n");
+			summary.write("\t"+inf_summary.bp_new_class_count+"\tnew bp\n");
+			summary.write("\t"+inf_summary.mf_new_class_count+"\tnew mf\n");
+			summary.write("\t"+inf_summary.cc_new_class_count+"\tnew cc\n");
+			summary.write("\t"+inf_summary.complex_new_class_count+"\tnew complex\n");
+			summary.close();
 		}
 	}
 
@@ -259,7 +283,7 @@ public class BioPaxtoGO {
 				//			"/Users/bgood/Desktop/test/abacavir_metabolism.owl";
 				//"/Users/bgood/Desktop/test/gap_junction.owl"; 
 				//		"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
-				//"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
+		//		"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
 				"/Users/bgood/gocam_input/reactome/march2018/Homo_sapiens.owl";
 
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
@@ -457,9 +481,15 @@ public class BioPaxtoGO {
 		//sparql rules make additions to go_cam_ont, add them to the rdf model 
 		//set up to apply OWL inference to test for consistency and add classifications
 		//go_cam.go_cam_ont is ready and equals the Abox..
+		//TODO capture cases where classes are added where none existed before.
+		ClassificationReport before = go_cam.getClassificationReport();		
 		//don't want to reload tbox each time..
 		boolean rebuild_tbox_with_go_cam_ont = false;
+		//this will also rebuild the rdf version of the ontology, adding things it infers
 		WorkingMemory wm = go_cam.applyArachneInference(tbox_qrunner, rebuild_tbox_with_go_cam_ont);
+		ClassificationReport after = go_cam.getClassificationReport();
+		ReasonerReport reasoner_report = new ReasonerReport(before, after);
+		report.pathway_class_report.put(pathwayname, reasoner_report);
 		//checks for inferred things with rdf:type OWL:Nothing with a sparql query
 		boolean is_logical = go_cam.validateGoCAM();	
 		//checks for inferred classifications for reporting
@@ -552,7 +582,7 @@ public class BioPaxtoGO {
 					OWLClass xref_go_parent = goplus.getOboClass(uri, true);
 					boolean deprecated = goplus.isDeprecated(uri);
 					if(deprecated) {
-						report.deprecated_classes.add(uri+"\tBP");
+						report.deprecated_classes.add(pathway.getDisplayName()+"\t"+uri+"\tBP");
 					}					
 					//add it into local hierarchy (temp pre import)	
 					//addRefBackedObjectPropertyAssertion
@@ -712,7 +742,7 @@ public class BioPaxtoGO {
 							OWLClass xref_go_loc = goplus.getOboClass(uri, true);
 							boolean deprecated = goplus.isDeprecated(uri);
 							if(deprecated) {
-								report.deprecated_classes.add(xref_go_loc+"\tCC");
+								report.deprecated_classes.add(entity.getDisplayName()+"\t"+xref_go_loc.getIRI().toString()+"\tCC");
 							}
 							Set<XReferrable> refs = uref.getXrefOf();							
 							for(XReferrable ref : refs) {
@@ -723,6 +753,8 @@ public class BioPaxtoGO {
 								OWLNamedIndividual loc_e = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(loc.getUri()+entity.getUri()));
 								go_cam.addLabel(xref_go_loc, location_term);
 								go_cam.addTypeAssertion(loc_e, xref_go_loc);
+								//add this for reporting reasons - avoiding need for use of full reasoner 
+								go_cam.addTypeAssertion(loc_e, GoCAM.cc_class);
 								go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.located_in, loc_e, pubids, GoCAM.eco_imported_auto, "PMID", null);		
 								if(noctua_version == 1) {
 									go_cam.addLiteralAnnotations2Individual(e.getIRI(), GoCAM.rdfs_comment, "located_in "+location_term);
@@ -819,7 +851,7 @@ public class BioPaxtoGO {
 								OWLClass mlc_class = goplus.getOboClass(chebi_uri, true);
 								boolean deprecated = goplus.isDeprecated(chebi_uri);
 								if(deprecated) {
-									report.deprecated_classes.add(chebi_uri+"\tchebi");
+									report.deprecated_classes.add(entity.getDisplayName()+"\t"+chebi_uri+"\tchebi");
 								}
 								String chebi_report_key;
 								if(goplus.isChebiRole(chebi_uri)) {
@@ -1048,7 +1080,7 @@ public class BioPaxtoGO {
 								String uri = GoCAM.obo_iri + goid;
 								OWLClass xref_go_func = goplus.getOboClass(uri, true);
 								if(goplus.isDeprecated(uri)) {
-									report.deprecated_classes.add(uri+"\tMF");
+									report.deprecated_classes.add(entity.getDisplayName()+"\t"+uri+"\tMF");
 								}
 								//add the go function class as a type for the reaction instance being controlled here
 								go_cam.addTypeAssertion(e, xref_go_func);
@@ -1114,7 +1146,7 @@ public class BioPaxtoGO {
 							String uri = GoCAM.obo_iri + goid;
 							OWLClass xref_go_func = goplus.getOboClass(uri, true);
 							if(goplus.isDeprecated(uri)) {
-								report.deprecated_classes.add(uri+"\tBP");
+								report.deprecated_classes.add(entity.getDisplayName()+"\t"+uri+"\tBP");
 							}
 							//go_cam.addSubclassAssertion(xref_go_func, GoCAM.bp_class, null);
 							//the go class can not be a type for the reaction instance as we want to classify reactions as functions
@@ -1183,6 +1215,7 @@ public class BioPaxtoGO {
 	private OWLNamedIndividual addComplexAsSimpleClass(GoCAM go_cam, Set<String> component_names, OWLNamedIndividual complex_i, Set<OWLAnnotation> annotations) {
 		String combo_name = "";
 		for(String n : component_names) {
+			combo_name = combo_name+n+"-";
 		}
 		OWLClass complex_class = go_cam.df.getOWLClass(GoCAM.makeGoCamifiedIRI(combo_name));
 		Set<String> labels =  go_cam.getLabels(complex_i);

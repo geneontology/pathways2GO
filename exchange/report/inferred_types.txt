@@ -1,5 +1,0 @@
-pathway	individual label	individual uri	inferred_type
-DAP12_signaling	Recruitment of GADS:SLP-76 to p-5Y-LAT	<http://model.geneontology.org/550201685>	<http://purl.obolibrary.org/obo/GO_0098772>
-DAP12_signaling	Activation of RAC1 by VAV2/3	<http://model.geneontology.org/550201715>	<http://purl.obolibrary.org/obo/GO_0005525>
-DAP12_signaling	SOS mediated nucleotide exchange of RAS (SHC)	<http://model.geneontology.org/550201687>	<http://purl.obolibrary.org/obo/GO_0005525>
-DAP12_signaling	p85 regulatory unit of PI3K binds p-6Y-SYK	<http://model.geneontology.org/550201681>	<http://purl.obolibrary.org/obo/GO_0004860>

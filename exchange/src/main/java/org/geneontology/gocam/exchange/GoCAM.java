@@ -90,7 +90,7 @@ public class GoCAM {
 	directly_positively_regulated_by, directly_negatively_regulated_by, involved_in_regulation_of, involved_in_negative_regulation_of, involved_in_positive_regulation_of,
 	directly_negatively_regulates, directly_positively_regulates, has_role;
 	public static OWLClass 
-	bp_class, continuant_class, process_class, go_complex, molecular_function, 
+	bp_class, continuant_class, process_class, go_complex, cc_class, molecular_function, 
 	eco_imported, eco_imported_auto, eco_inferred_auto, 
 	chebi_protein, chebi_gene, chemical_entity, chemical_role;
 	OWLOntology go_cam_ont;
@@ -116,8 +116,8 @@ public class GoCAM {
 		ontman = OWLManager.createOWLOntologyManager();				
 		go_cam_ont = ontman.createOntology(ont_iri);
 		df = OWLManager.getOWLDataFactory();
-		
-//TODO basically never going to do this, maybe take it out..
+
+		//TODO basically never going to do this, maybe take it out..
 		if(add_lego_import) {
 			String lego_iri = "http://purl.obolibrary.org/obo/go/extensions/go-lego.owl";
 			OWLImportsDeclaration legoImportDeclaration = df.getOWLImportsDeclaration(IRI.create(lego_iri));
@@ -150,7 +150,7 @@ public class GoCAM {
 		//Will add classes and relations as we need them now. 
 		//TODO Work on using imports later to ensure we don't produce incorrect ids..
 		//classes	
-		
+
 		chemical_role =df.getOWLClass(IRI.create(obo_iri+"CHEBI_50906"));
 		addLabel(chemical_role, "chemical role");
 		//biological process
@@ -159,6 +159,9 @@ public class GoCAM {
 		//molecular function GO:0003674
 		molecular_function = df.getOWLClass(IRI.create(obo_iri + "GO_0003674")); 
 		addLabel(molecular_function, "Molecular Function");
+		//cellular component
+		cc_class =  df.getOWLClass(IRI.create(obo_iri + "GO_0005575"));
+		addLabel(cc_class, "Cellular Component");
 		//continuant 
 		continuant_class = df.getOWLClass(IRI.create(obo_iri + "BFO_0000002")); 
 		addLabel(continuant_class, "Continuant");
@@ -186,7 +189,7 @@ public class GoCAM {
 
 		chemical_entity =df.getOWLClass(IRI.create(obo_iri+"CHEBI_24431"));
 		addLabel(chemical_entity, "chemical entity");
-		
+
 		//part of
 		part_of = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000050"));
 		addLabel(part_of, "part of"); 
@@ -232,13 +235,13 @@ public class GoCAM {
 		//RO_0002630
 		directly_negatively_regulates = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002630"));
 		addLabel(directly_negatively_regulates, "directly negatively regulates");
-		
+
 		directly_positively_regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002024"));
 		addLabel(directly_positively_regulated_by, "directly positively regulated by");
-		
+
 		directly_positively_regulates = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002629"));
 		addLabel(directly_positively_regulates, "directly positively regulates");
-		
+
 		//RO_0002430 involved_in_negative_regulation_of
 		//RO_0002429 involved_in_positive_regulation_of
 		involved_in_negative_regulation_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002430"));
@@ -248,11 +251,11 @@ public class GoCAM {
 
 		involved_in_regulation_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002428"));
 		addLabel(involved_in_regulation_of, "involved in regulation of");
-		
+
 		//RO:0000087
 		has_role = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0000087"));
 		addLabel(has_role, "has role");
-		
+
 		//Annotate the ontology
 		OWLAnnotation title_anno = df.getOWLAnnotation(title_prop, df.getOWLLiteral(gocam_title));
 		OWLAxiom titleaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, title_anno);
@@ -270,7 +273,67 @@ public class GoCAM {
 		OWLAxiom stateaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, state_anno);
 		ontman.addAxiom(go_cam_ont, stateaxiom);
 
-		//ontman.applyChanges();
+
+	}
+
+	public ClassificationReport getClassificationReport(){
+		ClassificationReport class_report = new ClassificationReport();
+		class_report.mf_count = EntitySearcher.getIndividuals(molecular_function, go_cam_ont).size();
+		class_report.bp_count = EntitySearcher.getIndividuals(bp_class, go_cam_ont).size();
+		class_report.cc_count = EntitySearcher.getIndividuals(cc_class, go_cam_ont).size();
+		class_report.complex_count = EntitySearcher.getIndividuals(go_complex, go_cam_ont).size();
+		class_report.mf_unclassified = countUnclassifiedRDF(molecular_function, go_cam_ont);
+		class_report.bp_unclassified = countUnclassifiedRDF(bp_class, go_cam_ont);
+		class_report.cc_unclassified = countUnclassifiedRDF(cc_class, go_cam_ont);
+		class_report.complex_unclassified = countUnclassifiedRDF(go_complex, go_cam_ont);
+		return class_report;
+	}
+
+	public int countUnclassifiedRDF(OWLClass root_class, OWLOntology ont) {
+		int un = 0; 
+		//only count unique concepts once - even when there are many individuals that are expressions of that concept
+		//e.g. one complex may be used many many times in a model.  If it is unclassified, just count that as one.  
+		Set<String> unique = new HashSet<String>();
+		for(OWLIndividual i : EntitySearcher.getIndividuals(root_class, ont)) {
+			String label = this.getaLabel((OWLEntity)i);
+			if(unique.add(label)) {
+				Set<String> types = qrunner.getTypes(i.asOWLNamedIndividual().getIRI().toString());
+				int ntypes = 0;
+				String root_class_iri = root_class.getIRI().toString();
+				for(String type : types) {
+					if((!type.equals(root_class_iri))&&type.contains("GO")) {
+						ntypes++;
+					}
+				}
+				if(ntypes==0) {
+					un++;
+				}
+			}
+		}
+		return un;
+	}
+
+	public int countUnclassifiedOWL(OWLClass root_class) {
+		int un = 0; 
+		//only count unique concepts once - even when there are many individuals that are expressions of that concept
+		//e.g. one complex may be used many many times in a model.  If it is unclassified, just count that as one.  
+		Set<String> unique = new HashSet<String>();
+		for(OWLIndividual i : EntitySearcher.getIndividuals(root_class, go_cam_ont)) {
+			String label = this.getaLabel((OWLEntity)i);
+			if(unique.add(label)) {
+				Collection<OWLClassExpression> types = EntitySearcher.getTypes(i, go_cam_ont);
+				int ntypes = 0;
+				for(OWLClassExpression type : types) {
+					if(type!=root_class&&type.toString().contains("GO")) {
+						ntypes++;
+					}
+				}
+				if(ntypes==0) {
+					un++;
+				}
+			}
+		}
+		return un;
 	}
 
 	Blazer initializeBlazeGraph(String journal) {
@@ -308,7 +371,7 @@ public class GoCAM {
 		addBasicAnnotations2Individual(iri, this.base_contributor, this.base_date, this.base_provider);
 		return i;
 	}
-	
+
 	void addBasicAnnotations2Individual(IRI individual_iri, String contributor_uri, String date, String provider_uri) {
 		addLiteralAnnotations2Individual(individual_iri, contributor_prop, contributor_uri);
 		addLiteralAnnotations2Individual(individual_iri, date_prop, getDate(date));
@@ -435,7 +498,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		annos.addAll(getDefaultAnnotations());//prepare the database annotations like pubmed ids 
 		if(ids!=null) {			
 			for(String id : ids) {
-			//	IRI anno_iri = makeEntityHashIri(source.hashCode()+"_"+prop.hashCode()+"_"+target.hashCode()+"_"+namespace_prefix+"_"+id);
+				//	IRI anno_iri = makeEntityHashIri(source.hashCode()+"_"+prop.hashCode()+"_"+target.hashCode()+"_"+namespace_prefix+"_"+id);
 				IRI anno_iri = this.makeRandomIri();
 				OWLNamedIndividual evidence = makeAnnotatedIndividual(anno_iri);					
 				addTypeAssertion(evidence, evidence_class);
@@ -473,15 +536,15 @@ final long counterValue = instanceCounter.getAndIncrement();
 					}
 				}
 			}
-//			else {
-//				System.out.println("creating "+check);
-//			}
+			//			else {
+			//				System.out.println("creating "+check);
+			//			}
 			//now finally make the new one.
 			add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(prop, source, target, annos);
 			AddAxiom addAxiom = new AddAxiom(go_cam_ont, add_prop_axiom);
 			ontman.applyChange(addAxiom);
 		}
-		
+
 		return ;
 	}
 
@@ -560,15 +623,15 @@ final long counterValue = instanceCounter.getAndIncrement();
 		return qrunner;
 	}
 
-//	void addInferredEdges() throws OWLOntologyCreationException {
-//		if(qrunner==null||qrunner.arachne==null) {
-//			initializeQRunnerForTboxInference();
-//		}
-//		//System.out.println("Applying tbox rules to expand the gocam graph");
-//		qrunner.wm = qrunner.arachne.createInferredModel(this.go_cam_ont, false, false);			
-//		//System.out.println("Making Jena model from inferred graph for query");
-//		qrunner.jena = qrunner.makeJenaModel(qrunner.wm);
-//	}
+	//	void addInferredEdges() throws OWLOntologyCreationException {
+	//		if(qrunner==null||qrunner.arachne==null) {
+	//			initializeQRunnerForTboxInference();
+	//		}
+	//		//System.out.println("Applying tbox rules to expand the gocam graph");
+	//		qrunner.wm = qrunner.arachne.createInferredModel(this.go_cam_ont, false, false);			
+	//		//System.out.println("Making Jena model from inferred graph for query");
+	//		qrunner.jena = qrunner.makeJenaModel(qrunner.wm);
+	//	}
 
 	/**
 	 * Use sparql queries to inform modifications to the go-cam owl ontology 
@@ -601,13 +664,13 @@ final long counterValue = instanceCounter.getAndIncrement();
 					+ r2_label+ " has input "+e_label+" .  The original has_input relation to "+e_label+" was replaced. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 			this.addRefBackedObjectPropertyAssertion(r2, enabled_by, e, null, GoCAM.eco_inferred_auto, null, annos);
-		//	System.out.println(r2+" added enabled by "+e);
+			//	System.out.println(r2+" added enabled by "+e);
 
 		}
 		//if subsequent rules need to compute over the results of previous rules, need to load the owl back into the rdf model
 		System.out.println("done with enabled by, adding to rdf model");
 		qrunner = new QRunner(go_cam_ont); 
-	//	System.out.println("Added "+ies.size()+" enabled_by triples");
+		//	System.out.println("Added "+ies.size()+" enabled_by triples");
 		Set<InferredRegulator> ir1 = qrunner.getInferredRegulatorsQ1();
 		for(InferredRegulator ir : ir1) {
 			//create ?reaction2 obo:RO_0002333 ?input
@@ -627,12 +690,12 @@ final long counterValue = instanceCounter.getAndIncrement();
 					+r1_label+" has output A and A is involved in "+reg+" "+r2_label+". See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 			this.addRefBackedObjectPropertyAssertion(r1, o, r2, null, GoCAM.eco_inferred_auto, null, annos);
-//			System.out.println("reg1 "+r2+" "+o+" "+r1);
+			//			System.out.println("reg1 "+r2+" "+o+" "+r1);
 		}
 		//if subsequent rules need to compute over the results of previous rules, need to load the owl back into the rdf model
 		System.out.println("done with directly asserted neg pos regulates, adding to rdf model");
 		qrunner = new QRunner(go_cam_ont); 
-//		System.out.println("Added "+ir1.size()+" pos/neg reg triples");
+		//		System.out.println("Added "+ir1.size()+" pos/neg reg triples");
 		Set<InferredRegulator> ir2_neg = qrunner.getInferredRegulatorsQ2();
 		for(InferredRegulator ir : ir2_neg) {
 			//create ?reaction2 obo:RO_0002333 ?input
@@ -649,11 +712,11 @@ final long counterValue = instanceCounter.getAndIncrement();
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 			//this.addObjectPropertyAssertion(r1, o, r2, annos);
 			this.addRefBackedObjectPropertyAssertion(r2, o, r1, null, GoCAM.eco_inferred_auto, null, annos);
-//			System.out.println("reg2 "+r1+" "+o+" "+r2);
+			//			System.out.println("reg2 "+r1+" "+o+" "+r2);
 		}		
 		qrunner = new QRunner(go_cam_ont); 
 		System.out.println("done with secondary negative regulates");
-//		System.out.println("Added "+ir2_neg.size()+" neg inhibitory binding reg triples");
+		//		System.out.println("Added "+ir2_neg.size()+" neg inhibitory binding reg triples");
 	}
 
 	void writeGoCAM(String outfilename, boolean save2blazegraph) throws OWLOntologyStorageException, OWLOntologyCreationException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
@@ -713,12 +776,12 @@ final long counterValue = instanceCounter.getAndIncrement();
 			RuleEngine rulen = tbox_qrunner.arachne.makeExpandedRuleSet(go_cam_ont);
 			Set<Statement> statements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(go_cam_ont)).asJava();
 			Set<Triple> triples = statements.stream().map(s -> Bridge.tripleFromJena(s.asTriple())).collect(Collectors.toSet());
-//			//apply inference
+			//			//apply inference
 			wm = rulen.processTriples(JavaConverters.asScalaSetConverter(triples).asScala());
 		}else {
 			wm = tbox_qrunner.arachne.createInferredModel(go_cam_ont,false, false);
 		}
-//		//move to jena for query
+		//		//move to jena for query
 		qrunner.jena = qrunner.makeJenaModel(wm);
 		//return wm to access inferences and explanations
 		return wm;

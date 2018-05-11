@@ -1,0 +1,27 @@
+uri	type
+Dissociation of phospho-Cdh1 from the APC/C complex	http://purl.obolibrary.org/obo/GO_0051436	BP
+LIPC	http://purl.obolibrary.org/obo/GO_0031012	CC
+CDKN1A (p21) prevents phosphorylation of Cdh1 by Cyclin A:Cdk2	http://purl.obolibrary.org/obo/GO_0051436	BP
+Phosphorylation of the APC/C	http://purl.obolibrary.org/obo/GO_0051437	BP
+Association of Emi1 with Cdc20	http://purl.obolibrary.org/obo/GO_0051436	BP
+Phosphorylation of Cdh1 by Cyclin A:Cdk2	http://purl.obolibrary.org/obo/GO_0051436	BP
+Autodegradation of Cdh1 by Cdh1:APC/C	http://purl.obolibrary.org/obo/GO_0051436	BP
+SCF-beta-TrCP mediated degradation of Emi1	http://purl.obolibrary.org/obo/GO_0051437	BP
+Ubiquitination of cell cycle proteins targeted by the APC/C:Cdh1complex	http://purl.obolibrary.org/obo/GO_0042787	BP
+RNF5 and RNF185 ubiquitinate CFTR F508del	http://purl.obolibrary.org/obo/GO_1904264	MF
+Activation of APC/C:Cdc20 by dissociation of Cdc20:phospho-APC/C from Cdc20:phospho-APC/C:Mad2:Bub3:BubR1	http://purl.obolibrary.org/obo/GO_0051437	BP
+Inhibition of the proteolytic activity of APC/C required for the onset of anaphase by mitotic spindle checkpoint components	http://purl.obolibrary.org/obo/GO_0051436	BP
+Association of Emi1 with Cdh1	http://purl.obolibrary.org/obo/GO_0051436	BP
+The proton buffering model	http://purl.obolibrary.org/obo/GO_0015992	BP
+Glutathione is taken up by the bacterium	http://purl.obolibrary.org/obo/GO_0015197	MF
+Beta-catenin translocates to the nucleus	http://purl.obolibrary.org/obo/GO_0035411	BP
+OS9:SEL1:ERAD E3 ligase:DERL2 ubiquitinates unfolded protein:(GlcNAc)2 (Man)9-5	http://purl.obolibrary.org/obo/GO_1904264	MF
+Multiubiquitination of APC/C-associated Cdh1	http://purl.obolibrary.org/obo/GO_0042787	BP
+Ubiquitination of Cyclin B by phospho-APC/C:Cdc20 complex	http://purl.obolibrary.org/obo/GO_0042787	BP
+Ubiquitination of Cyclin A by APC/C:Cdc20 complex	http://purl.obolibrary.org/obo/GO_0042787	BP
+Conversion from APC/C:Cdc20 to APC/C:Cdh1 in late anaphase	http://purl.obolibrary.org/obo/GO_0051439	BP
+Ubiquitination of Securin by phospho-APC/C:Cdc20 complex	http://purl.obolibrary.org/obo/GO_0042787	BP
+Mitochondrial Uncoupling Proteins	http://purl.obolibrary.org/obo/GO_0015992	BP
+Regulation of APC/C activators between G1/S and early anaphase	http://purl.obolibrary.org/obo/GO_0051439	BP
+RNF5 and RNF185 ubiquitinate misfolded CFTR	http://purl.obolibrary.org/obo/GO_1904264	MF
+Phosphorylation of Cdh1 by Cyclin B1:Cdc2	http://purl.obolibrary.org/obo/GO_0051436	BP
