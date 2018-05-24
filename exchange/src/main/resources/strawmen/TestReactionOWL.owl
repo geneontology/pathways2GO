@@ -5,6 +5,7 @@
      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
      xmlns:owl="http://www.w3.org/2002/07/owl#"
      xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:biopax-level3="http://www.biopax.org/release/biopax-level3.owl#"
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
     <owl:Ontology rdf:about="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147">
@@ -56,11 +57,128 @@
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.biopax.org/release/biopax-level3.owl#has_stoichiometry -->
+
+    <owl:DatatypeProperty rdf:about="http://www.biopax.org/release/biopax-level3.owl#has_stoichiometry"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
     // Classes
     //
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
 
+    
+
+
+    <!-- http://www.biopax.org/release/biopax-level3.owl#N-acetyl-D-glucosaminate -->
+
+    <owl:Class rdf:about="http://www.biopax.org/release/biopax-level3.owl#N-acetyl-D-glucosaminate">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#ChemicalEntity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.biopax.org/release/biopax-level3.owl#RHEA_13032_anon_class_def -->
+
+    <owl:Class rdf:about="http://www.biopax.org/release/biopax-level3.owl#RHEA_13032_anon_class_def">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#catalytic_activity"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#has_substance_bag"/>
+                        <owl:someValuesFrom>
+                            <owl:Class>
+                                <owl:intersectionOf rdf:parseType="Collection">
+                                    <rdf:Description rdf:about="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#SubstanceSet"/>
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#has_member_part"/>
+                                        <owl:someValuesFrom>
+                                            <owl:Class>
+                                                <owl:intersectionOf rdf:parseType="Collection">
+                                                    <rdf:Description rdf:about="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#N-acetyl-D-glucosamine"/>
+                                                    <owl:Restriction>
+                                                        <owl:onProperty rdf:resource="http://www.biopax.org/release/biopax-level3.owl#has_stoichiometry"/>
+                                                        <owl:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:hasValue>
+                                                    </owl:Restriction>
+                                                </owl:intersectionOf>
+                                            </owl:Class>
+                                        </owl:someValuesFrom>
+                                    </owl:Restriction>
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#has_member_part"/>
+                                        <owl:someValuesFrom>
+                                            <owl:Class>
+                                                <owl:intersectionOf rdf:parseType="Collection">
+                                                    <rdf:Description rdf:about="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#dioxygen"/>
+                                                    <owl:Restriction>
+                                                        <owl:onProperty rdf:resource="http://www.biopax.org/release/biopax-level3.owl#has_stoichiometry"/>
+                                                        <owl:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:hasValue>
+                                                    </owl:Restriction>
+                                                </owl:intersectionOf>
+                                            </owl:Class>
+                                        </owl:someValuesFrom>
+                                    </owl:Restriction>
+                                </owl:intersectionOf>
+                            </owl:Class>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#has_substance_bag"/>
+                        <owl:someValuesFrom>
+                            <owl:Class>
+                                <owl:intersectionOf rdf:parseType="Collection">
+                                    <rdf:Description rdf:about="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#SubstanceSet"/>
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#has_member_part"/>
+                                        <owl:someValuesFrom>
+                                            <owl:Class>
+                                                <owl:intersectionOf rdf:parseType="Collection">
+                                                    <rdf:Description rdf:about="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#hydrogen_peroxide"/>
+                                                    <owl:Restriction>
+                                                        <owl:onProperty rdf:resource="http://www.biopax.org/release/biopax-level3.owl#has_stoichiometry"/>
+                                                        <owl:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:hasValue>
+                                                    </owl:Restriction>
+                                                </owl:intersectionOf>
+                                            </owl:Class>
+                                        </owl:someValuesFrom>
+                                    </owl:Restriction>
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#has_member_part"/>
+                                        <owl:someValuesFrom>
+                                            <owl:Class>
+                                                <owl:intersectionOf rdf:parseType="Collection">
+                                                    <rdf:Description rdf:about="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#hydron"/>
+                                                    <owl:Restriction>
+                                                        <owl:onProperty rdf:resource="http://www.biopax.org/release/biopax-level3.owl#has_stoichiometry"/>
+                                                        <owl:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:hasValue>
+                                                    </owl:Restriction>
+                                                </owl:intersectionOf>
+                                            </owl:Class>
+                                        </owl:someValuesFrom>
+                                    </owl:Restriction>
+                                </owl:intersectionOf>
+                            </owl:Class>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#catalytic_activity"/>
+        <rdfs:comment>N-acylhexosamine_oxidase_activity</rdfs:comment>
+    </owl:Class>
     
 
 
@@ -94,24 +212,15 @@
     
 
 
-    <!-- http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#N-acylhexosamine_oxidase_activity -->
-
-    <owl:Class rdf:about="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#N-acylhexosamine_oxidase_activity">
-        <owl:equivalentClass rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#RHEA_13032"/>
-        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#catalytic_activity"/>
-    </owl:Class>
-    
-
-
     <!-- http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#PhysicalEntity -->
 
     <owl:Class rdf:about="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#PhysicalEntity"/>
     
 
 
-    <!-- http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#RHEA_13032 -->
+    <!-- http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#RHEA_13032_named_class_def -->
 
-    <owl:Class rdf:about="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#RHEA_13032">
+    <owl:Class rdf:about="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#RHEA_13032_named_class_def">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
@@ -128,6 +237,7 @@
             </owl:Class>
         </owl:equivalentClass>
         <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#catalytic_activity"/>
+        <rdfs:comment>equivalent to N-acylhexosamine_oxidase_activity</rdfs:comment>
     </owl:Class>
     
 
@@ -291,9 +401,194 @@
     
 
 
-    <!-- http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#NewReactionFromAPathwayDB -->
+    <!-- http://www.biopax.org/release/biopax-level3.owl#N-acetyl-D-glucosaminate_pool -->
 
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#NewReactionFromAPathwayDB">
+    <owl:NamedIndividual rdf:about="http://www.biopax.org/release/biopax-level3.owl#N-acetyl-D-glucosaminate_pool">
+        <rdf:type rdf:resource="http://www.biopax.org/release/biopax-level3.owl#N-acetyl-D-glucosaminate"/>
+        <biopax-level3:has_stoichiometry rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</biopax-level3:has_stoichiometry>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.biopax.org/release/biopax-level3.owl#N-acetyl-D-glucosamine_pool -->
+
+    <owl:NamedIndividual rdf:about="http://www.biopax.org/release/biopax-level3.owl#N-acetyl-D-glucosamine_pool">
+        <rdf:type rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#N-acetyl-D-glucosamine"/>
+        <biopax-level3:has_stoichiometry rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</biopax-level3:has_stoichiometry>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.biopax.org/release/biopax-level3.owl#NewReactionAllAnon -->
+
+    <owl:NamedIndividual rdf:about="http://www.biopax.org/release/biopax-level3.owl#NewReactionAllAnon">
+        <rdf:type>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#catalytic_activity"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#has_substance_bag"/>
+                        <owl:someValuesFrom>
+                            <owl:Class>
+                                <owl:intersectionOf rdf:parseType="Collection">
+                                    <rdf:Description rdf:about="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#SubstanceSet"/>
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#has_member_part"/>
+                                        <owl:someValuesFrom>
+                                            <owl:Class>
+                                                <owl:intersectionOf rdf:parseType="Collection">
+                                                    <rdf:Description rdf:about="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#N-acetyl-D-glucosamine"/>
+                                                    <owl:Restriction>
+                                                        <owl:onProperty rdf:resource="http://www.biopax.org/release/biopax-level3.owl#has_stoichiometry"/>
+                                                        <owl:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:hasValue>
+                                                    </owl:Restriction>
+                                                </owl:intersectionOf>
+                                            </owl:Class>
+                                        </owl:someValuesFrom>
+                                    </owl:Restriction>
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#has_member_part"/>
+                                        <owl:someValuesFrom>
+                                            <owl:Class>
+                                                <owl:intersectionOf rdf:parseType="Collection">
+                                                    <rdf:Description rdf:about="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#dioxygen"/>
+                                                    <owl:Restriction>
+                                                        <owl:onProperty rdf:resource="http://www.biopax.org/release/biopax-level3.owl#has_stoichiometry"/>
+                                                        <owl:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:hasValue>
+                                                    </owl:Restriction>
+                                                </owl:intersectionOf>
+                                            </owl:Class>
+                                        </owl:someValuesFrom>
+                                    </owl:Restriction>
+                                </owl:intersectionOf>
+                            </owl:Class>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#has_substance_bag"/>
+                        <owl:someValuesFrom>
+                            <owl:Class>
+                                <owl:intersectionOf rdf:parseType="Collection">
+                                    <rdf:Description rdf:about="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#SubstanceSet"/>
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#has_member_part"/>
+                                        <owl:someValuesFrom>
+                                            <owl:Class>
+                                                <owl:intersectionOf rdf:parseType="Collection">
+                                                    <rdf:Description rdf:about="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#hydrogen_peroxide"/>
+                                                    <owl:Restriction>
+                                                        <owl:onProperty rdf:resource="http://www.biopax.org/release/biopax-level3.owl#has_stoichiometry"/>
+                                                        <owl:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:hasValue>
+                                                    </owl:Restriction>
+                                                </owl:intersectionOf>
+                                            </owl:Class>
+                                        </owl:someValuesFrom>
+                                    </owl:Restriction>
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#has_member_part"/>
+                                        <owl:someValuesFrom>
+                                            <owl:Class>
+                                                <owl:intersectionOf rdf:parseType="Collection">
+                                                    <rdf:Description rdf:about="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#hydron"/>
+                                                    <owl:Restriction>
+                                                        <owl:onProperty rdf:resource="http://www.biopax.org/release/biopax-level3.owl#has_stoichiometry"/>
+                                                        <owl:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:hasValue>
+                                                    </owl:Restriction>
+                                                </owl:intersectionOf>
+                                            </owl:Class>
+                                        </owl:someValuesFrom>
+                                    </owl:Restriction>
+                                </owl:intersectionOf>
+                            </owl:Class>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </rdf:type>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.biopax.org/release/biopax-level3.owl#NewReactionLinkedIndividuals -->
+
+    <owl:NamedIndividual rdf:about="http://www.biopax.org/release/biopax-level3.owl#NewReactionLinkedIndividuals">
+        <rdf:type rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#catalytic_activity"/>
+        <has_substance_bag rdf:resource="http://www.biopax.org/release/biopax-level3.owl#input_bag"/>
+        <has_substance_bag rdf:resource="http://www.biopax.org/release/biopax-level3.owl#output_bag"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.biopax.org/release/biopax-level3.owl#dioxygen_pool -->
+
+    <owl:NamedIndividual rdf:about="http://www.biopax.org/release/biopax-level3.owl#dioxygen_pool">
+        <rdf:type rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#dioxygen"/>
+        <biopax-level3:has_stoichiometry rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</biopax-level3:has_stoichiometry>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.biopax.org/release/biopax-level3.owl#hydrogen_peroxide_pool -->
+
+    <owl:NamedIndividual rdf:about="http://www.biopax.org/release/biopax-level3.owl#hydrogen_peroxide_pool">
+        <rdf:type rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#hydrogen_peroxide"/>
+        <biopax-level3:has_stoichiometry rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</biopax-level3:has_stoichiometry>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.biopax.org/release/biopax-level3.owl#hydron_pool -->
+
+    <owl:NamedIndividual rdf:about="http://www.biopax.org/release/biopax-level3.owl#hydron_pool">
+        <rdf:type rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#hydron"/>
+        <biopax-level3:has_stoichiometry rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</biopax-level3:has_stoichiometry>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.biopax.org/release/biopax-level3.owl#input_bag -->
+
+    <owl:NamedIndividual rdf:about="http://www.biopax.org/release/biopax-level3.owl#input_bag">
+        <rdf:type rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#SubstanceSet"/>
+        <has_member_part rdf:resource="http://www.biopax.org/release/biopax-level3.owl#N-acetyl-D-glucosaminate_pool"/>
+        <has_member_part rdf:resource="http://www.biopax.org/release/biopax-level3.owl#hydrogen_peroxide_pool"/>
+        <has_member_part rdf:resource="http://www.biopax.org/release/biopax-level3.owl#hydron_pool"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.biopax.org/release/biopax-level3.owl#output_bag -->
+
+    <owl:NamedIndividual rdf:about="http://www.biopax.org/release/biopax-level3.owl#output_bag">
+        <rdf:type rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#SubstanceSet"/>
+        <has_member_part rdf:resource="http://www.biopax.org/release/biopax-level3.owl#N-acetyl-D-glucosamine_pool"/>
+        <has_member_part rdf:resource="http://www.biopax.org/release/biopax-level3.owl#dioxygen_pool"/>
+        <has_member_part rdf:resource="http://www.biopax.org/release/biopax-level3.owl#water_pool"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.biopax.org/release/biopax-level3.owl#oxygen_pool -->
+
+    <owl:NamedIndividual rdf:about="http://www.biopax.org/release/biopax-level3.owl#oxygen_pool">
+        <rdf:type rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#oxygen"/>
+        <biopax-level3:has_stoichiometry rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</biopax-level3:has_stoichiometry>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.biopax.org/release/biopax-level3.owl#water_pool -->
+
+    <owl:NamedIndividual rdf:about="http://www.biopax.org/release/biopax-level3.owl#water_pool">
+        <rdf:type rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#water"/>
+        <biopax-level3:has_stoichiometry rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</biopax-level3:has_stoichiometry>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#NewReactionSubstanceBagAsNamedClass -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#NewReactionSubstanceBagAsNamedClass">
         <rdf:type rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#catalytic_activity"/>
         <has_substance_bag rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#hydro-etc-substance-set-individual"/>
         <has_substance_bag rdf:resource="http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#water-etc-substance-set-individual"/>
