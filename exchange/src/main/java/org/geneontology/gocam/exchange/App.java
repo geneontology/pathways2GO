@@ -31,8 +31,10 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLIndividual;
+import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
@@ -63,18 +65,63 @@ public class App {
 	//	String maximal_lego = "src/main/resources/org/geneontology/gocam/exchange/go-lego-full.owl";	
 
 	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
-		String ontf = "/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-A_tetrasaccharide_linker_sequence_is_required_for_GAG_synthesis.ttl";
-		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
-		OWLOntology ont = man.loadOntologyFromOntologyDocument(new File(ontf));		
+//		String ontf = "/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-A_tetrasaccharide_linker_sequence_is_required_for_GAG_synthesis.ttl";
+//		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
+//		OWLOntology ont = man.loadOntologyFromOntologyDocument(new File(ontf));		
 //		ClassificationReport cr = new ClassificationReport(ont);
 //		System.out.println("bp "+cr.bp_count+" "+cr.bp_unclassified);
 //		System.out.println("mf "+cr.mf_count+" "+cr.mf_unclassified);
 //		System.out.println("cc "+cr.cc_count+" "+cr.cc_unclassified);
 //		System.out.println("complex "+cr.complex_count+" "+cr.complex_unclassified);
 		
+		testBuildMFDef() ;
 	}
 
 
+	public static void testBuildMFDef() throws OWLOntologyCreationException, OWLOntologyStorageException {
+		GoCAM go_cam = new GoCAM(IRI.create("http://test133"), " ", " ", " ", " ", false);
+		OWLClass SubstanceSet = go_cam.df.getOWLClass(IRI.create("http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#SubstanceSet"));
+		OWLClass CatalyticActivity = go_cam.df.getOWLClass(IRI.create("http://purl.obolibrary.org/obo/GO_0003824"));
+		OWLObjectProperty has_substance_bag = go_cam.df.getOWLObjectProperty(IRI.create("")); 
+		OWLObjectProperty has_member_part  = go_cam.df.getOWLObjectProperty(IRI.create("")); 
+		OWLDataProperty has_stoichiometry  = go_cam.df.getOWLDataProperty(IRI.create("")); 
+		
+		OWLOntology mfc = go_cam.ontman.createOntology();
+		OWLDataFactory df = mfc.getOWLOntologyManager().getOWLDataFactory();
+		
+		OWLClass newmf = df.getOWLClass(go_cam.makeRandomIri());
+		OWLClass chemthing1 = df.getOWLClass(go_cam.makeRandomIri());
+		OWLClass chemthing2 = df.getOWLClass(go_cam.makeRandomIri());
+		OWLClass chemthing3 = df.getOWLClass(go_cam.makeRandomIri());
+		OWLLiteral stoich1 = df.getOWLLiteral(1);
+		Set<OWLClassExpression> parts = new HashSet<OWLClassExpression>();
+		parts.add(SubstanceSet);
+		
+		OWLClassExpression chemandstoich1 = df.getOWLObjectIntersectionOf(
+				df.getOWLObjectSomeValuesFrom(has_member_part, chemthing1),
+				df.getOWLDataHasValue(has_stoichiometry, stoich1)
+				);
+		parts.add(chemandstoich1);
+		
+		OWLClassExpression chemandstoich2 = df.getOWLObjectIntersectionOf(
+				df.getOWLObjectSomeValuesFrom(has_member_part, chemthing2),
+				df.getOWLDataHasValue(has_stoichiometry, stoich1)
+				);
+		parts.add(chemandstoich2);
+		
+		OWLClassExpression chemandstoich3 = df.getOWLObjectIntersectionOf(
+				df.getOWLObjectSomeValuesFrom(has_member_part, chemthing3),
+				df.getOWLDataHasValue(has_stoichiometry, stoich1)
+				);
+		parts.add(chemandstoich3);
+		OWLClassExpression bag1 = df.getOWLObjectIntersectionOf(parts);
+		OWLClassExpression hasbag = df.getOWLObjectSomeValuesFrom(has_substance_bag, bag1);
+		OWLAxiom def = df.getOWLEquivalentClassesAxiom(newmf, df.getOWLObjectIntersectionOf(CatalyticActivity, hasbag));
+		mfc.getOWLOntologyManager().addAxiom(mfc, def);
+		writeOntology("/Users/bgood/Desktop/test.owl", mfc);
+		
+	}
+	
 	public static void testLoadTime() throws OWLOntologyCreationException {
 		String ontf = "/Users/bgood/gocam_input/neo.owl";
 		long t0 = System.currentTimeMillis();
