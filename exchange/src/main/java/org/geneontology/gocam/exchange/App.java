@@ -80,48 +80,52 @@ public class App {
 
 	public static void testBuildMFDef() throws OWLOntologyCreationException, OWLOntologyStorageException {
 		GoCAM go_cam = new GoCAM(IRI.create("http://test133"), " ", " ", " ", " ", false);
-		OWLClass SubstanceSet = go_cam.df.getOWLClass(IRI.create("http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#SubstanceSet"));
+		String root = "http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#";
+		OWLClass SubstanceSet = go_cam.df.getOWLClass(IRI.create(root+"SubstanceSet"));
 		OWLClass CatalyticActivity = go_cam.df.getOWLClass(IRI.create("http://purl.obolibrary.org/obo/GO_0003824"));
-		OWLObjectProperty has_substance_bag = go_cam.df.getOWLObjectProperty(IRI.create("")); 
-		OWLObjectProperty has_member_part  = go_cam.df.getOWLObjectProperty(IRI.create("")); 
-		OWLDataProperty has_stoichiometry  = go_cam.df.getOWLDataProperty(IRI.create("")); 
+		OWLObjectProperty has_substance_bag = go_cam.df.getOWLObjectProperty(IRI.create(root+"has_substance_bag")); 
+		OWLObjectProperty has_member_part  = go_cam.df.getOWLObjectProperty(IRI.create(root+"has_member_part")); 
+		OWLDataProperty has_stoichiometry  = go_cam.df.getOWLDataProperty(IRI.create(root+"has_stoichiometry")); 
 		
 		OWLOntology mfc = go_cam.ontman.createOntology();
 		OWLDataFactory df = mfc.getOWLOntologyManager().getOWLDataFactory();
 		
-		OWLClass newmf = df.getOWLClass(go_cam.makeRandomIri());
-		OWLClass chemthing1 = df.getOWLClass(go_cam.makeRandomIri());
-		OWLClass chemthing2 = df.getOWLClass(go_cam.makeRandomIri());
-		OWLClass chemthing3 = df.getOWLClass(go_cam.makeRandomIri());
+		OWLClass newmf = df.getOWLClass(IRI.create(root+"newmfterm"));
+		OWLClass chemthing1 = df.getOWLClass(IRI.create(root+"water"));
+		OWLClass chemthing2 = df.getOWLClass(IRI.create(root+"molecule2"));
+		OWLClass chemthing3 = df.getOWLClass(IRI.create(root+"molecule3"));
 		OWLLiteral stoich1 = df.getOWLLiteral(1);
 		Set<OWLClassExpression> parts = new HashSet<OWLClassExpression>();
-		parts.add(SubstanceSet);
-		
-		OWLClassExpression chemandstoich1 = df.getOWLObjectIntersectionOf(
-				df.getOWLObjectSomeValuesFrom(has_member_part, chemthing1),
-				df.getOWLDataHasValue(has_stoichiometry, stoich1)
-				);
+
+		OWLClassExpression chemandstoich1 = df.getOWLObjectSomeValuesFrom(has_member_part, 
+				df.getOWLObjectIntersectionOf(chemthing1, df.getOWLDataHasValue(has_stoichiometry, stoich1)));
 		parts.add(chemandstoich1);
 		
-		OWLClassExpression chemandstoich2 = df.getOWLObjectIntersectionOf(
-				df.getOWLObjectSomeValuesFrom(has_member_part, chemthing2),
-				df.getOWLDataHasValue(has_stoichiometry, stoich1)
-				);
+		OWLClassExpression chemandstoich2 = df.getOWLObjectSomeValuesFrom(has_member_part, 
+				df.getOWLObjectIntersectionOf(chemthing2, df.getOWLDataHasValue(has_stoichiometry, stoich1)));
 		parts.add(chemandstoich2);
 		
-		OWLClassExpression chemandstoich3 = df.getOWLObjectIntersectionOf(
-				df.getOWLObjectSomeValuesFrom(has_member_part, chemthing3),
-				df.getOWLDataHasValue(has_stoichiometry, stoich1)
-				);
-		parts.add(chemandstoich3);
+		
+		Set<OWLClassExpression> parts2 = new HashSet<OWLClassExpression>();
+		
+		OWLClassExpression chemandstoich3 = df.getOWLObjectSomeValuesFrom(has_member_part, 
+				df.getOWLObjectIntersectionOf(chemthing3, df.getOWLDataHasValue(has_stoichiometry, stoich1)));
+		parts2.add(chemandstoich3);
+		
 		OWLClassExpression bag1 = df.getOWLObjectIntersectionOf(parts);
-		OWLClassExpression hasbag = df.getOWLObjectSomeValuesFrom(has_substance_bag, bag1);
-		OWLAxiom def = df.getOWLEquivalentClassesAxiom(newmf, df.getOWLObjectIntersectionOf(CatalyticActivity, hasbag));
+		OWLClassExpression bag2 = df.getOWLObjectIntersectionOf(parts2);
+		
+		OWLAxiom def = 
+				df.getOWLEquivalentClassesAxiom(newmf, 
+				 df.getOWLObjectIntersectionOf(CatalyticActivity, 
+						df.getOWLObjectSomeValuesFrom(has_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, bag1)),
+						df.getOWLObjectSomeValuesFrom(has_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, bag2)))
+				);
 		mfc.getOWLOntologyManager().addAxiom(mfc, def);
 		writeOntology("/Users/bgood/Desktop/test.owl", mfc);
 		
 	}
-	
+
 	public static void testLoadTime() throws OWLOntologyCreationException {
 		String ontf = "/Users/bgood/gocam_input/neo.owl";
 		long t0 = System.currentTimeMillis();
