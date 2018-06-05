@@ -93,9 +93,9 @@ public class GoCAM {
 	bp_class, continuant_class, process_class, go_complex, cc_class, molecular_function, 
 	eco_imported, eco_imported_auto, eco_inferred_auto, 
 	chebi_protein, chebi_gene, chemical_entity, chemical_role;
-	OWLOntology go_cam_ont;
-	OWLDataFactory df;
-	OWLOntologyManager ontman;
+	public OWLOntology go_cam_ont;
+	public OWLDataFactory df;
+	public OWLOntologyManager ontman;
 	String base_contributor, base_date, base_provider;
 	//for inference 
 	QRunner qrunner;
@@ -103,11 +103,17 @@ public class GoCAM {
 	String path2bgjournal;
 	Blazer blazegraphdb;
 
+	public GoCAM(String filename) throws OWLOntologyCreationException {
+		ontman = OWLManager.createOWLOntologyManager();				
+		go_cam_ont = ontman.loadOntologyFromOntologyDocument(new File(filename));
+		df = OWLManager.getOWLDataFactory();
+		initializeClassesAndRelations();
+	}
+	
 	/**
 	 * @throws OWLOntologyCreationException 
 	 * 
 	 */
-
 	public GoCAM(IRI ont_iri, String gocam_title, String contributor, String date, String provider, boolean add_lego_import) throws OWLOntologyCreationException {
 		base_contributor = contributor;
 		base_date = getDate(date);
@@ -123,16 +129,26 @@ public class GoCAM {
 			OWLImportsDeclaration legoImportDeclaration = df.getOWLImportsDeclaration(IRI.create(lego_iri));
 			ontman.applyChange(new AddImport(go_cam_ont, legoImportDeclaration));
 		}
-		/*
- <http://model.geneontology.org/5a5fd3de00000008> rdf:type owl:Ontology ;
-                                                  owl:versionIRI <http://model.geneontology.org/5a5fd3de00000008> ;
-                                                  owl:imports <http://purl.obolibrary.org/obo/go/extensions/go-lego.owl> ;
-                                                  <http://geneontology.org/lego/modelstate> "development"^^xsd:string ;
-                                                  <http://purl.org/dc/elements/1.1/contributor> "http://orcid.org/0000-0002-2874-6934"^^xsd:string ;
-                                                  <http://purl.org/dc/elements/1.1/title> "Tre test"^^xsd:string ;
-                                                  <http://purl.org/dc/elements/1.1/date> "2018-01-18"^^xsd:string .		
-		 */
+		//Annotate the ontology
+		OWLAnnotation title_anno = df.getOWLAnnotation(title_prop, df.getOWLLiteral(gocam_title));
+		OWLAxiom titleaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, title_anno);
+		ontman.addAxiom(go_cam_ont, titleaxiom);
 
+		OWLAnnotation contributor_anno = df.getOWLAnnotation(contributor_prop, df.getOWLLiteral(base_contributor));
+		OWLAxiom contributoraxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, contributor_anno);
+		ontman.addAxiom(go_cam_ont, contributoraxiom);
+
+		OWLAnnotation date_anno = df.getOWLAnnotation(date_prop, df.getOWLLiteral(base_date));
+		OWLAxiom dateaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, date_anno);
+		ontman.addAxiom(go_cam_ont, dateaxiom);
+
+		OWLAnnotation state_anno = df.getOWLAnnotation(state_prop, df.getOWLLiteral("development"));
+		OWLAxiom stateaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, state_anno);
+		ontman.addAxiom(go_cam_ont, stateaxiom);
+
+		initializeClassesAndRelations();
+	}
+	public void initializeClassesAndRelations() {
 		//Annotation properties for metadata and evidence
 		title_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/title"));
 		contributor_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/contributor"));
@@ -255,25 +271,6 @@ public class GoCAM {
 		//RO:0000087
 		has_role = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0000087"));
 		addLabel(has_role, "has role");
-
-		//Annotate the ontology
-		OWLAnnotation title_anno = df.getOWLAnnotation(title_prop, df.getOWLLiteral(gocam_title));
-		OWLAxiom titleaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, title_anno);
-		ontman.addAxiom(go_cam_ont, titleaxiom);
-
-		OWLAnnotation contributor_anno = df.getOWLAnnotation(contributor_prop, df.getOWLLiteral(base_contributor));
-		OWLAxiom contributoraxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, contributor_anno);
-		ontman.addAxiom(go_cam_ont, contributoraxiom);
-
-		OWLAnnotation date_anno = df.getOWLAnnotation(date_prop, df.getOWLLiteral(base_date));
-		OWLAxiom dateaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, date_anno);
-		ontman.addAxiom(go_cam_ont, dateaxiom);
-
-		OWLAnnotation state_anno = df.getOWLAnnotation(state_prop, df.getOWLLiteral("development"));
-		OWLAxiom stateaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, state_anno);
-		ontman.addAxiom(go_cam_ont, stateaxiom);
-
-
 	}
 
 	public ClassificationReport getClassificationReport(){

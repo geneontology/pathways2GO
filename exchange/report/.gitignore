@@ -1,1 +1,8 @@
 /.DS_Store
+/ReportSummary.txt
+/chebi_usage.txt
+/deprecated_terms_used.txt
+/inconsistent_models.txt
+/inferred_types.txt
+/mapping.txt
+/reasoner_value.txt

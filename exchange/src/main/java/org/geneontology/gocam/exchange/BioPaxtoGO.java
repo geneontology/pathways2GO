@@ -275,6 +275,8 @@ public class BioPaxtoGO {
 		//		bp2g.convertReactomeFolder(input_folder, output_folder);
 
 		String input_biopax = 
+				//"/Users/bgood/Downloads/ERK_cascade.owl";
+				"/Users/bgood/Downloads/Noncanonical_Wnt_sig.owl";
 				//"/Users/bgood/Desktop/test/class-a1-receptors.owl";
 				//"/Users/bgood/Desktop/test/stimuli_sensing.owl";
 				//			"/Users/bgood/Desktop/test/snRNP_Assembly.owl";
@@ -284,19 +286,19 @@ public class BioPaxtoGO {
 				//"/Users/bgood/Desktop/test/gap_junction.owl"; 
 				//		"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
 		//		"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
-				"/Users/bgood/gocam_input/reactome/march2018/Homo_sapiens.owl";
+		//		"/Users/bgood/gocam_input/reactome/march2018/Homo_sapiens.owl";
 
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = 
-		//				"/Users/bgood/Desktop/test/tmp/converted-";
+						"/Users/bgood/Desktop/test/tmp/converted-";
 		//	"/Users/bgood/Desktop/test/snRNP_Assembly/converted-";
 				//				"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
 				//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
 				//"/Users/bgood/Desktop/test/Wnt_output/converted-n2-";
 				//"/Users/bgood/Desktop/test/gap_junction_output/converted-";
 				//		"/Users/bgood/Desktop/test/bmp_output/converted-";
-				"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
+				//"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";
@@ -1012,7 +1014,7 @@ public class BioPaxtoGO {
 				Set<PhysicalEntity> inputs = null;
 				Set<PhysicalEntity> outputs = null;
 
-				if(direction.equals(ConversionDirectionType.LEFT_TO_RIGHT)) {
+				if(direction==null||direction.equals(ConversionDirectionType.LEFT_TO_RIGHT)) {
 					inputs = ((Conversion) entity).getLeft();
 					outputs = ((Conversion) entity).getRight();
 				}else if(direction.equals(ConversionDirectionType.RIGHT_TO_LEFT)) {

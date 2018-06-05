@@ -74,9 +74,13 @@ public class App {
 //		System.out.println("cc "+cr.cc_count+" "+cr.cc_unclassified);
 //		System.out.println("complex "+cr.complex_count+" "+cr.complex_unclassified);
 		
-		testBuildMFDef() ;
+		GoCAM go_cam = loadGoCAM("/Users/bgood/Desktop/test/tmp/converted-Degradation_of_AXIN.ttl");
+		System.out.println(go_cam.go_cam_ont.getClassesInSignature());
 	}
 
+	public static GoCAM loadGoCAM(String filename) throws OWLOntologyCreationException {
+		return new GoCAM(filename);
+	}
 
 	public static void testBuildMFDef() throws OWLOntologyCreationException, OWLOntologyStorageException {
 		GoCAM go_cam = new GoCAM(IRI.create("http://test133"), " ", " ", " ", " ", false);
@@ -104,8 +108,7 @@ public class App {
 		OWLClassExpression chemandstoich2 = df.getOWLObjectSomeValuesFrom(has_member_part, 
 				df.getOWLObjectIntersectionOf(chemthing2, df.getOWLDataHasValue(has_stoichiometry, stoich1)));
 		parts.add(chemandstoich2);
-		
-		
+				
 		Set<OWLClassExpression> parts2 = new HashSet<OWLClassExpression>();
 		
 		OWLClassExpression chemandstoich3 = df.getOWLObjectSomeValuesFrom(has_member_part, 
@@ -356,7 +359,7 @@ public class App {
 		return go_cam_ont;
 	}
 
-	static void writeOntology(String outfile, OWLOntology ont) throws OWLOntologyStorageException {
+	public static void writeOntology(String outfile, OWLOntology ont) throws OWLOntologyStorageException {
 		FileDocumentTarget outf = new FileDocumentTarget(new File(outfile));
 		//ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());	
 		ont.getOWLOntologyManager().setOntologyFormat(ont, new TurtleDocumentFormat());	
