@@ -1,0 +1,26 @@
+PREFIX rh:<http://rdf.rhea-db.org/>
+PREFIX ch:<http://purl.obolibrary.org/obo/>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?reaction ?reactionLabel ?EC ?reactionSide ?compoundLabel ?stoich ?chebi WHERE {
+  ?reaction rdfs:subClassOf rh:Reaction . 
+  ?reaction rh:status rh:Approved .
+  ?reaction rh:side ?reactionSide .
+  ?reactionSide rh:contains ?participant .
+  ?reactionSide ?containsWithStoich ?participant . 
+  ?containsWithStoich rh:coefficient ?stoich . 
+
+  ?participant rh:compound ?compound .
+  ?compound rh:chebi ?chebi .
+  ?compound rh:name ?compoundLabel .  
+  ?reaction rh:equation ?reactionLabel . 
+  ?reaction rh:accession "RHEA:15389" .  
+  
+# limit to reactions that have EC numbers 
+  ?reaction rh:ec ?EC .
+#and xrefs to directional reactions in other databases 
+ # ?reaction rh:directionalReaction ?directionalReaction . 
+ # ?directionalReaction rdfs:seeAlso ?xref . 
+ # ?directionalReaction rh:substrates ?inputSide . 
+ # ?directionalReaction rh:products ?outputSide . 
+}
+order by ?reaction ?reactionSide 
