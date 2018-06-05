@@ -7,11 +7,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import org.biopax.paxtools.model.level3.BiochemicalReaction;
 import org.geneontology.gocam.exchange.App;
 import org.geneontology.gocam.exchange.GoCAM;
+import org.geneontology.gocam.exchange.rhea.RheaConverter.rheaReaction;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -56,13 +58,57 @@ public class MFCreator {
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException {
 		String input_go_cam = "/Users/bgood/Desktop/test/tmp/converted-Degradation_of_AXIN.ttl";
-		String output_ontology = "/Users/bgood/Desktop/test/tmp/newMFs.ttl";
+		String output_ontology = "/Users/bgood/Desktop/test/tmp/newMFsFromRhea.ttl";
 		GoCAM go_cam = new GoCAM(input_go_cam);
 		MFCreator mfc = new MFCreator(go_cam);
-		OWLOntology newmfs = mfc.makeMFClassesFromGoCAM(go_cam);
+		//OWLOntology newmfs = mfc.makeMFClassesFromGoCAM(go_cam);
+		RheaConverter rc = new RheaConverter();
+		Map<String, rheaReaction> reactions = rc.getReactionsFromRDF();
+		OWLOntology newmfs = mfc.makeMFClassesFromRheaReactions(go_cam, reactions);
 		App.writeOntology(output_ontology, newmfs);
 	}
-	
+
+	public OWLOntology makeMFClassesFromRheaReactions(GoCAM go_cam, Map<String, rheaReaction> reactions) throws OWLOntologyCreationException {
+		OWLOntology mfc = go_cam.ontman.createOntology();
+		OWLDataFactory df = mfc.getOWLOntologyManager().getOWLDataFactory();
+		int i = 0;
+		for(String reaction_id : reactions.keySet()) {
+			rheaReaction reaction = reactions.get(reaction_id);
+			i++;
+
+			Set<OWLClassExpression> inputs = new HashSet<OWLClassExpression>();
+			for(String chebi : reaction.left_bag_chebi_stoich.keySet()) {
+				int s = reaction.left_bag_chebi_stoich.get(chebi);
+				OWLClassExpression chemclass = df.getOWLClass(IRI.create(chebi));
+				OWLLiteral stoich = go_cam.df.getOWLLiteral(s); 
+				OWLClassExpression chemandstoich = go_cam.df.getOWLObjectSomeValuesFrom(has_member_part, 
+						go_cam.df.getOWLObjectIntersectionOf(chemclass, go_cam.df.getOWLDataHasValue(has_stoichiometry, stoich)));
+				inputs.add(chemandstoich);
+			}
+			Set<OWLClassExpression> outputs = new HashSet<OWLClassExpression>();
+			for(String chebi : reaction.right_bag_chebi_stoich.keySet()) {
+				int s = reaction.right_bag_chebi_stoich.get(chebi);
+				OWLClassExpression chemclass = df.getOWLClass(IRI.create(chebi));
+				OWLLiteral stoich = go_cam.df.getOWLLiteral(s); 
+				OWLClassExpression chemandstoich = go_cam.df.getOWLObjectSomeValuesFrom(has_member_part, 
+						go_cam.df.getOWLObjectIntersectionOf(chemclass, go_cam.df.getOWLDataHasValue(has_stoichiometry, stoich)));
+				outputs.add(chemandstoich);
+			}
+			
+			OWLClass newmf = df.getOWLClass(IRI.create(GoCAM.base_iri+"newMF"+i));		
+			OWLClassExpression inputbag = df.getOWLObjectIntersectionOf(inputs);
+			OWLClassExpression outputbag = df.getOWLObjectIntersectionOf(outputs);
+			OWLAxiom def = 
+					df.getOWLEquivalentClassesAxiom(newmf, 
+							df.getOWLObjectIntersectionOf(CatalyticActivity, 
+									df.getOWLObjectSomeValuesFrom(has_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag)),
+									df.getOWLObjectSomeValuesFrom(has_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag)))
+							);
+			mfc.getOWLOntologyManager().addAxiom(mfc, def);
+		}
+		return mfc;
+	}
+
 	/**
 	 * take the gocam abox representation of a reaction and make a class 
 	 * @param gocam_mf
@@ -90,15 +136,15 @@ public class MFCreator {
 			OWLClassExpression outputbag = df.getOWLObjectIntersectionOf(getChemPartsFromGoCAM(go_cam, outputs));
 			OWLAxiom def = 
 					df.getOWLEquivalentClassesAxiom(newmf, 
-					 df.getOWLObjectIntersectionOf(CatalyticActivity, 
-							df.getOWLObjectSomeValuesFrom(has_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag)),
-							df.getOWLObjectSomeValuesFrom(has_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag)))
-					);
+							df.getOWLObjectIntersectionOf(CatalyticActivity, 
+									df.getOWLObjectSomeValuesFrom(has_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag)),
+									df.getOWLObjectSomeValuesFrom(has_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag)))
+							);
 			mfc.getOWLOntologyManager().addAxiom(mfc, def);
 		}
 		return mfc;
 	}
-	
+
 	public Set<OWLClassExpression> getChemPartsFromGoCAM (GoCAM go_cam, Collection<OWLIndividual> chempartslist){
 		Set<OWLClassExpression> parts = new HashSet<OWLClassExpression>();
 		for(OWLIndividual part : chempartslist) {
@@ -113,13 +159,14 @@ public class MFCreator {
 			OWLClassExpression chemstoich = makeStoichedChemExpression(go_cam, chemclass, stoich);
 			parts.add(chemstoich);
 		}
-	return parts;
+		return parts;
 	}
-	
+
 	public OWLClassExpression makeStoichedChemExpression(GoCAM go_cam, OWLClassExpression chemclass, OWLLiteral stoich) {
 		OWLClassExpression chemandstoich = go_cam.df.getOWLObjectSomeValuesFrom(has_member_part, 
 				go_cam.df.getOWLObjectIntersectionOf(chemclass, go_cam.df.getOWLDataHasValue(has_stoichiometry, stoich)));
 		return chemandstoich;
 	}
 	
+
 }
