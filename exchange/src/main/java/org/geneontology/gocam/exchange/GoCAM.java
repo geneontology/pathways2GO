@@ -84,7 +84,7 @@ public class GoCAM {
 	public static final IRI uniprot_iri = IRI.create("http://identifiers.org/uniprot/");
 	public static IRI base_ont_iri;
 	public static OWLAnnotationProperty title_prop, contributor_prop, date_prop, skos_exact_match,  
-	state_prop, evidence_prop, provided_by_prop, x_prop, y_prop, rdfs_label, rdfs_comment, source_prop;
+	state_prop, evidence_prop, provided_by_prop, x_prop, y_prop, rdfs_label, rdfs_comment, source_prop, definition, database_cross_reference;
 	public static OWLObjectProperty part_of, has_part, has_input, has_output, 
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in,
 	directly_positively_regulated_by, directly_negatively_regulated_by, involved_in_regulation_of, involved_in_negative_regulation_of, involved_in_positive_regulation_of,
@@ -103,6 +103,13 @@ public class GoCAM {
 	String path2bgjournal;
 	Blazer blazegraphdb;
 
+	public GoCAM() throws OWLOntologyCreationException {
+		ontman = OWLManager.createOWLOntologyManager();				
+		go_cam_ont = ontman.createOntology();
+		df = OWLManager.getOWLDataFactory();
+		initializeClassesAndRelations();
+	}
+	
 	public GoCAM(String filename) throws OWLOntologyCreationException {
 		ontman = OWLManager.createOWLOntologyManager();				
 		go_cam_ont = ontman.loadOntologyFromOntologyDocument(new File(filename));
@@ -147,6 +154,9 @@ public class GoCAM {
 		ontman.addAxiom(go_cam_ont, stateaxiom);
 
 		initializeClassesAndRelations();
+		//TODO leftover, check and remove
+		OWLSubClassOfAxiom comp = df.getOWLSubClassOfAxiom(go_complex, continuant_class);
+		ontman.addAxiom(go_cam_ont, comp);
 	}
 	public void initializeClassesAndRelations() {
 		//Annotation properties for metadata and evidence
@@ -162,7 +172,9 @@ public class GoCAM {
 		rdfs_label = df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI());
 		rdfs_comment = df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_COMMENT.getIRI());
 		skos_exact_match = df.getOWLAnnotationProperty(IRI.create("http://www.w3.org/2004/02/skos/core#exactMatch"));
-
+		definition = df.getOWLAnnotationProperty(IRI.create("http://purl.obolibrary.org/obo/IAO_0000115"));	
+		database_cross_reference = df.getOWLAnnotationProperty(IRI.create("http://www.geneontology.org/formats/oboInOwl#hasDbXref"));	
+		
 		//Will add classes and relations as we need them now. 
 		//TODO Work on using imports later to ensure we don't produce incorrect ids..
 		//classes	
@@ -194,9 +206,6 @@ public class GoCAM {
 		eco_imported = df.getOWLClass(IRI.create(obo_iri + "ECO_0000311")); 
 		//ECO_0000363 "A type of evidence based on computational logical inference that is used in automatic assertion."
 		eco_inferred_auto = df.getOWLClass(IRI.create(obo_iri + "ECO_0000363")); 		
-		//complex
-		OWLSubClassOfAxiom comp = df.getOWLSubClassOfAxiom(go_complex, continuant_class);
-		ontman.addAxiom(go_cam_ont, comp);
 		//proteins and genes as they are in neo
 		chebi_protein = df.getOWLClass(IRI.create(obo_iri + "CHEBI_36080"));
 		addLabel(chebi_protein, "chebi protein");
@@ -392,7 +401,7 @@ public class GoCAM {
 		return anno;
 	}
 
-	OWLAnnotation addLiteralAnnotations2Individual(IRI individual_iri, OWLAnnotationProperty prop, String value) {
+	public OWLAnnotation addLiteralAnnotations2Individual(IRI individual_iri, OWLAnnotationProperty prop, String value) {
 		OWLAnnotation anno = df.getOWLAnnotation(prop, df.getOWLLiteral(value));
 		OWLAxiom axiom = df.getOWLAnnotationAssertionAxiom(individual_iri, anno);
 		ontman.addAxiom(go_cam_ont, axiom);
@@ -416,7 +425,7 @@ public class GoCAM {
 		return anno;
 	}
 
-	void addLabel(OWLEntity entity, String label) {
+	public void addLabel(OWLEntity entity, String label) {
 		if(label==null) {
 			return;
 		}		
@@ -428,6 +437,18 @@ public class GoCAM {
 		return;
 	}
 
+	public void addComment(OWLEntity entity, String comment) {
+		if(comment==null) {
+			return;
+		}		
+		OWLLiteral c = df.getOWLLiteral(comment);
+		OWLAnnotation comment_anno = df.getOWLAnnotation(rdfs_comment, c);
+		OWLAxiom commentaxiom = df.getOWLAnnotationAssertionAxiom(entity.getIRI(), comment_anno);
+		ontman.addAxiom(go_cam_ont, commentaxiom);
+		//ontman.applyChanges();
+		return;
+	}
+	
 	/**
 	 * Thanks https://stackoverflow.com/questions/20780425/using-owl-api-given-an-owlclass-how-can-i-get-rdfslabel-of-it/20784993#20784993
 	 * ...
