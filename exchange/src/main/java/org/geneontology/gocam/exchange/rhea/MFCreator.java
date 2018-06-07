@@ -56,8 +56,12 @@ public class MFCreator {
 	 * @throws OWLOntologyCreationException 
 	 * 
 	 */
-	public MFCreator() throws OWLOntologyCreationException {
-		this.go_cam = new GoCAM();
+	public MFCreator(String existing_ontology_to_add_to) throws OWLOntologyCreationException {
+		if(existing_ontology_to_add_to==null) {
+			this.go_cam = new GoCAM();
+		}else {
+			this.go_cam = new GoCAM(existing_ontology_to_add_to);
+		}
 		SubstanceSet = go_cam.df.getOWLClass(IRI.create(base+"SubstanceSet"));
 		CatalyticActivity = go_cam.df.getOWLClass(IRI.create("http://purl.obolibrary.org/obo/GO_0003824"));
 		has_substance_bag = go_cam.df.getOWLObjectProperty(IRI.create(base+"has_substance_bag")); 
@@ -75,11 +79,15 @@ public class MFCreator {
 	 * @throws OWLOntologyStorageException 
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException {
-		String output_ontology = "/Users/bgood/Desktop/test/tmp/newMFsFromRhea.ttl";
+		String output_ontology = "/Users/bgood/Desktop/test/tmp/GoPlusPlusRhea.ttl";
 		//String input_go_cam = "/Users/bgood/Desktop/test/tmp/converted-Degradation_of_AXIN.ttl";
 		//GoCAM go_cam = new GoCAM(input_go_cam);		
 		//OWLOntology newmfs = mfc.makeMFClassesFromGoCAM(input_go_cam);
-		MFCreator mfc = new MFCreator();
+		//String existing_ontology = "/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
+		//to add to goplus do this
+		//MFCreator mfc = new MFCreator(existing_ontology);
+		//to make a new one, do this
+		MFCreator mfc = new MFCreator(null);
 		RheaConverter rc = new RheaConverter();
 		Map<String, rheaReaction> reactions = rc.getReactionsFromRDF();
 		OWLOntology newmfs = mfc.makeMFClassesFromRheaReactions(reactions);
@@ -112,7 +120,7 @@ public class MFCreator {
 	public OWLOntology makeMFClassesFromRheaReactions(Map<String, rheaReaction> reactions) throws OWLOntologyCreationException {
 		OWLOntology mfc = go_cam.go_cam_ont;
 		OWLDataFactory df = mfc.getOWLOntologyManager().getOWLDataFactory();
-		int i = 0;
+		int i = 0; int n_saved = 0;
 		for(String reaction_id : reactions.keySet()) {
 			rheaReaction reaction = reactions.get(reaction_id);
 			i++;
@@ -197,7 +205,9 @@ public class MFCreator {
 									df.getOWLObjectSomeValuesFrom(has_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag)))
 							);
 			mfc.getOWLOntologyManager().addAxiom(mfc, def);
+			n_saved++;
 		}
+		System.out.println("Added "+n_saved+" logical definitions");
 		return mfc;
 	}
 
