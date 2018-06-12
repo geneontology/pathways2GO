@@ -456,28 +456,11 @@ public class GoCAM {
 	 * @return
 	 */
 	Set<String> getLabels(OWLEntity e){
-		Set<String> labels = new HashSet<String>();
-		for(OWLAnnotationAssertionAxiom a : go_cam_ont.getAnnotationAssertionAxioms(e.getIRI())) {
-			if(a.getProperty().isLabel()) {
-				if(a.getValue() instanceof OWLLiteral) {
-					OWLLiteral val = (OWLLiteral) a.getValue();
-					labels.add(val.getLiteral());
-				}
-			}
-		}
-		return labels;
+		return Helper.getLabels(e, go_cam_ont);
 	}
 
 	String getaLabel(OWLEntity e){
-		Set<String> labels = getLabels(e);
-		String label = "";
-		if(labels!=null&&labels.size()>0) {
-			for(String l : labels) {
-				label = l;
-				break;
-			}
-		}
-		return label;
+		return Helper.getaLabel(e, go_cam_ont);
 	}
 
 	/**

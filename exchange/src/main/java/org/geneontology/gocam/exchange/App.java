@@ -20,11 +20,14 @@ import org.geneontology.rules.engine.Triple;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
+import org.semanticweb.elk.owlapi.ElkReasonerFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.formats.TurtleDocumentFormat;
 import org.semanticweb.owlapi.io.FileDocumentTarget;
+import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
+import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -32,6 +35,7 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
+import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLLiteral;
@@ -44,7 +48,9 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
+import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.model.RemoveAxiom;
+import org.semanticweb.owlapi.reasoner.NodeSet;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
@@ -65,18 +71,66 @@ public class App {
 	//	String maximal_lego = "src/main/resources/org/geneontology/gocam/exchange/go-lego-full.owl";	
 
 	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
-//		String ontf = "/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-A_tetrasaccharide_linker_sequence_is_required_for_GAG_synthesis.ttl";
-//		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
-//		OWLOntology ont = man.loadOntologyFromOntologyDocument(new File(ontf));		
-//		ClassificationReport cr = new ClassificationReport(ont);
-//		System.out.println("bp "+cr.bp_count+" "+cr.bp_unclassified);
-//		System.out.println("mf "+cr.mf_count+" "+cr.mf_unclassified);
-//		System.out.println("cc "+cr.cc_count+" "+cr.cc_unclassified);
-//		System.out.println("complex "+cr.complex_count+" "+cr.complex_unclassified);
-		
-		GoCAM go_cam = loadGoCAM("/Users/bgood/Desktop/test/tmp/converted-Degradation_of_AXIN.ttl");
-		System.out.println(go_cam.go_cam_ont.getClassesInSignature());
+		//		String ontf = "/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-A_tetrasaccharide_linker_sequence_is_required_for_GAG_synthesis.ttl";
+		//		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
+		//		OWLOntology ont = man.loadOntologyFromOntologyDocument(new File(ontf));		
+		//		ClassificationReport cr = new ClassificationReport(ont);
+		//		System.out.println("bp "+cr.bp_count+" "+cr.bp_unclassified);
+		//		System.out.println("mf "+cr.mf_count+" "+cr.mf_unclassified);
+		//		System.out.println("cc "+cr.cc_count+" "+cr.cc_unclassified);
+		//		System.out.println("complex "+cr.complex_count+" "+cr.complex_unclassified);
+
+		demoReasoner();
 	}
+	
+	public static void demoReasoner() throws OWLOntologyCreationException {
+		String ontf = "/Users/bgood/Desktop/test/tmp/GoPlusPlusRhea.ttl";
+				//"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
+		OWLOntologyManager mgr = OWLManager.createOWLOntologyManager();
+		OWLDataFactory df = mgr.getOWLDataFactory();
+		OWLOntology ont = mgr.loadOntologyFromOntologyDocument(new File(ontf));
+
+		OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
+		OWLReasoner reasoner = reasonerFactory.createReasoner(ont);
+		/**
+		 * Finds X asserted axioms that are also inferrable from:
+		 * GO: 26144 
+		 * GOPlus: 61629
+		 * GOPlusRheaViaRheaXref: 61655
+		 */
+		int n_redundant = 0;
+		//get all subclass axioms in ontology
+		for (OWLSubClassOfAxiom ax : ont.getAxioms(AxiomType.SUBCLASS_OF)) {
+			//skip ones with anonymous superclasses 
+			if (!ax.getSuperClass().isAnonymous()) {
+				//get the superclass
+				OWLClass supc = (OWLClass) ax.getSuperClass();
+				//remove the current axiom
+				mgr.removeAxiom(ont, ax);
+				//make the reasoner update 
+				reasoner.flush();
+				//get any other direct or indirect superclasses of the current subclass
+				NodeSet<OWLClass> ancs = reasoner.getSuperClasses(ax.getSubClass(), false);
+				//System.out.println(ax + " ANCS="+ancs);
+				//check if the superclass connected via the removed assertion is still connected some other way
+				if (ancs.containsEntity( supc)) {
+					String direct = "indirect";
+					//look it up to see if its direct or indirect 
+					if (reasoner.getSuperClasses(ax.getSubClass(), true).containsEntity( supc)) {
+						direct = "direct";
+					}
+					//report 
+					n_redundant++;
+					System.out.println(n_redundant+" SCA = "+ax+" D="+direct);
+				}
+				else {
+					// put it back
+					mgr.addAxiom(ont, ax);
+				}
+			}
+		}
+	}
+
 
 	public static GoCAM loadGoCAM(String filename) throws OWLOntologyCreationException {
 		return new GoCAM(filename);
@@ -90,10 +144,10 @@ public class App {
 		OWLObjectProperty has_substance_bag = go_cam.df.getOWLObjectProperty(IRI.create(root+"has_substance_bag")); 
 		OWLObjectProperty has_member_part  = go_cam.df.getOWLObjectProperty(IRI.create(root+"has_member_part")); 
 		OWLDataProperty has_stoichiometry  = go_cam.df.getOWLDataProperty(IRI.create(root+"has_stoichiometry")); 
-		
+
 		OWLOntology mfc = go_cam.ontman.createOntology();
 		OWLDataFactory df = mfc.getOWLOntologyManager().getOWLDataFactory();
-		
+
 		OWLClass newmf = df.getOWLClass(IRI.create(root+"newmfterm"));
 		OWLClass chemthing1 = df.getOWLClass(IRI.create(root+"water"));
 		OWLClass chemthing2 = df.getOWLClass(IRI.create(root+"molecule2"));
@@ -104,29 +158,29 @@ public class App {
 		OWLClassExpression chemandstoich1 = df.getOWLObjectSomeValuesFrom(has_member_part, 
 				df.getOWLObjectIntersectionOf(chemthing1, df.getOWLDataHasValue(has_stoichiometry, stoich1)));
 		parts.add(chemandstoich1);
-		
+
 		OWLClassExpression chemandstoich2 = df.getOWLObjectSomeValuesFrom(has_member_part, 
 				df.getOWLObjectIntersectionOf(chemthing2, df.getOWLDataHasValue(has_stoichiometry, stoich1)));
 		parts.add(chemandstoich2);
-				
+
 		Set<OWLClassExpression> parts2 = new HashSet<OWLClassExpression>();
-		
+
 		OWLClassExpression chemandstoich3 = df.getOWLObjectSomeValuesFrom(has_member_part, 
 				df.getOWLObjectIntersectionOf(chemthing3, df.getOWLDataHasValue(has_stoichiometry, stoich1)));
 		parts2.add(chemandstoich3);
-		
+
 		OWLClassExpression bag1 = df.getOWLObjectIntersectionOf(parts);
 		OWLClassExpression bag2 = df.getOWLObjectIntersectionOf(parts2);
-		
+
 		OWLAxiom def = 
 				df.getOWLEquivalentClassesAxiom(newmf, 
-				 df.getOWLObjectIntersectionOf(CatalyticActivity, 
-						df.getOWLObjectSomeValuesFrom(has_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, bag1)),
-						df.getOWLObjectSomeValuesFrom(has_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, bag2)))
-				);
+						df.getOWLObjectIntersectionOf(CatalyticActivity, 
+								df.getOWLObjectSomeValuesFrom(has_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, bag1)),
+								df.getOWLObjectSomeValuesFrom(has_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, bag2)))
+						);
 		mfc.getOWLOntologyManager().addAxiom(mfc, def);
 		writeOntology("/Users/bgood/Desktop/test.owl", mfc);
-		
+
 	}
 
 	public static void testLoadTime() throws OWLOntologyCreationException {
