@@ -1,15 +1,19 @@
 package org.geneontology.gocam.exchange;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.jena.rdf.model.Statement;
@@ -22,6 +26,7 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.semanticweb.elk.owlapi.ElkReasonerFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.formats.OBODocumentFormat;
 import org.semanticweb.owlapi.formats.TurtleDocumentFormat;
 import org.semanticweb.owlapi.io.FileDocumentTarget;
 import org.semanticweb.owlapi.model.AxiomType;
@@ -30,11 +35,13 @@ import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
+import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
+import org.semanticweb.owlapi.model.OWLDocumentFormat;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLIndividual;
@@ -80,12 +87,53 @@ public class App {
 		//		System.out.println("cc "+cr.cc_count+" "+cr.cc_unclassified);
 		//		System.out.println("complex "+cr.complex_count+" "+cr.complex_unclassified);
 
-		demoReasoner();
+		updateReactomeXrefs();
 	}
-	
+
+	public static void updateReactomeXrefs() throws OWLOntologyCreationException, IOException {
+		String mapf = "src/main/resources/org/geneontology/gocam/exchange/StId_OldStId_Mapping_Human_Reactions_v65.txt";
+		Map<String, String> old_new = new HashMap<String, String>();
+		BufferedReader f = new BufferedReader(new FileReader(mapf));
+		String line = f.readLine();
+		line = f.readLine();//skip header
+		while(line!=null) {
+			String[] new_old_name_type = line.split("\t");
+			old_new.put(new_old_name_type[1], new_old_name_type[0]);
+			line = f.readLine();
+		}
+		f.close();
+		String ontf = "src/main/resources/org/geneontology/gocam/exchange/go.owl";//-edit.obo";
+		//"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
+		OWLOntologyManager mgr = OWLManager.createOWLOntologyManager();
+		OWLDataFactory df = mgr.getOWLDataFactory();
+		OWLOntology ont = mgr.loadOntologyFromOntologyDocument(new File(ontf));
+		Set<OWLClass> classes = ont.getClassesInSignature();
+		OWLAnnotationProperty xref = df.getOWLAnnotationProperty(IRI.create("http://www.geneontology.org/formats/oboInOwl#hasDbXref"));
+		OWLAnnotationProperty rdfslabel = df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI());
+		for(OWLClass c : classes) {
+			Collection<OWLAnnotationAssertionAxiom> aaa = EntitySearcher.getAnnotationAssertionAxioms(c, ont);
+			for(OWLAnnotationAssertionAxiom a : aaa) {
+				OWLAnnotation anno = a.getAnnotation();
+				if(anno.getProperty().equals(xref)) {
+					OWLAnnotationValue v = anno.getValue();
+					String xref_id = v.asLiteral().get().getLiteral();
+					Collection<OWLAnnotation> anno_annos = a.getAnnotations(rdfslabel);
+					if(xref_id.contains("REACT_")) {
+						for(OWLAnnotation anno_anno : anno_annos) {
+							if(anno_anno.getProperty().equals(rdfslabel)) {
+								OWLAnnotationValue vv = anno_anno.getValue();
+								String xref_label = vv.asLiteral().get().getLiteral();
+								System.out.println(c+" "+xref_id+" "+xref_label);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 	public static void demoReasoner() throws OWLOntologyCreationException {
 		String ontf = "/Users/bgood/Desktop/test/tmp/GoPlusPlusRhea.ttl";
-				//"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
+		//"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
 		OWLOntologyManager mgr = OWLManager.createOWLOntologyManager();
 		OWLDataFactory df = mgr.getOWLDataFactory();
 		OWLOntology ont = mgr.loadOntologyFromOntologyDocument(new File(ontf));
@@ -417,6 +465,13 @@ public class App {
 		FileDocumentTarget outf = new FileDocumentTarget(new File(outfile));
 		//ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());	
 		ont.getOWLOntologyManager().setOntologyFormat(ont, new TurtleDocumentFormat());	
+		ont.getOWLOntologyManager().saveOntology(ont,outf);
+	}
+
+	public static void writeOntologyAsObo(String outfile, OWLOntology ont) throws OWLOntologyStorageException {
+		FileDocumentTarget outf = new FileDocumentTarget(new File(outfile));
+		//ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());	
+		ont.getOWLOntologyManager().setOntologyFormat(ont, new OBODocumentFormat());	
 		ont.getOWLOntologyManager().saveOntology(ont,outf);
 	}
 }
