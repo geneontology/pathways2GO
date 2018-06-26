@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -86,51 +87,11 @@ public class App {
 		//		System.out.println("mf "+cr.mf_count+" "+cr.mf_unclassified);
 		//		System.out.println("cc "+cr.cc_count+" "+cr.cc_unclassified);
 		//		System.out.println("complex "+cr.complex_count+" "+cr.complex_unclassified);
-
-		updateReactomeXrefs();
 	}
 
-	public static void updateReactomeXrefs() throws OWLOntologyCreationException, IOException {
-		String mapf = "src/main/resources/org/geneontology/gocam/exchange/StId_OldStId_Mapping_Human_Reactions_v65.txt";
-		Map<String, String> old_new = new HashMap<String, String>();
-		BufferedReader f = new BufferedReader(new FileReader(mapf));
-		String line = f.readLine();
-		line = f.readLine();//skip header
-		while(line!=null) {
-			String[] new_old_name_type = line.split("\t");
-			old_new.put(new_old_name_type[1], new_old_name_type[0]);
-			line = f.readLine();
-		}
-		f.close();
-		String ontf = "src/main/resources/org/geneontology/gocam/exchange/go.owl";//-edit.obo";
-		//"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
-		OWLOntologyManager mgr = OWLManager.createOWLOntologyManager();
-		OWLDataFactory df = mgr.getOWLDataFactory();
-		OWLOntology ont = mgr.loadOntologyFromOntologyDocument(new File(ontf));
-		Set<OWLClass> classes = ont.getClassesInSignature();
-		OWLAnnotationProperty xref = df.getOWLAnnotationProperty(IRI.create("http://www.geneontology.org/formats/oboInOwl#hasDbXref"));
-		OWLAnnotationProperty rdfslabel = df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI());
-		for(OWLClass c : classes) {
-			Collection<OWLAnnotationAssertionAxiom> aaa = EntitySearcher.getAnnotationAssertionAxioms(c, ont);
-			for(OWLAnnotationAssertionAxiom a : aaa) {
-				OWLAnnotation anno = a.getAnnotation();
-				if(anno.getProperty().equals(xref)) {
-					OWLAnnotationValue v = anno.getValue();
-					String xref_id = v.asLiteral().get().getLiteral();
-					Collection<OWLAnnotation> anno_annos = a.getAnnotations(rdfslabel);
-					if(xref_id.contains("REACT_")) {
-						for(OWLAnnotation anno_anno : anno_annos) {
-							if(anno_anno.getProperty().equals(rdfslabel)) {
-								OWLAnnotationValue vv = anno_anno.getValue();
-								String xref_label = vv.asLiteral().get().getLiteral();
-								System.out.println(c+" "+xref_id+" "+xref_label);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+
+
+	
 	public static void demoReasoner() throws OWLOntologyCreationException {
 		String ontf = "/Users/bgood/Desktop/test/tmp/GoPlusPlusRhea.ttl";
 		//"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
@@ -227,7 +188,7 @@ public class App {
 								df.getOWLObjectSomeValuesFrom(has_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, bag2)))
 						);
 		mfc.getOWLOntologyManager().addAxiom(mfc, def);
-		writeOntology("/Users/bgood/Desktop/test.owl", mfc);
+		Helper.writeOntology("/Users/bgood/Desktop/test.owl", mfc);
 
 	}
 
@@ -461,17 +422,5 @@ public class App {
 		return go_cam_ont;
 	}
 
-	public static void writeOntology(String outfile, OWLOntology ont) throws OWLOntologyStorageException {
-		FileDocumentTarget outf = new FileDocumentTarget(new File(outfile));
-		//ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());	
-		ont.getOWLOntologyManager().setOntologyFormat(ont, new TurtleDocumentFormat());	
-		ont.getOWLOntologyManager().saveOntology(ont,outf);
-	}
 
-	public static void writeOntologyAsObo(String outfile, OWLOntology ont) throws OWLOntologyStorageException {
-		FileDocumentTarget outf = new FileDocumentTarget(new File(outfile));
-		//ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());	
-		ont.getOWLOntologyManager().setOntologyFormat(ont, new OBODocumentFormat());	
-		ont.getOWLOntologyManager().saveOntology(ont,outf);
-	}
 }
