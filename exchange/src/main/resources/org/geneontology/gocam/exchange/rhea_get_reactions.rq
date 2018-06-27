@@ -13,7 +13,9 @@ SELECT ?reaction ?reactionLabel ?EC ?rhea ?rheaBiAccession ?reactionSide ?compou
   ?rheaBi rh:accession ?rheaBiAccession . 
 #  filter(?rheaBiAccession = "RHEA:24167") . 
 # limit to reactions that have EC numbers 
+optional {
   ?reaction rh:ec ?EC .
+  }
 # get participants
   ?reaction rh:side ?reactionSide .
   ?reactionSide rh:contains ?participant .

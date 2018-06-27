@@ -57,21 +57,22 @@ public class RheaConverter {
 		System.out.println(reactions);
 	}
 
-	class rheaReaction {
-		Map<String, String> left_bag_chebi_stoich;
-		Map<String, String> right_bag_chebi_stoich;
-		String ec_number;
-		String equation;
-		String rhea_master_id;
-		String rhea_bidirectional_id;
-		boolean containsPolymer;
-		boolean containsGeneric;
+	public class rheaReaction {
+		public Map<String, String> left_bag_chebi_stoich;
+		public Map<String, String> right_bag_chebi_stoich;
+		public String ec_number;
+		public String equation;
+		public String rhea_master_id;
+		public String rhea_bidirectional_id;
+		public boolean containsPolymer;
+		public boolean containsGeneric;
 		rheaReaction(){
 			left_bag_chebi_stoich = new HashMap<String, String>();
 			right_bag_chebi_stoich = new HashMap<String, String>();
 			containsPolymer = false;
 			containsGeneric = false;
 		}
+		
 	}
 
 	public Map<String, rheaReaction> getReactionsFromRDF() {
