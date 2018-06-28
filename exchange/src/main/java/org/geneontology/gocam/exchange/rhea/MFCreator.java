@@ -3,6 +3,8 @@
  */
 package org.geneontology.gocam.exchange.rhea;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -19,12 +21,14 @@ import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.vocabulary.OWL;
 import org.biopax.paxtools.model.level3.BiochemicalReaction;
 import org.geneontology.gocam.exchange.App;
 import org.geneontology.gocam.exchange.GoCAM;
 import org.geneontology.gocam.exchange.Helper;
 import org.geneontology.gocam.exchange.rhea.RheaConverter.rheaReaction;
 import org.semanticweb.elk.owlapi.ElkReasonerFactory;
+import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
@@ -89,24 +93,52 @@ public class MFCreator {
 	 * @param args
 	 * @throws OWLOntologyCreationException 
 	 * @throws OWLOntologyStorageException 
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException {
-		String output_ontology = "/Users/bgood/Desktop/test/tmp/GO_Ultra_Intersection_Example.ttl";
+	public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException, IOException {
+		String output_ontology = "/Users/bgood/Desktop/test/tmp/GO_Ultra_Intersection_With_GOPlus_with_Chebi_extract.ttl";
 		//String input_go_cam = "/Users/bgood/Desktop/test/tmp/converted-Degradation_of_AXIN.ttl";
 		//GoCAM go_cam = new GoCAM(input_go_cam);		
 		//OWLOntology newmfs = mfc.makeMFClassesFromGoCAM(input_go_cam);
 		String existing_ontology = "/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
+		//chebi-full-extract-bot.owl";
+		//go-plus-merged.owl";
 		//to add to goplus do this
-		//MFCreator mfc = new MFCreator(existing_ontology);
+		MFCreator mfc = new MFCreator(existing_ontology);
 		//to make a new one, do this
-		MFCreator mfc = new MFCreator(null);
+		//MFCreator mfc = new MFCreator(null);
 		RheaConverter rc = new RheaConverter();
 		Map<String, rheaReaction> reactions = rc.getReactionsFromRDF();
-		OWLOntology newmfs = mfc.makeMFClassesFromRheaReactions(reactions);
-		Helper.writeOntology(output_ontology, newmfs);
+		OWLOntology after = mfc.makeMFClassesFromRheaReactions(reactions);
+
+		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
+		OWLOntology before = man.loadOntologyFromOntologyDocument(new File(existing_ontology));	
+		boolean direct_only = true;
+		//to see impaxt of chebi
+		Set<OWLSubClassOfAxiom> new_sc_axioms_no_chebi = mfc.subClassAxiomDiff(before, after, direct_only);
+		//poor mans import
+		String chebi_subset = "/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/chebi-full-extract-bot.owl";
+		OWLOntology chebi_ont = man.loadOntologyFromOntologyDocument(new File(chebi_subset));	
+		man.addAxioms(before, chebi_ont.getAxioms());
+		man.addAxioms(after, chebi_ont.getAxioms());
+		Set<OWLSubClassOfAxiom> new_sc_axioms = mfc.subClassAxiomDiff(before, after, direct_only);
+		
+		//to see impact of chebi
+		new_sc_axioms.removeAll(new_sc_axioms_no_chebi);
+		
+		System.out.println(new_sc_axioms.size()+" new subclass relations: ");
+		//no chebi
+		//406 including all indirects 
+		//91 direct
+		//with chebi 446 with indirects
+		//126 direct with chebi
+		for(OWLSubClassOfAxiom sc : new_sc_axioms) {
+			String subclass = Helper.getaLabel(sc.getSubClass().asOWLClass(), after);
+			String superclass = Helper.getaLabel(sc.getSuperClass().asOWLClass(), after);
+			System.out.println(subclass+"\t"+superclass+"\t"+sc);
+		}
+		Helper.writeOntology(output_ontology, after);
 	}
-
-
 
 
 	public Set<OWLClass> getGObyDbXref(String xref) {
@@ -129,8 +161,17 @@ public class MFCreator {
 	}
 
 
-	public OWLOntology makeMFClassesFromRheaReactions(Map<String, rheaReaction> reactions) throws OWLOntologyCreationException {
+	public OWLOntology makeMFClassesFromRheaReactions(Map<String, rheaReaction> reactions) throws OWLOntologyCreationException, IOException {
 		OWLOntology mfc = go_cam.go_cam_ont;
+		//capture terms used for limited import
+		Map<String, Set<String>> ont_terms = new HashMap<String, Set<String>>();
+		Set<String> t = new HashSet<String>(); t.add(CatalyticActivity.getIRI().toString());
+		ont_terms.put("GO", t);
+		Set<String> r = new HashSet<String>(); 
+		r.add(has_input.getIRI().toString()); r.add(has_output.getIRI().toString());
+		r.add(has_member.getIRI().toString()); r.add(has_participant.getIRI().toString());
+		ont_terms.put("RO", r);
+
 		OWLDataFactory df = mfc.getOWLOntologyManager().getOWLDataFactory();
 		int i = 0; int n_saved = 0;
 		Map<OWLClass, OWLAxiom> rmfs = new HashMap<OWLClass, OWLAxiom>();
@@ -179,17 +220,19 @@ public class MFCreator {
 				continue;
 			}
 			IRI mf_iri = mf.getIRI();
-			if(!(mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0003978")||
-					mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0008108")||
-					mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0003824")||
-					mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0004659")||
-					mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0004452")||
-					mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0047863")
-					
-					)) {
-				
-				continue;
-			}
+			//			if(!(mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0003978")||
+			//					mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0008108")||
+			//					mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0003824")||
+			//					mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0004659")||
+			//					mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0004452")||
+			//					mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0047863")			
+			//					)) {
+			//				continue;
+			//			}
+			Set<String> terms = ont_terms.get("GO");
+			terms.add(mf_iri.toString());
+			ont_terms.put("GO", terms);
+
 			OWLAnnotation anno = go_cam.addLiteralAnnotations2Individual(mf_iri, GoCAM.definition,"Catalysis of RHEA reaction: "+reaction.equation);
 			OWLAxiom defaxiom = df.getOWLAnnotationAssertionAxiom(mf_iri, anno);
 			go_cam.ontman.addAxiom(go_cam.go_cam_ont, defaxiom);
@@ -202,6 +245,13 @@ public class MFCreator {
 			}
 
 			Set<OWLClassExpression> inputs = new HashSet<OWLClassExpression>();
+			Set<String> chebis = ont_terms.get("CHEBI");
+			if(chebis==null) {
+				chebis = new HashSet<String>();
+			}
+			chebis.addAll(reaction.left_bag_chebi_stoich.keySet());
+			chebis.addAll(reaction.right_bag_chebi_stoich.keySet());
+			ont_terms.put("CHEBI", chebis);
 			for(String chebi : reaction.left_bag_chebi_stoich.keySet()) {
 				String s = reaction.left_bag_chebi_stoich.get(chebi);
 				OWLClassExpression chemclass = df.getOWLClass(IRI.create(chebi));
@@ -224,86 +274,117 @@ public class MFCreator {
 
 			//Intersection version from Yevgeny Kazakov https://github.com/liveontologies/elk-reasoner/issues/54#issuecomment-398921969 
 			OWLAxiom def = 
-				df.getOWLEquivalentClassesAxiom(mf,
-					df.getOWLObjectIntersectionOf(CatalyticActivity,
-						df.getOWLObjectSomeValuesFrom(has_directed_reaction, df.getOWLObjectIntersectionOf(
-							df.getOWLObjectIntersectionOf(df.getOWLObjectSomeValuesFrom(has_input, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag))),
-							df.getOWLObjectIntersectionOf(df.getOWLObjectSomeValuesFrom(has_output, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag))))),
-						df.getOWLObjectSomeValuesFrom(has_directed_reaction, df.getOWLObjectIntersectionOf(
-								df.getOWLObjectIntersectionOf(df.getOWLObjectSomeValuesFrom(has_input, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag))),
-								df.getOWLObjectIntersectionOf(df.getOWLObjectSomeValuesFrom(has_output, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag)))))					
-						));
+					df.getOWLEquivalentClassesAxiom(mf,
+							df.getOWLObjectIntersectionOf(CatalyticActivity,
+									df.getOWLObjectSomeValuesFrom(has_directed_reaction, df.getOWLObjectIntersectionOf(
+											df.getOWLObjectIntersectionOf(df.getOWLObjectSomeValuesFrom(has_input, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag))),
+											df.getOWLObjectIntersectionOf(df.getOWLObjectSomeValuesFrom(has_output, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag))))),
+									df.getOWLObjectSomeValuesFrom(has_directed_reaction, df.getOWLObjectIntersectionOf(
+											df.getOWLObjectIntersectionOf(df.getOWLObjectSomeValuesFrom(has_input, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag))),
+											df.getOWLObjectIntersectionOf(df.getOWLObjectSomeValuesFrom(has_output, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag)))))					
+									));
 			rmfs.put(mf, def);
 			mfc.getOWLOntologyManager().addAxiom(mfc,def);					
-					
-			
-//original - 2 bags
-//			OWLAxiom def = 
-//			df.getOWLEquivalentClassesAxiom(mf, 
-//					df.getOWLObjectIntersectionOf(CatalyticActivity, 
-//							df.getOWLObjectSomeValuesFrom(has_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag)),
-//							df.getOWLObjectSomeValuesFrom(has_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag))));
-//			rmfs.put(mf, def);
-//			mfc.getOWLOntologyManager().addAxiom(mfc,def);		
-			
-//this logically works but ELK can't handle ObjectUnionOf			
-//			OWLAxiom union_def = 
-//					df.getOWLEquivalentClassesAxiom(mf, 
-//						df.getOWLObjectUnionOf(
-//							df.getOWLObjectIntersectionOf(CatalyticActivity, 
-//									df.getOWLObjectSomeValuesFrom(has_left_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag)),
-//									df.getOWLObjectSomeValuesFrom(has_right_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag)))
-//							,
-//							df.getOWLObjectIntersectionOf(CatalyticActivity, 
-//									df.getOWLObjectSomeValuesFrom(has_right_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag)),
-//									df.getOWLObjectSomeValuesFrom(has_left_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag)))
-//							));
-//			mfc.getOWLOntologyManager().addAxiom(mfc,union_def);	
-//			rmfs.put(mf, union_def);
 
-//lr reaction != rl reaction but lr and rl reactions = the mf class...			
-//disjoint union of not right but this how to do it..
-//			OWLClassExpression lr = df.getOWLObjectIntersectionOf(CatalyticActivity, 
-//					df.getOWLObjectSomeValuesFrom(has_left_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag)),
-//					df.getOWLObjectSomeValuesFrom(has_right_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag)));
-//			OWLClassExpression rl = df.getOWLObjectIntersectionOf(CatalyticActivity, 
-//					df.getOWLObjectSomeValuesFrom(has_right_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag)),
-//					df.getOWLObjectSomeValuesFrom(has_left_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag)));
-//			Set<OWLClassExpression> dj = new HashSet<OWLClassExpression>();
-//			dj.add(rl); dj.add(lr);
-//			OWLAxiom dj_union_def = df.getOWLDisjointUnionAxiom(mf, dj);
-//			rmfs.put(mf, dj_union_def);
-			
-//This looks like it works but results in 3 classes for each MF term
-	//		OWLClass leftright = df.getOWLClass(IRI.create(GoCAM.base_iri+"GO_howto_mint_newGO_id_"+Math.random()));
-//			OWLClass leftright = df.getOWLClass(IRI.create(mf.getIRI().toString()+"_LR"));
-//	//		Helper.addLabel(leftright.getIRI(), Helper.getaLabel(mf, mfc)+"_l2r", mfc);
-//			OWLAxiom lrs = df.getOWLSubClassOfAxiom(leftright, mf);
-//			mfc.getOWLOntologyManager().addAxiom(mfc, lrs);
-//			OWLAxiom lr_def = df.getOWLEquivalentClassesAxiom(leftright, 
-//							df.getOWLObjectIntersectionOf(CatalyticActivity, 
-//									df.getOWLObjectSomeValuesFrom(has_left_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag)),
-//									df.getOWLObjectSomeValuesFrom(has_right_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag))));
-//			mfc.getOWLOntologyManager().addAxiom(mfc, lr_def);
-//	//		OWLClass rightleft = df.getOWLClass(IRI.create(GoCAM.base_iri+"GO_howto_mint_newGO_id_"+Math.random()));
-//			OWLClass rightleft = df.getOWLClass(IRI.create(mf.getIRI().toString()+"_RL"));
-//	//		Helper.addLabel(rightleft.getIRI(), Helper.getaLabel(mf, mfc)+"_r2l", mfc);
-//			OWLAxiom rrs = df.getOWLSubClassOfAxiom(rightleft, mf);
-//			mfc.getOWLOntologyManager().addAxiom(mfc, rrs);
-//			OWLAxiom rr_def = df.getOWLEquivalentClassesAxiom(rightleft, 
-//					df.getOWLObjectIntersectionOf(CatalyticActivity, 
-//							df.getOWLObjectSomeValuesFrom(has_right_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag)),
-//							df.getOWLObjectSomeValuesFrom(has_left_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag))));
-//			mfc.getOWLOntologyManager().addAxiom(mfc,rr_def);			
-//			rmfs.put(leftright, lr_def);
-//			rmfs.put(rightleft, rr_def);
-			
+
+			//original - 2 bags
+			//			OWLAxiom def = 
+			//			df.getOWLEquivalentClassesAxiom(mf, 
+			//					df.getOWLObjectIntersectionOf(CatalyticActivity, 
+			//							df.getOWLObjectSomeValuesFrom(has_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag)),
+			//							df.getOWLObjectSomeValuesFrom(has_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag))));
+			//			rmfs.put(mf, def);
+			//			mfc.getOWLOntologyManager().addAxiom(mfc,def);		
+
+			//this logically works but ELK can't handle ObjectUnionOf			
+			//			OWLAxiom union_def = 
+			//					df.getOWLEquivalentClassesAxiom(mf, 
+			//						df.getOWLObjectUnionOf(
+			//							df.getOWLObjectIntersectionOf(CatalyticActivity, 
+			//									df.getOWLObjectSomeValuesFrom(has_left_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag)),
+			//									df.getOWLObjectSomeValuesFrom(has_right_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag)))
+			//							,
+			//							df.getOWLObjectIntersectionOf(CatalyticActivity, 
+			//									df.getOWLObjectSomeValuesFrom(has_right_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag)),
+			//									df.getOWLObjectSomeValuesFrom(has_left_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag)))
+			//							));
+			//			mfc.getOWLOntologyManager().addAxiom(mfc,union_def);	
+			//			rmfs.put(mf, union_def);
+
+			//lr reaction != rl reaction but lr and rl reactions = the mf class...			
+			//disjoint union of not right but this how to do it..
+			//			OWLClassExpression lr = df.getOWLObjectIntersectionOf(CatalyticActivity, 
+			//					df.getOWLObjectSomeValuesFrom(has_left_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag)),
+			//					df.getOWLObjectSomeValuesFrom(has_right_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag)));
+			//			OWLClassExpression rl = df.getOWLObjectIntersectionOf(CatalyticActivity, 
+			//					df.getOWLObjectSomeValuesFrom(has_right_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag)),
+			//					df.getOWLObjectSomeValuesFrom(has_left_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag)));
+			//			Set<OWLClassExpression> dj = new HashSet<OWLClassExpression>();
+			//			dj.add(rl); dj.add(lr);
+			//			OWLAxiom dj_union_def = df.getOWLDisjointUnionAxiom(mf, dj);
+			//			rmfs.put(mf, dj_union_def);
+
+			//This looks like it works but results in 3 classes for each MF term
+			//		OWLClass leftright = df.getOWLClass(IRI.create(GoCAM.base_iri+"GO_howto_mint_newGO_id_"+Math.random()));
+			//			OWLClass leftright = df.getOWLClass(IRI.create(mf.getIRI().toString()+"_LR"));
+			//	//		Helper.addLabel(leftright.getIRI(), Helper.getaLabel(mf, mfc)+"_l2r", mfc);
+			//			OWLAxiom lrs = df.getOWLSubClassOfAxiom(leftright, mf);
+			//			mfc.getOWLOntologyManager().addAxiom(mfc, lrs);
+			//			OWLAxiom lr_def = df.getOWLEquivalentClassesAxiom(leftright, 
+			//							df.getOWLObjectIntersectionOf(CatalyticActivity, 
+			//									df.getOWLObjectSomeValuesFrom(has_left_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag)),
+			//									df.getOWLObjectSomeValuesFrom(has_right_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag))));
+			//			mfc.getOWLOntologyManager().addAxiom(mfc, lr_def);
+			//	//		OWLClass rightleft = df.getOWLClass(IRI.create(GoCAM.base_iri+"GO_howto_mint_newGO_id_"+Math.random()));
+			//			OWLClass rightleft = df.getOWLClass(IRI.create(mf.getIRI().toString()+"_RL"));
+			//	//		Helper.addLabel(rightleft.getIRI(), Helper.getaLabel(mf, mfc)+"_r2l", mfc);
+			//			OWLAxiom rrs = df.getOWLSubClassOfAxiom(rightleft, mf);
+			//			mfc.getOWLOntologyManager().addAxiom(mfc, rrs);
+			//			OWLAxiom rr_def = df.getOWLEquivalentClassesAxiom(rightleft, 
+			//					df.getOWLObjectIntersectionOf(CatalyticActivity, 
+			//							df.getOWLObjectSomeValuesFrom(has_right_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag)),
+			//							df.getOWLObjectSomeValuesFrom(has_left_substance_bag, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag))));
+			//			mfc.getOWLOntologyManager().addAxiom(mfc,rr_def);			
+			//			rmfs.put(leftright, lr_def);
+			//			rmfs.put(rightleft, rr_def);
+
 			n_saved++;
 		}
 		System.out.println("Added "+n_saved+" logical definitions");
-		checkClassificationImpact(go_cam.go_cam_ont, rmfs);
+	//	checkClassificationImpact(go_cam.go_cam_ont, rmfs);
 
+		for(String ont : ont_terms.keySet()) {
+			FileWriter f = new FileWriter("/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/"+ont+"-terms.txt");
+			for(String term : ont_terms.get(ont)) {
+				f.write(term+"\n");
+			}
+			f.close();
+		}
 		return mfc;
+	}
+
+	public Set<OWLSubClassOfAxiom> subClassAxiomDiff(OWLOntology before, OWLOntology after, boolean direct_only) throws OWLOntologyCreationException {
+		System.out.println("Doing subclass diff");
+		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
+		OWLDataFactory df = man.getOWLDataFactory();
+		OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
+		OWLReasoner before_reasoner = reasonerFactory.createReasoner(before);
+		OWLReasoner after_reasoner = reasonerFactory.createReasoner(after);
+		Set<OWLClass> classes = before.getClassesInSignature();
+		Set<OWLSubClassOfAxiom> newSubClassAxioms = new HashSet<OWLSubClassOfAxiom>();
+		for(OWLClass c : classes) {
+			Set<OWLClass> scbefore = before_reasoner.getSubClasses(c, direct_only).getFlattened();
+			Set<OWLClass> scafter = after_reasoner.getSubClasses(c, direct_only).getFlattened();
+			scafter.removeAll(scbefore);
+			for(OWLClass c2 : scafter) {
+				if(c2.getIRI().toString().contains("http://purl.obolibrary.org/obo/GO_")&&
+						!c.getIRI().toString().equals(OWL.Thing.getURI())) {
+					OWLSubClassOfAxiom new_sc = df.getOWLSubClassOfAxiom(c2, c);
+					newSubClassAxioms.add(new_sc);
+				}
+			}
+		}
+		return newSubClassAxioms;
 	}
 
 	public void checkClassificationImpact(OWLOntology ont, Map<OWLClass, OWLAxiom> defined_classes) {
@@ -333,9 +414,11 @@ public class MFCreator {
 			for(OWLClass c : new_ones) {
 				new_ones_labels.add(Helper.getaLabel(c, ont));
 			}
-			if(new_ones.size()>0) {
-				new_classifications++;
-				System.out.println(n+";"+new_classifications+";"+mfc+";"+Helper.getaLabel(mfc, ont)+";"+all_supers_in_new_set+";"+new_ones.size()+";"+new_ones_labels+";"+new_ones);
+			if(new_ones.size()>0) {				
+				if(!new_ones.toString().equals("[<http://purl.obolibrary.org/obo/GO_0003824>]")) {
+					new_classifications++;
+					System.out.println(n+";"+new_classifications+";"+mfc+";"+Helper.getaLabel(mfc, ont)+";"+all_supers_in_new_set+";"+new_ones.size()+";"+new_ones_labels+";"+new_ones);
+				}
 			}
 			//put it back in case there are additional impacts on other classes
 			mgr.addAxiom(ont, new_axiom);
