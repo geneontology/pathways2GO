@@ -8,11 +8,11 @@ package org.geneontology.gocam.exchange;
  *
  */
 public class ReasonerReport {
-	int mf_new_class_count;
-	int bp_new_class_count;
-	int cc_new_class_count;
-	int complex_new_class_count;
-	int total_new_classified_instances;
+	public int mf_new_class_count;
+	public int bp_new_class_count;
+	public int cc_new_class_count;
+	public int complex_new_class_count;
+	public int total_new_classified_instances;
 	/**
 	 * 
 	 */

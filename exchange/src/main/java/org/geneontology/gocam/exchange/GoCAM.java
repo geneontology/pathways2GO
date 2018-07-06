@@ -92,13 +92,14 @@ public class GoCAM {
 	public static OWLClass 
 	bp_class, continuant_class, process_class, go_complex, cc_class, molecular_function, 
 	eco_imported, eco_imported_auto, eco_inferred_auto, 
-	chebi_protein, chebi_gene, chemical_entity, chemical_role;
+	chebi_protein, chebi_gene, chemical_entity, chemical_role, 
+	catalytic_activity, binding, signal_transducer_activity, transporter_activity;
 	public OWLOntology go_cam_ont;
 	public OWLDataFactory df;
 	public OWLOntologyManager ontman;
 	String base_contributor, base_date, base_provider;
 	//for inference 
-	QRunner qrunner;
+	public QRunner qrunner;
 	//for storage
 	String path2bgjournal;
 	Blazer blazegraphdb;
@@ -179,6 +180,11 @@ public class GoCAM {
 		//TODO Work on using imports later to ensure we don't produce incorrect ids..
 		//classes	
 
+		catalytic_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0003824"));
+		binding = df.getOWLClass(IRI.create(obo_iri+"GO_0005488"));
+		signal_transducer_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0004871"));
+		transporter_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0005215"));
+		
 		chemical_role =df.getOWLClass(IRI.create(obo_iri+"CHEBI_50906"));
 		addLabel(chemical_role, "chemical role");
 		//biological process
@@ -459,7 +465,7 @@ public class GoCAM {
 		return Helper.getLabels(e, go_cam_ont);
 	}
 
-	String getaLabel(OWLEntity e){
+	public String getaLabel(OWLEntity e){
 		return Helper.getaLabel(e, go_cam_ont);
 	}
 
@@ -602,7 +608,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 * Sets up the inference rules from provided TBox
 	 * @throws OWLOntologyCreationException
 	 */
-	QRunner initializeQRunnerForTboxInference(Set<String> tbox_files) throws OWLOntologyCreationException {
+	public QRunner initializeQRunnerForTboxInference(Set<String> tbox_files) throws OWLOntologyCreationException {
 		System.out.println("initializeQRunnerForTboxInference()");
 		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
 		List<OWLOntology> tboxes = new ArrayList<OWLOntology>();
@@ -616,7 +622,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		return qrunner;
 	}
 
-	QRunner initializeQRunner(Collection<OWLOntology> tbox) throws OWLOntologyCreationException {
+	public QRunner initializeQRunner(Collection<OWLOntology> tbox) throws OWLOntologyCreationException {
 		System.out.println("initializeQRunner()");
 		boolean add_inferences = true;
 		boolean add_property_definitions = false; boolean add_class_definitions = false;
@@ -745,7 +751,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 * @return
 	 * @throws OWLOntologyCreationException 
 	 */
-	boolean validateGoCAM() throws OWLOntologyCreationException {
+	public boolean validateGoCAM() throws OWLOntologyCreationException {
 		boolean is_valid = false;
 		if(qrunner==null) {
 			System.out.println("qrunner must exist to run validation");

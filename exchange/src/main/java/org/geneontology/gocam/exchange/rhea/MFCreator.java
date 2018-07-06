@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -24,9 +25,15 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.vocabulary.OWL;
 import org.biopax.paxtools.model.level3.BiochemicalReaction;
 import org.geneontology.gocam.exchange.App;
+import org.geneontology.gocam.exchange.ArachneAccessor;
+import org.geneontology.gocam.exchange.ClassificationReport;
 import org.geneontology.gocam.exchange.GoCAM;
+import org.geneontology.gocam.exchange.GoMappingReport;
 import org.geneontology.gocam.exchange.Helper;
+import org.geneontology.gocam.exchange.QRunner;
+import org.geneontology.gocam.exchange.ReasonerReport;
 import org.geneontology.gocam.exchange.rhea.RheaConverter.rheaReaction;
+import org.geneontology.rules.engine.WorkingMemory;
 import org.semanticweb.elk.owlapi.ElkReasonerFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.AxiomType;
@@ -34,11 +41,14 @@ import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
+import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLLiteral;
+import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -96,7 +106,255 @@ public class MFCreator {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException, IOException {
-		String output_ontology = "/Users/bgood/Desktop/test/tmp/GO_Ultra_Intersection_With_GOPlus_with_Chebi_extract.ttl";
+		//buildOntologyDefinitions();
+		MFCreator m = new MFCreator(null);
+		//m.testReactomeClassificationsWithArachne();
+		m.testReactomeClassificationsWithELK();
+	}
+
+	public void testReactomeClassificationsWithELK() throws OWLOntologyCreationException {
+		Map<OWLIndividual, Set<OWLClassExpression>> reaction_manual_classifications = new HashMap<OWLIndividual, Set<OWLClassExpression>>();
+		Map<OWLIndividual, Set<OWLClassExpression>> reaction_auto_classifications = new HashMap<OWLIndividual, Set<OWLClassExpression>>();
+
+		String test_reaction_iri = "http://model.geneontology.org/-983049166";
+		String old_ontology = "/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
+		String new_ontology = "/Users/bgood/Desktop/test/tmp/GO_Ultra_GCI_test_new_chebi.ttl";
+
+		boolean check_reactome_for_inconsistent_models = false;
+		String reactome_dir = "/Users/bgood/reactome-go-cam-models/human/";
+		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
+		OWLDataFactory df = man.getOWLDataFactory();
+		OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
+		String defined_ontology = new_ontology;
+		System.out.println("Loading ontology "+defined_ontology);
+		OWLOntology goplus = man.loadOntologyFromOntologyDocument(new File(defined_ontology));	
+		//iterate through the reactome pathways
+		//load them into the mega ontology
+		File dir = new File(reactome_dir);
+		File[] directoryListing = dir.listFiles();
+		if (directoryListing == null) {
+			System.out.println("Bad input dir "+reactome_dir);
+			System.exit(0);
+		}
+		int x = 0;
+
+		Set<String> skip = new HashSet<String>(); //these are inconsistent and break reasoner
+		skip.add("/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-Glutathione_synthesis_and_recycling.ttl");
+
+		System.out.println("Building reasoner for "+defined_ontology+" reactome go-cams");
+		OWLReasoner goplus_reasoner = reasonerFactory.createReasoner(goplus);		
+		System.out.println("Loading reactome models and checking for inconsistencies ");
+
+		for (File gocam_ttl : directoryListing) {
+			if(!gocam_ttl.getName().endsWith(".ttl")||
+					skip.contains(gocam_ttl.getAbsolutePath())) {
+				continue;
+			}
+			x++;
+			System.out.println(x+" loading "+gocam_ttl.getName());
+			OWLOntology pathway_ont = man.loadOntologyFromOntologyDocument(gocam_ttl);				
+			//record manual type assertions for mf terms
+			for(OWLIndividual reaction : EntitySearcher.getIndividuals(GoCAM.molecular_function, pathway_ont)){
+				Collection<OWLClassExpression> types = EntitySearcher.getTypes(reaction, pathway_ont);
+				reaction_manual_classifications.put(reaction, new HashSet<OWLClassExpression>(types));
+			}
+			//add all reactome models to main ontology graph
+			man.addAxioms(goplus, pathway_ont.getAxioms());
+			if(check_reactome_for_inconsistent_models) {
+				goplus_reasoner.flush();
+				boolean pathway_valid = goplus_reasoner.isConsistent();
+				if(!pathway_valid) {
+					man.removeAxioms(goplus, pathway_ont.getAxioms());
+					System.out.println("Skipping "+gocam_ttl);
+				}
+			}
+		}
+		//now we should have everything, load into reasoner 
+		goplus_reasoner.flush();
+		//now check to see what can be inferred 
+		Set<OWLNamedIndividual> reactions = goplus_reasoner.getInstances(GoCAM.molecular_function, false).getFlattened();
+		System.out.println(reactions.size()+" reactions");
+		int n_reactions = 0; int n_unclassified = 0; int n_classified = 0;
+		Set<OWLClassAssertionAxiom> addcas = new HashSet<OWLClassAssertionAxiom>();
+		Set<OWLNamedIndividual> unclassified = new HashSet<OWLNamedIndividual>();
+		
+		for(OWLNamedIndividual test_reaction : reactions) {
+			n_reactions++;
+			Set<OWLClass> types = goplus_reasoner.getTypes(test_reaction, true).getFlattened();
+			//String reaction_label = Helper.getaLabel(test_reaction, goplus);
+			boolean classified = false;
+			Set<OWLClass> functions = new HashSet<OWLClass>();
+			for(OWLClass type : types) {
+				if(!type.equals(GoCAM.molecular_function)) {
+					classified = true;
+					//	System.out.println(x+"\t"+reaction_label+"\t"+Helper.getaLabel(type, goplus));
+					functions.add(type);
+				}
+			}
+			if(classified) {
+				n_classified++;
+			}else {
+				OWLClassAssertionAxiom isa_ca = df.getOWLClassAssertionAxiom(GoCAM.catalytic_activity, test_reaction);
+				addcas.add(isa_ca);
+				n_unclassified++;
+				unclassified.add(test_reaction);
+			}
+		}
+		//base report for ontology and kb input.  
+		System.out.println(defined_ontology+"\nN reactions:"+n_reactions+"\tn classified:"+n_classified+"\tn unclassified:"+n_unclassified+"\t%classified"+((float)n_classified/(float)n_reactions));
+
+		//look at recapitulations of manual classifications that could be had by reasoning
+		n_reactions = 0; n_unclassified = 0; n_classified = 0;
+		int n_recapitulated = 0; int n_new_classifications = 0;
+		//remove all manual MF type assertions (apart from mf and catalytic)
+		System.out.println("removing "+manual_type_assertions.size()+" manual reaction type assertions");
+		man.removeAxioms(goplus, manual_type_assertions);
+		//record what the manual types were and add catalytic to everything
+		Set<OWLClassAssertionAxiom> everything_ca = new HashSet<OWLClassAssertionAxiom>();
+		Map<OWLIndividual, Set<OWLClass>> i_man_types = new HashMap<OWLIndividual, Set<OWLClass>>();		
+		for(OWLClassAssertionAxiom mc : manual_type_assertions) {
+			OWLIndividual n = mc.getIndividual();
+			everything_ca.add(df.getOWLClassAssertionAxiom(CatalyticActivity, n));
+			Set<OWLClass> types = i_man_types.get(n);
+			if(types==null) {
+				types = new HashSet<OWLClass>();
+			}
+			types.add((OWLClass) mc.getClassExpression());
+			i_man_types.put(n, types);
+		}
+		man.addAxioms(goplus, everything_ca);
+		//now we should have no manual non-root, non-CA MF types
+		//execute reasoner
+		goplus_reasoner.flush();
+		for(OWLNamedIndividual test_reaction : reactions) {
+			n_reactions++;
+			Set<OWLClass> inferred_types = goplus_reasoner.getTypes(test_reaction, true).getFlattened();
+			String reaction_label = Helper.getaLabel(test_reaction, goplus);
+			boolean classified = false;
+			for(OWLClass inferred_type : inferred_types) {
+				if(!(inferred_type.equals(GoCAM.molecular_function)||(inferred_type.equals(GoCAM.catalytic_activity)))) {
+					classified = true;					
+					Set<OWLClass> man_types = i_man_types.get(test_reaction);
+					if(man_types.contains(inferred_type)) {
+						n_recapitulated++;
+						System.out.println("Recapitulated classification: "+reaction_label+"\t"+Helper.getaLabel(inferred_type, goplus));
+					}else {
+						n_new_classifications++;
+						System.out.println("New auto classification: "+reaction_label+"\t"+Helper.getaLabel(inferred_type, goplus));
+					}
+				}
+			}
+			if(classified) {
+				n_classified++;
+			}else {
+				n_unclassified++;
+			}
+		}
+		System.out.println(defined_ontology+"\nAdding in Catalytic Activity for all reactions, removing all manual classifications \nN reactions:"+n_reactions+"\tn classified:"+n_classified+"\tn unclassified:"+n_unclassified+"\t%classified"+((float)n_classified/(float)n_reactions));
+		System.out.println("recapitulations "+n_recapitulated+" new classifications "+n_new_classifications);
+		//now look at new classifications for functions 
+		man.addAxioms(goplus, addcas);
+		goplus_reasoner.flush();		
+		n_reactions = 0; n_unclassified = 0; n_classified = 0;
+		for(OWLNamedIndividual test_reaction : unclassified) {
+			n_reactions++;
+			Set<OWLClass> types = goplus_reasoner.getTypes(test_reaction, true).getFlattened();
+			String reaction_label = Helper.getaLabel(test_reaction, goplus);
+			boolean classified = false;
+			for(OWLClass type : types) {
+				if(!(type.equals(GoCAM.molecular_function)||(type.equals(GoCAM.catalytic_activity)))) 
+				{
+					classified = true;
+					System.out.println("New classification: "+reaction_label+"\t"+Helper.getaLabel(type, goplus));
+				}
+			}
+			if(classified) {
+				n_classified++;
+			}else {
+				n_unclassified++;
+			}
+		}
+		System.out.println(defined_ontology+"\nAdding in Catalytic Activity for all unclassified reactions \nN reactions:"+n_reactions+"\tn classified:"+n_classified+"\tn unclassified:"+n_unclassified+"\t%classified"+((float)n_classified/(float)n_reactions));
+		//Adding in Catalytic Activity for all unclassified reactions 
+		//N reactions:5801	n classified:65	n unclassified:5736	%classified0.0112049645
+	}
+
+	public void testReactomeClassificationsWithArachne() throws OWLOntologyCreationException, IOException {
+		String defined_ontology = "/Users/bgood/Desktop/test/tmp/GO_Ultra_GCI_test_new_chebi.ttl"; //GO_3classes_example.ttl"; //
+		String reactome_dir = "/Users/bgood/reactome-go-cam-models/human/";
+		String report_dir = "/Users/bgood/Desktop/test/tmp/inf_report/Ultra_GCI_new_chebi_";
+		//load ontology into Arachne
+		System.out.println("Loading "+defined_ontology+" into Arachne...");
+		QRunner tbox_qrunner = go_cam.initializeQRunnerForTboxInference(Collections.singleton(defined_ontology));
+		System.out.println("Finished loading into Arachne, starting on Reactome pathways");
+		//iterate through the reactome pathways
+		File dir = new File(reactome_dir);
+		File[] directoryListing = dir.listFiles();
+		GoMappingReport report = new GoMappingReport();
+		if (directoryListing == null) {
+			System.out.println("Bad input dir "+reactome_dir);
+			System.exit(0);
+		}
+		int x = 0;
+		for (File gocam_ttl : directoryListing) {
+			if(!gocam_ttl.getName().endsWith(".ttl")) {
+				continue;
+			}
+			x++;
+			//			if(x>100) {
+			//				break;
+			//			}
+			System.out.println(gocam_ttl.getName());
+			GoCAM react_gocam = new GoCAM(gocam_ttl.getAbsolutePath());
+			react_gocam.qrunner = new QRunner(react_gocam.go_cam_ont); 
+			ClassificationReport before = react_gocam.getClassificationReport();		
+			//don't want to reload tbox each time..
+			boolean rebuild_tbox_with_go_cam_ont = false;
+			//this will also rebuild the rdf version of the ontology, adding things it infers
+			WorkingMemory wm = react_gocam.applyArachneInference(tbox_qrunner, rebuild_tbox_with_go_cam_ont);
+			ClassificationReport after = react_gocam.getClassificationReport();
+			ReasonerReport reasoner_report = new ReasonerReport(before, after);
+			report.pathway_class_report.put(gocam_ttl.getName(), reasoner_report);
+			//			boolean is_logical = react_gocam.validateGoCAM();	
+			//			if(!is_logical) {
+			//				report.inconsistent_models.add(gocam_ttl.getName());
+			//			}
+			if(reasoner_report.mf_new_class_count!=0||x%100==0) {
+				System.out.println(x+" new inferred MFs count: "+reasoner_report.mf_new_class_count);
+			}
+			boolean skip_indirect = true;
+			Map<String, Set<String>> inferred_types_by_uri = ArachneAccessor.getInferredTypes(wm, skip_indirect);
+			Map<String, Set<String>> inferred_types = new HashMap<String, Set<String>>();
+			//add labels
+			for(String uri : inferred_types_by_uri.keySet()) {
+				String u = uri.replace(">", "");
+				u = u.replace("<", "");
+				OWLEntity e = react_gocam.df.getOWLNamedIndividual(IRI.create(u));
+				String label = react_gocam.getaLabel(e);
+				label = label+"\t"+uri;
+				inferred_types.put(label,inferred_types_by_uri.get(uri));
+			}
+			report.pathway_inferred_types.put(gocam_ttl.getName(), inferred_types);	
+
+			//iterate through the reactions
+
+			//identify reactions annotated to MF terms (= true positives)
+		}
+		report.writeReport(report_dir);
+
+		//remove annotations to MF terms (apart from Catalytic Activity)
+
+		//execute reasoner
+
+		//record how many MF terms could be recapitulated through reasoning
+
+		//record how many new MF annotations are generated 
+
+	}
+
+
+	public void buildOntologyDefinitions() throws OWLOntologyCreationException, IOException, OWLOntologyStorageException {
+		String output_ontology = "/Users/bgood/Desktop/test/tmp/GO_Ultra_GCI_test.ttl";
 		//String input_go_cam = "/Users/bgood/Desktop/test/tmp/converted-Degradation_of_AXIN.ttl";
 		//GoCAM go_cam = new GoCAM(input_go_cam);		
 		//OWLOntology newmfs = mfc.makeMFClassesFromGoCAM(input_go_cam);
@@ -106,7 +364,7 @@ public class MFCreator {
 		//to add to goplus do this
 		MFCreator mfc = new MFCreator(existing_ontology);
 		//to make a new one, do this
-		//MFCreator mfc = new MFCreator(null);
+		//	MFCreator mfc = new MFCreator(null);
 		RheaConverter rc = new RheaConverter();
 		Map<String, rheaReaction> reactions = rc.getReactionsFromRDF();
 		OWLOntology after = mfc.makeMFClassesFromRheaReactions(reactions);
@@ -114,32 +372,39 @@ public class MFCreator {
 		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
 		OWLOntology before = man.loadOntologyFromOntologyDocument(new File(existing_ontology));	
 		boolean direct_only = true;
-		//to see impaxt of chebi
-		Set<OWLSubClassOfAxiom> new_sc_axioms_no_chebi = mfc.subClassAxiomDiff(before, after, direct_only);
-		//poor mans import
+		//		//to see impact of chebi
+		////		Set<OWLSubClassOfAxiom> new_sc_axioms_no_chebi = mfc.subClassAxiomDiff(before, after, direct_only);
+		//		//poor mans import
 		String chebi_subset = "/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/chebi-full-extract-bot.owl";
 		OWLOntology chebi_ont = man.loadOntologyFromOntologyDocument(new File(chebi_subset));	
 		man.addAxioms(before, chebi_ont.getAxioms());
 		man.addAxioms(after, chebi_ont.getAxioms());
 		Set<OWLSubClassOfAxiom> new_sc_axioms = mfc.subClassAxiomDiff(before, after, direct_only);
-		
-		//to see impact of chebi
-		new_sc_axioms.removeAll(new_sc_axioms_no_chebi);
-		
+		////		
+		////		//to see impact of chebi
+		////		new_sc_axioms.removeAll(new_sc_axioms_no_chebi);
+		//		
 		System.out.println(new_sc_axioms.size()+" new subclass relations: ");
-		//no chebi
-		//406 including all indirects 
-		//91 direct
-		//with chebi 446 with indirects
-		//126 direct with chebi
+		//		//ultra intersection
+		//		//no chebi
+		//		//406 including all indirects 
+		//		//91 direct
+		//		//with chebi 446 with indirects
+		//		//126 direct with chebi
+		//		//simple with chebi
+		//		//534 new direct subclass relations
+		FileWriter f = new FileWriter("/Users/bgood/Desktop/test/tmp/GO_Ultra_GCI_extract_report.txt");
+		f.write("subclass\tsuperclass\tsc\n");
 		for(OWLSubClassOfAxiom sc : new_sc_axioms) {
 			String subclass = Helper.getaLabel(sc.getSubClass().asOWLClass(), after);
 			String superclass = Helper.getaLabel(sc.getSuperClass().asOWLClass(), after);
-			System.out.println(subclass+"\t"+superclass+"\t"+sc);
+			f.write(subclass+"\t"+superclass+"\t"+sc+"\n");
+			//System.out.println(subclass+"\t"+superclass+"\t"+sc);
 		}
+		f.close();
+		System.out.println("Writing ontology to "+output_ontology);
 		Helper.writeOntology(output_ontology, after);
 	}
-
 
 	public Set<OWLClass> getGObyDbXref(String xref) {
 		String q = "select ?c where "
@@ -220,15 +485,15 @@ public class MFCreator {
 				continue;
 			}
 			IRI mf_iri = mf.getIRI();
-			//			if(!(mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0003978")||
-			//					mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0008108")||
-			//					mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0003824")||
-			//					mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0004659")||
-			//					mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0004452")||
-			//					mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0047863")			
-			//					)) {
-			//				continue;
-			//			}
+			//						if(!(mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0003978")||
+			//								mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0008108")||
+			//								mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0003824")||
+			//								mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0004659")||
+			//								mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0004452")||
+			//								mf_iri.toString().equals("http://purl.obolibrary.org/obo/GO_0047863")			
+			//								)) {
+			//							continue;
+			//						}
 			Set<String> terms = ont_terms.get("GO");
 			terms.add(mf_iri.toString());
 			ont_terms.put("GO", terms);
@@ -244,7 +509,7 @@ public class MFCreator {
 				go_cam.addComment(mf, "equation contains reference to polymer, chebi references underlying molecule");
 			}
 
-			Set<OWLClassExpression> inputs = new HashSet<OWLClassExpression>();
+
 			Set<String> chebis = ont_terms.get("CHEBI");
 			if(chebis==null) {
 				chebis = new HashSet<String>();
@@ -252,6 +517,50 @@ public class MFCreator {
 			chebis.addAll(reaction.left_bag_chebi_stoich.keySet());
 			chebis.addAll(reaction.right_bag_chebi_stoich.keySet());
 			ont_terms.put("CHEBI", chebis);
+
+			//simple via input output		
+			Set<OWLClassExpression> inputslr = new HashSet<OWLClassExpression>();
+			Set<OWLClassExpression> outputs_rl = new HashSet<OWLClassExpression>();
+			for(String chebi : reaction.left_bag_chebi_stoich.keySet()) {
+				OWLClassExpression chemclass = df.getOWLClass(IRI.create(chebi));
+				inputslr.add(go_cam.df.getOWLObjectSomeValuesFrom(has_input, chemclass));
+				outputs_rl.add(go_cam.df.getOWLObjectSomeValuesFrom(has_output, chemclass));
+			}		
+			OWLClassExpression input_setlr = df.getOWLObjectIntersectionOf(inputslr);
+			OWLClassExpression output_setrl = df.getOWLObjectIntersectionOf(outputs_rl);
+
+			Set<OWLClassExpression> outputslr = new HashSet<OWLClassExpression>();
+			Set<OWLClassExpression> inputs_rl = new HashSet<OWLClassExpression>();
+
+			for(String chebi : reaction.right_bag_chebi_stoich.keySet()) {
+				OWLClassExpression chemclass = df.getOWLClass(IRI.create(chebi));
+				outputslr.add(go_cam.df.getOWLObjectSomeValuesFrom(has_output, chemclass));
+				inputs_rl.add(go_cam.df.getOWLObjectSomeValuesFrom(has_input, chemclass));
+			}
+			OWLClassExpression output_setlr = df.getOWLObjectIntersectionOf(outputslr);
+			OWLClassExpression input_setrl = df.getOWLObjectIntersectionOf(inputs_rl);
+
+			//Simple, one way, equivalence 
+			//				OWLAxiom def_lr = 
+			//						df.getOWLEquivalentClassesAxiom(mf,
+			//								df.getOWLObjectIntersectionOf(CatalyticActivity, input_setlr, output_setlr));
+			//				rmfs.put(mf, def_lr);
+			//				mfc.getOWLOntologyManager().addAxiom(mfc,def_lr);		
+
+			//union for instance classification via anonymous subclasses
+			OWLAxiom def_lr = 
+					df.getOWLSubClassOfAxiom(df.getOWLObjectIntersectionOf(CatalyticActivity, input_setlr, output_setlr), mf);
+			rmfs.put(mf, def_lr);
+			mfc.getOWLOntologyManager().addAxiom(mfc,def_lr);			
+			OWLAxiom def_rl = 
+					df.getOWLSubClassOfAxiom(df.getOWLObjectIntersectionOf(CatalyticActivity, input_setrl, output_setrl), mf);
+			rmfs.put(mf, def_rl);
+			mfc.getOWLOntologyManager().addAxiom(mfc,def_rl);	
+
+
+
+			//builds 'bags' of reactants for each side of the equation 
+			Set<OWLClassExpression> inputs = new HashSet<OWLClassExpression>();
 			for(String chebi : reaction.left_bag_chebi_stoich.keySet()) {
 				String s = reaction.left_bag_chebi_stoich.get(chebi);
 				OWLClassExpression chemclass = df.getOWLClass(IRI.create(chebi));
@@ -270,8 +579,7 @@ public class MFCreator {
 				outputs.add(chemandstoich);
 			}
 			OWLClassExpression inputbag = df.getOWLObjectIntersectionOf(inputs);
-			OWLClassExpression outputbag = df.getOWLObjectIntersectionOf(outputs);
-
+			OWLClassExpression outputbag = df.getOWLObjectIntersectionOf(outputs);			
 			//Intersection version from Yevgeny Kazakov https://github.com/liveontologies/elk-reasoner/issues/54#issuecomment-398921969 
 			OWLAxiom def = 
 					df.getOWLEquivalentClassesAxiom(mf,
@@ -351,7 +659,7 @@ public class MFCreator {
 			n_saved++;
 		}
 		System.out.println("Added "+n_saved+" logical definitions");
-	//	checkClassificationImpact(go_cam.go_cam_ont, rmfs);
+		//	checkClassificationImpact(go_cam.go_cam_ont, rmfs);
 
 		for(String ont : ont_terms.keySet()) {
 			FileWriter f = new FileWriter("/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/"+ont+"-terms.txt");

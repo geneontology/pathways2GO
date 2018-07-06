@@ -7,3 +7,14 @@
 /StId_OldStId_Mapping_AllSpecies_AllObjects_v65.txt
 /StId_OldStId_Mapping_Human_AllObjects_v65.txt
 /StId_OldStId_Mapping_Human_Reactions_v65.txt
+/CHEBI-terms.txt
+/GO-terms.txt
+/RO-terms.txt
+/chebi-extract-bot.owl
+/chebi-full-extract-bot.owl
+/chebiterms.txt
+/go-extract-bot.owl
+/go-extract-star.owl
+/go-extract-top.owl
+/goterms.txt
+/roterms.txt
