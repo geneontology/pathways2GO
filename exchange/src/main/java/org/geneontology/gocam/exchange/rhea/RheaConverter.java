@@ -54,7 +54,20 @@ public class RheaConverter {
 	public static void main(String[] args) throws FileNotFoundException {
 		RheaConverter rc = new RheaConverter();
 		Map<String, rheaReaction> reactions = rc.getReactionsFromRDF();
-		System.out.println(reactions);
+		float with_polymer = 0; float with_generic = 0; float all = 0; float either = 0;
+		for(rheaReaction r : reactions.values()) {
+			all++;
+			if(r.containsGeneric) {
+				with_generic++;
+			}
+			if(r.containsPolymer) {
+				with_polymer++;
+			}
+			if(r.containsGeneric||r.containsPolymer) {
+				either++;
+			}
+		}
+		System.out.println(all+"\t"+with_polymer+"\t"+with_generic+"\t"+either+"\t"+(all-either)/all);
 	}
 
 	public class rheaReaction {

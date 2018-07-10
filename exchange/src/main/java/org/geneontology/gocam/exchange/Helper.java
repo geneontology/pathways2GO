@@ -11,6 +11,7 @@ import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLLiteral;
@@ -21,6 +22,17 @@ public class Helper {
 
 	public Helper() {
 		// TODO Auto-generated constructor stub
+	}
+	
+	public static String owlSetToString(Set<OWLClass> set, OWLOntology ont, String sep) {
+		String s = "";
+		for(OWLClass e : set) {
+			s = s+Helper.getaLabel(e, ont)+sep;
+		}
+		if(s.length()>0) {
+			s = s.substring(0,s.length()-1);
+		}
+		return s;
 	}
 	
 	public static Set<String> getLabels(OWLEntity e, OWLOntology ont){

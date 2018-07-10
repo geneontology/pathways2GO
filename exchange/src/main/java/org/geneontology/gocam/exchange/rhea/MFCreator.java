@@ -112,9 +112,10 @@ public class MFCreator {
 		m.testReactomeClassificationsWithELK();
 	}
 
-	public void testReactomeClassificationsWithELK() throws OWLOntologyCreationException {
-		Map<OWLIndividual, Set<OWLClassExpression>> reaction_manual_classifications = new HashMap<OWLIndividual, Set<OWLClassExpression>>();
-		Map<OWLIndividual, Set<OWLClassExpression>> reaction_auto_classifications = new HashMap<OWLIndividual, Set<OWLClassExpression>>();
+	public void testReactomeClassificationsWithELK() throws OWLOntologyCreationException, IOException {
+		Map<OWLIndividual, Set<OWLClass>> reaction_manual_classifications = new HashMap<OWLIndividual, Set<OWLClass>>();
+		Map<OWLIndividual, Set<OWLClass>> reaction_goplus_classifications = new HashMap<OWLIndividual, Set<OWLClass>>();
+		Map<OWLIndividual, Set<OWLClass>> reaction_goplusplus_classifications = new HashMap<OWLIndividual, Set<OWLClass>>();
 
 		String test_reaction_iri = "http://model.geneontology.org/-983049166";
 		String old_ontology = "/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
@@ -154,10 +155,21 @@ public class MFCreator {
 			System.out.println(x+" loading "+gocam_ttl.getName());
 			OWLOntology pathway_ont = man.loadOntologyFromOntologyDocument(gocam_ttl);				
 			//record manual type assertions for mf terms
+			Set<OWLClassAssertionAxiom> man_asserts = new HashSet<OWLClassAssertionAxiom>();
 			for(OWLIndividual reaction : EntitySearcher.getIndividuals(GoCAM.molecular_function, pathway_ont)){
 				Collection<OWLClassExpression> types = EntitySearcher.getTypes(reaction, pathway_ont);
-				reaction_manual_classifications.put(reaction, new HashSet<OWLClassExpression>(types));
+				Set<OWLClass> manual = new HashSet<OWLClass>();				
+				for(OWLClassExpression exp : types) {
+					manual.add(exp.asOWLClass());
+					if(!exp.equals(GoCAM.molecular_function)) {
+						man_asserts.add(df.getOWLClassAssertionAxiom(exp, reaction));					
+					}
+				}
+				reaction_manual_classifications.put(reaction, manual);
 			}
+			//remove manual classifications to see if they are found again in the new stuff
+			man.removeAxioms(pathway_ont, man_asserts);
+			
 			//add all reactome models to main ontology graph
 			man.addAxioms(goplus, pathway_ont.getAxioms());
 			if(check_reactome_for_inconsistent_models) {
@@ -171,101 +183,84 @@ public class MFCreator {
 		}
 		//now we should have everything, load into reasoner 
 		goplus_reasoner.flush();
-		//now check to see what can be inferred 
+		//now check to see what can be inferred given the ontology and instances as they are provided in input
 		Set<OWLNamedIndividual> reactions = goplus_reasoner.getInstances(GoCAM.molecular_function, false).getFlattened();
 		System.out.println(reactions.size()+" reactions");
 		int n_reactions = 0; int n_unclassified = 0; int n_classified = 0;
-		Set<OWLClassAssertionAxiom> addcas = new HashSet<OWLClassAssertionAxiom>();
-		Set<OWLNamedIndividual> unclassified = new HashSet<OWLNamedIndividual>();
-		
+
 		for(OWLNamedIndividual test_reaction : reactions) {
 			n_reactions++;
 			Set<OWLClass> types = goplus_reasoner.getTypes(test_reaction, true).getFlattened();
 			//String reaction_label = Helper.getaLabel(test_reaction, goplus);
 			boolean classified = false;
-			Set<OWLClass> functions = new HashSet<OWLClass>();
+			reaction_goplus_classifications.put(test_reaction, types);
 			for(OWLClass type : types) {
 				if(!type.equals(GoCAM.molecular_function)) {
 					classified = true;
-					//	System.out.println(x+"\t"+reaction_label+"\t"+Helper.getaLabel(type, goplus));
-					functions.add(type);
 				}
 			}
 			if(classified) {
 				n_classified++;
 			}else {
-				OWLClassAssertionAxiom isa_ca = df.getOWLClassAssertionAxiom(GoCAM.catalytic_activity, test_reaction);
-				addcas.add(isa_ca);
 				n_unclassified++;
-				unclassified.add(test_reaction);
 			}
 		}
 		//base report for ontology and kb input.  
 		System.out.println(defined_ontology+"\nN reactions:"+n_reactions+"\tn classified:"+n_classified+"\tn unclassified:"+n_unclassified+"\t%classified"+((float)n_classified/(float)n_reactions));
-
-		//look at recapitulations of manual classifications that could be had by reasoning
-		n_reactions = 0; n_unclassified = 0; n_classified = 0;
-		int n_recapitulated = 0; int n_new_classifications = 0;
-		//remove all manual MF type assertions (apart from mf and catalytic)
-		System.out.println("removing "+manual_type_assertions.size()+" manual reaction type assertions");
-		man.removeAxioms(goplus, manual_type_assertions);
-		//record what the manual types were and add catalytic to everything
-		Set<OWLClassAssertionAxiom> everything_ca = new HashSet<OWLClassAssertionAxiom>();
-		Map<OWLIndividual, Set<OWLClass>> i_man_types = new HashMap<OWLIndividual, Set<OWLClass>>();		
-		for(OWLClassAssertionAxiom mc : manual_type_assertions) {
-			OWLIndividual n = mc.getIndividual();
-			everything_ca.add(df.getOWLClassAssertionAxiom(CatalyticActivity, n));
-			Set<OWLClass> types = i_man_types.get(n);
-			if(types==null) {
-				types = new HashSet<OWLClass>();
-			}
-			types.add((OWLClass) mc.getClassExpression());
-			i_man_types.put(n, types);
-		}
-		man.addAxioms(goplus, everything_ca);
-		//now we should have no manual non-root, non-CA MF types
-		//execute reasoner
-		goplus_reasoner.flush();
+		//now add catalytic activity to everything with at least one chebi as input and one chebi as output to activate new axioms
+		Set<OWLClassAssertionAxiom> cas = new HashSet<OWLClassAssertionAxiom>();
+		int n_ca = 0;
 		for(OWLNamedIndividual test_reaction : reactions) {
-			n_reactions++;
-			Set<OWLClass> inferred_types = goplus_reasoner.getTypes(test_reaction, true).getFlattened();
-			String reaction_label = Helper.getaLabel(test_reaction, goplus);
-			boolean classified = false;
-			for(OWLClass inferred_type : inferred_types) {
-				if(!(inferred_type.equals(GoCAM.molecular_function)||(inferred_type.equals(GoCAM.catalytic_activity)))) {
-					classified = true;					
-					Set<OWLClass> man_types = i_man_types.get(test_reaction);
-					if(man_types.contains(inferred_type)) {
-						n_recapitulated++;
-						System.out.println("Recapitulated classification: "+reaction_label+"\t"+Helper.getaLabel(inferred_type, goplus));
-					}else {
-						n_new_classifications++;
-						System.out.println("New auto classification: "+reaction_label+"\t"+Helper.getaLabel(inferred_type, goplus));
+			Collection<OWLIndividual> inputs = EntitySearcher.getObjectPropertyValues(test_reaction, GoCAM.has_input, goplus);
+			Collection<OWLIndividual> outputs = EntitySearcher.getObjectPropertyValues(test_reaction, GoCAM.has_output, goplus);
+			boolean chebi_input = false; boolean chebi_output = false;
+			Set<OWLClass> input_types = new HashSet<OWLClass>();
+			for(OWLIndividual input : inputs) {
+				Set<OWLClass> types = goplus_reasoner.getTypes(input.asOWLNamedIndividual(), true).getFlattened();
+				input_types.addAll(types);
+				for(OWLClass type : types) {
+					IRI iri = type.getIRI();
+					if(iri.toString().contains("CHEBI")){
+						chebi_input = true;
 					}
 				}
 			}
-			if(classified) {
-				n_classified++;
-			}else {
-				n_unclassified++;
-			}
+			Set<OWLClass> output_types = new HashSet<OWLClass>();
+			for(OWLIndividual output : outputs) {
+				Set<OWLClass> types = goplus_reasoner.getTypes(output.asOWLNamedIndividual(), true).getFlattened();
+				output_types.addAll(types);
+				for(OWLClass type : types) {
+					IRI iri = type.getIRI();
+					if(iri.toString().contains("CHEBI")){
+						chebi_output = true;
+					}
+				}
+			}		
+			if(chebi_input&&chebi_output) {
+				output_types.removeAll(input_types);
+				if(output_types.size()>0) {
+					n_ca++;
+					OWLClassAssertionAxiom ca = df.getOWLClassAssertionAxiom(CatalyticActivity, test_reaction);
+					cas.add(ca);
+					//System.out.println("Catalyzing "+Helper.getaLabel(test_reaction, goplus));
+				}
+			}			
 		}
-		System.out.println(defined_ontology+"\nAdding in Catalytic Activity for all reactions, removing all manual classifications \nN reactions:"+n_reactions+"\tn classified:"+n_classified+"\tn unclassified:"+n_unclassified+"\t%classified"+((float)n_classified/(float)n_reactions));
-		System.out.println("recapitulations "+n_recapitulated+" new classifications "+n_new_classifications);
-		//now look at new classifications for functions 
-		man.addAxioms(goplus, addcas);
-		goplus_reasoner.flush();		
+		System.out.println("guessing catalytic activity for "+n_ca+" reactions");
+		man.addAxioms(goplus, cas);
+		//rerun to build new inferred set
+		goplus_reasoner.flush();
 		n_reactions = 0; n_unclassified = 0; n_classified = 0;
-		for(OWLNamedIndividual test_reaction : unclassified) {
+		for(OWLNamedIndividual test_reaction : reactions) {
 			n_reactions++;
 			Set<OWLClass> types = goplus_reasoner.getTypes(test_reaction, true).getFlattened();
-			String reaction_label = Helper.getaLabel(test_reaction, goplus);
+			//String reaction_label = Helper.getaLabel(test_reaction, goplus);
 			boolean classified = false;
+			reaction_goplusplus_classifications.put(test_reaction, types);
 			for(OWLClass type : types) {
-				if(!(type.equals(GoCAM.molecular_function)||(type.equals(GoCAM.catalytic_activity)))) 
-				{
+				if(!(type.equals(GoCAM.molecular_function)||
+						type.equals(GoCAM.catalytic_activity))) {
 					classified = true;
-					System.out.println("New classification: "+reaction_label+"\t"+Helper.getaLabel(type, goplus));
 				}
 			}
 			if(classified) {
@@ -274,9 +269,128 @@ public class MFCreator {
 				n_unclassified++;
 			}
 		}
-		System.out.println(defined_ontology+"\nAdding in Catalytic Activity for all unclassified reactions \nN reactions:"+n_reactions+"\tn classified:"+n_classified+"\tn unclassified:"+n_unclassified+"\t%classified"+((float)n_classified/(float)n_reactions));
-		//Adding in Catalytic Activity for all unclassified reactions 
-		//N reactions:5801	n classified:65	n unclassified:5736	%classified0.0112049645
+		//remove mf and catalytic from everything for analysis
+		int manually_classified = 0;
+		//add term level statistics
+		Map<OWLClass, Integer> manual_term_count = new HashMap<OWLClass, Integer>();
+		Map<OWLClass, Integer> goplus_term_count = new HashMap<OWLClass, Integer>();
+		Map<OWLClass, Integer> goplusplus_term_count = new HashMap<OWLClass, Integer>();
+		for(OWLNamedIndividual reaction : reactions) {
+			Set<OWLClass> manual = reaction_manual_classifications.get(reaction);
+			manual.remove(GoCAM.molecular_function);
+			manual.remove(GoCAM.catalytic_activity);
+			reaction_manual_classifications.put(reaction, manual);
+			if(manual.size()>0) {
+				manually_classified++;
+			}
+			Set<OWLClass> goplus_auto = reaction_goplus_classifications.get(reaction);
+			goplus_auto.remove(GoCAM.molecular_function);
+			goplus_auto.remove(GoCAM.catalytic_activity);
+			reaction_goplus_classifications.put(reaction, goplus_auto);
+			Set<OWLClass> goplusplus_auto = reaction_goplusplus_classifications.get(reaction);
+			goplusplus_auto.remove(GoCAM.molecular_function);
+			goplusplus_auto.remove(GoCAM.catalytic_activity);
+			reaction_goplusplus_classifications.put(reaction, goplusplus_auto);
+			//add term level statistics
+			for(OWLClass term : manual) {
+				Integer manterm = manual_term_count.get(term);
+				if(manterm==null) {
+					manterm = 0;
+				}
+				manterm++;
+				manual_term_count.put(term, manterm);
+			}
+			for(OWLClass term : goplus_auto) {
+				Integer t = goplus_term_count.get(term);
+				if(t==null) {
+					t = 0;
+				}
+				t++;
+				goplus_term_count.put(term, t);
+			}
+			for(OWLClass term : goplusplus_auto) {
+				Integer t = goplusplus_term_count.get(term);
+				if(t==null) {
+					t = 0;
+				}
+				t++;
+				goplusplus_term_count.put(term, t);
+			}
+		}
+
+		System.out.println(defined_ontology+"\nWith new Catalytic Activity definitions\nN reactions:"+n_reactions+"\tn classified:"+n_classified+"\tn unclassified:"+n_unclassified+"\t%classified"+((float)n_classified/(float)n_reactions));
+		System.out.println("Manual by Reactome: "+n_reactions+"\tn classified:"+manually_classified+"\tn unclassified:"+(n_reactions-manually_classified)+"\t%classified"+((float)manually_classified/(float)n_reactions));
+
+		//now finish with report on reasoner user in the three states
+		//		Map<OWLIndividual, Set<OWLClass>> reaction_manual_classifications = new HashMap<OWLIndividual, Set<OWLClass>>();
+		//		Map<OWLIndividual, Set<OWLClass>> reaction_goplus_classifications = new HashMap<OWLIndividual, Set<OWLClass>>();
+		//		Map<OWLIndividual, Set<OWLClass>> reaction_goplusplus_classifications = new HashMap<OWLIndividual, Set<OWLClass>>();
+		String data_file = "/Users/bgood/Desktop/test/tmp/ELK_reactome_new_mfdef_types.txt";
+		FileWriter d = new FileWriter(data_file);
+		d.write("reaction_label\tgoplus!=goplusNewRheaDefs\tgoplusNewRheaDefs_recapitulate\tgoplusNewRheaDefs_new\tgoplus_recapitulate\tgoplus_new\tmanual\tgoplus\tgoplusNewRheaDefs\n");
+		int total_recap = 0;  int total_new = 0; 
+		int total_recap_plusplus = 0;  int total_new_plusplus = 0; 
+		for(OWLIndividual reaction : reaction_manual_classifications.keySet()) {
+			String reaction_label = Helper.getaLabel((OWLEntity) reaction, goplus);
+			Set<OWLClass> manual = reaction_manual_classifications.get(reaction);
+			Set<OWLClass> goplus_auto = reaction_goplus_classifications.get(reaction);
+			Set<OWLClass> goplus_recapitulate = new HashSet<OWLClass>(manual);
+			goplus_recapitulate.retainAll(goplus_auto);
+			Set<OWLClass> goplus_new = new HashSet<OWLClass>(goplus_auto);
+			goplus_new.removeAll(manual);
+			Set<OWLClass> goplusplus_auto = reaction_goplusplus_classifications.get(reaction);
+			Set<OWLClass> goplusplus_recapitulate = new HashSet<OWLClass>(manual);
+			goplusplus_recapitulate.retainAll(goplusplus_auto);
+			Set<OWLClass> goplusplus_new = new HashSet<OWLClass>(goplusplus_auto);
+			goplusplus_new.removeAll(manual);
+			Set<OWLClass> goplusplus_minus_goplus = new HashSet<OWLClass>(goplusplus_auto);
+			goplusplus_minus_goplus.removeAll(goplus_auto);
+			if(goplusplus_recapitulate.size()>0) {
+				total_recap_plusplus++;
+			}
+			if(goplusplus_new.size()>0) {
+				total_new_plusplus++;
+			}
+			if(goplus_recapitulate.size()>0) {
+				total_recap++;
+			}
+			if(goplus_new.size()>0) {
+				total_new++;
+			}
+			d.write(reaction_label+"\t"+
+					goplusplus_minus_goplus.size()+"\t"+
+					goplusplus_recapitulate.size()+"\t"+
+					goplusplus_new.size()+"\t"+
+					goplus_recapitulate.size()+"\t"+
+					goplus_new.size()+"\t"+
+					Helper.owlSetToString(manual, goplus, ";")+"\t"+
+					Helper.owlSetToString(goplus_auto, goplus, ";")+"\t"+
+					Helper.owlSetToString(goplusplus_auto, goplus, ";")+"\n");
+		}
+		System.out.println("goplus: total reactions with recapitulated classes:\t"+total_recap+"\twith new classes:\t"+total_new);
+		System.out.println("goplusplus: total reactions with recapitulated classes:\t"+total_recap_plusplus+"\twith new classes:\t"+total_new_plusplus);
+		d.close();
+		//term usage report 
+		Set<OWLClass> terms = new HashSet<OWLClass>();
+		//		Map<OWLClass, Integer> manual_term_count = new HashMap<OWLClass, Integer>();
+		//		Map<OWLClass, Integer> goplus_term_count = new HashMap<OWLClass, Integer>();
+		//		Map<OWLClass, Integer> goplusplus_term_count = new HashMap<OWLClass, Integer>();
+		terms.addAll(manual_term_count.keySet());
+		terms.addAll(goplus_term_count.keySet());
+		terms.addAll(goplusplus_term_count.keySet());
+		String term_count_file = "/Users/bgood/Desktop/test/tmp/term_counts.txt";
+		FileWriter f = new FileWriter(term_count_file);
+		f.write("Term\tManual\tgo_plus\tgo_plus_RHEA\n");
+		for(OWLClass term : terms) {
+			Integer mi = manual_term_count.get(term);
+			if(mi==null) {mi=0;}
+			Integer gpi = goplus_term_count.get(term);
+			if(gpi==null) {gpi=0;}
+			Integer gppi = goplusplus_term_count.get(term);
+			if(gppi==null) {gppi=0;}
+			f.write(Helper.getaLabel(term, goplus)+"\t"+mi+"\t"+gpi+"\t"+gppi+"\n");
+		}
+		f.close();
 	}
 
 	public void testReactomeClassificationsWithArachne() throws OWLOntologyCreationException, IOException {
