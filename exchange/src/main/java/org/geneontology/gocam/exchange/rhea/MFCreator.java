@@ -205,6 +205,7 @@ public class MFCreator {
 				n_unclassified++;
 			}
 		}
+		//hello go
 		//base report for ontology and kb input.  
 		System.out.println(defined_ontology+"\nN reactions:"+n_reactions+"\tn classified:"+n_classified+"\tn unclassified:"+n_unclassified+"\t%classified"+((float)n_classified/(float)n_reactions));
 		//now add catalytic activity to everything with at least one chebi as input and one chebi as output to activate new axioms
