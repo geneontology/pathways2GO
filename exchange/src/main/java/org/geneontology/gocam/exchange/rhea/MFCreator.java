@@ -106,10 +106,11 @@ public class MFCreator {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException, IOException {
-		//buildOntologyDefinitions();
+		
 		MFCreator m = new MFCreator(null);
+		m.buildOntologyDefinitions();
 		//m.testReactomeClassificationsWithArachne();
-		m.testReactomeClassificationsWithELK();
+		//m.testReactomeClassificationsWithELK();
 	}
 
 	public void testReactomeClassificationsWithELK() throws OWLOntologyCreationException, IOException {
@@ -205,7 +206,6 @@ public class MFCreator {
 				n_unclassified++;
 			}
 		}
-		//hello go
 		//base report for ontology and kb input.  
 		System.out.println(defined_ontology+"\nN reactions:"+n_reactions+"\tn classified:"+n_classified+"\tn unclassified:"+n_unclassified+"\t%classified"+((float)n_classified/(float)n_reactions));
 		//now add catalytic activity to everything with at least one chebi as input and one chebi as output to activate new axioms
@@ -328,7 +328,7 @@ public class MFCreator {
 		//		Map<OWLIndividual, Set<OWLClass>> reaction_goplusplus_classifications = new HashMap<OWLIndividual, Set<OWLClass>>();
 		String data_file = "/Users/bgood/Desktop/test/tmp/ELK_reactome_new_mfdef_types.txt";
 		FileWriter d = new FileWriter(data_file);
-		d.write("reaction_label\tgoplus!=goplusNewRheaDefs\tgoplusNewRheaDefs_recapitulate\tgoplusNewRheaDefs_new\tgoplus_recapitulate\tgoplus_new\tmanual\tgoplus\tgoplusNewRheaDefs\n");
+		d.write("reaction_label\tmanual\tgoplus\tgoplusNewRheaDefs\tgoplus!=goplusNewRheaDefs\tgoplusNewRheaDefs_recapitulate\tgoplusNewRheaDefs_new\tgoplus_recapitulate\tgoplus_new\n");
 		int total_recap = 0;  int total_new = 0; 
 		int total_recap_plusplus = 0;  int total_new_plusplus = 0; 
 		for(OWLIndividual reaction : reaction_manual_classifications.keySet()) {
@@ -359,14 +359,15 @@ public class MFCreator {
 				total_new++;
 			}
 			d.write(reaction_label+"\t"+
+					Helper.owlSetToString(manual, goplus, ";")+"\t"+
+					Helper.owlSetToString(goplus_auto, goplus, ";")+"\t"+
+					Helper.owlSetToString(goplusplus_auto, goplus, ";")+"\t"+
 					goplusplus_minus_goplus.size()+"\t"+
 					goplusplus_recapitulate.size()+"\t"+
 					goplusplus_new.size()+"\t"+
 					goplus_recapitulate.size()+"\t"+
-					goplus_new.size()+"\t"+
-					Helper.owlSetToString(manual, goplus, ";")+"\t"+
-					Helper.owlSetToString(goplus_auto, goplus, ";")+"\t"+
-					Helper.owlSetToString(goplusplus_auto, goplus, ";")+"\n");
+					goplus_new.size()+"\n");
+
 		}
 		System.out.println("goplus: total reactions with recapitulated classes:\t"+total_recap+"\twith new classes:\t"+total_new);
 		System.out.println("goplusplus: total reactions with recapitulated classes:\t"+total_recap_plusplus+"\twith new classes:\t"+total_new_plusplus);
@@ -469,7 +470,7 @@ public class MFCreator {
 
 
 	public void buildOntologyDefinitions() throws OWLOntologyCreationException, IOException, OWLOntologyStorageException {
-		String output_ontology = "/Users/bgood/Desktop/test/tmp/GO_Ultra_GCI_test.ttl";
+		String output_ontology = "/Users/bgood/Desktop/test/tmp/GO_Just_GCI_test.ttl";
 		//String input_go_cam = "/Users/bgood/Desktop/test/tmp/converted-Degradation_of_AXIN.ttl";
 		//GoCAM go_cam = new GoCAM(input_go_cam);		
 		//OWLOntology newmfs = mfc.makeMFClassesFromGoCAM(input_go_cam);
@@ -490,7 +491,7 @@ public class MFCreator {
 		//		//to see impact of chebi
 		////		Set<OWLSubClassOfAxiom> new_sc_axioms_no_chebi = mfc.subClassAxiomDiff(before, after, direct_only);
 		//		//poor mans import
-		String chebi_subset = "/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/chebi-full-extract-bot.owl";
+		String chebi_subset = "/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/chebi_import_with_rhea_terms.owl";
 		OWLOntology chebi_ont = man.loadOntologyFromOntologyDocument(new File(chebi_subset));	
 		man.addAxioms(before, chebi_ont.getAxioms());
 		man.addAxioms(after, chebi_ont.getAxioms());
@@ -508,7 +509,7 @@ public class MFCreator {
 		//		//126 direct with chebi
 		//		//simple with chebi
 		//		//534 new direct subclass relations
-		FileWriter f = new FileWriter("/Users/bgood/Desktop/test/tmp/GO_Ultra_GCI_extract_report.txt");
+		FileWriter f = new FileWriter("/Users/bgood/Desktop/test/tmp/GO_Just_GCI_extract_report.txt");
 		f.write("subclass\tsuperclass\tsc\n");
 		for(OWLSubClassOfAxiom sc : new_sc_axioms) {
 			String subclass = Helper.getaLabel(sc.getSubClass().asOWLClass(), after);
@@ -675,39 +676,39 @@ public class MFCreator {
 
 
 			//builds 'bags' of reactants for each side of the equation 
-			Set<OWLClassExpression> inputs = new HashSet<OWLClassExpression>();
-			for(String chebi : reaction.left_bag_chebi_stoich.keySet()) {
-				String s = reaction.left_bag_chebi_stoich.get(chebi);
-				OWLClassExpression chemclass = df.getOWLClass(IRI.create(chebi));
-				OWLLiteral stoich = go_cam.df.getOWLLiteral(s); 
-				OWLClassExpression chemandstoich = go_cam.df.getOWLObjectSomeValuesFrom(has_member, 
-						go_cam.df.getOWLObjectIntersectionOf(chemclass, go_cam.df.getOWLDataHasValue(has_stoichiometry, stoich)));
-				inputs.add(chemandstoich);
-			}
-			Set<OWLClassExpression> outputs = new HashSet<OWLClassExpression>();
-			for(String chebi : reaction.right_bag_chebi_stoich.keySet()) {
-				String s = reaction.right_bag_chebi_stoich.get(chebi);
-				OWLClassExpression chemclass = df.getOWLClass(IRI.create(chebi));
-				OWLLiteral stoich = go_cam.df.getOWLLiteral(s); 
-				OWLClassExpression chemandstoich = go_cam.df.getOWLObjectSomeValuesFrom(has_member, 
-						go_cam.df.getOWLObjectIntersectionOf(chemclass, go_cam.df.getOWLDataHasValue(has_stoichiometry, stoich)));
-				outputs.add(chemandstoich);
-			}
-			OWLClassExpression inputbag = df.getOWLObjectIntersectionOf(inputs);
-			OWLClassExpression outputbag = df.getOWLObjectIntersectionOf(outputs);			
-			//Intersection version from Yevgeny Kazakov https://github.com/liveontologies/elk-reasoner/issues/54#issuecomment-398921969 
-			OWLAxiom def = 
-					df.getOWLEquivalentClassesAxiom(mf,
-							df.getOWLObjectIntersectionOf(CatalyticActivity,
-									df.getOWLObjectSomeValuesFrom(has_directed_reaction, df.getOWLObjectIntersectionOf(
-											df.getOWLObjectIntersectionOf(df.getOWLObjectSomeValuesFrom(has_input, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag))),
-											df.getOWLObjectIntersectionOf(df.getOWLObjectSomeValuesFrom(has_output, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag))))),
-									df.getOWLObjectSomeValuesFrom(has_directed_reaction, df.getOWLObjectIntersectionOf(
-											df.getOWLObjectIntersectionOf(df.getOWLObjectSomeValuesFrom(has_input, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag))),
-											df.getOWLObjectIntersectionOf(df.getOWLObjectSomeValuesFrom(has_output, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag)))))					
-									));
-			rmfs.put(mf, def);
-			mfc.getOWLOntologyManager().addAxiom(mfc,def);					
+//			Set<OWLClassExpression> inputs = new HashSet<OWLClassExpression>();
+//			for(String chebi : reaction.left_bag_chebi_stoich.keySet()) {
+//				String s = reaction.left_bag_chebi_stoich.get(chebi);
+//				OWLClassExpression chemclass = df.getOWLClass(IRI.create(chebi));
+//				OWLLiteral stoich = go_cam.df.getOWLLiteral(s); 
+//				OWLClassExpression chemandstoich = go_cam.df.getOWLObjectSomeValuesFrom(has_member, 
+//						go_cam.df.getOWLObjectIntersectionOf(chemclass, go_cam.df.getOWLDataHasValue(has_stoichiometry, stoich)));
+//				inputs.add(chemandstoich);
+//			}
+//			Set<OWLClassExpression> outputs = new HashSet<OWLClassExpression>();
+//			for(String chebi : reaction.right_bag_chebi_stoich.keySet()) {
+//				String s = reaction.right_bag_chebi_stoich.get(chebi);
+//				OWLClassExpression chemclass = df.getOWLClass(IRI.create(chebi));
+//				OWLLiteral stoich = go_cam.df.getOWLLiteral(s); 
+//				OWLClassExpression chemandstoich = go_cam.df.getOWLObjectSomeValuesFrom(has_member, 
+//						go_cam.df.getOWLObjectIntersectionOf(chemclass, go_cam.df.getOWLDataHasValue(has_stoichiometry, stoich)));
+//				outputs.add(chemandstoich);
+//			}
+//			OWLClassExpression inputbag = df.getOWLObjectIntersectionOf(inputs);
+//			OWLClassExpression outputbag = df.getOWLObjectIntersectionOf(outputs);			
+//			//Intersection version from Yevgeny Kazakov https://github.com/liveontologies/elk-reasoner/issues/54#issuecomment-398921969 
+//			OWLAxiom def = 
+//					df.getOWLEquivalentClassesAxiom(mf,
+//							df.getOWLObjectIntersectionOf(CatalyticActivity,
+//									df.getOWLObjectSomeValuesFrom(has_directed_reaction, df.getOWLObjectIntersectionOf(
+//											df.getOWLObjectIntersectionOf(df.getOWLObjectSomeValuesFrom(has_input, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag))),
+//											df.getOWLObjectIntersectionOf(df.getOWLObjectSomeValuesFrom(has_output, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag))))),
+//									df.getOWLObjectSomeValuesFrom(has_directed_reaction, df.getOWLObjectIntersectionOf(
+//											df.getOWLObjectIntersectionOf(df.getOWLObjectSomeValuesFrom(has_input, df.getOWLObjectIntersectionOf(SubstanceSet, outputbag))),
+//											df.getOWLObjectIntersectionOf(df.getOWLObjectSomeValuesFrom(has_output, df.getOWLObjectIntersectionOf(SubstanceSet, inputbag)))))					
+//									));
+//			rmfs.put(mf, def);
+//			mfc.getOWLOntologyManager().addAxiom(mfc,def);					
 
 
 			//original - 2 bags

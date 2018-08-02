@@ -8,9 +8,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -63,10 +65,10 @@ public class XrefUpdater {
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException, IOException {
 		XrefUpdater u = new XrefUpdater();
-		u.updateRheaXrefs();
-
+		//u.updateRheaXrefs();
+		u.updateReactomeXrefs();
 	}
-
+	
 	public void updateRheaXrefs() throws IOException, OWLOntologyCreationException, OWLOntologyStorageException {
 		Set<MappingResult> results = new HashSet<MappingResult>();
 		RheaConverter rc = new RheaConverter();
@@ -224,23 +226,29 @@ public class XrefUpdater {
 
 	public void updateReactomeXrefs() throws OWLOntologyCreationException, IOException, OWLOntologyStorageException {
 		Set<MappingResult> results = new HashSet<MappingResult>();
+		List<String> ascii_problems = new ArrayList<String>();
+		String output_ontology_file = "/Users/bgood/Desktop/test/tmp/test-go-edit.obo";
+								//"/Users/bgood/Documents/GitHub/go-ontology/src/ontology/go-edit.obo";
+		String ontf = "/Users/bgood/Documents/GitHub/go-ontology/src/ontology/go-edit.obo";
+		String report_file = "/Users/bgood/Desktop/test/tmp/xref_update_report.txt";
+		//"src/main/resources/org/geneontology/gocam/exchange/go.owl";//-edit.obo";
+		//"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
 		String mapf = "src/main/resources/org/geneontology/gocam/exchange/StId_OldStId_Mapping_Human_AllObjects_v65.txt";
 		//StId_OldStId_Mapping_AllSpecies_AllObjects_v65.txt";
 		// StId_OldStId_Mapping_Human_AllObjects_v65.txt";
 		// "StId_OldStId_Mapping_Human_Reactions_v65.txt";
 		Map<String, String> old_new = new HashMap<String, String>();
+		Map<String, String> old_label = new HashMap<String, String>();
 		BufferedReader f = new BufferedReader(new FileReader(mapf));
 		String line = f.readLine();
 		line = f.readLine();//skip header
 		while(line!=null) {
 			String[] new_old_name_type = line.split("\t");
 			old_new.put("Reactome:"+new_old_name_type[1], "Reactome:"+new_old_name_type[0]);
+			old_label.put("Reactome:"+new_old_name_type[1], new_old_name_type[2]);
 			line = f.readLine();
 		}
 		f.close();
-		String ontf = "/Users/bgood/Documents/GitHub/go-ontology/src/ontology/go-edit.obo";
-		//"src/main/resources/org/geneontology/gocam/exchange/go.owl";//-edit.obo";
-		//"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
 		OWLOntologyManager mgr = OWLManager.createOWLOntologyManager();
 		OWLDataFactory df = mgr.getOWLDataFactory();
 		OWLOntology ont = mgr.loadOntologyFromOntologyDocument(new File(ontf));
@@ -264,6 +272,7 @@ public class XrefUpdater {
 						xref_id = xref_id.substring(0, xref_id.indexOf("."));
 					}
 					String new_id = old_new.get(xref_id);
+					String reactome_xref_label = old_label.get(xref_id);
 					Collection<OWLAnnotation> anno_annos = a.getAnnotations(rdfslabel);
 					if(xref_id.contains("REACT_")) {
 						//delete all old and all non-human annotations
@@ -306,11 +315,17 @@ public class XrefUpdater {
 							//update annotation							
 							//make annotation annotations..
 							Set<OWLAnnotation> n_anno_annos = new HashSet<OWLAnnotation>();
-							//							OWLAnnotationValue new_comment_value = df.getOWLLiteral("Xref updated programmatically via Reactome-provided mapping file, see https://github.com/geneontology/go-ontology/issues/12518 ");
-							//							OWLAnnotation new_anno_comment = df.getOWLAnnotation(rdfscomment, new_comment_value);
-							//							n_anno_annos.add(new_anno_comment);
-							if(xref_label!=null) {
-								OWLAnnotationValue new_label_value = df.getOWLLiteral(xref_label);
+							//OWLAnnotationValue new_comment_value = df.getOWLLiteral("Xref updated programmatically via Reactome-provided mapping file, see https://github.com/geneontology/go-ontology/issues/12518 ");
+							//OWLAnnotation new_anno_comment = df.getOWLAnnotation(rdfscomment, new_comment_value);
+							//n_anno_annos.add(new_anno_comment);
+							if(reactome_xref_label!=null) {
+								boolean is_ascii = Ascii.isPureAscii(reactome_xref_label);
+								if(!is_ascii) {
+									String replacement = Ascii.simpleGreekMap(reactome_xref_label);
+									ascii_problems.add(reactome_xref_label+"\t"+replacement+"\t"+c.getIRI().toString());
+									reactome_xref_label = replacement;
+								}
+								OWLAnnotationValue new_label_value = df.getOWLLiteral(reactome_xref_label);
 								OWLAnnotation new_anno_label = df.getOWLAnnotation(rdfslabel, new_label_value);
 								n_anno_annos.add(new_anno_label); 
 							} 
@@ -404,7 +419,7 @@ public class XrefUpdater {
 		System.out.println("deleting "+delete_axioms.size()+" anno axioms and adding "+new_id_axioms.size());
 
 		//report
-		FileWriter w = new FileWriter("/Users/bgood/Desktop/test/tmp/xref_update_report.txt");
+		FileWriter w = new FileWriter(report_file);
 		w.write("r.go_term\tr.old_react_id\tr.replaced_by\tr.action\tr.reason\tr.property\n");
 		for(MappingResult r : results) {
 			w.write(r.go_term+"\t"+r.old_id+"\t"+r.replaced_by+"\t"+r.action+"\t"+r.reason+"\t"+r.property+"\n");
@@ -413,12 +428,16 @@ public class XrefUpdater {
 
 		mgr.removeAxioms(ont, delete_axioms);
 		mgr.addAxioms(ont, new_id_axioms);
-		Helper.writeOntologyAsObo("/Users/bgood/Documents/GitHub/go-ontology/src/ontology/go-edit.obo", ont);
+		Helper.writeOntologyAsObo(output_ontology_file, ont);
 		//deleting 28781 anno axioms and adding 2421
 		//deleting 28831 anno axioms and adding 2956
 		//deleting 28837 anno axioms and adding 2962
 		//deleting 28837 anno axioms and adding 2972
 
+		System.out.println("Ascii problems "+ascii_problems.size());
+		for(String a : ascii_problems) {
+			System.out.println(a);
+		}
 	}
 
 }

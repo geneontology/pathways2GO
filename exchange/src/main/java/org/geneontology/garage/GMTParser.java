@@ -21,9 +21,9 @@ public class GMTParser {
 		Set<String> gene_ids;
 		
 		private String getString() {
-			String row = name+"\t"+uri+";"+datasource+";"+organism+";"+idtype+"\t";
+			String row = name+"~"+uri+";"+datasource+";"+organism+";"+idtype+"~";
 			for(String gene : gene_ids) {
-				row = row+gene+"\t";
+				row = row+gene+"~";
 			}
 			return row;
 		}
@@ -55,7 +55,7 @@ public class GMTParser {
 	public static void main(String[] args) throws IOException {
 		GMTParser p = new GMTParser("/Users/bgood/git/noctua_exchange/exchange/src/main/resources/pathway_commons/PathwayCommons10.All.hgnc.gmt.txt");
 		for(GMTRecord r : p.gmt_records) {
-			if(r.name.contains("Wnt")) {
+			if(r.name.contains("WNT")) { //r.name.contains("Wnt")||
 				System.out.println(r.getString());
 			}
 		}
