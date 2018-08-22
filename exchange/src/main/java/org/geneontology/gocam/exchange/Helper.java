@@ -24,6 +24,16 @@ public class Helper {
 		// TODO Auto-generated constructor stub
 	}
 	
+	/**
+	 * For future use, how to do an ontology import
+	 * //		OWLDataFactory df = OWLManager.getOWLDataFactory();
+//		OWLImportsDeclaration importDeclaration = df.getOWLImportsDeclaration(go_plus_iri);
+//		AddImport importGoPlus =new AddImport(go_cam, importDeclaration);
+//		ontman.applyChange(importGoPlus);
+//		ontman.loadOntology(go_plus_iri);
+	 */
+	
+	
 	public static String owlSetToString(Set<OWLClass> set, OWLOntology ont, String sep) {
 		String s = "";
 		for(OWLClass e : set) {

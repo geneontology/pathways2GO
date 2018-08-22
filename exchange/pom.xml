@@ -159,5 +159,10 @@
    		<artifactId>elk-owlapi</artifactId> 
    		<version>0.4.3</version> 
 	</dependency>
+	<dependency>
+            <groupId>org.geneontology</groupId>
+            <artifactId>whelk_2.12</artifactId>
+            <version>0.1.2</version>
+</dependency>
   </dependencies>
 </project>

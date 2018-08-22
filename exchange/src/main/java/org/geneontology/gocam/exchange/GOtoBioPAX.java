@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import org.biopax.paxtools.io.BioPAXIOHandler;
@@ -26,8 +28,11 @@ import org.biopax.paxtools.model.level3.SmallMolecule;
 import org.biopax.paxtools.model.level3.UnificationXref;
 import org.geneontology.rules.util.ArachneOWLReasoner;
 import org.geneontology.rules.util.ArachneOWLReasonerFactory;
+import org.geneontology.whelk.owlapi.WhelkOWLReasoner;
+import org.geneontology.whelk.owlapi.WhelkOWLReasonerFactory;
 import org.semanticweb.elk.owlapi.ElkReasonerFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
@@ -35,41 +40,126 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
+import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 import org.semanticweb.owlapi.search.EntitySearcher;
+import org.semanticweb.owlapi.util.SimpleIRIMapper;
 
 public class GOtoBioPAX {
-//	public static OWLObjectProperty xref_object_prop;
+
 	public static OWLAnnotationProperty obo_id_prop;
 	public static String biopax_base = "http://www.biopax.org/release/biopax-level3.owl#";
 	public static String obo_base_1 = "http://purl.obolibrary.org/obo/";
 	public static String obo_base_2 = "http://www.geneontology.org/formats/oboInOwl#";
 	public OWLDataFactory df;
-	
-	public GOtoBioPAX() {
+	public OWLOntologyManager ontman;
+	public OWLOntology goplus;
+	public GoCAM go_cam = new GoCAM(); //initializes all the useful classes and properties..
+
+	public GOtoBioPAX() throws OWLOntologyCreationException {		
 		df = OWLManager.getOWLDataFactory();
-	//	xref_object_prop = df.getOWLObjectProperty(IRI.create(biopax_base + "xref"));
-		obo_id_prop = df.getOWLAnnotationProperty(IRI.create(obo_base_2 + "id"));
+		obo_id_prop = df.getOWLAnnotationProperty(IRI.create(obo_base_2 + "id"));		
+		ontman = OWLManager.createOWLOntologyManager();	
+		IRI go_plus_iri = IRI.create("http://purl.obolibrary.org/obo/go/extensions/go-lego.owl");
+		IRI go_plus_local_iri = IRI.create("file:///Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl");
+		ontman.getIRIMappers().add(new SimpleIRIMapper(go_plus_iri, go_plus_local_iri));
+		goplus = ontman.loadOntology(go_plus_iri);	
 	}
 
 	public static void main(String[] args) throws OWLOntologyCreationException, FileNotFoundException, OWLOntologyStorageException {
-		String input_go_cam = "/Users/bgood/Desktop/test/canonical_wnt.owl";
-		//"/Users/bgood/Desktop/test/tmp/converted-Degradation_of_AXIN.ttl";
-		GoCAM go_cam = new GoCAM(input_go_cam);
+		//		//"/Users/bgood/Desktop/test/tmp/converted-Degradation_of_AXIN.ttl";
+
+		//initializes GOPlus for reasoning
 		GOtoBioPAX go2bp = new GOtoBioPAX();
-		go2bp.makeBioPAXFromGoCAM(go_cam);
+		//load a single go-cam
+		String input_go_cam = "/Users/bgood/Desktop/test/canonical_wnt.owl";
+		//do the conversion
+		go2bp.makeBioPAXFromGoCAM(input_go_cam);
 	}
-	
+
+	public void makeBioPAXFromGoCAM(String go_cam_file) throws OWLOntologyCreationException, FileNotFoundException, OWLOntologyStorageException {
+		//set up the BioPax model
+		String output_biopax = "/Users/bgood/Desktop/test/tmp/canonical_wnt_as_biopax.owl";
+		BioPAXFactory factory = BioPAXLevel.L3.getDefaultFactory();
+		Model biopax = factory.createModel();
+		biopax.setXmlBase(GoCAM.base_iri);
+
+		//load the go_cam ontology and make a reasoner that incorporates the imported goplus
+		OWLOntology go_cam_ont = ontman.loadOntologyFromOntologyDocument(new File(go_cam_file));		
+		OWLReasonerFactory reasonerFactory = new WhelkOWLReasonerFactory(); 
+		//noting that the go_cam imports lego and lego is mapped to a real goplus file in the constructor
+		WhelkOWLReasoner go_cam_reasoner = (WhelkOWLReasoner)reasonerFactory.createReasoner(go_cam_ont);	
+		//get all of the biological process nodes in the cam, generate pathway biopax nodes for each
+		Set<OWLNamedIndividual> bps = go_cam_reasoner.getInstances(GoCAM.bp_class, false).getFlattened();
+		for(OWLNamedIndividual bp : bps) {
+			Pathway pathway = factory.create(Pathway.class, bp.getIRI().toString()); 
+			//note each pathway could, in principle, be linked to multiple biological processes
+			Set<OWLClass> go_bp_classes = go_cam_reasoner.getTypes(bp, true).getFlattened();
+			for(OWLClass go_bp_class : go_bp_classes) {
+				//getting the names and ids
+				Collection<OWLAnnotation> ids = EntitySearcher.getAnnotationObjects(go_bp_class, goplus, obo_id_prop);
+				for(OWLAnnotation id_anno : ids) {
+					OWLLiteral go_acc = id_anno.getValue().asLiteral().get();
+					pathway = (Pathway) addGoXref(biopax, factory, pathway, go_acc.getLiteral(), "bp");
+					pathway.addName(Helper.getaLabel(go_bp_class, goplus));
+				}
+			}
+			biopax.add(pathway);
+			System.out.println("Pathway "+pathway.getDisplayName());
+			//now add the parts (reactions/functions)
+			//noting that has_part now captures part_ofs thanks the whelk reasoner
+			Set<OWLNamedIndividual> has_parts = go_cam_reasoner.getObjectPropertyValues(bp, GoCAM.has_part).getFlattened();
+			for(OWLNamedIndividual mf : has_parts) {
+				//TODO look for interesting relationships
+				Set<OWLObjectPropertyAssertionAxiom> props = go_cam_reasoner.getAllObjectPropertyValues(mf);
+				System.out.println("Pathway part: "+mf+" props "+props);
+				BiochemicalReaction reaction = factory.create(BiochemicalReaction.class, mf.getIRI().toString());
+				Set<OWLClass> go_mf_classes = go_cam_reasoner.getTypes(mf, true).getFlattened();
+				for(OWLClass go_mf_class : go_mf_classes) {	
+					Collection<OWLAnnotation> ids = EntitySearcher.getAnnotationObjects(go_mf_class, goplus, obo_id_prop);
+					for(OWLAnnotation id_anno : ids) {
+						OWLLiteral go_acc = id_anno.getValue().asLiteral().get();
+						reaction = (BiochemicalReaction) addGoXref(biopax, factory, reaction, go_acc.getLiteral(), "mf");
+						reaction.addName(Helper.getaLabel(go_mf_class, goplus));
+					}
+				}
+				biopax.add(reaction);
+				pathway.addPathwayComponent(reaction);
+
+				System.out.println("Reaction "+reaction);
+				//get the pieces of the reaction
+				Set<OWLNamedIndividual> inputs = go_cam_reasoner.getObjectPropertyValues(mf, GoCAM.has_input).getFlattened();
+				for(OWLNamedIndividual input : inputs) {
+					reaction.addLeft(goCamEntityToBioPAXentity(input, factory, biopax, go_cam_reasoner));
+					System.out.println("input "+input);
+				}
+
+				Set<OWLNamedIndividual> outputs = go_cam_reasoner.getObjectPropertyValues(mf, GoCAM.has_output).getFlattened();
+				for(OWLNamedIndividual output : outputs) {
+					reaction.addLeft(goCamEntityToBioPAXentity(output, factory, biopax, go_cam_reasoner));
+					System.out.println("output "+output);
+				}
+			}
+		}
+
+		BioPAXIOHandler handler = new SimpleIOHandler();
+		FileOutputStream outstream = new FileOutputStream(output_biopax);
+		handler.convertToOWL(biopax, outstream);
+
+	}
+
 	public Entity addGoXref(Model biopax, BioPAXFactory factory, Entity entity, String go_acc, String go_root) {
 		RelationshipXref go_xref = factory.create(RelationshipXref.class, biopax_base+Math.random());
 		go_xref.setId(go_acc);
@@ -101,88 +191,22 @@ public class GOtoBioPAX {
 		rtv.addXref(uxref);
 		go_xref.setRelationshipType(rtv);		
 		entity.addXref(go_xref);
-		
+
 		addToModelWithIdCheck(biopax, go_xref);
 		addToModelWithIdCheck(biopax, uxref);
 		addToModelWithIdCheck(biopax, rtv);
 
 		return entity;
 	}
-	
+
 	public void addToModelWithIdCheck(Model biopax, BioPAXElement element) {
 		if(!biopax.containsID(element.getUri())) {
 			biopax.add(element);
 		}	
 	}
-	
-	public void makeBioPAXFromGoCAM(GoCAM go_cam) throws OWLOntologyCreationException, FileNotFoundException, OWLOntologyStorageException {
-		//add go to the model 
-		OWLOntology go = go_cam.ontman.loadOntologyFromOntologyDocument(new File("/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go.owl"));	
-		go_cam.ontman.addAxioms(go_cam.go_cam_ont, go.getAxioms());
-		//turn on the reasoner
-		OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory(); //Elk
-		OWLReasoner go_cam_reasoner = reasonerFactory.createReasoner(go_cam.go_cam_ont);	
-//		OWLReasonerFactory reasonerFactory = new ArachneOWLReasonerFactory(go);
-//		OWLReasoner go_cam_reasoner = reasonerFactory.createReasoner(go);
-	//	Helper.writeOntology("/Users/bgood/Desktop/test/tmp.ttl", go_cam.go_cam_ont);
-		
-		String output_biopax = "/Users/bgood/Desktop/test/tmp/canonical_wnt_as_biopax.owl";
-		BioPAXFactory factory = BioPAXLevel.L3.getDefaultFactory();
-		Model biopax = factory.createModel();
-		biopax.setXmlBase(GoCAM.base_iri);
-		
-		
-		
-		//get the pathways (nodes of super type biological process)
-		Set<OWLNamedIndividual> bps = go_cam_reasoner.getInstances(GoCAM.bp_class, false).getFlattened();
-		for(OWLNamedIndividual bp : bps) {
-			Pathway pathway = factory.create(Pathway.class, bp.getIRI().toString()+"_bp"); 
-			//note each pathway could, in principle, be linked to multiple biological processes
-			Set<OWLClass> go_bp_classes = go_cam_reasoner.getTypes(bp, true).getFlattened();
-			for(OWLClass go_bp_class : go_bp_classes) {
-				Collection<OWLAnnotation> ids = EntitySearcher.getAnnotationObjects(go_bp_class, go, obo_id_prop);
-				for(OWLAnnotation id_anno : ids) {
-					OWLLiteral go_acc = id_anno.getValue().asLiteral().get();
-					pathway = (Pathway) addGoXref(biopax, factory, pathway, go_acc.getLiteral(), "bp");
-					pathway.addName(Helper.getaLabel(go_bp_class, go));
-				}
-			}
-			biopax.add(pathway);
-			System.out.println("Pathway "+pathway);
-			//get their mf/reaction parts 
-			//TODO use a reasoner to do this (get inferred edges..)
-			//Set<OWLNamedIndividual> mfs = go_cam_reasoner.getObjectPropertyValues(bp, GoCAM.has_part).getFlattened();
-			//for(OWLNamedIndividual mf : mfs) {
-			Collection<OWLIndividual> has_parts = EntitySearcher.getObjectPropertyValues(bp, GoCAM.has_part, go_cam.go_cam_ont);
-		
-			Iterator<OWLIndividual> mfs = has_parts.iterator();
-			while(mfs.hasNext()) {
-				OWLNamedIndividual mf = (OWLNamedIndividual)mfs.next();
-				BiochemicalReaction reaction = factory.create(BiochemicalReaction.class, mf.getIRI().toString());
-				biopax.add(reaction);
-				//connect them
-				pathway.addPathwayComponent(reaction);
-				System.out.println("Reaction "+reaction);
-				//get the pieces of the reaction
-				Iterator<OWLIndividual> inputs = EntitySearcher.getObjectPropertyValues(mf, GoCAM.has_input, go_cam.go_cam_ont).iterator();
-				while(inputs.hasNext()) {
-					OWLNamedIndividual e = inputs.next().asOWLNamedIndividual();
-					reaction.addLeft(goCamEntityToBioPAXentity(e, factory, biopax, go_cam, go_cam_reasoner));
-				}
-				Iterator<OWLIndividual> outputs = EntitySearcher.getObjectPropertyValues(mf, GoCAM.has_output, go_cam.go_cam_ont).iterator();
-				while(outputs.hasNext()) {
-					OWLNamedIndividual e = outputs.next().asOWLNamedIndividual();
-					reaction.addRight(goCamEntityToBioPAXentity(e, factory, biopax, go_cam, go_cam_reasoner));
-				}
-			}
-		}
-		
-		BioPAXIOHandler handler = new SimpleIOHandler();
-		FileOutputStream outstream = new FileOutputStream(output_biopax);
-		handler.convertToOWL(biopax, outstream);
-	}
-	
-	public PhysicalEntity goCamEntityToBioPAXentity(OWLNamedIndividual e, BioPAXFactory factory, Model biopax, GoCAM go_cam, OWLReasoner go_cam_reasoner) {
+
+	//TODO find a way to get legible names to attach as labels
+	public PhysicalEntity goCamEntityToBioPAXentity(OWLNamedIndividual e, BioPAXFactory factory, Model biopax, OWLReasoner go_cam_reasoner) {
 		PhysicalEntity entity = null;
 		String e_iri = e.getIRI().toString();
 
@@ -192,28 +216,35 @@ public class GOtoBioPAX {
 			System.out.println("error, no type found for reaction I/O entity "+e_iri);
 			return null;
 		}
-		//GoCAM.chebi_protein
-
 		if(types.contains(GoCAM.chemical_entity)) {
 			SmallMolecule mlc = factory.create(SmallMolecule.class, e_iri);
 			biopax.add(mlc);
 			System.out.println("small "+mlc);
 			return mlc;
-		}else if(types.contains(GoCAM.chebi_protein)) {
-			Protein protein = factory.create(Protein.class, e_iri);
-			biopax.add(protein);
-			System.out.println("protein "+protein);
-			return protein;
 		}else if(types.contains(GoCAM.go_complex)) {
 			Complex complex = factory.create(Complex.class, e_iri);
 			biopax.add(complex);
 			System.out.println("complex "+complex);
 			return complex;
-		}else {
+		}else if(types.contains(GoCAM.chebi_protein)||guessProtein(types)) {
+			Protein protein = factory.create(Protein.class, e_iri);
+			biopax.add(protein);
+			System.out.println("protein "+protein);
+			return protein;
+		}else{
 			entity = factory.create(PhysicalEntity.class, e_iri);
 			System.out.println("other "+entity+" "+types);
 		}
 		return entity;
 	}
-	
+
+	boolean guessProtein(Set<OWLClass> types) {
+		for(OWLClass t : types) {
+			if(t.getIRI().toString().contains("http://identifiers.org/uniprot/")){
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
