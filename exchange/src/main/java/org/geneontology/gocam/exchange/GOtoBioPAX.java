@@ -18,6 +18,7 @@ import org.biopax.paxtools.model.BioPAXFactory;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.BiochemicalReaction;
+import org.biopax.paxtools.model.level3.CellularLocationVocabulary;
 import org.biopax.paxtools.model.level3.Complex;
 import org.biopax.paxtools.model.level3.Entity;
 import org.biopax.paxtools.model.level3.Pathway;
@@ -67,6 +68,7 @@ public class GOtoBioPAX {
 	public static String obo_base_1 = "http://purl.obolibrary.org/obo/";
 	public static String obo_base_2 = "http://www.geneontology.org/formats/oboInOwl#";
 	public static String go_cam_model_base = "http://model.geneontology.org/";
+	public static String go_cam_biopax_base = "http://model.geneontology.org/biopax/";
 	public OWLDataFactory df;
 	public OWLOntologyManager ontman;
 	public OWLOntology goplus;
@@ -169,18 +171,40 @@ public class GOtoBioPAX {
 				}
 				biopax.add(reaction);
 				pathway.addPathwayComponent(reaction);
-
 				System.out.println("Reaction "+reaction);
-				//get the pieces of the reaction
+				
+				//where does it happen? 				// occurs_in BFO:0000066  
+				//note fairly large model difference here.  GO-CAM tags the event with the space or spaces, ioPAX tags the participant molecules
+				//TODO should we also check for locations on pathways?
+				//TODO how to handle multiple locations (transport)
+				Set<OWLNamedIndividual> location_is = go_cam_reasoner.getObjectPropertyValues(mf, GoCAM.occurs_in).getFlattened();
+				Set<OWLClass> ccs = new HashSet<OWLClass>();
+				for(OWLNamedIndividual location : location_is) {
+					Set<OWLClass> go_cc_classes = go_cam_reasoner.getTypes(location, true).getFlattened();
+					ccs.addAll(go_cc_classes);
+				}
+				//now get all the molecules involved
+				//enablers
+				Set<OWLNamedIndividual> enablers = go_cam_reasoner.getObjectPropertyValues(mf, GoCAM.enabled_by).getFlattened();
+				for(OWLNamedIndividual enabler : enablers) {
+					//TODO work out how to make the enabler into a controller
+					PhysicalEntity controller = goCamEntityToBioPAXentity(enabler, factory, biopax, go_cam_reasoner);
+					controller = (PhysicalEntity) addLocations(factory, biopax,controller, ccs);
+					System.out.println("enabler "+enabler);
+				}
+				//get the inputs and outputs of the reaction
 				Set<OWLNamedIndividual> inputs = go_cam_reasoner.getObjectPropertyValues(mf, GoCAM.has_input).getFlattened();
 				for(OWLNamedIndividual input : inputs) {
-					reaction.addLeft(goCamEntityToBioPAXentity(input, factory, biopax, go_cam_reasoner));
+					PhysicalEntity entity = goCamEntityToBioPAXentity(input, factory, biopax, go_cam_reasoner);
+					entity = (PhysicalEntity) addLocations(factory, biopax,entity, ccs);
+					reaction.addLeft(entity);					
 					System.out.println("input "+input);
 				}
-
 				Set<OWLNamedIndividual> outputs = go_cam_reasoner.getObjectPropertyValues(mf, GoCAM.has_output).getFlattened();
 				for(OWLNamedIndividual output : outputs) {
-					reaction.addLeft(goCamEntityToBioPAXentity(output, factory, biopax, go_cam_reasoner));
+					PhysicalEntity entity = goCamEntityToBioPAXentity(output, factory, biopax, go_cam_reasoner);
+					entity = (PhysicalEntity) addLocations(factory, biopax,entity, ccs);
+					reaction.addRight(entity);
 					System.out.println("output "+output);
 				}
 			}
@@ -249,31 +273,54 @@ public class GOtoBioPAX {
 	public PhysicalEntity goCamEntityToBioPAXentity(OWLNamedIndividual e, BioPAXFactory factory, Model biopax, OWLReasoner go_cam_reasoner) {
 		PhysicalEntity entity = null;
 		String e_iri = e.getIRI().toString();
-
 		System.out.println(e_iri);		
 		Set<OWLClass> types = go_cam_reasoner.getTypes(e, false).getFlattened();
 		if(types==null) {
 			System.out.println("error, no type found for reaction I/O entity "+e_iri);
 			return null;
-		}
+		}		
 		if(types.contains(GoCAM.chemical_entity)) {
 			SmallMolecule mlc = factory.create(SmallMolecule.class, e_iri);
-			biopax.add(mlc);
+			addToModelWithIdCheck(biopax, mlc);
 			System.out.println("small "+mlc);
 			return mlc;
 		}else if(types.contains(GoCAM.go_complex)) {
 			Complex complex = factory.create(Complex.class, e_iri);
-			biopax.add(complex);
+			addToModelWithIdCheck(biopax, complex);
 			System.out.println("complex "+complex);
 			return complex;
 		}else if(types.contains(GoCAM.chebi_protein)||guessProtein(types)) {
 			Protein protein = factory.create(Protein.class, e_iri);
-			biopax.add(protein);
+			addToModelWithIdCheck(biopax, protein);
 			System.out.println("protein "+protein);
 			return protein;
 		}else{
 			entity = factory.create(PhysicalEntity.class, e_iri);
+			addToModelWithIdCheck(biopax, entity);
 			System.out.println("other "+entity+" "+types);
+		}
+		return entity;
+	}
+	
+	PhysicalEntity addLocations(BioPAXFactory factory, Model biopax, PhysicalEntity entity, Set<OWLClass> locations) {
+		//add locations if there are any
+		for(OWLClass location : locations) { 
+			CellularLocationVocabulary loc = factory.create(CellularLocationVocabulary.class, go_cam_biopax_base+Math.random());
+			String termname = Helper.getaLabel(location, goplus);
+			loc.addTerm(termname);
+			UnificationXref uni_xref = factory.create(UnificationXref.class, go_cam_biopax_base+Math.random());
+			Collection<OWLAnnotation> ids = EntitySearcher.getAnnotationObjects(location, goplus, obo_id_prop);
+			for(OWLAnnotation id_anno : ids) {
+				OWLLiteral go_acc = id_anno.getValue().asLiteral().get();
+				uni_xref.setDb("gene ontology");
+				uni_xref.setId(go_acc.getLiteral());
+			}
+			loc.addXref(uni_xref);
+			biopax.add(loc);
+			biopax.add(uni_xref);
+			//TODO revisit if/when we deal with multiple locations..
+			entity.setCellularLocation(loc);
+			System.out.println(entity+" loc "+termname);
 		}
 		return entity;
 	}
