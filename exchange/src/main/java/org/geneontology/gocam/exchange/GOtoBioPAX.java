@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -22,6 +23,7 @@ import org.biopax.paxtools.model.level3.Entity;
 import org.biopax.paxtools.model.level3.Pathway;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.model.level3.Protein;
+import org.biopax.paxtools.model.level3.Provenance;
 import org.biopax.paxtools.model.level3.RelationshipTypeVocabulary;
 import org.biopax.paxtools.model.level3.RelationshipXref;
 import org.biopax.paxtools.model.level3.SmallMolecule;
@@ -48,6 +50,7 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyID;
 import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
@@ -63,10 +66,11 @@ public class GOtoBioPAX {
 	public static String biopax_base = "http://www.biopax.org/release/biopax-level3.owl#";
 	public static String obo_base_1 = "http://purl.obolibrary.org/obo/";
 	public static String obo_base_2 = "http://www.geneontology.org/formats/oboInOwl#";
+	public static String go_cam_model_base = "http://model.geneontology.org/";
 	public OWLDataFactory df;
 	public OWLOntologyManager ontman;
 	public OWLOntology goplus;
-	public GoCAM go_cam = new GoCAM(); //initializes all the useful classes and properties..
+	public GoCAM go_cam = new GoCAM(); //initializes all the useful static classes and properties..
 
 	public GOtoBioPAX() throws OWLOntologyCreationException {		
 		df = OWLManager.getOWLDataFactory();
@@ -84,27 +88,55 @@ public class GOtoBioPAX {
 		//initializes GOPlus for reasoning
 		GOtoBioPAX go2bp = new GOtoBioPAX();
 		//load a single go-cam
-		String input_go_cam = "/Users/bgood/Desktop/test/canonical_wnt.owl";
+		String input_go_cam = "/Users/bgood/Desktop/test/go_cams/canonical_wnt.owl";
+		String output_biopax = "/Users/bgood/Desktop/test/biopax/canonical_wnt_as_biopax.owl";
 		//do the conversion
-		go2bp.makeBioPAXFromGoCAM(input_go_cam);
+		go2bp.makeBioPAXFromGoCAM(input_go_cam, output_biopax);
 	}
 
-	public void makeBioPAXFromGoCAM(String go_cam_file) throws OWLOntologyCreationException, FileNotFoundException, OWLOntologyStorageException {
-		//set up the BioPax model
-		String output_biopax = "/Users/bgood/Desktop/test/tmp/canonical_wnt_as_biopax.owl";
+	public void makeBioPAXFromGoCAM(String go_cam_file, String biopax_file) throws OWLOntologyCreationException, FileNotFoundException, OWLOntologyStorageException {
+		//set up the BioPax model		
 		BioPAXFactory factory = BioPAXLevel.L3.getDefaultFactory();
 		Model biopax = factory.createModel();
-		biopax.setXmlBase(GoCAM.base_iri);
-
-		//load the go_cam ontology and make a reasoner that incorporates the imported goplus
-		OWLOntology go_cam_ont = ontman.loadOntologyFromOntologyDocument(new File(go_cam_file));		
-		OWLReasonerFactory reasonerFactory = new WhelkOWLReasonerFactory(); 
+		biopax.setXmlBase(go_cam_model_base+"biopax/");
+		
+		//load the go_cam and grab its iri and metadata
+		OWLOntology go_cam_ont = ontman.loadOntologyFromOntologyDocument(new File(go_cam_file));	
+		OWLOntologyID ont_id = go_cam_ont.getOntologyID();				
+		String ont_uri_string = ont_id.getOntologyIRI().get().toString();
+		Set<OWLAnnotation> ont_annos = go_cam_ont.getAnnotations();
+		String go_cam_title = "";
+		String model_id = "";
+		String date = "";
+		String modelstate = "";
+		Set<String> contributors = new HashSet<String>();
+		String go_cam_comment = "Source "+ont_uri_string+" contributors: ";
+		for(OWLAnnotation ont_anno : ont_annos) {
+			String v = ont_anno.getValue().asLiteral().get().getLiteral();
+			String p = ont_anno.getProperty().getIRI().toString();
+			if(p.equals("http://purl.org/dc/elements/1.1/title")){
+				go_cam_title = v;
+			}else if(p.equals("http://purl.org/dc/elements/1.1/contributor")){
+				contributors.add(v);
+				go_cam_comment = go_cam_comment+" "+v;
+			}else if (p.equals("http://geneontology.org/lego/id")){
+				model_id = v;
+			}else if (p.equals("http://geneontology.org/lego/modelstate")){
+				modelstate = v;
+			}else if (p.equals("http://purl.org/dc/elements/1.1/date")){
+				date = v;
+			}
+		}
+		go_cam_comment = go_cam_comment + " model state = "+modelstate+" date "+date;
+		//make a reasoner that incorporates the imported goplus
 		//noting that the go_cam imports lego and lego is mapped to a real goplus file in the constructor
+		OWLReasonerFactory reasonerFactory = new WhelkOWLReasonerFactory(); 
 		WhelkOWLReasoner go_cam_reasoner = (WhelkOWLReasoner)reasonerFactory.createReasoner(go_cam_ont);	
 		//get all of the biological process nodes in the cam, generate pathway biopax nodes for each
 		Set<OWLNamedIndividual> bps = go_cam_reasoner.getInstances(GoCAM.bp_class, false).getFlattened();
 		for(OWLNamedIndividual bp : bps) {
 			Pathway pathway = factory.create(Pathway.class, bp.getIRI().toString()); 
+			pathway = (Pathway)addDataSource(biopax, factory, pathway, ont_uri_string, go_cam_title , go_cam_comment);
 			//note each pathway could, in principle, be linked to multiple biological processes
 			Set<OWLClass> go_bp_classes = go_cam_reasoner.getTypes(bp, true).getFlattened();
 			for(OWLClass go_bp_class : go_bp_classes) {
@@ -155,11 +187,19 @@ public class GOtoBioPAX {
 		}
 
 		BioPAXIOHandler handler = new SimpleIOHandler();
-		FileOutputStream outstream = new FileOutputStream(output_biopax);
+		FileOutputStream outstream = new FileOutputStream(biopax_file);
 		handler.convertToOWL(biopax, outstream);
-
 	}
 
+	public Entity addDataSource(Model biopax, BioPAXFactory factory, Entity entity, String data_source_uri, String data_source_name, String comment) {
+		Provenance prov = factory.create(Provenance.class, data_source_uri);
+		prov.addName(data_source_name);
+		prov.addComment(comment);
+		entity.addDataSource(prov);
+		addToModelWithIdCheck(biopax, prov);
+		return entity;
+	}
+	
 	public Entity addGoXref(Model biopax, BioPAXFactory factory, Entity entity, String go_acc, String go_root) {
 		RelationshipXref go_xref = factory.create(RelationshipXref.class, biopax_base+Math.random());
 		go_xref.setId(go_acc);
