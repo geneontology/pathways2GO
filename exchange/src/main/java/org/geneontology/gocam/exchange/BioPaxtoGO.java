@@ -1024,8 +1024,10 @@ public class BioPaxtoGO {
 				report.bp2go_controller.put((Process)entity, control_type);
 
 				//want to stay in go tbox as much as possible - even if defaulting to root nodes.  
-				//always add it for now
-				go_cam.addTypeAssertion(e, GoCAM.molecular_function);	
+				//if no process or function annotations, add annotation to root
+				if(go_mf.isEmpty()&&go_bp.isEmpty()) {
+					go_cam.addTypeAssertion(e, GoCAM.molecular_function);	
+				}
 				//The OWL for the reaction and all of its parts should now be assembled.  Now can apply secondary rules to improve mapping to go-cam model
 				//If all of the entities involved in a reaction are located in the same GO cellular component, 
 				//add that the reaction/function occurs_in that location
