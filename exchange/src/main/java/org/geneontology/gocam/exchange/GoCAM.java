@@ -88,7 +88,7 @@ public class GoCAM {
 	public static OWLObjectProperty part_of, has_part, has_input, has_output, 
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in,
 	directly_positively_regulated_by, directly_negatively_regulated_by, involved_in_regulation_of, involved_in_negative_regulation_of, involved_in_positive_regulation_of,
-	directly_negatively_regulates, directly_positively_regulates, has_role;
+	directly_negatively_regulates, directly_positively_regulates, has_role, causally_upstream_of, causally_upstream_of_negative_effect, causally_upstream_of_positive_effect;
 	public static OWLClass 
 	bp_class, continuant_class, process_class, go_complex, cc_class, molecular_function, 
 	eco_imported, eco_imported_auto, eco_inferred_auto, 
@@ -130,7 +130,8 @@ public class GoCAM {
 		ontman = OWLManager.createOWLOntologyManager();				
 		go_cam_ont = ontman.createOntology(ont_iri);
 		df = OWLManager.getOWLDataFactory();
-
+		initializeClassesAndRelations();
+		
 		//TODO basically never going to do this, maybe take it out..
 		if(add_lego_import) {
 			String lego_iri = "http://purl.obolibrary.org/obo/go/extensions/go-lego.owl";
@@ -154,7 +155,6 @@ public class GoCAM {
 		OWLAxiom stateaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, state_anno);
 		ontman.addAxiom(go_cam_ont, stateaxiom);
 
-		initializeClassesAndRelations();
 		//TODO leftover, check and remove
 		OWLSubClassOfAxiom comp = df.getOWLSubClassOfAxiom(go_complex, continuant_class);
 		ontman.addAxiom(go_cam_ont, comp);
@@ -243,6 +243,16 @@ public class GoCAM {
 		directly_activates = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002406"));
 		addLabel(directly_activates, "directly activates (process to process)");
 		//BFO_0000066 occurs in (note that it can only be used for occurents in occurents)
+		
+		
+		//http://purl.obolibrary.org/obo/RO_0002305
+		causally_upstream_of  = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002411"));
+		addLabel(causally_upstream_of, "causally upstream of");
+		causally_upstream_of_negative_effect  = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002305"));
+		addLabel(causally_upstream_of_negative_effect, "causally upstream of with a negative effect");
+		causally_upstream_of_positive_effect  = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002304"));
+		addLabel(causally_upstream_of_positive_effect, "causally upstream of with a positive effect");
+		
 		occurs_in = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000066"));
 		addLabel(occurs_in, "occurs in");
 		//RO_0001025
@@ -646,7 +656,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 */
 	void applySparqlRules() {
 		Set<InferredEnabler> ies = qrunner.getInferredEnablers();
-		for(InferredEnabler ie : ies) {
+		System.out.println("Found "+ies.size()+" inferred enablers ");
+		for(InferredEnabler ie : ies) {			
 			//create ?reaction2 obo:RO_0002333 ?input
 			OWLNamedIndividual e = this.makeAnnotatedIndividual(ie.enabler_uri);
 			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ie.reaction2_uri);
@@ -679,6 +690,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		qrunner = new QRunner(go_cam_ont); 
 		//	System.out.println("Added "+ies.size()+" enabled_by triples");
 		Set<InferredRegulator> ir1 = qrunner.getInferredRegulatorsQ1();
+		System.out.println("Found "+ir1.size()+" inferred regulators with Q1 ");
 		for(InferredRegulator ir : ir1) {
 			//create ?reaction2 obo:RO_0002333 ?input
 			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ir.reaction1_uri);
@@ -704,6 +716,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		qrunner = new QRunner(go_cam_ont); 
 		//		System.out.println("Added "+ir1.size()+" pos/neg reg triples");
 		Set<InferredRegulator> ir2_neg = qrunner.getInferredRegulatorsQ2();
+		System.out.println("Found "+ir2_neg.size()+" inferred neg regulators with Q2_neg ");
 		for(InferredRegulator ir : ir2_neg) {
 			//create ?reaction2 obo:RO_0002333 ?input
 			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ir.reaction1_uri);

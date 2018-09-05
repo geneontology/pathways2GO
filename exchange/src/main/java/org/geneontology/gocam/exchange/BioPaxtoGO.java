@@ -130,8 +130,9 @@ public class BioPaxtoGO {
 		//		bp2g.convertReactomeFolder(input_folder, output_folder);
 
 		String input_biopax = 
+				"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
 				//"/Users/bgood/Downloads/ERK_cascade.owl";
-				"/Users/bgood/Downloads/Noncanonical_Wnt_sig.owl";
+				//"/Users/bgood/Downloads/Noncanonical_Wnt_sig.owl";
 				//"/Users/bgood/Desktop/test/class-a1-receptors.owl";
 				//"/Users/bgood/Desktop/test/stimuli_sensing.owl";
 				//			"/Users/bgood/Desktop/test/snRNP_Assembly.owl";
@@ -146,7 +147,7 @@ public class BioPaxtoGO {
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = 
-						"/Users/bgood/Desktop/test/tmp/converted-";
+						"/Users/bgood/Desktop/test/go_cams/converted-";
 		//	"/Users/bgood/Desktop/test/snRNP_Assembly/converted-";
 				//				"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
 				//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
@@ -168,10 +169,10 @@ public class BioPaxtoGO {
 
 	private void convertReactomeFile(String input_file, String output, boolean split_by_pathway, boolean save_inferences, boolean expand_subpathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		boolean add_lego_import = false; //unless you never want to open the output in Protege always leave false..
-		String base_title = "FULL TCF-dependent signaling in response to Wnt";//"FULL TCF-dependent_signaling_in_response_to_Wnt"; 
+		String base_title = "title here";//"FULL TCF-dependent_signaling_in_response_to_Wnt"; 
 		String base_contributor = "https://orcid.org/0000-0002-7334-7852"; //Ben Good
 		String base_provider = "https://reactome.org";
-		String tag = "";
+		String tag = "unexpanded";
 		if(expand_subpathways) {
 			tag = "expanded";
 		}

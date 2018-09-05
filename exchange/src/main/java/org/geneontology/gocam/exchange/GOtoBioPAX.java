@@ -17,6 +17,7 @@ import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXFactory;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
+import org.biopax.paxtools.model.level2.pathwayStep;
 import org.biopax.paxtools.model.level3.BiochemicalReaction;
 import org.biopax.paxtools.model.level3.Catalysis;
 import org.biopax.paxtools.model.level3.CellularLocationVocabulary;
@@ -27,7 +28,9 @@ import org.biopax.paxtools.model.level3.Controller;
 import org.biopax.paxtools.model.level3.Entity;
 import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.Pathway;
+import org.biopax.paxtools.model.level3.PathwayStep;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
+import org.biopax.paxtools.model.level3.Process;
 import org.biopax.paxtools.model.level3.Protein;
 import org.biopax.paxtools.model.level3.ProteinReference;
 import org.biopax.paxtools.model.level3.Provenance;
@@ -56,6 +59,7 @@ import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyID;
@@ -64,6 +68,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
+import org.semanticweb.owlapi.reasoner.structural.StructuralReasoner;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 import org.semanticweb.owlapi.search.EntitySearcher;
 import org.semanticweb.owlapi.util.SimpleIRIMapper;
@@ -141,6 +146,11 @@ public class GOtoBioPAX {
 		//noting that the go_cam imports lego and lego is mapped to a real goplus file in the constructor
 		OWLReasonerFactory reasonerFactory = new WhelkOWLReasonerFactory(); 
 		WhelkOWLReasoner go_cam_reasoner = (WhelkOWLReasoner)reasonerFactory.createReasoner(go_cam_ont);	
+		//for the moment need structual reasoner to do object properties
+		OWLReasonerFactory reasonerFactory2 = new StructuralReasonerFactory(); 
+		StructuralReasoner go_struct_reasoner = (StructuralReasoner)reasonerFactory2.createReasoner(go_cam_ont);	
+		
+		
 		//get all of the biological process nodes in the cam, generate pathway biopax nodes for each
 		Set<OWLNamedIndividual> bps = go_cam_reasoner.getInstances(GoCAM.bp_class, false).getFlattened();
 		for(OWLNamedIndividual bp : bps) {
@@ -154,16 +164,13 @@ public class GOtoBioPAX {
 			}
 
 			biopax.add(pathway);
-			System.out.println("Pathway "+pathway.getDisplayName());
+			System.out.println("Pathway "+pathway);
 			//now add the parts (reactions/functions)
 			//noting that has_part now captures part_ofs thanks the whelk reasoner
 			Set<OWLNamedIndividual> has_parts = go_cam_reasoner.getObjectPropertyValues(bp, GoCAM.has_part).getFlattened();
 			for(OWLNamedIndividual mf : has_parts) {
 				boolean is_binding = false;
 				boolean is_catalysis = false;
-				//TODO look for interesting relationships
-				Set<OWLObjectPropertyAssertionAxiom> props = go_cam_reasoner.getAllObjectPropertyValues(mf);
-				System.out.println("Pathway part: "+mf+" props "+props);
 				BiochemicalReaction reaction = factory.create(BiochemicalReaction.class, mf.getIRI().toString());
 				Set<OWLClass> go_mf_classes = go_cam_reasoner.getTypes(mf, true).getFlattened();
 				for(OWLClass go_mf_class : go_mf_classes) {	
@@ -227,21 +234,60 @@ public class GOtoBioPAX {
 					System.out.println("input "+input);
 				}
 				//Creates a complex by inferring that binding reactions between X, Y result in complex XY
+				Complex intervening_controller = null;
 				if(is_binding&&outputs.size()==0&&left_hand_side.size()>1) {
-					Complex complex_output = factory.create(Complex.class, go_cam_biopax_base+Math.random());
+					intervening_controller = factory.create(Complex.class, go_cam_biopax_base+Math.random());
 					for(PhysicalEntity entity : left_hand_side) {
-						complex_output.addComponent(entity);
+						intervening_controller.addComponent(entity);
 					}
-					reaction.addRight(complex_output);
-					biopax.add(complex_output);
+					reaction.addRight(intervening_controller);
+					biopax.add(intervening_controller);
 				}
+				//relationships between molecular functions
+				go_cam_reasoner.getObjectPropertyValues(mf, GoCAM.causally_upstream_of);
+				Set<OWLObjectPropertyAssertionAxiom> mf_props = go_cam_reasoner.getAllObjectPropertyValues(mf);
+				for(OWLObjectPropertyAssertionAxiom prop_axiom : mf_props) {
+					OWLObjectPropertyExpression prop = prop_axiom.getProperty();
+					Set<OWLObjectPropertyExpression> super_props = go_struct_reasoner.getSuperObjectProperties(prop, false).getFlattened();
 
+					if(super_props.contains(GoCAM.causally_upstream_of)) {
+						PathwayStep sourceStep = factory.create(PathwayStep.class, mf.getIRI().toString()+"_step");
+						sourceStep.addStepProcess(reaction);
+						OWLNamedIndividual downstream = (OWLNamedIndividual) prop_axiom.getObject();
+						PathwayStep targetStep = factory.create(PathwayStep.class, downstream.getIRI().toString()+"_step");
+						Process downstream_process = (Process)biopax.getByID(downstream.getIRI().toString());
+						
+						if(downstream_process==null) {
+							downstream_process = factory.create(BiochemicalReaction.class, downstream.getIRI().toString());
+						}
+						targetStep.addStepProcess(downstream_process);
+						sourceStep.addNextStep(targetStep);
+						Control control = factory.create(Control.class, mf.getIRI().toString()+"as_function_control");
+						control.addControlled(downstream_process);	
+						if(intervening_controller != null) {										
+							control.addController(intervening_controller);
+						}						
+						if(super_props.contains(GoCAM.causally_upstream_of_positive_effect)) {
+							control.setControlType(ControlType.ACTIVATION);
+						}else if(super_props.contains(GoCAM.causally_upstream_of_negative_effect)) {
+							control.setControlType(ControlType.INHIBITION);
+						}
+						addToModelWithIdCheck(biopax, sourceStep);
+						addToModelWithIdCheck(biopax, targetStep);
+						addToModelWithIdCheck(biopax, control);
+					}
+				}
 			}
 		}
 
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileOutputStream outstream = new FileOutputStream(biopax_file);
 		handler.convertToOWL(biopax, outstream);
+
+		//SIFConverter converter;
+		//=
+		//		new SimpleInteractionConverter(new ControlRule());
+		//		converter.writeInteractionsInSIF(level2, out);
 	}
 
 	public Entity addDataSource(Model biopax, BioPAXFactory factory, Entity entity, String data_source_uri, String data_source_name, String comment) {
@@ -297,12 +343,13 @@ public class GOtoBioPAX {
 		return entity;
 	}
 
-	public void addToModelWithIdCheck(Model biopax, BioPAXElement element) {
+	public BioPAXElement addToModelWithIdCheck(Model biopax, BioPAXElement element) {
 		if(!biopax.containsID(element.getUri())) {
 			biopax.add(element);
 		}	
+		return element;
 	}
-	
+
 	//TODO find a way to get legible names to attach as labels
 	public PhysicalEntity goCamEntityToBioPAXPhysicalentity(OWLNamedIndividual e, BioPAXFactory factory, Model biopax, OWLReasoner go_cam_reasoner) {
 		PhysicalEntity entity = null;
@@ -327,11 +374,11 @@ public class GOtoBioPAX {
 		}else if(types.contains(GoCAM.go_complex)) {
 			Complex complex = factory.create(Complex.class, e_iri);			
 			addToModelWithIdCheck(biopax, complex);
-//			if(types.contains(GoCAM.go_complex)) {
-//				for(OWLClass type : types) {
-//
-//				}
-//			}
+			//			if(types.contains(GoCAM.go_complex)) {
+			//				for(OWLClass type : types) {
+			//
+			//				}
+			//			}
 			System.out.println("complex "+complex);
 			return complex;
 		}else if(types.contains(GoCAM.chebi_protein)||guessProtein(types)) {
