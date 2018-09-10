@@ -95,7 +95,8 @@ public class BioPaxtoGO {
 	public static final String neo_file = 
 			"/Users/bgood/gocam_input/neo.owl";
 	Set<String> tbox_files;
-	int noctua_version = 1;
+	//version 1 eliminates things that are uncomfortable for the Noctua editor to display
+	int noctua_version = 2;
 	String blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";
 	GoMappingReport report;
 	GOPlus goplus;
@@ -130,7 +131,8 @@ public class BioPaxtoGO {
 		//		bp2g.convertReactomeFolder(input_folder, output_folder);
 
 		String input_biopax = 
-				"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
+				"/Users/bgood/Desktop/test/biopax/glycogen_synthesis.owl";
+				//"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
 				//"/Users/bgood/Downloads/ERK_cascade.owl";
 				//"/Users/bgood/Downloads/Noncanonical_Wnt_sig.owl";
 				//"/Users/bgood/Desktop/test/class-a1-receptors.owl";
@@ -158,7 +160,7 @@ public class BioPaxtoGO {
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";
-		boolean split_by_pathway = true;
+		boolean split_by_pathway = false;
 		boolean save_inferences = false;
 		boolean expand_subpathways = false;  //this is a bad idea for high level nodes like 'Signaling Pathways'
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, save_inferences, expand_subpathways);
@@ -1042,6 +1044,9 @@ public class BioPaxtoGO {
 
 				reaction_places.addAll(input_places); reaction_places.addAll(output_places);  reaction_places.addAll(enabler_places); 
 				reaction_places.addAll(negreg_places); reaction_places.addAll(posreg_places);
+				//this gets added in when locations captured from the biopax to ease reporting
+				//don't count it..
+				reaction_places.remove(GoCAM.cc_class);
 				if(reaction_places.size()==1) {
 					//System.out.println("1 "+reaction +" "+reaction_places);
 					for(OWLClass place : reaction_places) {
@@ -1055,6 +1060,9 @@ public class BioPaxtoGO {
 					for(OWLClass place : reaction_places) {
 						//TODO do something more clever to decide on where the function occurs if things are happening in multiple places.		
 						String plabel = go_cam.getaLabel(place);
+						if(plabel.equals("Cellular Component")) {
+							System.out.println("stop on "+e);
+						}
 						go_cam.addLiteralAnnotations2Individual(e.getIRI(), GoCAM.rdfs_comment, "occurs_in "+plabel);
 					}
 				}
