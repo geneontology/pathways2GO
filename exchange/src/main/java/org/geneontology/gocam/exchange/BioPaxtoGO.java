@@ -584,9 +584,7 @@ public class BioPaxtoGO {
 		go_cam.addLabel(e, entity_name);
 		//attempt to localize the entity (only if Physical Entity because that is how Reactome views existence in space)
 		if(entity instanceof PhysicalEntity) {
-			if(noctua_version>1) { //noctua version only really for display and this mucks it up
-				go_cam.addTypeAssertion(e, GoCAM.continuant_class); //will be specified further later.  This is here because Reactome sometimes does not make any more specific assertion than 'physical entity' for things like f-actin.  https://reactome.org/content/detail/R-HSA-202986
-			}
+			//go_cam.addTypeAssertion(e, GoCAM.continuant_class); //will be specified further later.  This is here because Reactome sometimes does not make any more specific assertion than 'physical entity' for things like f-actin.  https://reactome.org/content/detail/R-HSA-202986
 			CellularLocationVocabulary loc = ((PhysicalEntity) entity).getCellularLocation();
 
 			if(loc!=null) {			

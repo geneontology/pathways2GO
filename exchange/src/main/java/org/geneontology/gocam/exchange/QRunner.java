@@ -302,6 +302,25 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		return ir;
 	}
 	
+	Set<String> findBindingReactions() {
+		Set<String> binders = new HashSet<String>();
+		String query = null;
+		try {		
+			query = IOUtils.toString(App.class.getResourceAsStream("query2update_binding.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL update from jar \n"+e);
+		}
+		QueryExecution qe = QueryExecutionFactory.create(query, jena);
+		ResultSet results = qe.execSelect();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Resource reaction = qs.getResource("reaction"); 
+			binders.add(reaction.getURI());
+		}
+		qe.close();
+		return binders;
+	}
+	
 	int deleteEntityLocations() {
 		int n = 0;
 		String update = null;

@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.vocabulary.RDF;
 import org.biopax.paxtools.model.level3.PublicationXref;
 import org.biopax.paxtools.model.level3.Xref;
 import org.geneontology.gocam.exchange.QRunner.InferredEnabler;
@@ -93,7 +94,8 @@ public class GoCAM {
 	bp_class, continuant_class, process_class, go_complex, cc_class, molecular_function, 
 	eco_imported, eco_imported_auto, eco_inferred_auto, 
 	chebi_protein, chebi_gene, chemical_entity, chemical_role, 
-	catalytic_activity, binding, signal_transducer_activity, transporter_activity;
+	catalytic_activity, binding, signal_transducer_activity, transporter_activity,
+	protein_binding;
 	public OWLOntology go_cam_ont;
 	public OWLDataFactory df;
 	public OWLOntologyManager ontman;
@@ -155,9 +157,6 @@ public class GoCAM {
 		OWLAxiom stateaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, state_anno);
 		ontman.addAxiom(go_cam_ont, stateaxiom);
 
-		//TODO leftover, check and remove
-		OWLSubClassOfAxiom comp = df.getOWLSubClassOfAxiom(go_complex, continuant_class);
-		ontman.addAxiom(go_cam_ont, comp);
 	}
 	public void initializeClassesAndRelations() {
 		//Annotation properties for metadata and evidence
@@ -182,6 +181,8 @@ public class GoCAM {
 
 		catalytic_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0003824"));
 		binding = df.getOWLClass(IRI.create(obo_iri+"GO_0005488"));
+		protein_binding = df.getOWLClass(IRI.create(obo_iri+"GO_0005515"));
+		
 		signal_transducer_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0004871"));
 		transporter_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0005215"));
 		
@@ -655,6 +656,19 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 * assumes it is loaded with everything to start with a la qrunner = new QRunner(go_cam_ont); 
 	 */
 	void applySparqlRules() {
+		//try to detect binding type for unlabeled reactions
+		Set<String> binders = qrunner.findBindingReactions();
+		System.out.println("Found binders: \n"+binders.size()+" "+binders);
+		for(String binder_uri : binders) {
+			OWLNamedIndividual reaction = this.makeAnnotatedIndividual(binder_uri);
+			//delete the generic type
+			//not as fancy as below because types don't currently have annotations on them
+			OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(molecular_function, reaction);
+			ontman.removeAxiom(go_cam_ont, classAssertion);
+			//add the binding type 
+			addTypeAssertion(reaction, protein_binding);
+		}
+		
 		Set<InferredEnabler> ies = qrunner.getInferredEnablers();
 		System.out.println("Found "+ies.size()+" inferred enablers ");
 		for(InferredEnabler ie : ies) {			
@@ -737,6 +751,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 		qrunner = new QRunner(go_cam_ont); 
 		System.out.println("done with secondary negative regulates");
 		//		System.out.println("Added "+ir2_neg.size()+" neg inhibitory binding reg triples");
+		
+		
 	}
 
 	void writeGoCAM(String outfilename, boolean save2blazegraph) throws OWLOntologyStorageException, OWLOntologyCreationException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
