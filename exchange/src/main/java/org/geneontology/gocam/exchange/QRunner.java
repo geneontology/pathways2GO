@@ -380,6 +380,20 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		return n;
 	}
 	
+	int deleteCellularComponentTyping() {
+		int n = nTriples();
+		String update = null;
+		try {
+			update = IOUtils.toString(App.class.getResourceAsStream("delete_type_super_cc.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL update from jar \n"+e);
+		}
+		UpdateAction.parseExecute(update, jena) ;
+		int n_after = nTriples();
+		n= n-n_after;
+		return n;
+	}
+	
 	void deletePathwayHasPart() {
 		String update1 = null;
 		String update2 = null;
