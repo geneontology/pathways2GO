@@ -17,9 +17,6 @@ prefix skos: <http://www.w3.org/2004/02/skos/core#>
 # }  
 select ?reaction2 ?input ?reaction1   # for update
 where {
- FILTER NOT EXISTS {
- 	?reaction2 obo:RO_0002333 ?any_enabler 
- }
   { 	?reaction1 obo:RO_0002413 ?reaction2 .
   	?reaction1 rdf:type obo:GO_0003674 .
    	?reaction1 obo:RO_0002234 ?output .
@@ -47,6 +44,12 @@ where {
    # ?uniprot rdfs:subClassOf biopax:Protein . 
    ?uniprot rdfs:subClassOf obo:CHEBI_36080 .
     } 
+ FILTER NOT EXISTS {
+ 	?reaction2 obo:RO_0002333 ?any_enabler .
+ } 
+  FILTER NOT EXISTS {
+  	?reaction2 rdf:type <http://purl.obolibrary.org/obo/GO_0045184> .
+  }
 
 }
 

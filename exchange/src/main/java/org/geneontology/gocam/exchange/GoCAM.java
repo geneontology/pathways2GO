@@ -694,7 +694,10 @@ final long counterValue = instanceCounter.getAndIncrement();
 				this.addRefBackedObjectPropertyAssertion(reaction, has_target_start_location, start_loc, null, GoCAM.eco_inferred_auto, null, null);
 				this.addRefBackedObjectPropertyAssertion(reaction, has_target_end_location, end_loc, null, GoCAM.eco_inferred_auto, null, null);
 			}
-		}
+			//enabled by needs to know if there are any transport reactions as these should not be included
+			//hence reload graph from ontology
+			qrunner = new QRunner(go_cam_ont);
+		}		
 		//infer and change some inputs to enablers
 		Set<InferredEnabler> ies = qrunner.getInferredEnablers();
 		System.out.println("Found "+ies.size()+" inferred enablers ");
