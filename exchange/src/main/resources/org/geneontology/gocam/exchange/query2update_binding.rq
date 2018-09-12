@@ -1,0 +1,36 @@
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+prefix obo: <http://purl.obolibrary.org/obo/>
+prefix skos: <http://www.w3.org/2004/02/skos/core#>
+
+
+#If there is no specified GO molecular function term (except root MF GO:0003674), 
+#original
+#and there’s either 1) an output protein complex but no input protein complex, 
+#or 2) there’s an output protein complex that is different from all the input complexes, 
+#you can infer that the activity is a protein binding function GO:0005515 
+#proposed
+#there is an output complex that contains one of the inputs as a part of it
+
+select ?reaction  # for update
+where {
+  	#reaction annotated to root (check for reasoning..)
+  	?reaction rdf:type obo:GO_0003674 .
+  	#has an output
+   	?reaction obo:RO_0002234 ?output .
+   	#that is a complex
+   	?output rdf:type obo:GO_0032991 .
+   	#has an input
+   	?reaction obo:RO_0002233 ?input .
+   	#that is part of the complex (at class level)
+   	?output obo:BFO_0000051 ?output_part .
+   	?output_part rdf:type ?output_part_type .  #uniprot protein etc.
+   	?input rdf:type ?output_part_type
+}
+
+# obo:RO_0002233 has input 
+# obo:RO_0002333 enabled by
+# RO_0002234 has output
+# obo:BFO_0000051 has part
+# obo:RO_0002413 provides direct input for
