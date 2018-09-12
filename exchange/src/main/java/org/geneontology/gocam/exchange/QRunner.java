@@ -321,6 +321,47 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		return binders;
 	}
 	
+	public class InferredTransport{
+		String reaction_uri;
+		String input_loc_uri;
+		String output_loc_uri;
+		String input_loc_class_uri;
+		String output_loc_class_uri;
+		String thing_type_uri;
+	}
+	
+	Set<InferredTransport> findTransportReactions() {
+		Set<InferredTransport> transports = new HashSet<InferredTransport>();
+		String query = null;
+		try {		
+			query = IOUtils.toString(App.class.getResourceAsStream("query2update_localization.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL update from jar \n"+e);
+		}
+		QueryExecution qe = QueryExecutionFactory.create(query, jena);
+		ResultSet results = qe.execSelect();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Resource reaction = qs.getResource("reaction"); 
+			Resource start = qs.getResource("start_location_type"); 
+			Resource end = qs.getResource("end_location_type"); 
+			Resource start_loc_instance = qs.getResource("start_location"); 
+			Resource end_loc_instance = qs.getResource("end_location"); 
+			Resource thing_type = qs.getResource("thing_type"); 
+			InferredTransport t = new InferredTransport();
+			t.reaction_uri = reaction.getURI();
+			t.input_loc_class_uri = start.getURI();
+			t.output_loc_class_uri = end.getURI();
+			t.thing_type_uri = thing_type.getURI();
+			t.input_loc_uri = start_loc_instance.getURI();
+			t.output_loc_uri = end_loc_instance.getURI();
+			transports.add(t);
+		}
+		qe.close();
+		return transports;
+	}
+	
+	
 	int deleteEntityLocations() {
 		int n = 0;
 		String update = null;

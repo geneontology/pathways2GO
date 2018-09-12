@@ -1,0 +1,58 @@
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+prefix obo: <http://purl.obolibrary.org/obo/>
+prefix skos: <http://www.w3.org/2004/02/skos/core#>
+
+
+#If there is no specified GO molecular function term (except root MF GO:0003674), 
+#and the input entities are the same as the output entities
+#and the input entities have different locations from the output entities
+#then tag it as rdf:type 'establishment of protein localization'
+##and add has_target_end_location and has_target_start_location attributes to the reaction node
+##these will allow deeper automated inference of process type 
+##e.g. to classes like 'Establishment of protein localization to mitochondrial membrane'
+
+select ?reaction  ?start_location_type ?end_location_type ?start_location ?end_location ?thing_type 
+where {
+  	#reaction annotated to root (check for reasoning..)
+  	?reaction rdf:type obo:GO_0003674 .
+  	#has an output
+   	?reaction obo:RO_0002234 ?output .
+   	#that is of a specific type
+   	?output rdf:type ?thing_type . 
+   	#with a location
+   	?output obo:RO_0001025 ?end_location .
+   	#with a class
+   	?end_location rdf:type ?end_location_type .
+
+	#has an input
+	?reaction obo:RO_0002233 ?input .
+	#that is of the same type (e.g. the same protein class)
+	?input rdf:type ?thing_type . 
+   	#with a location
+   	?input obo:RO_0001025 ?start_location .
+   	#with a class
+   	?start_location rdf:type ?start_location_type .   	
+
+	#and the thing types are not boring
+	filter(?thing_type != <http://www.w3.org/2002/07/owl#NamedIndividual>)
+	#and are not complexes..
+	filter(?thing_type != <http://purl.obolibrary.org/obo/GO_0032991>)
+	
+	#and the locations are different
+	filter(?start_location_type != ?end_location_type) .
+	#and they are not boring
+	filter(?start_location_type != <http://www.w3.org/2002/07/owl#NamedIndividual>) .
+	filter(?end_location_type != <http://www.w3.org/2002/07/owl#NamedIndividual>) . 
+	filter(?end_location_type != <http://purl.obolibrary.org/obo/GO_0005575>) . 
+	filter(?start_location_type != <http://purl.obolibrary.org/obo/GO_0005575>) . 
+}
+
+# protein containing complex <http://purl.obolibrary.org/obo/GO_0032991>
+#located_in = obo:RO_0001025
+# obo:RO_0002233 has input 
+# obo:RO_0002333 enabled by
+# RO_0002234 has output
+# obo:BFO_0000051 has part
+# obo:RO_0002413 provides direct input for

@@ -25,6 +25,7 @@ import org.biopax.paxtools.model.level3.PublicationXref;
 import org.biopax.paxtools.model.level3.Xref;
 import org.geneontology.gocam.exchange.QRunner.InferredEnabler;
 import org.geneontology.gocam.exchange.QRunner.InferredRegulator;
+import org.geneontology.gocam.exchange.QRunner.InferredTransport;
 import org.geneontology.jena.SesameJena;
 import org.geneontology.rules.engine.Explanation;
 import org.geneontology.rules.engine.RuleEngine;
@@ -89,13 +90,15 @@ public class GoCAM {
 	public static OWLObjectProperty part_of, has_part, has_input, has_output, 
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in,
 	directly_positively_regulated_by, directly_negatively_regulated_by, involved_in_regulation_of, involved_in_negative_regulation_of, involved_in_positive_regulation_of,
-	directly_negatively_regulates, directly_positively_regulates, has_role, causally_upstream_of, causally_upstream_of_negative_effect, causally_upstream_of_positive_effect;
+	directly_negatively_regulates, directly_positively_regulates, has_role, causally_upstream_of, causally_upstream_of_negative_effect, causally_upstream_of_positive_effect,
+	has_target_end_location, has_target_start_location;
+	
 	public static OWLClass 
 	bp_class, continuant_class, process_class, go_complex, cc_class, molecular_function, 
 	eco_imported, eco_imported_auto, eco_inferred_auto, 
 	chebi_protein, chebi_gene, chemical_entity, chemical_role, 
 	catalytic_activity, binding, signal_transducer_activity, transporter_activity,
-	protein_binding;
+	protein_binding, establishment_of_protein_localization;
 	public OWLOntology go_cam_ont;
 	public OWLDataFactory df;
 	public OWLOntologyManager ontman;
@@ -182,6 +185,7 @@ public class GoCAM {
 		catalytic_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0003824"));
 		binding = df.getOWLClass(IRI.create(obo_iri+"GO_0005488"));
 		protein_binding = df.getOWLClass(IRI.create(obo_iri+"GO_0005515"));
+		establishment_of_protein_localization = df.getOWLClass(IRI.create(obo_iri+"GO_0045184"));
 		
 		signal_transducer_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0004871"));
 		transporter_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0005215"));
@@ -297,6 +301,9 @@ public class GoCAM {
 		//RO:0000087
 		has_role = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0000087"));
 		addLabel(has_role, "has role");
+		
+		has_target_end_location = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002339"));
+		has_target_start_location = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002338"));
 	}
 
 	public ClassificationReport getClassificationReport(){
@@ -668,7 +675,27 @@ final long counterValue = instanceCounter.getAndIncrement();
 			//add the binding type 
 			addTypeAssertion(reaction, protein_binding);
 		}
+		//detect transport type for unlabeled reactions (makes them into processes, not functions)
+		//important to do this before enabler inference step below since we don't want that rule
+		//to fire on transport reactions
+		Set<InferredTransport> transports = qrunner.findTransportReactions();
 		
+		if(transports.size()>0) {
+			System.out.println("transports "+transports.size()+" "+transports);
+			for(InferredTransport transport : transports) {
+				OWLNamedIndividual reaction = this.makeAnnotatedIndividual(transport.reaction_uri);
+				OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(molecular_function, reaction);
+				ontman.removeAxiom(go_cam_ont, classAssertion);
+				//add transport type
+				addTypeAssertion(reaction, establishment_of_protein_localization);
+				//record what moved where so the classifier can see it properly
+				OWLNamedIndividual start_loc = this.makeAnnotatedIndividual(transport.input_loc_uri);
+				OWLNamedIndividual end_loc = this.makeAnnotatedIndividual(transport.output_loc_uri);
+				this.addRefBackedObjectPropertyAssertion(reaction, has_target_start_location, start_loc, null, GoCAM.eco_inferred_auto, null, null);
+				this.addRefBackedObjectPropertyAssertion(reaction, has_target_end_location, end_loc, null, GoCAM.eco_inferred_auto, null, null);
+			}
+		}
+		//infer and change some inputs to enablers
 		Set<InferredEnabler> ies = qrunner.getInferredEnablers();
 		System.out.println("Found "+ies.size()+" inferred enablers ");
 		for(InferredEnabler ie : ies) {			

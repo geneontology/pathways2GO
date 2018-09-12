@@ -131,8 +131,8 @@ public class BioPaxtoGO {
 		//		bp2g.convertReactomeFolder(input_folder, output_folder);
 
 		String input_biopax = 
-				"/Users/bgood/Desktop/test/biopax/glycogen_synthesis.owl";
-				//"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
+				//"/Users/bgood/Desktop/test/biopax/glycogen_synthesis.owl";
+				"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
 				//"/Users/bgood/Downloads/ERK_cascade.owl";
 				//"/Users/bgood/Downloads/Noncanonical_Wnt_sig.owl";
 				//"/Users/bgood/Desktop/test/class-a1-receptors.owl";
@@ -1025,7 +1025,8 @@ public class BioPaxtoGO {
 
 				//want to stay in go tbox as much as possible - even if defaulting to root nodes.  
 				//if no process or function annotations, add annotation to root
-				if(go_mf.isEmpty()&&go_bp.isEmpty()) {
+				Collection<OWLClassExpression> types = EntitySearcher.getTypes(e, go_cam.go_cam_ont);				
+				if(types.isEmpty()) { //go_mf.isEmpty()&&go_bp.isEmpty()
 					go_cam.addTypeAssertion(e, GoCAM.molecular_function);	
 				}
 				//The OWL for the reaction and all of its parts should now be assembled.  Now can apply secondary rules to improve mapping to go-cam model
