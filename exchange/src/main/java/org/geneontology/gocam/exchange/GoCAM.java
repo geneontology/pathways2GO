@@ -24,6 +24,7 @@ import org.apache.jena.vocabulary.RDF;
 import org.biopax.paxtools.model.level3.PublicationXref;
 import org.biopax.paxtools.model.level3.Xref;
 import org.geneontology.gocam.exchange.QRunner.InferredEnabler;
+import org.geneontology.gocam.exchange.QRunner.InferredOccursIn;
 import org.geneontology.gocam.exchange.QRunner.InferredRegulator;
 import org.geneontology.gocam.exchange.QRunner.InferredTransport;
 import org.geneontology.jena.SesameJena;
@@ -658,11 +659,45 @@ final long counterValue = instanceCounter.getAndIncrement();
 	//		qrunner.jena = qrunner.makeJenaModel(qrunner.wm);
 	//	}
 
+	void applyAnnotatedTripleRemover(IRI subject, IRI predicate, IRI object) {
+		OWLOntologyWalker walker = new OWLOntologyWalker(Collections.singleton(go_cam_ont));
+		UpdateAnnotationsVisitor updater = new UpdateAnnotationsVisitor(walker, subject, located_in.getIRI(), object);
+		walker.walkStructure(updater); 
+		if(updater.getAxioms()!=null&&updater.getAxioms().size()>0) {
+			for(OWLAxiom a : updater.getAxioms()) {
+				ontman.removeAxiom(go_cam_ont, a);
+			}
+		}
+	}
+	
 	/**
 	 * Use sparql queries to inform modifications to the go-cam owl ontology 
 	 * assumes it is loaded with everything to start with a la qrunner = new QRunner(go_cam_ont); 
 	 */
 	void applySparqlRules() {
+		//convert entity locations into function occurs_in when they are all the same
+		//remove the location assertions on the entities
+		Set<InferredOccursIn> inferred_occurs = qrunner.findOccursInReaction();
+		if(!inferred_occurs.isEmpty()) {
+			System.out.println("Found occurs : \n"+inferred_occurs.size());
+			for(InferredOccursIn o : inferred_occurs) {
+				OWLNamedIndividual reaction = this.makeAnnotatedIndividual(o.reaction_uri);
+				if(o.location_type_uris.size()==1) {
+					//make the occurs in assertion
+					String location_type_uri = o.location_type_uris.iterator().next();
+					OWLClass location_class = df.getOWLClass(IRI.create(location_type_uri));
+					OWLNamedIndividual placeInstance = df.getOWLNamedIndividual(GoCAM.makeRandomIri());
+					addTypeAssertion(placeInstance, location_class);
+					addRefBackedObjectPropertyAssertion(reaction, GoCAM.occurs_in, placeInstance, null, GoCAM.eco_imported_auto, "PMID", null);
+					//remove the now redundant location assertions
+					for(String entity_uri : o.entity_location_instances.keySet()) {
+						OWLNamedIndividual entity = df.getOWLNamedIndividual(IRI.create(entity_uri));
+						OWLNamedIndividual location_instance = df.getOWLNamedIndividual(IRI.create(o.entity_location_instances.get(entity_uri)));
+						applyAnnotatedTripleRemover(entity.getIRI(), located_in.getIRI(), location_instance.getIRI());
+					}
+				}
+			}
+		}
 		//try to detect binding type for unlabeled reactions
 		Set<String> binders = qrunner.findBindingReactions();
 		System.out.println("Found binders: \n"+binders.size()+" "+binders);

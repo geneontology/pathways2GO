@@ -9,7 +9,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -359,6 +361,62 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		}
 		qe.close();
 		return transports;
+	}
+	
+	public class InferredOccursIn {
+		String reaction_uri;
+		Set<String> location_type_uris = new HashSet<String>();
+		Map<String, String> entity_location_instances = new HashMap<String, String>();
+	}
+	//?reaction ?prop ?location_instance ?location_type ?entity	
+	Set<InferredOccursIn> findOccursInReaction(){
+		Set<InferredOccursIn> occurs = new HashSet<InferredOccursIn>();
+		String query = null;
+		try {		
+			query = IOUtils.toString(App.class.getResourceAsStream("query2update_occurs_in.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL update from jar \n"+e);
+		}
+		QueryExecution qe = QueryExecutionFactory.create(query, jena);
+		ResultSet results = qe.execSelect();
+		
+		Map<String, InferredOccursIn> reaction_locinfo = new HashMap<String, InferredOccursIn>();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Resource reaction = qs.getResource("reaction");
+			String reaction_uri = reaction.getURI();
+			//Resource reaction_type = qs.getResource("reaction_type"); 
+			Resource prop = qs.getResource("prop"); 
+			Resource location_instance = qs.getResource("location_instance"); 
+			String location_instance_uri = location_instance.getURI();
+			Resource location_type = qs.getResource("location_type"); 
+			String location_type_uri = location_type.getURI();
+			Resource entity = qs.getResource("entity"); 
+			String entity_uri = entity.getURI();
+
+			if(reaction_uri==null){
+				continue;
+			}
+			InferredOccursIn o = reaction_locinfo.get(reaction_uri);
+			if(o==null) {
+				o = new InferredOccursIn();
+				o.reaction_uri = reaction_uri;
+			}
+			
+			o.location_type_uris.add(location_type_uri);
+			o.entity_location_instances.put(entity_uri, location_instance_uri);
+			reaction_locinfo.put(reaction_uri, o);
+		}
+		qe.close();
+		//check for the ones that are the all the same
+		for(String reaction : reaction_locinfo.keySet()) {
+			InferredOccursIn o = reaction_locinfo.get(reaction);
+			if(o.location_type_uris.size()==1) {
+				occurs.add(o);
+			}
+		}
+		
+		return occurs;
 	}
 	
 	

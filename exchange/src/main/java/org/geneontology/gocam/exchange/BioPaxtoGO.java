@@ -385,6 +385,7 @@ public class BioPaxtoGO {
 			//remove any locations on physical entities. screws display as entities can't be folded into function nodes
 			go_cam.qrunner.deleteEntityLocations();
 		}
+
 		//removes basic types like 'Cellular Component' used in here to make reports but not useful in output data
 		go_cam.qrunner.deleteCellularComponentTyping();
 		System.out.println("writing....");
@@ -1031,42 +1032,10 @@ public class BioPaxtoGO {
 				if(types.isEmpty()) { //go_mf.isEmpty()&&go_bp.isEmpty()
 					go_cam.addTypeAssertion(e, GoCAM.molecular_function);	
 				}
-				//The OWL for the reaction and all of its parts should now be assembled.  Now can apply secondary rules to improve mapping to go-cam model
-				//If all of the entities involved in a reaction are located in the same GO cellular component, 
-				//add that the reaction/function occurs_in that location
-				//take location information off of the components.  
+				//The OWL for the reaction and all of its parts should now be assembled.  
+				//Additional modifications to the output can come from secondary rules operating on the new OWL or its RDF representation
+				//See GoCAM.applySparqlRules()
 
-				Set<OWLClass> reaction_places = new HashSet<OWLClass>();
-				Set<OWLClass> input_places = getLocations(EntitySearcher.getObjectPropertyValues(e, GoCAM.has_input, go_cam.go_cam_ont), go_cam.go_cam_ont);
-				Set<OWLClass> output_places = getLocations(EntitySearcher.getObjectPropertyValues(e, GoCAM.has_output, go_cam.go_cam_ont), go_cam.go_cam_ont);
-				Set<OWLClass> enabler_places = getLocations(EntitySearcher.getObjectPropertyValues(e, GoCAM.enabled_by, go_cam.go_cam_ont), go_cam.go_cam_ont);
-				Set<OWLClass> negreg_places = getLocations(EntitySearcher.getObjectPropertyValues(e, GoCAM.involved_in_negative_regulation_of, go_cam.go_cam_ont), go_cam.go_cam_ont);
-				Set<OWLClass> posreg_places = getLocations(EntitySearcher.getObjectPropertyValues(e, GoCAM.involved_in_positive_regulation_of, go_cam.go_cam_ont), go_cam.go_cam_ont);
-
-				reaction_places.addAll(input_places); reaction_places.addAll(output_places);  reaction_places.addAll(enabler_places); 
-				reaction_places.addAll(negreg_places); reaction_places.addAll(posreg_places);
-				//this gets added in when locations captured from the biopax to ease reporting
-				//don't count it..
-				reaction_places.remove(GoCAM.cc_class);
-				if(reaction_places.size()==1) {
-					//System.out.println("1 "+reaction +" "+reaction_places);
-					for(OWLClass place : reaction_places) {
-						//create the unique individual for this reaction's location individual
-						IRI iri = GoCAM.makeGoCamifiedIRI(entity.getUri()+place.getIRI().toString());
-						OWLNamedIndividual placeInstance = go_cam.df.getOWLNamedIndividual(iri);
-						go_cam.addTypeAssertion(placeInstance, place);
-						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.occurs_in, placeInstance, pubids, GoCAM.eco_imported_auto, "PMID", null);
-					}
-				}else {
-					for(OWLClass place : reaction_places) {
-						//TODO do something more clever to decide on where the function occurs if things are happening in multiple places.		
-						String plabel = go_cam.getaLabel(place);
-						if(plabel.equals("Cellular Component")) {
-							System.out.println("stop on "+e);
-						}
-						go_cam.addLiteralAnnotations2Individual(e.getIRI(), GoCAM.rdfs_comment, "occurs_in "+plabel);
-					}
-				}
 			}
 		}
 		return;

@@ -12,11 +12,16 @@ delete {
 }
 where {
 #limits location removal to physical entities
-  ?physical_entity rdf:type ?entity_class . 
+  {?physical_entity rdf:type ?entity_class . 
   ?entity_class rdfs:subClassOf ?grouping_class .
   VALUES ?grouping_class { obo:GO_0032991 obo:CHEBI_36080 obo:CHEBI_24431 obo:BFO_0000002} .
+  }UNION{
+   ?physical_entity rdf:type obo:GO_0032991 . 
+  }
   ?physical_entity obo:RO_0001025 ?location .
   ?location rdf:type ?location_class .
   ?anno_node owl:annotatedSource ?physical_entity .
   ?anno_node owl:annotatedTarget ?location .
 }
+
+##http://purl.obolibrary.org/obo/GO_0032991
