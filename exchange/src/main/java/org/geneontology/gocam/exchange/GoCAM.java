@@ -93,7 +93,7 @@ public class GoCAM {
 	directly_positively_regulated_by, directly_negatively_regulated_by, involved_in_regulation_of, involved_in_negative_regulation_of, involved_in_positive_regulation_of,
 	directly_negatively_regulates, directly_positively_regulates, has_role, causally_upstream_of, causally_upstream_of_negative_effect, causally_upstream_of_positive_effect,
 	has_target_end_location, has_target_start_location;
-	
+
 	public static OWLClass 
 	bp_class, continuant_class, process_class, go_complex, cc_class, molecular_function, 
 	eco_imported, eco_imported_auto, eco_inferred_auto, 
@@ -116,14 +116,14 @@ public class GoCAM {
 		df = OWLManager.getOWLDataFactory();
 		initializeClassesAndRelations();
 	}
-	
+
 	public GoCAM(String filename) throws OWLOntologyCreationException {
 		ontman = OWLManager.createOWLOntologyManager();				
 		go_cam_ont = ontman.loadOntologyFromOntologyDocument(new File(filename));
 		df = OWLManager.getOWLDataFactory();
 		initializeClassesAndRelations();
 	}
-	
+
 	/**
 	 * @throws OWLOntologyCreationException 
 	 * 
@@ -137,7 +137,7 @@ public class GoCAM {
 		go_cam_ont = ontman.createOntology(ont_iri);
 		df = OWLManager.getOWLDataFactory();
 		initializeClassesAndRelations();
-		
+
 		//TODO basically never going to do this, maybe take it out..
 		if(add_lego_import) {
 			String lego_iri = "http://purl.obolibrary.org/obo/go/extensions/go-lego.owl";
@@ -178,7 +178,7 @@ public class GoCAM {
 		skos_exact_match = df.getOWLAnnotationProperty(IRI.create("http://www.w3.org/2004/02/skos/core#exactMatch"));
 		definition = df.getOWLAnnotationProperty(IRI.create("http://purl.obolibrary.org/obo/IAO_0000115"));	
 		database_cross_reference = df.getOWLAnnotationProperty(IRI.create("http://www.geneontology.org/formats/oboInOwl#hasDbXref"));	
-		
+
 		//Will add classes and relations as we need them now. 
 		//TODO Work on using imports later to ensure we don't produce incorrect ids..
 		//classes	
@@ -187,10 +187,10 @@ public class GoCAM {
 		binding = df.getOWLClass(IRI.create(obo_iri+"GO_0005488"));
 		protein_binding = df.getOWLClass(IRI.create(obo_iri+"GO_0005515"));
 		establishment_of_protein_localization = df.getOWLClass(IRI.create(obo_iri+"GO_0045184"));
-		
+
 		signal_transducer_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0004871"));
 		transporter_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0005215"));
-		
+
 		chemical_role =df.getOWLClass(IRI.create(obo_iri+"CHEBI_50906"));
 		addLabel(chemical_role, "chemical role");
 		//biological process
@@ -249,8 +249,8 @@ public class GoCAM {
 		directly_activates = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002406"));
 		addLabel(directly_activates, "directly activates (process to process)");
 		//BFO_0000066 occurs in (note that it can only be used for occurents in occurents)
-		
-		
+
+
 		//http://purl.obolibrary.org/obo/RO_0002305
 		causally_upstream_of  = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002411"));
 		addLabel(causally_upstream_of, "causally upstream of");
@@ -258,7 +258,7 @@ public class GoCAM {
 		addLabel(causally_upstream_of_negative_effect, "causally upstream of with a negative effect");
 		causally_upstream_of_positive_effect  = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002304"));
 		addLabel(causally_upstream_of_positive_effect, "causally upstream of with a positive effect");
-		
+
 		occurs_in = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000066"));
 		addLabel(occurs_in, "occurs in");
 		//RO_0001025
@@ -302,7 +302,7 @@ public class GoCAM {
 		//RO:0000087
 		has_role = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0000087"));
 		addLabel(has_role, "has role");
-		
+
 		has_target_end_location = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002339"));
 		has_target_start_location = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002338"));
 	}
@@ -473,7 +473,7 @@ public class GoCAM {
 		//ontman.applyChanges();
 		return;
 	}
-	
+
 	/**
 	 * Thanks https://stackoverflow.com/questions/20780425/using-owl-api-given-an-owlclass-how-can-i-get-rdfslabel-of-it/20784993#20784993
 	 * ...
@@ -661,7 +661,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 
 	void applyAnnotatedTripleRemover(IRI subject, IRI predicate, IRI object) {
 		OWLOntologyWalker walker = new OWLOntologyWalker(Collections.singleton(go_cam_ont));
-		UpdateAnnotationsVisitor updater = new UpdateAnnotationsVisitor(walker, subject, located_in.getIRI(), object);
+		UpdateAnnotationsVisitor updater = new UpdateAnnotationsVisitor(walker, subject, predicate, object);
 		walker.walkStructure(updater); 
 		if(updater.getAxioms()!=null&&updater.getAxioms().size()>0) {
 			for(OWLAxiom a : updater.getAxioms()) {
@@ -669,7 +669,16 @@ final long counterValue = instanceCounter.getAndIncrement();
 			}
 		}
 	}
-	
+
+	void deleteOwlEntityAndAllReferencesToIt(OWLEntity e) {
+		for (OWLAnnotationAssertionAxiom annAx : EntitySearcher.getAnnotationAssertionAxioms(e.getIRI(), this.go_cam_ont)) {
+			ontman.removeAxiom(go_cam_ont, annAx);
+		}
+		for (OWLAxiom annAx :EntitySearcher.getReferencingAxioms(e, this.go_cam_ont)) {
+			ontman.removeAxiom(go_cam_ont, annAx);
+		}
+	}
+
 	/**
 	 * Use sparql queries to inform modifications to the go-cam owl ontology 
 	 * assumes it is loaded with everything to start with a la qrunner = new QRunner(go_cam_ont); 
@@ -678,6 +687,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		//convert entity locations into function occurs_in when they are all the same
 		//remove the location assertions on the entities
 		Set<InferredOccursIn> inferred_occurs = qrunner.findOccursInReaction();
+		OWLClass named = df.getOWLClass(IRI.create("http://www.w3.org/2002/07/owl#NamedIndividual"));
 		if(!inferred_occurs.isEmpty()) {
 			System.out.println("Found occurs : \n"+inferred_occurs.size());
 			for(InferredOccursIn o : inferred_occurs) {
@@ -694,6 +704,9 @@ final long counterValue = instanceCounter.getAndIncrement();
 						OWLNamedIndividual entity = df.getOWLNamedIndividual(IRI.create(entity_uri));
 						OWLNamedIndividual location_instance = df.getOWLNamedIndividual(IRI.create(o.entity_location_instances.get(entity_uri)));
 						applyAnnotatedTripleRemover(entity.getIRI(), located_in.getIRI(), location_instance.getIRI());
+						OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(location_class, location_instance);
+						ontman.removeAxiom(go_cam_ont, classAssertion);
+						deleteOwlEntityAndAllReferencesToIt(location_instance);
 					}
 				}
 			}
@@ -714,7 +727,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		//important to do this before enabler inference step below since we don't want that rule
 		//to fire on transport reactions
 		Set<InferredTransport> transports = qrunner.findTransportReactions();
-		
+
 		if(transports.size()>0) {
 			System.out.println("transports "+transports.size()+" "+transports);
 			for(InferredTransport transport : transports) {
@@ -742,14 +755,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ie.reaction2_uri);
 			OWLNamedIndividual r1 = this.makeAnnotatedIndividual(ie.reaction1_uri);
 			//delete the has_input relation
-			OWLOntologyWalker walker = new OWLOntologyWalker(Collections.singleton(go_cam_ont));
-			UpdateAnnotationsVisitor updater = new UpdateAnnotationsVisitor(walker, r2.getIRI(), has_input.getIRI(), e.getIRI());
-			walker.walkStructure(updater); 
-			if(updater.getAxioms()!=null&&updater.getAxioms().size()>0) {
-				for(OWLAxiom a : updater.getAxioms()) {
-					ontman.removeAxiom(go_cam_ont, a);
-				}
-			}
+			applyAnnotatedTripleRemover(r2.getIRI(), has_input.getIRI(), e.getIRI());
 			//add the enabled_by relation 
 			Set<OWLAnnotation> annos = getDefaultAnnotations();
 			String r2_label = "'"+this.getaLabel(r2)+"'";
@@ -816,8 +822,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 		qrunner = new QRunner(go_cam_ont); 
 		System.out.println("done with secondary negative regulates");
 		//		System.out.println("Added "+ir2_neg.size()+" neg inhibitory binding reg triples");
-		
-		
+
+
 	}
 
 	void writeGoCAM_jena(String outfilename, boolean save2blazegraph) throws OWLOntologyStorageException, OWLOntologyCreationException, RepositoryException, RDFParseException, RDFHandlerException, IOException {

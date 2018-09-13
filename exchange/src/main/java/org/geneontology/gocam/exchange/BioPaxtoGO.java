@@ -160,7 +160,7 @@ public class BioPaxtoGO {
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";
-		boolean split_by_pathway = true;
+		boolean split_by_pathway = false;
 		boolean save_inferences = false;
 		boolean expand_subpathways = false;  //this is a bad idea for high level nodes like 'Signaling Pathways'
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, save_inferences, expand_subpathways);
@@ -1032,8 +1032,9 @@ public class BioPaxtoGO {
 				if(types.isEmpty()) { //go_mf.isEmpty()&&go_bp.isEmpty()
 					go_cam.addTypeAssertion(e, GoCAM.molecular_function);	
 				}
-				//The OWL for the reaction and all of its parts should now be assembled.  
-				//Additional modifications to the output can come from secondary rules operating on the new OWL or its RDF representation
+				//The GO-CAM OWL for the reaction and all of its parts should now be assembled.  
+				//Additional modifications to the output can come from secondary rules operating 
+				//on the new OWL or its RDF representation
 				//See GoCAM.applySparqlRules()
 
 			}
