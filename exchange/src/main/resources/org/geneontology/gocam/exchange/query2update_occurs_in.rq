@@ -1,0 +1,34 @@
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+prefix obo: <http://purl.obolibrary.org/obo/>
+prefix skos: <http://www.w3.org/2004/02/skos/core#>
+
+
+#get all the locations of entities involved in something
+#presumably 
+
+select ?reaction ?prop ?location_instance ?location_type ?entity  
+where {
+  	#reaction with inputs/outputs/enablers/regulators/etc.  
+  	{
+  	?reaction (obo:RO_0002233|obo:RO_0002234|obo:RO_0002333|obo:RO_0002430|obo:RO_0002429) ?entity . 
+ 	} UNION 
+ 	{
+ 	?reaction (obo:RO_0002233|obo:RO_0002234|obo:RO_0002333|obo:RO_0002430|obo:RO_0002429) ?complex .
+ 	?complex obo:BFO_0000051* ?entity .
+ 	} 	
+  	
+  	?entity obo:RO_0001025 ?location_instance . 
+  	?location_instance rdf:type ?location_type .  
+	filter(?location_type != <http://www.w3.org/2002/07/owl#NamedIndividual>) .
+	filter(?location_type != <http://purl.obolibrary.org/obo/GO_0005575>) .
+}
+
+# protein containing complex <http://purl.obolibrary.org/obo/GO_0032991>
+#located_in = obo:RO_0001025
+# obo:RO_0002233 has input 
+# obo:RO_0002333 enabled by
+# RO_0002234 has output
+# obo:BFO_0000051 has part
+# obo:RO_0002413 provides direct input for
