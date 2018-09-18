@@ -13,8 +13,9 @@ prefix skos: <http://www.w3.org/2004/02/skos/core#>
 ##these will allow deeper automated inference of process type 
 ##e.g. to classes like 'Establishment of protein localization to mitochondrial membrane'
 
-select ?reaction  ?start_location_type ?end_location_type ?start_location ?end_location ?thing_type 
+select ?reaction  ?start_location_type ?end_location_type ?start_location ?end_location ?thing_type ?pathway 
 where {
+  	?pathway obo:BFO_0000051 ?reaction . 
   	#reaction annotated to root (check for reasoning..)
   	?reaction rdf:type obo:GO_0003674 .
   	#has an output

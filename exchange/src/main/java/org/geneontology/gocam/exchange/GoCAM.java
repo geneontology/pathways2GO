@@ -5,6 +5,7 @@ package org.geneontology.gocam.exchange;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
@@ -17,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.apache.jena.rdf.model.Statement;
@@ -679,18 +681,64 @@ final long counterValue = instanceCounter.getAndIncrement();
 		}
 	}
 
+	public class RuleResults{
+		Map<String, Integer> rule_hitcount = new TreeMap<String, Integer>();
+		Map<String, Set<String>> rule_pathways = new TreeMap<String, Set<String>>();
+		Map<String, Set<String>> rule_reactions = new TreeMap<String, Set<String>>();
+		
+		public Integer checkInitCount(String rulename, RuleResults r) {
+			Integer i_o_count = r.rule_hitcount.get(rulename);
+			if(i_o_count==null) {
+				i_o_count = 0;
+			}
+			return i_o_count;
+		}
+
+		public Set<String> checkInitPathways(String rulename, RuleResults r){
+			Set<String> i_o_pathways = r.rule_pathways.get(rulename);
+			if(i_o_pathways==null) {
+				i_o_pathways = new HashSet<String>();
+			}
+			return i_o_pathways;
+		}
+		
+		public Set<String> checkInitReactions(String rulename, RuleResults r){
+			Set<String> i_o_reactions = r.rule_reactions.get(rulename);
+			if(i_o_reactions==null) {
+				i_o_reactions = new HashSet<String>();
+			}
+			return i_o_reactions;
+		}
+		
+		public String toString() {
+			String result = "";
+			for(String rule : rule_hitcount.keySet()) {
+				result+=rule+"\t"+rule_hitcount.get(rule)+"\t"+rule_pathways.get(rule)+"\n";
+			}
+			return result;
+		}
+	}
+
 	/**
 	 * Use sparql queries to inform modifications to the go-cam owl ontology 
 	 * assumes it is loaded with everything to start with a la qrunner = new QRunner(go_cam_ont); 
+	 * @throws IOException 
 	 */
-	void applySparqlRules() {
-		//convert entity locations into function occurs_in when they are all the same
-		//remove the location assertions on the entities
+	RuleResults applySparqlRules() {
+		RuleResults r = new RuleResults();
+		/**
+		 * Rule 1: infer occurs_in relations
+		 * If all participants in a reaction are located_in the same place,
+		 * Then assert that the reaction occurs_in that place and remove the located_in assertions
+		 */
+		String i_o_rule = "occurs_in";
+		Integer i_o_count = r.checkInitCount(i_o_rule, r);
+		Set<String> i_o_pathways = r.checkInitPathways(i_o_rule, r);
 		Set<InferredOccursIn> inferred_occurs = qrunner.findOccursInReaction();
-		OWLClass named = df.getOWLClass(IRI.create("http://www.w3.org/2002/07/owl#NamedIndividual"));
 		if(!inferred_occurs.isEmpty()) {
-			System.out.println("Found occurs : \n"+inferred_occurs.size());
+			i_o_count+=inferred_occurs.size();
 			for(InferredOccursIn o : inferred_occurs) {
+				i_o_pathways.add(o.pathway_uri);
 				OWLNamedIndividual reaction = this.makeAnnotatedIndividual(o.reaction_uri);
 				if(o.location_type_uris.size()==1) {
 					//make the occurs in assertion
@@ -711,9 +759,24 @@ final long counterValue = instanceCounter.getAndIncrement();
 				}
 			}
 		}
-		//try to detect binding type for unlabeled reactions
+		r.rule_hitcount.put(i_o_rule, i_o_count);
+		r.rule_pathways.put(i_o_rule, i_o_pathways);		
+		
+		/**
+		 * Rule 2: Infer rdf:type Protein Binding
+		 * If a reaction has no GO annotation beyond 'molecular function'
+		 * and the reaction has an output that is a protein complex
+		 * and the output protein complex contains one of the inputs to the reaction
+		 * Then assign the reaction as rdf:type Protein Binding
+		 */
+		String binding_rule = "binding";
+		Integer binding_count = r.checkInitCount(binding_rule, r);
+		Set<String> binding_reactions = r.checkInitReactions(binding_rule, r);
 		Set<String> binders = qrunner.findBindingReactions();
-		System.out.println("Found binders: \n"+binders.size()+" "+binders);
+		if(!binders.isEmpty()) {
+			binding_count+= binders.size();
+			binding_reactions.addAll(binders);
+		}
 		for(String binder_uri : binders) {
 			OWLNamedIndividual reaction = this.makeAnnotatedIndividual(binder_uri);
 			//delete the generic type
@@ -723,14 +786,27 @@ final long counterValue = instanceCounter.getAndIncrement();
 			//add the binding type 
 			addTypeAssertion(reaction, protein_binding);
 		}
-		//detect transport type for unlabeled reactions (makes them into processes, not functions)
-		//important to do this before enabler inference step below since we don't want that rule
-		//to fire on transport reactions
-		Set<InferredTransport> transports = qrunner.findTransportReactions();
-
+		r.rule_hitcount.put(binding_rule, binding_count);
+		r.rule_reactions.put(binding_rule, binding_reactions);
+		
+		/**
+		 * Rule 3: Infer Protein Transport reactions
+		 * If a reaction has not been provided with an rdf:type 
+		 * and the input entities are the same as the output entities
+		 * and the input entities have different locations from the output entities
+		 * then tag it as rdf:type 'establishment of protein localization' (notably a BP not an MF)
+		 * and add has_target_end_location and has_target_start_location attributes to the reaction node
+		 * 
+		 *  Downstream dependency alert: do this before enabler inference step below since we don't want that rule to fire on transport reactions
+		 */
+		String transport_rule = "transport";
+		Integer transport_count = r.checkInitCount(transport_rule, r);
+		Set<String> transport_pathways = r.checkInitPathways(transport_rule, r);		
+		Set<InferredTransport> transports = qrunner.findTransportReactions();		
 		if(transports.size()>0) {
-			System.out.println("transports "+transports.size()+" "+transports);
+			transport_count+=transports.size();
 			for(InferredTransport transport : transports) {
+				transport_pathways.add(transport.pathway_uri);
 				OWLNamedIndividual reaction = this.makeAnnotatedIndividual(transport.reaction_uri);
 				OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(molecular_function, reaction);
 				ontman.removeAxiom(go_cam_ont, classAssertion);
@@ -745,11 +821,30 @@ final long counterValue = instanceCounter.getAndIncrement();
 			//enabled by needs to know if there are any transport reactions as these should not be included
 			//hence reload graph from ontology
 			qrunner = new QRunner(go_cam_ont);
-		}		
+		}
+		r.rule_hitcount.put(transport_rule, transport_count);
+		r.rule_pathways.put(transport_rule, transport_pathways);
+		
+		/**
+		 * Rule 4: Infer enabled_by 
+		 * If R1 provides_direct_input_for R2 
+		 * and R1 has_output E1
+		 * and R2 has_input E2
+		 * and E1 is the same type of thing as E2 (see sparql for details)
+		 * and R2 is not enabled by anything else 
+		 * Then infer that an entity (either protein or protein complex) E enables a reaction R2
+		 * Remove the has_input relation replaced by the enabled_by relation 
+		 */
 		//infer and change some inputs to enablers
+		String enabler_rule = "enabler";
+		Integer enabler_count = r.checkInitCount(enabler_rule, r);
+		Set<String> enabler_pathways = r.checkInitPathways(enabler_rule, r);		
 		Set<InferredEnabler> ies = qrunner.getInferredEnablers();
-		System.out.println("Found "+ies.size()+" inferred enablers ");
+		if(!ies.isEmpty()) {
+			enabler_count+=ies.size();
+		}
 		for(InferredEnabler ie : ies) {			
+			enabler_pathways.add(ie.pathway_uri);
 			//create ?reaction2 obo:RO_0002333 ?input
 			OWLNamedIndividual e = this.makeAnnotatedIndividual(ie.enabler_uri);
 			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ie.reaction2_uri);
@@ -767,17 +862,26 @@ final long counterValue = instanceCounter.getAndIncrement();
 					+ r2_label+ " has input "+e_label+" .  The original has_input relation to "+e_label+" was replaced. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 			this.addRefBackedObjectPropertyAssertion(r2, enabled_by, e, null, GoCAM.eco_inferred_auto, null, annos);
-			//	System.out.println(r2+" added enabled by "+e);
-
 		}
-		//if subsequent rules need to compute over the results of previous rules, need to load the owl back into the rdf model
-		System.out.println("done with enabled by, adding to rdf model");
+		r.rule_hitcount.put(enabler_rule, enabler_count);
+		r.rule_pathways.put(enabler_rule, enabler_pathways);
 		qrunner = new QRunner(go_cam_ont); 
-		//	System.out.println("Added "+ies.size()+" enabled_by triples");
+
+		/**
+		 * Rule 5: Regulator 1: direct assertion 
+		 * If an entity is involved_in_regulation_of reaction1 
+		 * And that entity is the output of reaction 2
+		 * Then infer that reaction 2 regulates reaction 1
+		 * (capture if its positive or negative regulation)
+		 */
+		
+		String regulator_rule = "regulator_1";
+		Integer regulator_count = r.checkInitCount(regulator_rule, r);
+		Set<String> regulator_pathways = r.checkInitPathways(regulator_rule, r);
 		Set<InferredRegulator> ir1 = qrunner.getInferredRegulatorsQ1();
-		System.out.println("Found "+ir1.size()+" inferred regulators with Q1 ");
+		regulator_count+=ir1.size();
 		for(InferredRegulator ir : ir1) {
-			//create ?reaction2 obo:RO_0002333 ?input
+			regulator_pathways.add(ir.pathway_uri);
 			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ir.reaction1_uri);
 			OWLNamedIndividual r1 = this.makeAnnotatedIndividual(ir.reaction2_uri);
 			OWLObjectProperty o = GoCAM.directly_negatively_regulates;
@@ -794,15 +898,31 @@ final long counterValue = instanceCounter.getAndIncrement();
 					+r1_label+" has output A and A is involved in "+reg+" "+r2_label+". See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 			this.addRefBackedObjectPropertyAssertion(r1, o, r2, null, GoCAM.eco_inferred_auto, null, annos);
-			//			System.out.println("reg1 "+r2+" "+o+" "+r1);
 		}
-		//if subsequent rules need to compute over the results of previous rules, need to load the owl back into the rdf model
-		System.out.println("done with directly asserted neg pos regulates, adding to rdf model");
+		r.rule_hitcount.put(regulator_rule, regulator_count);
+		r.rule_pathways.put(regulator_rule, regulator_pathways);
 		qrunner = new QRunner(go_cam_ont); 
-		//		System.out.println("Added "+ir1.size()+" pos/neg reg triples");
+		
+		/**
+		 * Rule 6: Regulator 2: negative regulation by binding
+		 * If reaction2 is enabled_by entity1
+		 * And reaction1 has entity1 as an input
+		 * And reaction1 has entity2 as an input
+		 * And reaction1 has a complex containign entity1 and entity2 as output
+		 * Then infer that reaction1 directly_negatively_regulates reaction2
+		 * (by binding up the entity that enables reaction2 to happen).
+		 * 
+		 *  See 'Signaling by BMP' https://reactome.org/content/detail/R-HSA-201451 
+		 * 
+		 */
+		String regulator_rule_2 = "regulator_2";
+		Integer regulator_count_2 = r.checkInitCount(regulator_rule_2, r);
+		Set<String> regulator_pathways_2 = r.checkInitPathways(regulator_rule_2, r);
+		
 		Set<InferredRegulator> ir2_neg = qrunner.getInferredRegulatorsQ2();
-		System.out.println("Found "+ir2_neg.size()+" inferred neg regulators with Q2_neg ");
+		regulator_count_2+=ir2_neg.size();
 		for(InferredRegulator ir : ir2_neg) {
+			regulator_pathways_2.add(ir.pathway_uri);
 			//create ?reaction2 obo:RO_0002333 ?input
 			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ir.reaction1_uri);
 			OWLNamedIndividual r1 = this.makeAnnotatedIndividual(ir.reaction2_uri);
@@ -818,12 +938,12 @@ final long counterValue = instanceCounter.getAndIncrement();
 			//this.addObjectPropertyAssertion(r1, o, r2, annos);
 			this.addRefBackedObjectPropertyAssertion(r2, o, r1, null, GoCAM.eco_inferred_auto, null, annos);
 			//			System.out.println("reg2 "+r1+" "+o+" "+r2);
-		}		
+		}	
+		r.rule_hitcount.put(regulator_rule_2, regulator_count_2);
+		r.rule_pathways.put(regulator_rule_2, regulator_pathways_2);
 		qrunner = new QRunner(go_cam_ont); 
-		System.out.println("done with secondary negative regulates");
-		//		System.out.println("Added "+ir2_neg.size()+" neg inhibitory binding reg triples");
 
-
+		return r;
 	}
 
 	void writeGoCAM_jena(String outfilename, boolean save2blazegraph) throws OWLOntologyStorageException, OWLOntologyCreationException, RepositoryException, RDFParseException, RDFHandlerException, IOException {

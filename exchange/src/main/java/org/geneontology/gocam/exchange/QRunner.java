@@ -215,10 +215,12 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		String reaction2_uri;
 		String reaction1_uri;
 		String enabler_uri;
-		public InferredEnabler(String reaction2_uri, String reaction1_uri, String enabler_uri) {
+		String pathway_uri;
+		public InferredEnabler(String reaction2_uri, String reaction1_uri, String enabler_uri, String pathway_uri) {
 			this.reaction2_uri = reaction2_uri;
 			this.reaction1_uri = reaction1_uri;
 			this.enabler_uri = enabler_uri;
+			this.pathway_uri = pathway_uri;
 		}
 		
 	}
@@ -238,7 +240,8 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			Resource reaction1 = qs.getResource("reaction1"); 
 			Resource reaction2 = qs.getResource("reaction2"); 
 			Resource enabler = qs.getResource("input");
-			ie.add(new InferredEnabler(reaction2.getURI(), reaction1.getURI(), enabler.getURI()));
+			Resource pathway = qs.getResource("pathway");
+			ie.add(new InferredEnabler(reaction2.getURI(), reaction1.getURI(), enabler.getURI(), pathway.getURI()));
 		}
 		qe.close();
 		return ie;
@@ -248,10 +251,12 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		String reaction1_uri;
 		String reaction2_uri;
 		String prop_uri;
-		InferredRegulator(String r1_uri, String p_uri, String r2_uri){
+		String pathway_uri;
+		InferredRegulator(String r1_uri, String p_uri, String r2_uri, String pathway){
 			reaction1_uri = r1_uri;
 			prop_uri = p_uri;
 			reaction2_uri = r2_uri;
+			pathway_uri = pathway;
 		}
 	}
 	
@@ -273,8 +278,9 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			Resource reaction1 = qs.getResource("reaction1"); 
 			Resource reaction2 = qs.getResource("reaction2"); 
 			Resource property = qs.getResource("prop");
+			Resource pathway = qs.getResource("pathway");
 			//reaction1  regulated somehow by reaction 2
-			ir.add(new InferredRegulator(reaction1.getURI(), property.getURI(), reaction2.getURI()));
+			ir.add(new InferredRegulator(reaction1.getURI(), property.getURI(), reaction2.getURI(), pathway.getURI()));
 		}
 		qe.close();
 		return ir;
@@ -297,8 +303,9 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			QuerySolution qs = results.next();
 			Resource reaction1 = qs.getResource("reaction1"); 
 			Resource reaction2 = qs.getResource("reaction2"); 
+			Resource pathway = qs.getResource("pathway");
 			//reaction1  regulated somehow by reaction 2
-			ir.add(new InferredRegulator(reaction1.getURI(), GoCAM.directly_negatively_regulates.getIRI().toString(), reaction2.getURI()));
+			ir.add(new InferredRegulator(reaction1.getURI(), GoCAM.directly_negatively_regulates.getIRI().toString(), reaction2.getURI(), pathway.getURI()));
 		}
 		qe.close();
 		return ir;
@@ -330,6 +337,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		String input_loc_class_uri;
 		String output_loc_class_uri;
 		String thing_type_uri;
+		String pathway_uri;
 	}
 	
 	Set<InferredTransport> findTransportReactions() {
@@ -344,6 +352,8 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		ResultSet results = qe.execSelect();
 		while (results.hasNext()) {
 			QuerySolution qs = results.next();
+			Resource pathway = qs.getResource("pathway");
+			String pathway_uri = pathway.getURI();
 			Resource reaction = qs.getResource("reaction"); 
 			Resource start = qs.getResource("start_location_type"); 
 			Resource end = qs.getResource("end_location_type"); 
@@ -357,6 +367,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			t.thing_type_uri = thing_type.getURI();
 			t.input_loc_uri = start_loc_instance.getURI();
 			t.output_loc_uri = end_loc_instance.getURI();
+			t.pathway_uri = pathway_uri;
 			transports.add(t);
 		}
 		qe.close();
@@ -364,6 +375,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 	}
 	
 	public class InferredOccursIn {
+		String pathway_uri;
 		String reaction_uri;
 		Set<String> location_type_uris = new HashSet<String>();
 		Map<String, String> entity_location_instances = new HashMap<String, String>();
@@ -383,6 +395,8 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		Map<String, InferredOccursIn> reaction_locinfo = new HashMap<String, InferredOccursIn>();
 		while (results.hasNext()) {
 			QuerySolution qs = results.next();
+			Resource pathway = qs.getResource("pathway");
+			String pathway_uri = pathway.getURI();
 			Resource reaction = qs.getResource("reaction");
 			String reaction_uri = reaction.getURI();
 			//Resource reaction_type = qs.getResource("reaction_type"); 
@@ -401,6 +415,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			if(o==null) {
 				o = new InferredOccursIn();
 				o.reaction_uri = reaction_uri;
+				o.pathway_uri = pathway_uri;
 			}
 			
 			o.location_type_uris.add(location_type_uri);

@@ -5,10 +5,17 @@ prefix obo: <http://purl.obolibrary.org/obo/>
 prefix biopax: <http://www.biopax.org/release/biopax-level3.owl#>
 prefix skos: <http://www.w3.org/2004/02/skos/core#>
 
-select ?reaction1 ?prop ?reaction2  # obo:RO_0002023 directly negatively regulated by 
+		 # If an entity is involved_in_regulation_of reaction1 
+		 # And that entity is the output of reaction 2
+		 # Then infer that reaction 2 regulates reaction 1
+		 # (capture if its positive or negative regulation)
+
+select ?reaction1 ?prop ?reaction2 ?pathway # obo:RO_0002023 directly negatively regulated by 
 where {
-   { ?reaction1 rdf:type obo:GO_0003674 .
-    ?reaction2 rdf:type obo:GO_0003674 .
+ ?pathway obo:BFO_0000051 ?reaction1 . 
+   { 
+    #?reaction1 rdf:type obo:GO_0003674 .
+    #?reaction2 rdf:type obo:GO_0003674 .
     ?entityZ ?prop  ?reaction1 .   #obo:RO_0002430  involved_in_negative_regulation_of 
     VALUES ?prop { obo:RO_0002430 obo:RO_0002429} #RO_0002429 involved_in_positive_regulation_of
        ?reaction2 obo:RO_0002234 ?entityY .  #has output
@@ -19,8 +26,8 @@ where {
    }
    UNION
    {
-   ?reaction1 rdf:type obo:GO_0003674 .
-    ?reaction2 rdf:type obo:GO_0003674 .
+   #?reaction1 rdf:type obo:GO_0003674 .
+   #?reaction2 rdf:type obo:GO_0003674 .
     ?entityZ ?prop  ?reaction1 .   #obo:RO_0002430  involved_in_negative_regulation_of 
     VALUES ?prop { obo:RO_0002430 obo:RO_0002429} #RO_0002429 involved_in_positive_regulation_of
        ?reaction2 obo:RO_0002234 ?entityY .  #has output

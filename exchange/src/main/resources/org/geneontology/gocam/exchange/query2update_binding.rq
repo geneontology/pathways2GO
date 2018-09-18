@@ -13,8 +13,9 @@ prefix skos: <http://www.w3.org/2004/02/skos/core#>
 #proposed
 #there is an output complex that contains one of the inputs as a part of it
 
-select ?reaction  # for update
+select ?reaction ?pathway # for update
 where {
+    ?pathway obo:BFO_0000051 ?reaction . 
   	#reaction annotated to root (check for reasoning..)
   	?reaction rdf:type obo:GO_0003674 .
   	#has an output

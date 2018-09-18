@@ -132,7 +132,10 @@ public class BioPaxtoGO {
 
 		String input_biopax = 
 				//"/Users/bgood/Desktop/test/biopax/glycogen_synthesis.owl";
-				"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
+				//"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
+				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Sept13_2018.owl";
+				
+				
 				//"/Users/bgood/Downloads/ERK_cascade.owl";
 				//"/Users/bgood/Downloads/Noncanonical_Wnt_sig.owl";
 				//"/Users/bgood/Desktop/test/class-a1-receptors.owl";
@@ -142,14 +145,14 @@ public class BioPaxtoGO {
 				//	"/Users/bgood/Desktop/test/transport_small_mlc.owl";
 				//			"/Users/bgood/Desktop/test/abacavir_metabolism.owl";
 				//"/Users/bgood/Desktop/test/gap_junction.owl"; 
-				//		"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
+						"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
 		//		"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
 		//		"/Users/bgood/gocam_input/reactome/march2018/Homo_sapiens.owl";
 
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = 
-						"/Users/bgood/Desktop/test/go_cams/converted-";
+						"/Users/bgood/Desktop/test/go_cams/reactome/converted-";
 		//	"/Users/bgood/Desktop/test/snRNP_Assembly/converted-";
 				//				"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
 				//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
@@ -160,7 +163,7 @@ public class BioPaxtoGO {
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";
-		boolean split_by_pathway = false;
+		boolean split_by_pathway = true;
 		boolean save_inferences = false;
 		boolean expand_subpathways = false;  //this is a bad idea for high level nodes like 'Signaling Pathways'
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, save_inferences, expand_subpathways);
@@ -336,8 +339,9 @@ public class BioPaxtoGO {
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
 		//infer new edges based on sparql matching
 		System.out.println("Before sparql inference -  triples: "+go_cam.qrunner.nTriples());
-		go_cam.applySparqlRules();
+		GoCAM.RuleResults rule_results = go_cam.applySparqlRules();
 		System.out.println("After sparql inference -  triples: "+go_cam.qrunner.nTriples());
+		System.out.println("Rule results:\n"+rule_results.toString());
 		//sparql rules make additions to go_cam_ont, add them to the rdf model 
 		//set up to apply OWL inference to test for consistency and add classifications
 		//go_cam.go_cam_ont is ready and equals the Abox..
@@ -611,7 +615,8 @@ public class BioPaxtoGO {
 								break;
 							}
 							if(location_term!=null) {
-								OWLNamedIndividual loc_e = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(loc.getUri()+entity.getUri()));
+								OWLNamedIndividual loc_e = go_cam.makeAnnotatedIndividual(GoCAM.makeRandomIri());
+										//go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(loc.getUri()+entity.getUri()));
 								go_cam.addLabel(xref_go_loc, location_term);
 								go_cam.addTypeAssertion(loc_e, xref_go_loc);
 								//add this for reporting reasons - avoiding need for use of full reasoner 
@@ -652,7 +657,10 @@ public class BioPaxtoGO {
 							if(noctua_version == 1) { //Noctua view can't handle long parts lists so leave them out
 								go_cam.addLiteralAnnotations2Individual(e.getIRI(), GoCAM.rdfs_comment, "has_part "+prot_part.getDisplayName());
 							}else {
-								OWLNamedIndividual prot_part_entity = go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(prot_part.getUri()+entity.getUri())); //define it independently within this context
+								//define it independently within this context
+								OWLNamedIndividual prot_part_entity = 
+										//go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(prot_part.getUri()+entity.getUri())); 
+										go_cam.df.getOWLNamedIndividual(GoCAM.makeRandomIri()); 
 								go_cam.addObjectPropertyAssertion(e, GoCAM.has_part, prot_part_entity, null);		
 								//define them = hopefully get out a name and a class for the sub protein.	
 								defineReactionEntity(go_cam, prot_part, prot_part_entity.getIRI());
@@ -788,7 +796,8 @@ public class BioPaxtoGO {
 							}
 							cnames.add(component.getDisplayName());
 							//	IRI comp_uri = IRI.create(component.getUri()+e.hashCode());
-							IRI comp_uri = GoCAM.makeGoCamifiedIRI(component.getUri()+entity.getUri());
+							IRI comp_uri = //GoCAM.makeGoCamifiedIRI(component.getUri()+entity.getUri());
+									GoCAM.makeRandomIri();
 							OWLNamedIndividual component_entity = go_cam.df.getOWLNamedIndividual(comp_uri);
 							if(noctua_version == 1) { //Noctua view can't handle long parts lists so leave them out
 								go_cam.addLiteralAnnotations2Individual(e.getIRI(), GoCAM.rdfs_comment, "has_part "+component.getDisplayName());
