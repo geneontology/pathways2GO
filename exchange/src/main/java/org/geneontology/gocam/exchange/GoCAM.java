@@ -730,6 +730,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 		 * Rule 1: infer occurs_in relations
 		 * If all participants in a reaction are located_in the same place,
 		 * Then assert that the reaction occurs_in that place and remove the located_in assertions
+		 * See 'Signaling by BMP' https://reactome.org/content/detail/R-HSA-201451 
+		 * (7 inferences)
 		 */
 		String i_o_rule = "occurs_in";
 		Integer i_o_count = r.checkInitCount(i_o_rule, r);
@@ -768,6 +770,9 @@ final long counterValue = instanceCounter.getAndIncrement();
 		 * and the reaction has an output that is a protein complex
 		 * and the output protein complex contains one of the inputs to the reaction
 		 * Then assign the reaction as rdf:type Protein Binding
+		 * 
+		 * See 'Signaling by BMP' https://reactome.org/content/detail/R-HSA-201451 
+		 * (12 inferences)
 		 */
 		String binding_rule = "binding";
 		Integer binding_count = r.checkInitCount(binding_rule, r);
@@ -796,7 +801,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 		 * and the input entities have different locations from the output entities
 		 * then tag it as rdf:type 'establishment of protein localization' (notably a BP not an MF)
 		 * and add has_target_end_location and has_target_start_location attributes to the reaction node
-		 * 
+		 * See: 'Deactivation of the beta-catenin transactivating complex' https://reactome.org/PathwayBrowser/#/R-HSA-3769402
+		 * (1 inference for reaction 'Beta-catenin translocates to the nucleus', 'https://reactome.org/PathwayBrowser/#/R-HSA-201681&SEL=R-HSA-201669&PATH=R-HSA-162582,R-HSA-195721'
 		 *  Downstream dependency alert: do this before enabler inference step below since we don't want that rule to fire on transport reactions
 		 */
 		String transport_rule = "transport";
@@ -834,6 +840,9 @@ final long counterValue = instanceCounter.getAndIncrement();
 		 * and R2 is not enabled by anything else 
 		 * Then infer that an entity (either protein or protein complex) E enables a reaction R2
 		 * Remove the has_input relation replaced by the enabled_by relation 
+		 * 
+		 * See 'Signaling by BMP' https://reactome.org/content/detail/R-HSA-201451 
+		 * (6 inferences)
 		 */
 		//infer and change some inputs to enablers
 		String enabler_rule = "enabler";
@@ -873,6 +882,13 @@ final long counterValue = instanceCounter.getAndIncrement();
 		 * And that entity is the output of reaction 2
 		 * Then infer that reaction 2 regulates reaction 1
 		 * (capture if its positive or negative regulation)
+		 * 
+		 * See 'Disassembly of the destruction complex and recruitment of AXIN to the membrane' 
+		 * e.g. reaction Beta-catenin is released from the destruction complex 
+		 * https://reactome.org/PathwayBrowser/#/R-HSA-201681&SEL=R-HSA-201685&PATH=R-HSA-162582,R-HSA-195721
+		 * which should be generate 'WNT:FZD:p10S/T-LRP5/6:DVL:AXIN:GSK3B' involved_in_positive_regulation_of 'Beta-catenin is released from the destruction complex'
+		 * NOTE that as of Sept. 18, 2018 the current Reactome release does not include the information needed for this inference
+		 * (which is an instance of the 'Control' class from BioPAX).  
 		 */
 		
 		String regulator_rule = "regulator_1";

@@ -131,10 +131,12 @@ public class BioPaxtoGO {
 		//		bp2g.convertReactomeFolder(input_folder, output_folder);
 
 		String input_biopax = 
+				"/Users/bgood/Desktop/test/biopax/pathway_commons/Adenylate_cyclase_ac.owl";
+				
 				//"/Users/bgood/Desktop/test/biopax/glycogen_synthesis.owl";
 				//"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
 				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Sept13_2018.owl";
-				
+				//"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
 				
 				//"/Users/bgood/Downloads/ERK_cascade.owl";
 				//"/Users/bgood/Downloads/Noncanonical_Wnt_sig.owl";
@@ -145,14 +147,14 @@ public class BioPaxtoGO {
 				//	"/Users/bgood/Desktop/test/transport_small_mlc.owl";
 				//			"/Users/bgood/Desktop/test/abacavir_metabolism.owl";
 				//"/Users/bgood/Desktop/test/gap_junction.owl"; 
-						"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
+		//				"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
 		//		"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
 		//		"/Users/bgood/gocam_input/reactome/march2018/Homo_sapiens.owl";
 
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = 
-						"/Users/bgood/Desktop/test/go_cams/reactome/converted-";
+						"/Users/bgood/Desktop/test/go_cams/converted-pc-";
 		//	"/Users/bgood/Desktop/test/snRNP_Assembly/converted-";
 				//				"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
 				//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
@@ -254,6 +256,9 @@ public class BioPaxtoGO {
 
 		boolean add_pathway_components = true;
 		for (Pathway currentPathway : model.getObjects(Pathway.class)){
+//			if(n_pathways > 25) {
+//				break;
+//			}
 			String reactome_id = null;
 			n_pathways++;
 			System.out.println(n_pathways+" of "+total_pathways+" Pathway:"+currentPathway.getName()); 
@@ -442,7 +447,8 @@ public class BioPaxtoGO {
 				//note that relationship types are not defined beyond text strings like RelationshipTypeVocabulary_gene ontology term for cellular process
 				//you just have to know what to do.
 				//here we add the referenced GO class as a type.  
-				if(r.getDb().equals("GENE ONTOLOGY")) {
+				String db = r.getDb().toLowerCase();
+				if(db.contains("gene ontology")) {
 					String goid = r.getId().replaceAll(":", "_");
 					//OWLClass xref_go_parent = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + goid));
 					String uri = GoCAM.obo_iri + goid;					
@@ -541,8 +547,14 @@ public class BioPaxtoGO {
 			Set<Xref> p_xrefs = entity_ref.getXref();				
 			for(Xref xref : p_xrefs) {
 				if(xref.getModelInterface().equals(UnificationXref.class)) {
-					UnificationXref uref = (UnificationXref)xref;	
-					if(uref.getDb().startsWith("UniProt")) {
+					UnificationXref uref = (UnificationXref)xref;
+					String db = uref.getDb();
+					db = db.toLowerCase();
+					// #BioPAX4
+					//Reactome uses 'UniProt', Pathway Commons uses 'uniprot knowledgebase'
+					//fun fun fun !
+					//How about URI here, please..?
+					if(db.contains("uniprot")) {
 						id = uref.getId();
 						break;//TODO consider case where there is more than one id..
 					}
@@ -602,7 +614,8 @@ public class BioPaxtoGO {
 					if(xref.getModelInterface().equals(UnificationXref.class)) {
 						UnificationXref uref = (UnificationXref)xref;	    			
 						//here we add the referenced GO class as a type.  
-						if(uref.getDb().equals("GENE ONTOLOGY")) {
+						String db = uref.getDb().toLowerCase();
+						if(db.contains("gene ontology")) {
 							String uri = GoCAM.obo_iri + uref.getId().replaceAll(":", "_");						
 							OWLClass xref_go_loc = goplus.getOboClass(uri, true);
 							boolean deprecated = goplus.isDeprecated(uri);
@@ -714,7 +727,10 @@ public class BioPaxtoGO {
 					for(Xref xref : p_xrefs) {
 						if(xref.getModelInterface().equals(UnificationXref.class)) {
 							UnificationXref uref = (UnificationXref)xref;	
-							if(uref.getDb().equals("ChEBI")) {
+							//# BioPAX4
+							String db = uref.getDb();
+							db = db.toLowerCase();
+							if(db.contains("chebi")) {
 								String id = uref.getId().replace(":", "_");
 								String chebi_uri = GoCAM.obo_iri + id;
 								OWLClass mlc_class = goplus.getOboClass(chebi_uri, true);
@@ -944,8 +960,10 @@ public class BioPaxtoGO {
 					for(Xref xref : xrefs) {
 						if(xref.getModelInterface().equals(RelationshipXref.class)) {
 							RelationshipXref ref = (RelationshipXref)xref;	    			
-							//here we add the referenced GO class as a type.  
-							if(ref.getDb().equals("GENE ONTOLOGY")) {
+							//here we add the referenced GO class as a type. 
+							//#BioPAX4
+							String db = ref.getDb().toLowerCase();
+							if(db.contains("gene ontology")) {
 								String goid = ref.getId().replaceAll(":", "_");
 								String uri = GoCAM.obo_iri + goid;
 								OWLClass xref_go_func = goplus.getOboClass(uri, true);
@@ -1010,7 +1028,9 @@ public class BioPaxtoGO {
 					if(xref.getModelInterface().equals(RelationshipXref.class)) {
 						RelationshipXref ref = (RelationshipXref)xref;	    			
 						//here we add the referenced GO class as a type.  
-						if(ref.getDb().equals("GENE ONTOLOGY")) {
+						//#BioPAX4
+						String db = ref.getDb().toLowerCase();
+						if(db.contains("gene ontology")) {
 							String goid = ref.getId().replaceAll(":", "_");
 							go_bp.add(goid);							
 							String uri = GoCAM.obo_iri + goid;

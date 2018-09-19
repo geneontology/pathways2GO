@@ -79,6 +79,10 @@ public class App {
 	//	String maximal_lego = "src/main/resources/org/geneontology/gocam/exchange/go-lego-full.owl";	
 
 	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
+
+		
+		
+		
 		//		String ontf = "/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-A_tetrasaccharide_linker_sequence_is_required_for_GAG_synthesis.ttl";
 		//		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
 		//		OWLOntology ont = man.loadOntologyFromOntologyDocument(new File(ontf));		
@@ -91,6 +95,25 @@ public class App {
 
 
 
+	public static void lookForControlInReactome() throws OWLOntologyCreationException {
+		String ontf = "/Users/bgood/Desktop/test/biopax/Homo_sapiens_Sept13_2018.owl";
+		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
+		OWLOntology ont = man.loadOntologyFromOntologyDocument(new File(ontf));		
+		OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
+		OWLReasoner reasoner = reasonerFactory.createReasoner(ont);
+		OWLClass control = man.getOWLDataFactory().getOWLClass(IRI.create("http://www.biopax.org/release/biopax-level3.owl#Control"));
+		OWLDataProperty name = man.getOWLDataFactory().getOWLDataProperty(IRI.create("http://www.biopax.org/release/biopax-level3.owl#name"));
+		OWLObjectProperty controlled = man.getOWLDataFactory().getOWLObjectProperty(IRI.create("http://www.biopax.org/release/biopax-level3.owl#controlled"));
+		Set<OWLNamedIndividual> is = reasoner.getInstances(control, true).getFlattened();
+		for(OWLNamedIndividual i : is) {
+			System.out.println(i.getIRI());
+			for(OWLIndividual o : EntitySearcher.getObjectPropertyValues(i, controlled, ont)) {
+				for(OWLLiteral n : EntitySearcher.getDataPropertyValues(o, name, ont)) {
+					System.out.println(n.getLiteral());
+				}
+			}
+		}
+	}
 	
 	public static void demoReasoner() throws OWLOntologyCreationException {
 		String ontf = "/Users/bgood/Desktop/test/tmp/GoPlusPlusRhea.ttl";
