@@ -15,6 +15,17 @@
   </properties>
 
   <dependencies>
+  	<dependency> 
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>HttpClient</artifactId>
+			<version>4.5.5</version>
+		</dependency>
+  		<dependency> 
+			<groupId>org.apache.jena</groupId>
+			<artifactId>apache-jena-libs</artifactId>
+			<version>3.8.0</version>
+			<type>pom</type>
+		</dependency>
   <dependency>
 			<groupId>org.geneontology</groupId>
 			<artifactId>owl-to-rules_2.12</artifactId>
@@ -24,12 +35,6 @@
 			<groupId>org.geneontology</groupId>
 			<artifactId>arachne_2.12</artifactId>
 			<version>1.2</version>
-		</dependency>
-		<dependency> 
-			<groupId>org.apache.jena</groupId>
-			<artifactId>apache-jena-libs</artifactId>
-			<version>3.1.1</version>
-			<type>pom</type>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.phenoscape/scowl -->
 <dependency>
