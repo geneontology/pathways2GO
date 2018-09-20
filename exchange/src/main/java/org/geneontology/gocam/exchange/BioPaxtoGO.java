@@ -131,7 +131,7 @@ public class BioPaxtoGO {
 		//		bp2g.convertReactomeFolder(input_folder, output_folder);
 
 		String input_biopax = 
-				"/Users/bgood/Desktop/test/biopax/pathway_commons/Adenylate_cyclase_ac.owl";
+				"/Users/bgood/Desktop/test/biopax/pathway_commons/WP_ACE_Inhibitor_Pathway.owl";
 				
 				//"/Users/bgood/Desktop/test/biopax/glycogen_synthesis.owl";
 				//"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
@@ -154,7 +154,7 @@ public class BioPaxtoGO {
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = 
-						"/Users/bgood/Desktop/test/go_cams/converted-pc-";
+						"/Users/bgood/Desktop/test/go_cams/converted-wp-";
 		//	"/Users/bgood/Desktop/test/snRNP_Assembly/converted-";
 				//				"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
 				//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
@@ -488,7 +488,8 @@ public class BioPaxtoGO {
 				if(process instanceof Conversion 
 						|| process instanceof TemplateReaction
 						|| process instanceof GeneticInteraction 
-						|| process instanceof MolecularInteraction ){
+						|| process instanceof MolecularInteraction 
+						|| process instanceof Interaction){
 					defineReactionEntity(go_cam, process, GoCAM.makeGoCamifiedIRI(process.getUri()));				
 					//attach child pathways
 				}else if(process.getModelInterface().equals(Pathway.class)){				
@@ -703,10 +704,19 @@ public class BioPaxtoGO {
 				if(entity_ref!=null) {
 					Set<Xref> p_xrefs = entity_ref.getXref();
 					for(Xref xref : p_xrefs) {
+						//In GO-CAM we almost always want to talk about proteins
+						//if there is a uniprot identifier to use, use that before anything else.
+						String db = xref.getDb().toLowerCase();
+						String id = xref.getId();
+						if(db.contains("uniprot")) {
+							OWLClass uniprotein_class = go_cam.df.getOWLClass(IRI.create(GoCAM.uniprot_iri + id)); 
+							go_cam.addSubclassAssertion(uniprotein_class, GoCAM.chebi_protein, null);
+							go_cam.addTypeAssertion(e, uniprotein_class);
+						}
+						//this was added for something in Reactome, don't know if generally useful..
 						if(xref.getModelInterface().equals(UnificationXref.class)) {
 							UnificationXref uref = (UnificationXref)xref;	
 							if(uref.getDb().equals("ENSEMBL")) {
-								String id = uref.getId();
 								OWLClass dna_class = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + id)); 
 								go_cam.addSubclassAssertion(dna_class, GoCAM.continuant_class, null);										
 								//name the class with the gene id
@@ -850,7 +860,47 @@ public class BioPaxtoGO {
 		//Interaction subsumes Conversion, GeneticInteraction, MolecularInteraction, TemplateReaction
 		//Conversion subsumes BiochemicalReaction, TransportWithBiochemicalReaction, ComplexAssembly, Degradation, GeneticInteraction, MolecularInteraction, TemplateReaction
 		//though the great majority are BiochemicalReaction
-		else if (entity instanceof Interaction){  			
+		else if (entity instanceof Interaction){  		
+			if(entity.getModelInterface().equals(Interaction.class)) {
+				//this happens a lot in WikiPathways, though is not considered good practice
+				//should use a more specific class if possible.  
+				Set<Entity> interactors = ((Interaction) entity).getParticipant();
+				Set<OWLNamedIndividual> physical_participants = new HashSet<OWLNamedIndividual>();
+				Set<OWLNamedIndividual> process_participants = new HashSet<OWLNamedIndividual>();
+				for(Entity interactor : interactors) {
+					IRI i_iri = GoCAM.makeRandomIri();
+					OWLNamedIndividual i_entity = go_cam.df.getOWLNamedIndividual(i_iri);
+					defineReactionEntity(go_cam, interactor, i_iri);
+					if(interactor instanceof PhysicalEntity) {
+						go_cam.addObjectPropertyAssertion(e, GoCAM.has_participant, i_entity, go_cam.getDefaultAnnotations());
+						physical_participants.add(i_entity);
+					}else {
+						go_cam.addObjectPropertyAssertion(e, GoCAM.has_part, i_entity, go_cam.getDefaultAnnotations());
+						process_participants.add(i_entity);
+					}					
+				}
+				for(OWLNamedIndividual p1 : physical_participants) {
+					for(OWLNamedIndividual p2 : physical_participants) {
+						if(!p1.equals(p2)) {
+							go_cam.addObjectPropertyAssertion(p1, GoCAM.interacts_with, p2, go_cam.getDefaultAnnotations());
+						}
+					}
+				}
+				for(OWLNamedIndividual p1 : process_participants) {
+					for(OWLNamedIndividual p2 : process_participants) {
+						if(!p1.equals(p2)) {
+							go_cam.addObjectPropertyAssertion(p1, GoCAM.functionally_related_to, p2, go_cam.getDefaultAnnotations());
+						}
+					}
+				}
+				for(OWLNamedIndividual p1 : physical_participants) {
+					for(OWLNamedIndividual p2 : process_participants) {
+						if(!p1.equals(p2)) {
+							go_cam.addObjectPropertyAssertion(p1, GoCAM.enables, p2, go_cam.getDefaultAnnotations());
+						}
+					}
+				}
+			}
 			if (entity instanceof TemplateReaction) {
 				Set<PhysicalEntity> products = ((TemplateReaction) entity).getProduct();
 				for(PhysicalEntity output : products) {

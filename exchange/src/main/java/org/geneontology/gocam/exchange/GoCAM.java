@@ -94,7 +94,7 @@ public class GoCAM {
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in,
 	directly_positively_regulated_by, directly_negatively_regulated_by, involved_in_regulation_of, involved_in_negative_regulation_of, involved_in_positive_regulation_of,
 	directly_negatively_regulates, directly_positively_regulates, has_role, causally_upstream_of, causally_upstream_of_negative_effect, causally_upstream_of_positive_effect,
-	has_target_end_location, has_target_start_location;
+	has_target_end_location, has_target_start_location, interacts_with, has_participant, functionally_related_to;
 
 	public static OWLClass 
 	bp_class, continuant_class, process_class, go_complex, cc_class, molecular_function, 
@@ -251,8 +251,14 @@ public class GoCAM {
 		directly_activates = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002406"));
 		addLabel(directly_activates, "directly activates (process to process)");
 		//BFO_0000066 occurs in (note that it can only be used for occurents in occurents)
-
-
+		//RO_0002434 
+		interacts_with = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002434")); 
+		addLabel(interacts_with, "interacts with");
+		has_participant  = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0000057")); 
+		addLabel(has_participant, "has participant");
+		functionally_related_to  = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002328")); 
+		addLabel(functionally_related_to, "functionally related to");
+		
 		//http://purl.obolibrary.org/obo/RO_0002305
 		causally_upstream_of  = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002411"));
 		addLabel(causally_upstream_of, "causally upstream of");
