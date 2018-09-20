@@ -58,6 +58,7 @@ import org.biopax.paxtools.model.level3.TemplateReaction;
 import org.biopax.paxtools.model.level3.UnificationXref;
 import org.biopax.paxtools.model.level3.XReferrable;
 import org.biopax.paxtools.model.level3.Xref;
+import org.geneontology.gocam.exchange.idmapping.IdMapper;
 import org.geneontology.rules.engine.Triple;
 import org.geneontology.rules.engine.WorkingMemory;
 import org.openrdf.repository.RepositoryException;
@@ -92,7 +93,7 @@ public class BioPaxtoGO {
 	//public static OWLClass reaction_class, pathway_class, protein_class;
 	//public static final IRI biopax_iri = IRI.create("http://www.biopax.org/release/biopax-level3.owl#");
 	public static final String goplus_file = 
-		"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
+			"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
 	public static final String neo_file = 
 			"/Users/bgood/gocam_input/neo.owl";
 	Set<String> tbox_files;
@@ -101,8 +102,8 @@ public class BioPaxtoGO {
 	String blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";
 	GoMappingReport report;
 	GOPlus goplus;
-	
-	
+
+
 
 	public BioPaxtoGO(){
 		report = new GoMappingReport();
@@ -133,21 +134,21 @@ public class BioPaxtoGO {
 
 		String input_biopax = 
 				"/Users/bgood/Desktop/test/biopax/pathway_commons/WP_ACE_Inhibitor_Pathway.owl";
-				
-				//"/Users/bgood/Desktop/test/biopax/glycogen_synthesis.owl";
-				//"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
-				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Sept13_2018.owl";
-				//"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
-				
-				//"/Users/bgood/Downloads/ERK_cascade.owl";
-				//"/Users/bgood/Downloads/Noncanonical_Wnt_sig.owl";
-				//"/Users/bgood/Desktop/test/class-a1-receptors.owl";
-				//"/Users/bgood/Desktop/test/stimuli_sensing.owl";
-				//			"/Users/bgood/Desktop/test/snRNP_Assembly.owl";
-				//			"/Users/bgood/Desktop/test/abc_transporter.owl";
-				//	"/Users/bgood/Desktop/test/transport_small_mlc.owl";
-				//			"/Users/bgood/Desktop/test/abacavir_metabolism.owl";
-				//"/Users/bgood/Desktop/test/gap_junction.owl"; 
+
+		//"/Users/bgood/Desktop/test/biopax/glycogen_synthesis.owl";
+		//"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
+		//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Sept13_2018.owl";
+		//"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
+
+		//"/Users/bgood/Downloads/ERK_cascade.owl";
+		//"/Users/bgood/Downloads/Noncanonical_Wnt_sig.owl";
+		//"/Users/bgood/Desktop/test/class-a1-receptors.owl";
+		//"/Users/bgood/Desktop/test/stimuli_sensing.owl";
+		//			"/Users/bgood/Desktop/test/snRNP_Assembly.owl";
+		//			"/Users/bgood/Desktop/test/abc_transporter.owl";
+		//	"/Users/bgood/Desktop/test/transport_small_mlc.owl";
+		//			"/Users/bgood/Desktop/test/abacavir_metabolism.owl";
+		//"/Users/bgood/Desktop/test/gap_junction.owl"; 
 		//				"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
 		//		"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
 		//		"/Users/bgood/gocam_input/reactome/march2018/Homo_sapiens.owl";
@@ -155,14 +156,14 @@ public class BioPaxtoGO {
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = 
-						"/Users/bgood/Desktop/test/go_cams/converted-wp-";
+				"/Users/bgood/Desktop/test/go_cams/converted-wp-";
 		//	"/Users/bgood/Desktop/test/snRNP_Assembly/converted-";
-				//				"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
-				//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
-				//"/Users/bgood/Desktop/test/Wnt_output/converted-n2-";
-				//"/Users/bgood/Desktop/test/gap_junction_output/converted-";
-				//		"/Users/bgood/Desktop/test/bmp_output/converted-";
-				//"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
+		//				"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
+		//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
+		//"/Users/bgood/Desktop/test/Wnt_output/converted-n2-";
+		//"/Users/bgood/Desktop/test/gap_junction_output/converted-";
+		//		"/Users/bgood/Desktop/test/bmp_output/converted-";
+		//"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";
@@ -238,7 +239,7 @@ public class BioPaxtoGO {
 		}else if(base_provider.equals("https://www.pathwaycommons.org/")) {
 			datasource = "Pathway Commons";
 		}
-		
+
 		//read biopax pathway(s)
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileInputStream f = new FileInputStream(input_biopax);
@@ -410,9 +411,9 @@ public class BioPaxtoGO {
 			//remove has_part relations linking process to reactions.  
 			//redundant as all reactions are part of the main process right now and clouds view
 			//took this out as eliminates some useful inferences that can happen when people look at the models.  	
-//			if(!expand_subpathways) {
-//				go_cam.qrunner.deletePathwayHasPart();
-//			}
+			//			if(!expand_subpathways) {
+			//				go_cam.qrunner.deletePathwayHasPart();
+			//			}
 			//remove any locations on physical entities. screws display as entities can't be folded into function nodes
 			go_cam.qrunner.deleteEntityLocations();
 		}
@@ -428,7 +429,7 @@ public class BioPaxtoGO {
 			report.inconsistent_models.add(outfilename);
 		}
 	}
-	
+
 	private void definePathwayEntity(GoCAM go_cam, Pathway pathway, String reactome_id, boolean expand_subpathways, boolean add_components) throws IOException {
 		IRI pathway_iri = GoCAM.makeGoCamifiedIRI(pathway.getUri());
 		OWLNamedIndividual pathway_e = go_cam.makeAnnotatedIndividual(pathway_iri);
@@ -652,7 +653,7 @@ public class BioPaxtoGO {
 							}
 							if(location_term!=null) {
 								OWLNamedIndividual loc_e = go_cam.makeAnnotatedIndividual(GoCAM.makeRandomIri());
-										//go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(loc.getUri()+entity.getUri()));
+								//go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(loc.getUri()+entity.getUri()));
 								go_cam.addLabel(xref_go_loc, location_term);
 								go_cam.addTypeAssertion(loc_e, xref_go_loc);
 								//add this for reporting reasons - avoiding need for use of full reasoner 
@@ -756,51 +757,70 @@ public class BioPaxtoGO {
 				EntityReference entity_ref = mlc.getEntityReference();	
 				if(entity_ref!=null) {
 					Set<Xref> p_xrefs = entity_ref.getXref();
+					String chebi_id = null;
+					//first scan for directly asserted chebis
+
 					for(Xref xref : p_xrefs) {
-						if(xref.getModelInterface().equals(UnificationXref.class)) {
-							UnificationXref uref = (UnificationXref)xref;	
-							//# BioPAX4
-							String db = uref.getDb();
-							db = db.toLowerCase();
-							if(db.contains("chebi")) {
-								String id = uref.getId().replace(":", "_");
-								String chebi_uri = GoCAM.obo_iri + id;
-								OWLClass mlc_class = goplus.getOboClass(chebi_uri, true);
-								boolean deprecated = goplus.isDeprecated(chebi_uri);
-								if(deprecated) {
-									report.deprecated_classes.add(entity.getDisplayName()+"\t"+chebi_uri+"\tchebi");
-								}
-								String chebi_report_key;
-								if(goplus.isChebiRole(chebi_uri)) {
-									go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_role, null);
-									OWLNamedIndividual rolei = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(entity.hashCode()+"chemical"));
-									go_cam.addTypeAssertion(rolei, mlc_class);									
-									//assert entity here is a chemical instance
-									go_cam.addTypeAssertion(e, GoCAM.chemical_entity);
-									//connect it to the role
-									go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_role, rolei, null, GoCAM.eco_imported_auto, null, null);
-									chebi_report_key = chebi_uri+"\t"+entity.getDisplayName()+"\trole";
-								}else { //presumably its is chemical entity if not a role								
-									go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_entity, null);	
-									//go_cam.addSubclassAssertion(mlc_class, GoCAM.continuant_class, null);
-									//name the class with the chebi id
-									go_cam.addLabel(mlc_class, id);
-									//assert its a chemical instance
-									go_cam.addTypeAssertion(e, mlc_class);
-									chebi_report_key =  chebi_uri+"\t"+entity.getDisplayName()+"\tchemical";
-								}
-								//count it for report because suspect these might be problems to fix
-								Integer ncheb = report.chebi_count.get(chebi_report_key);
-								if(ncheb==null) {
-									ncheb = 0;
-								}
-								ncheb++;
-								report.chebi_count.put(chebi_report_key, ncheb);
+						//# BioPAX4
+						String db = xref.getDb();
+						db = db.toLowerCase();
+						if(db.contains("chebi")) {
+							chebi_id = xref.getId().replace(":", "_");
+							break; //TODO just stop at one for now
+						}
+					}
+
+					//if no chebis look at any other ids and try to convert
+					if(chebi_id==null) {
+						for(Xref xref : p_xrefs) {
+							String database = xref.getDb();
+							String id = xref.getId();
+							String map = IdMapper.map2chebi(database, id);
+							if(map!=null) {
+								chebi_id = map;
+								break;
 							}
 						}
 					}
+					if(chebi_id!=null) {			
+						String chebi_uri = GoCAM.obo_iri + chebi_id;
+						OWLClass mlc_class = goplus.getOboClass(chebi_uri, true);
+						boolean deprecated = goplus.isDeprecated(chebi_uri);
+						if(deprecated) {
+							report.deprecated_classes.add(entity.getDisplayName()+"\t"+chebi_uri+"\tchebi");
+						}
+						String chebi_report_key;
+						if(goplus.isChebiRole(chebi_uri)) {
+							go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_role, null);
+							OWLNamedIndividual rolei = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(entity.hashCode()+"chemical"));
+							go_cam.addTypeAssertion(rolei, mlc_class);									
+							//assert entity here is a chemical instance
+							go_cam.addTypeAssertion(e, GoCAM.chemical_entity);
+							//connect it to the role
+							go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_role, rolei, null, GoCAM.eco_imported_auto, null, null);
+							chebi_report_key = chebi_uri+"\t"+entity.getDisplayName()+"\trole";
+						}else { //presumably its a chemical entity if not a role								
+							go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_entity, null);	
+							//name the class with the chebi id
+							go_cam.addLabel(mlc_class, chebi_id);
+							//assert its a chemical instance
+							go_cam.addTypeAssertion(e, mlc_class);
+							chebi_report_key =  chebi_uri+"\t"+entity.getDisplayName()+"\tchemical";
+						}
+						//count it for report because suspect these might be problems to fix
+						Integer ncheb = report.chebi_count.get(chebi_report_key);
+						if(ncheb==null) {
+							ncheb = 0;
+						}
+						ncheb++;
+						report.chebi_count.put(chebi_report_key, ncheb);
+					}else {
+						//no chebi so we don't know what it is (for Noctua) aside from being some kind of chemical entity
+						go_cam.addTypeAssertion(e, GoCAM.chemical_entity);
+					}
 				}
 			}
+
 			//Complex 
 			else if(entity.getModelInterface().equals(Complex.class)) {
 				Complex complex = (Complex)entity;
@@ -858,23 +878,17 @@ public class BioPaxtoGO {
 					//adds a unique class to describe this complex (no no to modify tbox..)
 					if(noctua_version == 1) { 
 						addComplexAsSimpleClass(go_cam, cnames, e, null);
+					}else {
+					//assert it as a complex - needed for correct inference (without loading up the subclass assertion in the above)
+					go_cam.addTypeAssertion(e, GoCAM.go_complex);
 					}
-					//else {
-						//assert it as a complex - needed for correct inference (without loading up the subclass assertion in the above)
-						go_cam.addTypeAssertion(e, GoCAM.go_complex);
-					//}
 
 				}
 			}
-			//make sure all physical things are minimally typed with some entity that is a continuant
+			//make sure all physical things are minimally typed as a continuant
 			Collection<OWLClassExpression> ptypes = EntitySearcher.getTypes(e, go_cam.go_cam_ont);		
-			if(ptypes.size()<1&&noctua_version==1) {
-				//fake it
-				IRI physicaliri = GoCAM.makeGoCamifiedIRI(entity.getUri()+"class");
-				OWLClass physical_class = go_cam.df.getOWLClass(physicaliri);
-				go_cam.addSubclassAssertion(physical_class, GoCAM.continuant_class, null);
-				go_cam.addLabel(physical_class, entity.getDisplayName());
-				go_cam.addTypeAssertion(e, physical_class);
+			if(ptypes.isEmpty()) {
+				go_cam.addTypeAssertion(e, GoCAM.continuant_class);
 			}
 
 
