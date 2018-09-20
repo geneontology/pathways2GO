@@ -49,6 +49,7 @@ import org.biopax.paxtools.model.level3.PathwayStep;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.model.level3.Process;
 import org.biopax.paxtools.model.level3.Protein;
+import org.biopax.paxtools.model.level3.Provenance;
 import org.biopax.paxtools.model.level3.PublicationXref;
 import org.biopax.paxtools.model.level3.RelationshipXref;
 import org.biopax.paxtools.model.level3.SmallMolecule;
@@ -178,8 +179,8 @@ public class BioPaxtoGO {
 		boolean add_lego_import = false; //unless you never want to open the output in Protege always leave false..
 		String base_title = "title here";//"FULL TCF-dependent_signaling_in_response_to_Wnt"; 
 		String base_contributor = "https://orcid.org/0000-0002-7334-7852"; //Ben Good
-		String base_provider = "https://reactome.org";
-		String tag = "unexpanded";
+		String base_provider = "https://www.wikipathways.org/";//"https://reactome.org";
+		String tag = "";//"unexpanded";
 		if(expand_subpathways) {
 			tag = "expanded";
 		}
@@ -228,6 +229,16 @@ public class BioPaxtoGO {
 			boolean split_out_by_pathway, boolean add_lego_import,
 			String base_title, String base_contributor, String base_provider, String tag, 
 			boolean save_inferences, boolean expand_subpathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException  {
+		//set for writing metadata
+		String datasource = null;
+		if(base_provider.equals("https://reactome.org")) {
+			datasource = "Reactome";
+		}else if(base_provider.equals("https://www.wikipathways.org/")) {
+			datasource = "Wikipathways";
+		}else if(base_provider.equals("https://www.pathwaycommons.org/")) {
+			datasource = "Pathway Commons";
+		}
+		
 		//read biopax pathway(s)
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileInputStream f = new FileInputStream(input_biopax);
@@ -256,32 +267,39 @@ public class BioPaxtoGO {
 
 		boolean add_pathway_components = true;
 		for (Pathway currentPathway : model.getObjects(Pathway.class)){
-//			if(n_pathways > 25) {
-//				break;
-//			}
-			String reactome_id = null;
+			String datasource_id = null;
+			Set<String> pathway_source_comments = new HashSet<String>();
 			n_pathways++;
 			System.out.println(n_pathways+" of "+total_pathways+" Pathway:"+currentPathway.getName()); 
 			if(split_out_by_pathway) {
 				//then reinitialize for each pathway
-				reactome_id = null;
-				String contributor_link = "https://reactome.org";
+				datasource_id = null;
+				String contributor_link = base_provider;
 				//See if there is a specific pathway reference to allow a direct link
 				Set<Xref> xrefs = currentPathway.getXref();
 				for(Xref xref : xrefs) {
 					if(xref.getModelInterface().equals(UnificationXref.class)) {
 						UnificationXref r = (UnificationXref)xref;	    			
 						if(r.getDb().equals("Reactome")) {
-							reactome_id = r.getId();
-							if(reactome_id.startsWith("R-HSA")) {
-								contributor_link = "https://reactome.org/content/detail/"+reactome_id;
+							datasource_id = r.getId();
+							if(datasource_id.startsWith("R-HSA")) {
+								contributor_link = "https://reactome.org/content/detail/"+datasource_id;
 								//or https://reactome.org/PathwayBrowser/#/ to go right to pathway browser
 								break;
 							}
 						}
 					}
-				}		
-				base_ont_title = "Reactome:"+tag+":"+currentPathway.getDisplayName();
+				}	
+				//check for datasource (seen commonly in Pathway Commons)
+				Set<Provenance> datasources = currentPathway.getDataSource();
+				for(Provenance prov : datasources) {
+					datasource = prov.getDisplayName();
+					// there is more provenance buried in comment field 
+					pathway_source_comments.addAll(prov.getComment());
+					//e.g. for a WikiPathways model retrieved from Pathway Commons I see
+					//Source http://pointer.ucsf.edu/wp/biopax/wikipathways-human-v20150929-biopax3.zip type: BIOPAX, WikiPathways - Community Curated Human Pathways; 29/09/2015 (human)
+				}			
+				base_ont_title = datasource+":"+tag+":"+currentPathway.getDisplayName();
 				iri = "http://model.geneontology.org/"+base_ont_title.hashCode(); //using a URL encoded string here confused the UI code...
 				ont_iri = IRI.create(iri);	
 				go_cam = new GoCAM(ont_iri, base_ont_title, contributor_link, null, base_provider, add_lego_import);
@@ -293,8 +311,12 @@ public class BioPaxtoGO {
 			String uri = currentPathway.getUri();
 			//make the OWL individual representing the pathway so it can be used below
 			OWLNamedIndividual p = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(uri));
+			//annotate it with any provenance comments
+			for(String comment : pathway_source_comments) {
+				go_cam.addComment(p, comment);
+			}
 			//define it (add types etc)
-			definePathwayEntity(go_cam, currentPathway, reactome_id, expand_subpathways, add_pathway_components);	
+			definePathwayEntity(go_cam, currentPathway, datasource_id, expand_subpathways, add_pathway_components);	
 			//get and set parent pathways
 			//currently viewing one model as a complete thing - leaving out outgoing connections.  
 			if(noctua_version != 1) {
@@ -302,7 +324,7 @@ public class BioPaxtoGO {
 				for(Pathway parent_pathway : currentPathway.getPathwayComponentOf()) {				
 					OWLNamedIndividual parent = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(parent_pathway.getUri()));
 					go_cam.addRefBackedObjectPropertyAssertion(p, GoCAM.part_of, parent, pubids, GoCAM.eco_imported_auto,  "PMID", null);
-					definePathwayEntity(go_cam, parent_pathway, reactome_id, expand_subpathways, add_pathway_components);
+					definePathwayEntity(go_cam, parent_pathway, datasource_id, expand_subpathways, add_pathway_components);
 				}
 			}
 			//write results
