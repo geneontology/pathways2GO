@@ -903,16 +903,18 @@ public class BioPaxtoGO {
 				Set<Entity> interactors = ((Interaction) entity).getParticipant();
 				Set<OWLNamedIndividual> physical_participants = new HashSet<OWLNamedIndividual>();
 				Set<OWLNamedIndividual> process_participants = new HashSet<OWLNamedIndividual>();
-				for(Entity interactor : interactors) {
-					IRI i_iri = GoCAM.makeRandomIri();
-					OWLNamedIndividual i_entity = go_cam.df.getOWLNamedIndividual(i_iri);
-					defineReactionEntity(go_cam, interactor, i_iri);
+				for(Entity interactor : interactors) {				
 					if(interactor instanceof PhysicalEntity) {
+						IRI i_iri = GoCAM.makeRandomIri();
+						OWLNamedIndividual i_entity = go_cam.df.getOWLNamedIndividual(i_iri);
+						defineReactionEntity(go_cam, interactor, i_iri);
 						go_cam.addObjectPropertyAssertion(e, GoCAM.has_participant, i_entity, go_cam.getDefaultAnnotations());
 						physical_participants.add(i_entity);
 					}else {
-						go_cam.addObjectPropertyAssertion(e, GoCAM.has_part, i_entity, go_cam.getDefaultAnnotations());
-						process_participants.add(i_entity);
+						OWLNamedIndividual part_mf = go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(interactor.getUri()));
+						defineReactionEntity(go_cam, interactor, part_mf.getIRI());
+						go_cam.addObjectPropertyAssertion(e, GoCAM.has_part, part_mf, go_cam.getDefaultAnnotations());
+						process_participants.add(part_mf);
 					}					
 				}
 				for(OWLNamedIndividual p1 : physical_participants) {
@@ -932,7 +934,7 @@ public class BioPaxtoGO {
 				for(OWLNamedIndividual p1 : physical_participants) {
 					for(OWLNamedIndividual p2 : process_participants) {
 						if(!p1.equals(p2)) {
-							go_cam.addObjectPropertyAssertion(p1, GoCAM.enables, p2, go_cam.getDefaultAnnotations());
+							go_cam.addObjectPropertyAssertion(p2, GoCAM.enabled_by, p1, go_cam.getDefaultAnnotations());
 						}
 					}
 				}
