@@ -207,15 +207,20 @@ public class WikidataSparqlClient {
 	public static Set<String> mapFromP1toP2(String prop1, String id, String prop2){
 		Set<String> items = new HashSet<String>();
 		String sparql = 
-				"PREFIX bd: <http://www.bigdata.com/rdf#> "
-						+"PREFIX wikibase: <http://wikiba.se/ontology#> "+
-						"PREFIX wdt: <http://www.wikidata.org/prop/direct/> "+
+			"PREFIX p: <http://www.wikidata.org/prop/> "
+			+ "PREFIX bd: <http://www.bigdata.com/rdf#> "
+			+ "PREFIX ps: <http://www.wikidata.org/prop/statement/> "
+			+ "PREFIX prov: <http://www.w3.org/ns/prov#> "
+			+ "PREFIX wdt: <http://www.wikidata.org/prop/direct/> "
+			+ "PREFIX pr: <http://www.wikidata.org/prop/reference/> "+
 						"SELECT distinct ?id2 "+
 						"WHERE { "+
 						" ?item wdt:"+prop1+" '"+id+"' . "
-						+ " ?item wdt:"+prop2+ " ?id2 . "+
+						+ " ?item p:"+prop2+" ?statement . "
+						+ " ?statement ps:"+prop2+" ?id2 ."
+						+ " ?statement prov:wasDerivedFrom [ pr:P248 ?reference ] "+ //limited to results with stated_in references
 						" } ";
-
+		
 		Query query = QueryFactory.create(sparql); 
 		try ( QueryExecution qexec = QueryExecutionFactory.sparqlService(wikidata_endpoint, query) ) {
 			//((QueryEngineHTTP)qexec).addParam("timeout", "10000") ;
