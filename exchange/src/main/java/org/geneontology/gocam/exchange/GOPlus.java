@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
@@ -26,6 +27,7 @@ import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 import org.semanticweb.owlapi.search.EntitySearcher;
+import org.semanticweb.owlapi.search.Searcher;
 import org.semarglproject.vocab.OWL;
 
 import com.google.common.base.Optional;
@@ -43,6 +45,7 @@ public class GOPlus {
 	Set<String> chebi_chemicals;
 	Set<String> deprecated;
 	Map<String, String> replaced_by_map;
+	Map<String, Set<String>> xref_gos;
 	String obo_base ="http://purl.obolibrary.org/obo/";
 	/**
 	 * @throws OWLOntologyCreationException 
@@ -52,10 +55,29 @@ public class GOPlus {
 		ontman = OWLManager.createOWLOntologyManager();	
 		df = OWLManager.getOWLDataFactory();
 		go = loadOntology(go_loc);
-			
+		xref_gos = new HashMap<String, Set<String>>();	
+		GoCAM tmp = new GoCAM();//make the init functions run..
 		System.out.println("GOPlus loaded, axioms "+go.getAxiomCount());
 		OWLReasoner go_reasoner = createReasoner(go);
-		
+
+		//build a map of all the xrefs in the ontology
+		//probably a more efficient way to do this...
+		Set<OWLClass> classes = go.getClassesInSignature();
+		for(OWLClass c : classes) {
+			Collection<OWLAnnotation> xrefs = EntitySearcher.getAnnotationObjects(c, go, GoCAM.database_cross_reference);
+			for(OWLAnnotation xref : xrefs) {
+				//if(xref.getProperty().equals(GoCAM.database_cross_reference)) {
+					String x = xref.getValue().asLiteral().get().getLiteral();
+					Set<String> gos = xref_gos.get(x);
+					if(gos==null) {
+						gos = new HashSet<String>();
+					}
+					gos.add(c.getIRI().toString());
+					xref_gos.put(x, gos);
+				//}
+			}
+		}
+		System.out.println("xref map created, size: "+xref_gos.size());
 		//make list of roles
 		OWLClass chebi_role = df.getOWLClass(IRI.create(obo_base+"CHEBI_50906"));
 		Set<OWLClass> roles = getSubClasses(chebi_role, false, go_reasoner);
@@ -104,6 +126,7 @@ public class GOPlus {
 		OWLClass t = o.getOboClass(test, false);
 		System.out.println("ddd "+t);
 		System.out.println("ep2 "+o.isDeprecated(t.getIRI().toString()));
+		System.out.println("xref to go "+o.xref_gos.get("EC:6.3.4.9"));
 	}
 
 	public OWLClass getOboClass(String iri, boolean follow_replaced_by) {
@@ -123,7 +146,7 @@ public class GOPlus {
 		}
 		return c;
 	}
-	
+
 	public boolean isDeprecated(String uri) {
 		if(deprecated.contains(uri)) {
 			return true;
@@ -131,11 +154,11 @@ public class GOPlus {
 			return false;
 		}
 	}
-	
+
 	public String replacementUri(String uri) {
 		return replaced_by_map.get(uri);
 	}
-	
+
 	public boolean isChebiRole(String uri) {
 		if(chebi_roles.contains(uri)) {
 			return true;
@@ -143,7 +166,7 @@ public class GOPlus {
 			return false;
 		}
 	}
-	
+
 	public boolean isChebiChemical(String uri) {
 		if(chebi_chemicals.contains(uri)) {
 			return true;
@@ -151,21 +174,26 @@ public class GOPlus {
 			return false;
 		}
 	}
-	
-    OWLReasoner createReasoner(OWLOntology rootOntology) {
-        // Create a reasoner factory.
-    		//just doing simple class hierarchies..
-        OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
-        return reasonerFactory.createReasoner(rootOntology);
-    }
-    
-    OWLOntology loadOntology(String ontf) throws OWLOntologyCreationException {
+
+	public Set<OWLClass> getByEC(String ec){
+		Set<OWLClass> mapped = new HashSet<OWLClass>();		
+		return mapped;
+	}
+
+	OWLReasoner createReasoner(OWLOntology rootOntology) {
+		// Create a reasoner factory.
+		//just doing simple class hierarchies..
+		OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
+		return reasonerFactory.createReasoner(rootOntology);
+	}
+
+	OWLOntology loadOntology(String ontf) throws OWLOntologyCreationException {
 		return ontman.loadOntologyFromOntologyDocument(new File(ontf));
-    }
-    
-    Set<OWLClass> getSubClasses(OWLClassExpression classExpression, boolean direct, OWLReasoner reasoner) {
-        NodeSet<OWLClass> subClasses = reasoner.getSubClasses(classExpression, direct);
-        return subClasses.getFlattened();
-    }
-    
+	}
+
+	Set<OWLClass> getSubClasses(OWLClassExpression classExpression, boolean direct, OWLReasoner reasoner) {
+		NodeSet<OWLClass> subClasses = reasoner.getSubClasses(classExpression, direct);
+		return subClasses.getFlattened();
+	}
+
 }

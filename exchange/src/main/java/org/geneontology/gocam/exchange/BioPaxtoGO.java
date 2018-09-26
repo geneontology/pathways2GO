@@ -133,7 +133,7 @@ public class BioPaxtoGO {
 		//		bp2g.convertReactomeFolder(input_folder, output_folder);
 
 		String input_biopax = 
-				"/Users/bgood/Desktop/test/biopax/pathway_commons/WP_ACE_Inhibitor_Pathway.owl";
+				"/Users/bgood/Desktop/test/biopax/pathway_commons/kegg_Biotin_metabolism.owl";
 
 		//"/Users/bgood/Desktop/test/biopax/glycogen_synthesis.owl";
 		//"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
@@ -167,7 +167,7 @@ public class BioPaxtoGO {
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";
-		boolean split_by_pathway = true;
+		boolean split_by_pathway = false;
 		boolean save_inferences = false;
 		boolean expand_subpathways = false;  //this is a bad idea for high level nodes like 'Signaling Pathways'
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, save_inferences, expand_subpathways);
@@ -180,7 +180,7 @@ public class BioPaxtoGO {
 		boolean add_lego_import = false; //unless you never want to open the output in Protege always leave false..
 		String base_title = "title here";//"FULL TCF-dependent_signaling_in_response_to_Wnt"; 
 		String base_contributor = "https://orcid.org/0000-0002-7334-7852"; //Ben Good
-		String base_provider = "https://www.wikipathways.org/";//"https://reactome.org";
+		String base_provider = "https://www.pathwaycommons.org/";//"https://www.wikipathways.org/";//"https://reactome.org";
 		String tag = "";//"unexpanded";
 		if(expand_subpathways) {
 			tag = "expanded";
@@ -499,7 +499,10 @@ public class BioPaxtoGO {
 			for(Process process : pathway.getPathwayComponent()) {
 				//Conversion subsumes BiochemicalReaction, TransportWithBiochemicalReaction, ComplexAssembly, Degradation, GeneticInteraction, MolecularInteraction, TemplateReaction
 				//though the great majority are BiochemicalReaction
-				//whatever it is, its a part of the pathway
+				//don't add Control entities (found that in Kegg Biotin pathway from PC)
+				if(process instanceof Control) {
+					continue;
+				}
 				OWLNamedIndividual child = go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(process.getUri()));
 				if(noctua_version == 1) {
 					//this will add something to see what happened as the has_part lines are going to get blown away.
@@ -590,7 +593,7 @@ public class BioPaxtoGO {
 
 	/**
 	 * Given a BioPax entity and an ontology, add a GO_CAM structured OWLIndividual representing the entity into the ontology
-	 * 	//Done: Complex, Protein, SmallMolecule, Dna 
+	 * 	//Done: Complex, Protein, SmallMolecule, Dna, Processes 
 		//TODO DnaRegion, RnaRegion
 	 * @param ontman
 	 * @param go_cam_ont
@@ -607,6 +610,7 @@ public class BioPaxtoGO {
 		}else {
 			e = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(entity.getUri()));
 		}
+		//check specifically for Reactome id
 		String reactome_id = "";
 		for(Xref xref : entity.getXref()) {
 			if(xref.getModelInterface().equals(UnificationXref.class)) {
@@ -986,16 +990,20 @@ public class BioPaxtoGO {
 				Set<PhysicalEntity> inputs = null;
 				Set<PhysicalEntity> outputs = null;
 
-				if(direction==null||direction.equals(ConversionDirectionType.LEFT_TO_RIGHT)) {
+				if(direction==null||direction.equals(ConversionDirectionType.LEFT_TO_RIGHT)||direction.equals(ConversionDirectionType.REVERSIBLE)) {
 					inputs = ((Conversion) entity).getLeft();
 					outputs = ((Conversion) entity).getRight();
+					//http://apps.pathwaycommons.org/view?uri=http%3A%2F%2Fidentifiers.org%2Fkegg.pathway%2Fhsa00780 
+					//todo..
+					if(direction.equals(ConversionDirectionType.REVERSIBLE)){
+						System.out.println("REVERSIBLE reaction found!  Defaulting to assumption of left to right "+entity.getDisplayName()+" "+entity.getUri());
+					}
 				}else if(direction.equals(ConversionDirectionType.RIGHT_TO_LEFT)) {
 					outputs = ((Conversion) entity).getLeft();
 					inputs = ((Conversion) entity).getRight();
 					System.out.println("Right to left reaction found!  "+entity.getDisplayName()+" "+entity.getUri());
-					System.exit(0);
-				}else if(direction.equals(ConversionDirectionType.REVERSIBLE)) {
-					System.out.println("REVERSIBLE reaction found!  "+entity.getDisplayName()+" "+entity.getUri());
+				}else  {
+					System.out.println("Reaction direction "+direction+" unknown");
 					System.exit(0);
 				}
 
@@ -1147,7 +1155,18 @@ public class BioPaxtoGO {
 				//if no process or function annotations, add annotation to root
 				Collection<OWLClassExpression> types = EntitySearcher.getTypes(e, go_cam.go_cam_ont);				
 				if(types.isEmpty()) { //go_mf.isEmpty()&&go_bp.isEmpty()
-					go_cam.addTypeAssertion(e, GoCAM.molecular_function);	
+					//try mapping via xrefs
+					boolean ecmapped = false;
+					if(entity instanceof BiochemicalReaction) {
+						for(OWLClass type :getTypesFromECs((BiochemicalReaction)entity, go_cam)) {
+							go_cam.addTypeAssertion(e, type);	
+							ecmapped = true;
+						}
+					}
+					//default to mf
+					if(!ecmapped) {
+						go_cam.addTypeAssertion(e, GoCAM.molecular_function);	
+					}
 				}
 				//The GO-CAM OWL for the reaction and all of its parts should now be assembled.  
 				//Additional modifications to the output can come from secondary rules operating 
@@ -1159,6 +1178,18 @@ public class BioPaxtoGO {
 		return;
 	}
 
+	Set<OWLClass> getTypesFromECs(BiochemicalReaction reaction, GoCAM go_cam){
+		Set<OWLClass> gos = new HashSet<OWLClass>();
+		for(String ec : reaction.getECNumber()) {
+			Set<String> goids = goplus.xref_gos.get("EC:"+ec);
+			for(String goid : goids) {
+				OWLClass go = go_cam.df.getOWLClass(IRI.create(goid));
+				gos.add(go);
+			}
+		}
+		return gos;
+	}
+	
 	/**
 	 * Since Noctua expects specific classes for individuals and go doesn't have them for complexes, make them.
 	 * Note that these could be defined logically based on their parts if we ever wanted to do any inference.  
