@@ -132,8 +132,9 @@ public class BioPaxtoGO {
 		//		String output_folder = "/Users/bgood/Downloads/biopax_converted/";
 		//		bp2g.convertReactomeFolder(input_folder, output_folder);
 
-		String input_biopax = 
-				"/Users/bgood/Desktop/test/biopax/pathway_commons/kegg_Biotin_metabolism.owl";
+		String input_biopax = //"/Users/bgood/Desktop/test/biopax/pathway_commons/WP_ACE_Inhibitor_Pathway.owl";
+				//"/Users/bgood/Desktop/test/biopax/pathway_commons/kegg_Biotin_metabolism.owl";
+				"/Users/bgood/Desktop/test/biopax/pathway_commons/PathwayCommons10.wp.BIOPAX.owl";
 
 		//"/Users/bgood/Desktop/test/biopax/glycogen_synthesis.owl";
 		//"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
@@ -156,7 +157,7 @@ public class BioPaxtoGO {
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = 
-				"/Users/bgood/Desktop/test/go_cams/converted-wp-";
+				"/Users/bgood/Desktop/test/go_cams/pc/wp/converted-";
 		//	"/Users/bgood/Desktop/test/snRNP_Assembly/converted-";
 		//				"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
 		//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
@@ -167,7 +168,7 @@ public class BioPaxtoGO {
 		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
 		//"src/main/resources/reactome/output/reactome-output-109581-";
 		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";
-		boolean split_by_pathway = false;
+		boolean split_by_pathway = true;
 		boolean save_inferences = false;
 		boolean expand_subpathways = false;  //this is a bad idea for high level nodes like 'Signaling Pathways'
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, save_inferences, expand_subpathways);
@@ -268,6 +269,9 @@ public class BioPaxtoGO {
 
 		boolean add_pathway_components = true;
 		for (Pathway currentPathway : model.getObjects(Pathway.class)){
+			if(!keepPathway(currentPathway)) { //Pathway Commons contains a lot of content free stubs when viewed this way
+				continue;
+			}
 			String datasource_id = null;
 			Set<String> pathway_source_comments = new HashSet<String>();
 			n_pathways++;
@@ -348,6 +352,21 @@ public class BioPaxtoGO {
 		System.out.println("done with file "+input_biopax);
 	}
 
+	/**
+	 * Only keep it if it has some useful content
+	 * @param pathway
+	 * @return
+	 */
+	boolean keepPathway(Pathway pathway) {
+		boolean keep = false;
+		Set<Process> processes = pathway.getPathwayComponent();
+		if(processes!=null&&processes.size()>1) {
+			keep = true;
+		}
+		
+		return keep;
+	}
+	
 	/**
 	 * Once all the Paxtools parsing and initial go_cam OWL ontology creation is done, apply more inference rules and export the files
 	 * @param outfilename
@@ -579,6 +598,7 @@ public class BioPaxtoGO {
 					db = db.toLowerCase();
 					// #BioPAX4
 					//Reactome uses 'UniProt', Pathway Commons uses 'uniprot knowledgebase'
+					//WikiPathways often uses UniProtKB
 					//fun fun fun !
 					//How about URI here, please..?
 					if(db.contains("uniprot")) {
@@ -995,7 +1015,7 @@ public class BioPaxtoGO {
 					outputs = ((Conversion) entity).getRight();
 					//http://apps.pathwaycommons.org/view?uri=http%3A%2F%2Fidentifiers.org%2Fkegg.pathway%2Fhsa00780 
 					//todo..
-					if(direction.equals(ConversionDirectionType.REVERSIBLE)){
+					if(direction!=null&&direction.equals(ConversionDirectionType.REVERSIBLE)){
 						System.out.println("REVERSIBLE reaction found!  Defaulting to assumption of left to right "+entity.getDisplayName()+" "+entity.getUri());
 					}
 				}else if(direction.equals(ConversionDirectionType.RIGHT_TO_LEFT)) {
