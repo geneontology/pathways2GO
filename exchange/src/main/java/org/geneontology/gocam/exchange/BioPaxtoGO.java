@@ -97,8 +97,12 @@ public class BioPaxtoGO {
 	public static final String neo_file = 
 			"/Users/bgood/gocam_input/neo.owl";
 	Set<String> tbox_files;
-	//version 1 eliminates things that are uncomfortable for the Noctua editor to display
-	int noctua_version = 2;
+	ImportStrategy strategy;
+	enum ImportStrategy {
+		NoctuaCuration, //This generates models intended only for curators to improve manually in Noctua, may contain logical oddities
+		DirectImport;   //This generates models that are as close as we can get them to ready for use.  Logic should be sound.  
+	}
+
 	String blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";
 	GoMappingReport report;
 	GOPlus goplus;
@@ -106,6 +110,7 @@ public class BioPaxtoGO {
 
 
 	public BioPaxtoGO(){
+		strategy = ImportStrategy.NoctuaCuration;
 		report = new GoMappingReport();
 		tbox_files = new HashSet<String>();
 		tbox_files.add(goplus_file);
@@ -134,10 +139,10 @@ public class BioPaxtoGO {
 
 		String input_biopax = //"/Users/bgood/Desktop/test/biopax/pathway_commons/WP_ACE_Inhibitor_Pathway.owl";
 				//"/Users/bgood/Desktop/test/biopax/pathway_commons/kegg_Biotin_metabolism.owl";
-				"/Users/bgood/Desktop/test/biopax/pathway_commons/PathwayCommons10.wp.BIOPAX.owl";
+				//"/Users/bgood/Desktop/test/biopax/pathway_commons/PathwayCommons10.wp.BIOPAX.owl";
 
-		//"/Users/bgood/Desktop/test/biopax/glycogen_synthesis.owl";
-		//"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
+				//"/Users/bgood/Desktop/test/biopax/glycogen_synthesis.owl";
+				"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
 		//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Sept13_2018.owl";
 		//"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
 
@@ -157,7 +162,7 @@ public class BioPaxtoGO {
 		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
 		//"src/main/resources/reactome/reactome-input-109581.owl";
 		String converted = 
-				"/Users/bgood/Desktop/test/go_cams/pc/wp/converted-";
+				"/Users/bgood/Desktop/test/go_cams/converted-";
 		//	"/Users/bgood/Desktop/test/snRNP_Assembly/converted-";
 		//				"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
 		//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
@@ -324,7 +329,7 @@ public class BioPaxtoGO {
 			definePathwayEntity(go_cam, currentPathway, datasource_id, expand_subpathways, add_pathway_components);	
 			//get and set parent pathways
 			//currently viewing one model as a complete thing - leaving out outgoing connections.  
-			if(noctua_version != 1) {
+			if(ImportStrategy.DirectImport != null) {
 				Set<String> pubids = getPubmedIds(currentPathway);
 				for(Pathway parent_pathway : currentPathway.getPathwayComponentOf()) {				
 					OWLNamedIndividual parent = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(parent_pathway.getUri()));
@@ -363,10 +368,10 @@ public class BioPaxtoGO {
 		if(processes!=null&&processes.size()>1) {
 			keep = true;
 		}
-		
+
 		return keep;
 	}
-	
+
 	/**
 	 * Once all the Paxtools parsing and initial go_cam OWL ontology creation is done, apply more inference rules and export the files
 	 * @param outfilename
@@ -420,7 +425,7 @@ public class BioPaxtoGO {
 		//synchronize jena model <- with owl-api model	 
 		//go_cam_ont should have everything we want at this point
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
-		if(noctua_version == 1) {
+		if(strategy == ImportStrategy.NoctuaCuration) {
 			//adds coordinates to go_cam_ont model 
 			NoctuaLayout layout = new NoctuaLayout(go_cam);
 			go_cam = layout.layoutForNoctuaVersion1(go_cam);	
@@ -457,7 +462,7 @@ public class BioPaxtoGO {
 			//in obo world each pathway is a biological process
 			go_cam.addTypeAssertion(pathway_e, GoCAM.bp_class);
 		}//if not adding component this is only being used to show context for some other pathway
-		else if(noctua_version == 1){
+		else if(strategy == ImportStrategy.NoctuaCuration){
 			OWLClass justaname = go_cam.df.getOWLClass(GoCAM.makeGoCamifiedIRI(pathway.getUri()+"class"));
 			go_cam.addLabel(justaname, pathway.getDisplayName());
 			go_cam.addSubclassAssertion(justaname, GoCAM.bp_class, null);
@@ -523,11 +528,6 @@ public class BioPaxtoGO {
 					continue;
 				}
 				OWLNamedIndividual child = go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(process.getUri()));
-				if(noctua_version == 1) {
-					//this will add something to see what happened as the has_part lines are going to get blown away.
-					go_cam.addLiteralAnnotations2Individual(child.getIRI(), GoCAM.rdfs_comment, pathway.getDisplayName()+" has_part "+process.getDisplayName());
-					go_cam.addLiteralAnnotations2Individual(child.getIRI(), GoCAM.rdfs_comment, process.getDisplayName()+" references PMIDS: "+pubids);
-				}
 				go_cam.addRefBackedObjectPropertyAssertion(pathway_e, GoCAM.has_part, child, pubids, GoCAM.eco_imported_auto, "PMID", null);
 				//attach reactions that make up the pathway
 				if(process instanceof Conversion 
@@ -683,7 +683,7 @@ public class BioPaxtoGO {
 								//add this for reporting reasons - avoiding need for use of full reasoner 
 								go_cam.addTypeAssertion(loc_e, GoCAM.cc_class);
 								go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.located_in, loc_e, pubids, GoCAM.eco_imported_auto, "PMID", null);		
-								if(noctua_version == 1) {
+								if(strategy == ImportStrategy.NoctuaCuration) {
 									go_cam.addLiteralAnnotations2Individual(e.getIRI(), GoCAM.rdfs_comment, "located_in "+location_term);
 								}
 								break; //there can be only one 
@@ -715,26 +715,14 @@ public class BioPaxtoGO {
 						for(PhysicalEntity prot_part : prot_parts) {
 							cnames.add(prot_part.getDisplayName());
 							//hook up parts	
-							if(noctua_version == 1) { //Noctua view can't handle long parts lists so leave them out
-								go_cam.addLiteralAnnotations2Individual(e.getIRI(), GoCAM.rdfs_comment, "has_part "+prot_part.getDisplayName());
-							}else {
-								//define it independently within this context
-								OWLNamedIndividual prot_part_entity = 
-										//go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(prot_part.getUri()+entity.getUri())); 
-										go_cam.df.getOWLNamedIndividual(GoCAM.makeRandomIri()); 
-								go_cam.addObjectPropertyAssertion(e, GoCAM.has_part, prot_part_entity, null);		
-								//define them = hopefully get out a name and a class for the sub protein.	
-								defineReactionEntity(go_cam, prot_part, prot_part_entity.getIRI());
-							}						
+							//define it independently within this context
+							OWLNamedIndividual prot_part_entity = 
+									//go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(prot_part.getUri()+entity.getUri())); 
+									go_cam.df.getOWLNamedIndividual(GoCAM.makeRandomIri()); 
+							go_cam.addObjectPropertyAssertion(e, GoCAM.has_part, prot_part_entity, null);		
+							//define them = hopefully get out a name and a class for the sub protein.	
+							defineReactionEntity(go_cam, prot_part, prot_part_entity.getIRI());					
 						}
-						//adds a unique class to describe this complex 
-						//TODO generally tbox modifications don't play well with Noctua/Minerva which expects only Abox in the model
-						//but need to show something other than "molecular complex' for the nodes in the folded reaction view..
-						//so stuffing the names into the class..  yay.  
-						if(noctua_version == 1) { 
-							addComplexAsSimpleClass(go_cam, cnames, e, null);
-						}
-						//else {
 						//though it clutters the display, this is needed to enable Arachne inference without adding tbox assertions from each model
 						//
 						go_cam.addTypeAssertion(e, GoCAM.go_complex);
@@ -891,21 +879,12 @@ public class BioPaxtoGO {
 							IRI comp_uri = //GoCAM.makeGoCamifiedIRI(component.getUri()+entity.getUri());
 									GoCAM.makeRandomIri();
 							OWLNamedIndividual component_entity = go_cam.df.getOWLNamedIndividual(comp_uri);
-							if(noctua_version == 1) { //Noctua view can't handle long parts lists so leave them out
-								go_cam.addLiteralAnnotations2Individual(e.getIRI(), GoCAM.rdfs_comment, "has_part "+component.getDisplayName());
-							}else {
-								go_cam.addObjectPropertyAssertion(e, GoCAM.has_part, component_entity, null);
-								defineReactionEntity(go_cam, component, comp_uri);
-							}
+							go_cam.addObjectPropertyAssertion(e, GoCAM.has_part, component_entity, null);
+							defineReactionEntity(go_cam, component, comp_uri);
 						}
 					}
-					//adds a unique class to describe this complex (no no to modify tbox..)
-					if(noctua_version == 1) { 
-						addComplexAsSimpleClass(go_cam, cnames, e, null);
-					}else {
-					//assert it as a complex - needed for correct inference (without loading up the subclass assertion in the above)
-					go_cam.addTypeAssertion(e, GoCAM.go_complex);
-					}
+						//assert it as a complex - needed for correct inference (without loading up the subclass assertion in the above)
+						go_cam.addTypeAssertion(e, GoCAM.go_complex);
 
 				}
 			}
@@ -1107,21 +1086,7 @@ public class BioPaxtoGO {
 						//define relationship between controller entity and reaction
 						//if catalysis then always enabled by
 						if(is_catalysis) {
-							//make sure there is something there to define the node so it shows up in Noctua view
-							if(noctua_version == 1) {
-								Collection<OWLClassExpression> types = EntitySearcher.getTypes(controller_e, go_cam.go_cam_ont);
-								if(types==null||types.size()==0) {
-									String name = controller_entity.getDisplayName();
-									IRI named = GoCAM.makeGoCamifiedIRI("unknown_"+(name.replaceAll(" ", "_")));
-									OWLClass named_class = go_cam.df.getOWLClass(named);
-									go_cam.addSubclassAssertion(named_class, GoCAM.continuant_class, null);
-									go_cam.addTypeAssertion(controller_e, named_class);
-									go_cam.addLiteralAnnotations2Individual(controller_e.getIRI(), GoCAM.rdfs_comment, "Only defined as a Physical Entity.  No protein etc. identifier given by source.  Could be unknown, could be a family.");
-									go_cam.addLabel(controller_e, name);
-								}
-							}
 							go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, controller_e, controllerpubrefs, GoCAM.eco_imported_auto, "PMID", null);	
-
 						}else {
 							//otherwise look at text 
 							//define how the molecular function (process) relates to the reaction (process)
@@ -1209,7 +1174,7 @@ public class BioPaxtoGO {
 		}
 		return gos;
 	}
-	
+
 	/**
 	 * Since Noctua expects specific classes for individuals and go doesn't have them for complexes, make them.
 	 * Note that these could be defined logically based on their parts if we ever wanted to do any inference.  
