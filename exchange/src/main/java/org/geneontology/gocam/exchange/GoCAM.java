@@ -766,6 +766,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 			ontman.removeAxiom(go_cam_ont, classAssertion);
 			//add the binding type 
 			addTypeAssertion(reaction, protein_binding);
+			//add a comment on the node
+			addLiteralAnnotations2Individual(reaction.getIRI(), rdfs_comment, "Inferred to be of type protein binding because an output complex contains at least one of its the inputs");
 		}
 		r.rule_hitcount.put(binding_rule, binding_count);
 		r.rule_reactions.put(binding_rule, binding_reactions);
@@ -799,6 +801,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 				ontman.removeAxiom(go_cam_ont, classAssertion);
 				//add transport type
 				addTypeAssertion(reaction, establishment_of_protein_localization);
+				addLiteralAnnotations2Individual(reaction.getIRI(), rdfs_comment, "Inferred to be of type 'establishment of protein localization'"
+						+ " because at least one protein is the same as an input and an output aside from its location.");
 				//record what moved where so the classifier can see it properly
 				OWLNamedIndividual start_loc = makeAnnotatedIndividual(makeRandomIri());
 				OWLClass start_loc_type = df.getOWLClass(IRI.create(transport.input_loc_class_uri));
@@ -806,8 +810,17 @@ final long counterValue = instanceCounter.getAndIncrement();
 				OWLNamedIndividual end_loc = makeAnnotatedIndividual(makeRandomIri());
 				OWLClass end_loc_type = df.getOWLClass(IRI.create(transport.output_loc_class_uri));
 				addTypeAssertion(end_loc, end_loc_type);				
-				addRefBackedObjectPropertyAssertion(reaction, has_target_start_location, start_loc, null, GoCAM.eco_inferred_auto, null, null);
-				addRefBackedObjectPropertyAssertion(reaction, has_target_end_location, end_loc, null, GoCAM.eco_inferred_auto, null, null);
+				//add relations to enable deeper classification based on OWL axioms in BP branch
+				Set<OWLAnnotation> annos = getDefaultAnnotations();
+				String explain1 = "This relation was inferred because a protein that was an input to the reaction started out in the target location "+getaLabel(end_loc_type)
+						+ " and then, as a consequence of the reaction/process was transported to another location.";
+				annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain1)));				
+				addRefBackedObjectPropertyAssertion(reaction, has_target_start_location, start_loc, null, GoCAM.eco_inferred_auto, null, annos);
+				String explain2 = "This relation was inferred because a protein that was an input to the reaction started one location "
+				+ " and then, as a consequence of the reaction/process was transported to the target end location "+getaLabel(end_loc_type);
+				Set<OWLAnnotation> annos2 = getDefaultAnnotations();
+				annos2.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain2)));
+				addRefBackedObjectPropertyAssertion(reaction, has_target_end_location, end_loc, null, GoCAM.eco_inferred_auto, null, annos2);
 			}
 			//enabled by needs to know if there are any transport reactions as these should not be included
 			//hence reload graph from ontology
@@ -832,7 +845,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		if(inferred_occurs.isEmpty()) {
 			System.out.println("No occurs in");
 		}else {
-			i_o_count+=inferred_occurs.size();
+			i_o_count+=inferred_occurs.size();			
 			for(InferredOccursIn o : inferred_occurs) {
 				boolean add_occurs = false;
 				if(o.location_type_uris.size()==1||strategy == BioPaxtoGO.ImportStrategy.NoctuaCuration) {
@@ -844,9 +857,12 @@ final long counterValue = instanceCounter.getAndIncrement();
 					//make the occurs in assertion
 					for(String location_type_uri : o.location_type_uris) {
 						OWLClass location_class = df.getOWLClass(IRI.create(location_type_uri));
+						Set<OWLAnnotation> annos = getDefaultAnnotations();
+						String explain1 = "This relation was inferred because an input, enabler, or regulator of this reaction was said to be located in "+getaLabel(location_class);
+						annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain1)));		
 						OWLNamedIndividual placeInstance = df.getOWLNamedIndividual(GoCAM.makeRandomIri());
 						addTypeAssertion(placeInstance, location_class);
-						addRefBackedObjectPropertyAssertion(reaction, GoCAM.occurs_in, placeInstance, null, GoCAM.eco_imported_auto, "PMID", null);
+						addRefBackedObjectPropertyAssertion(reaction, GoCAM.occurs_in, placeInstance, null, GoCAM.eco_imported_auto, "PMID", annos);
 					}
 				}
 			}
