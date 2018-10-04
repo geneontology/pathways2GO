@@ -1,0 +1,29 @@
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+prefix obo: <http://purl.obolibrary.org/obo/>
+prefix skos: <http://www.w3.org/2004/02/skos/core#>
+
+
+#get all the complexes that are inputs or enablers or regulators of a MF
+# and their parts
+#(not as output)
+
+select ?pathway ?reaction ?complex ?complex_part ?property  
+where {
+  	#reaction complex with inputs/enablers/regulators/etc.  
+ 	?reaction ?property ?complex .
+ 	#(obo:RO_0002233|obo:RO_0002333|obo:RO_0002430|obo:RO_0002429) . 
+ 	filter((?property = obo:RO_0002233)||(?property = obo:RO_0002333)||(?property = obo:RO_0002430)||(?property = obo:RO_0002429)) . 
+ 	?complex rdf:type <http://purl.obolibrary.org/obo/GO_0032991> . 
+ 	?complex obo:BFO_0000051* ?complex_part .
+ 	OPTIONAL{?pathway obo:BFO_0000051 ?reaction }
+}
+
+# protein containing complex <http://purl.obolibrary.org/obo/GO_0032991>
+#located_in = obo:RO_0001025
+# obo:RO_0002233 has input 
+# obo:RO_0002333 enabled by
+# RO_0002234 has output
+# obo:BFO_0000051 has part
+# obo:RO_0002413 provides direct input for

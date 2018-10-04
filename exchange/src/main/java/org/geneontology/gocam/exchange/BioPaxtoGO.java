@@ -59,6 +59,7 @@ import org.biopax.paxtools.model.level3.UnificationXref;
 import org.biopax.paxtools.model.level3.XReferrable;
 import org.biopax.paxtools.model.level3.Xref;
 import org.geneontology.gocam.exchange.idmapping.IdMapper;
+import org.geneontology.rules.engine.Explanation;
 import org.geneontology.rules.engine.Triple;
 import org.geneontology.rules.engine.WorkingMemory;
 import org.openrdf.repository.RepositoryException;
@@ -93,7 +94,8 @@ public class BioPaxtoGO {
 	//public static OWLClass reaction_class, pathway_class, protein_class;
 	//public static final IRI biopax_iri = IRI.create("http://www.biopax.org/release/biopax-level3.owl#");
 	public static final String goplus_file = 
-			"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
+			//"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
+			"/Users/bgood/gocam_input/go-plus-sept-2018.owl";
 	public static final String neo_file = 
 			"/Users/bgood/gocam_input/neo.owl";
 	Set<String> tbox_files;
@@ -141,10 +143,11 @@ public class BioPaxtoGO {
 				//"/Users/bgood/Desktop/test/biopax/pathway_commons/kegg_Biotin_metabolism.owl";
 				//"/Users/bgood/Desktop/test/biopax/pathway_commons/PathwayCommons10.wp.BIOPAX.owl";
 
-				//"/Users/bgood/Desktop/test/biopax/glycogen_synthesis.owl";
-				"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
+			//	"/Users/bgood/Desktop/test/biopax/BMP_signaling.owl";
+				//+ "glycogen_synthesis.owl";
+		//		"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
 		//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Sept13_2018.owl";
-		//"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
+		"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
 
 		//"/Users/bgood/Downloads/ERK_cascade.owl";
 		//"/Users/bgood/Downloads/Noncanonical_Wnt_sig.owl";
@@ -391,7 +394,7 @@ public class BioPaxtoGO {
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
 		//infer new edges based on sparql matching
 		System.out.println("Before sparql inference -  triples: "+go_cam.qrunner.nTriples());
-		GoCAM.RuleResults rule_results = go_cam.applySparqlRules();
+		GoCAM.RuleResults rule_results = go_cam.applySparqlRules(strategy);
 		System.out.println("After sparql inference -  triples: "+go_cam.qrunner.nTriples());
 		System.out.println("Rule results:\n"+rule_results.toString());
 		//sparql rules make additions to go_cam_ont, add them to the rdf model 
@@ -408,6 +411,7 @@ public class BioPaxtoGO {
 		report.pathway_class_report.put(pathwayname, reasoner_report);
 		//checks for inferred things with rdf:type OWL:Nothing with a sparql query
 		boolean is_logical = go_cam.validateGoCAM();	
+		
 		//checks for inferred classifications for reporting
 		boolean skip_indirect = true;
 		Map<String, Set<String>> inferred_types_by_uri = ArachneAccessor.getInferredTypes(wm, skip_indirect);
@@ -431,15 +435,6 @@ public class BioPaxtoGO {
 			go_cam = layout.layoutForNoctuaVersion1(go_cam);	
 			//add them into the rdf 
 			go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
-			//do rdf-only pruning - don't reinitialize runner after this as these changes don't get put into ontology
-			//remove has_part relations linking process to reactions.  
-			//redundant as all reactions are part of the main process right now and clouds view
-			//took this out as eliminates some useful inferences that can happen when people look at the models.  	
-			//			if(!expand_subpathways) {
-			//				go_cam.qrunner.deletePathwayHasPart();
-			//			}
-			//remove any locations on physical entities. screws display as entities can't be folded into function nodes
-			go_cam.qrunner.deleteEntityLocations();
 		}
 
 		//removes basic types like 'Cellular Component' used in here to make reports but not useful in output data
@@ -451,6 +446,29 @@ public class BioPaxtoGO {
 			//System.out.println("Illogical go_cam..  stopping");
 			//System.exit(0);
 			report.inconsistent_models.add(outfilename);
+			//explain
+			/*
+			scala.collection.Iterator<Triple> triples = wm.facts().toList().iterator();
+			while(triples.hasNext()) {				
+				Triple triple = triples.next();
+				if(wm.asserted().contains(triple)) {
+					continue;
+				}else { //<http://arachne.geneontology.org/indirect_type>
+					if(triple.p().toString().equals("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>")&&
+							triple.o().toString().equals("<http://www.w3.org/2002/07/owl#Nothing>")) {
+						OWLEntity bad = go_cam.df.getOWLNamedIndividual(IRI.create(triple.s().toString()));
+						System.out.println("inferred inconsistent:"+triple.s()+" "+go_cam.getaLabel(bad));
+						scala.collection.immutable.Set<Explanation> explanations = wm.explain(triple);
+						scala.collection.Iterator<Explanation> e = explanations.iterator();
+						while(e.hasNext()) {
+							Explanation exp = e.next();
+							System.out.println(exp.toString());
+							System.out.println();
+						}
+					}
+				}
+			}
+			*/
 		}
 	}
 

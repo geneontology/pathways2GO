@@ -25,6 +25,7 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.vocabulary.RDF;
 import org.biopax.paxtools.model.level3.PublicationXref;
 import org.biopax.paxtools.model.level3.Xref;
+import org.geneontology.gocam.exchange.QRunner.ComplexInput;
 import org.geneontology.gocam.exchange.QRunner.InferredEnabler;
 import org.geneontology.gocam.exchange.QRunner.InferredOccursIn;
 import org.geneontology.gocam.exchange.QRunner.InferredRegulator;
@@ -44,6 +45,7 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.FileDocumentTarget;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
+import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
@@ -65,6 +67,7 @@ import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLObjectPropertyAxiom;
+import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
@@ -72,6 +75,7 @@ import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.search.EntitySearcher;
+import org.semanticweb.owlapi.search.Searcher;
 import org.semanticweb.owlapi.util.OWLEntityRemover;
 import org.semanticweb.owlapi.util.OWLOntologyWalker;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
@@ -166,7 +170,7 @@ public class GoCAM {
 
 	}
 
-	
+
 	public void initializeClassesAndRelations() {
 		//Annotation properties for metadata and evidence
 		title_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/title"));
@@ -184,7 +188,7 @@ public class GoCAM {
 		definition = df.getOWLAnnotationProperty(IRI.create("http://purl.obolibrary.org/obo/IAO_0000115"));	
 		database_cross_reference = df.getOWLAnnotationProperty(IRI.create("http://www.geneontology.org/formats/oboInOwl#hasDbXref"));	
 
-		
+
 		//Will add classes and relations as we need them now. 
 		//TODO Work on using imports later to ensure we don't produce incorrect ids..
 		//classes	
@@ -262,7 +266,7 @@ public class GoCAM {
 		addLabel(has_participant, "has participant");
 		functionally_related_to  = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002328")); 
 		addLabel(functionally_related_to, "functionally related to");
-		
+
 		//http://purl.obolibrary.org/obo/RO_0002305
 		causally_upstream_of  = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002411"));
 		addLabel(causally_upstream_of, "causally upstream of");
@@ -526,7 +530,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 * @param evidence_class
 	 * @param namespace_prefix (e.g. PMID)
 	 */
-	void addRefBackedObjectPropertyAssertion(OWLNamedIndividual source, OWLObjectProperty prop, OWLNamedIndividual target, 
+	OWLAxiom addRefBackedObjectPropertyAssertion(OWLNamedIndividual source, OWLObjectProperty prop, OWLNamedIndividual target, 
 			Set<String> ids, OWLClass evidence_class, String namespace_prefix, Set<OWLAnnotation> other_annotations) {
 		OWLObjectPropertyAssertionAxiom add_prop_axiom = null;
 		Set<OWLAnnotation> annos = new HashSet<OWLAnnotation>();
@@ -537,7 +541,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		if(ids!=null) {			
 			for(String id : ids) {
 				//	IRI anno_iri = makeEntityHashIri(source.hashCode()+"_"+prop.hashCode()+"_"+target.hashCode()+"_"+namespace_prefix+"_"+id);
-				IRI anno_iri = this.makeRandomIri();
+				IRI anno_iri = makeRandomIri();
 				OWLNamedIndividual evidence = makeAnnotatedIndividual(anno_iri);					
 				addTypeAssertion(evidence, evidence_class);
 				addLiteralAnnotations2Individual(anno_iri, GoCAM.source_prop, namespace_prefix+":"+id);
@@ -555,7 +559,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		OWLObjectPropertyAssertionAxiom check = df.getOWLObjectPropertyAssertionAxiom(prop, source, target, annos);
 		boolean annotated_axiom_exists = EntitySearcher.containsAxiom(check, go_cam_ont, false);
 		if(annotated_axiom_exists) {
-			return; //already have it
+			return check; //already have it
 		}else{
 			boolean axiom_exists = EntitySearcher.containsAxiomIgnoreAnnotations(check, go_cam_ont, false);
 			//axiom exists with different annotations so merge them
@@ -581,9 +585,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 			add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(prop, source, target, annos);
 			AddAxiom addAxiom = new AddAxiom(go_cam_ont, add_prop_axiom);
 			ontman.applyChange(addAxiom);
-		}
-
-		return ;
+			return add_prop_axiom;
+		}		
 	}
 
 
@@ -695,7 +698,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		Map<String, Integer> rule_hitcount = new TreeMap<String, Integer>();
 		Map<String, Set<String>> rule_pathways = new TreeMap<String, Set<String>>();
 		Map<String, Set<String>> rule_reactions = new TreeMap<String, Set<String>>();
-		
+
 		public Integer checkInitCount(String rulename, RuleResults r) {
 			Integer i_o_count = r.rule_hitcount.get(rulename);
 			if(i_o_count==null) {
@@ -711,7 +714,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 			}
 			return i_o_pathways;
 		}
-		
+
 		public Set<String> checkInitReactions(String rulename, RuleResults r){
 			Set<String> i_o_reactions = r.rule_reactions.get(rulename);
 			if(i_o_reactions==null) {
@@ -719,7 +722,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 			}
 			return i_o_reactions;
 		}
-		
+
 		public String toString() {
 			String result = "";
 			for(String rule : rule_hitcount.keySet()) {
@@ -734,46 +737,9 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 * assumes it is loaded with everything to start with a la qrunner = new QRunner(go_cam_ont); 
 	 * @throws IOException 
 	 */
-	RuleResults applySparqlRules() {
+	RuleResults applySparqlRules(BioPaxtoGO.ImportStrategy strategy) {
 		RuleResults r = new RuleResults();
-		/**
-		 * Rule 1: infer occurs_in relations
-		 * If all participants in a reaction are located_in the same place,
-		 * Then assert that the reaction occurs_in that place and remove the located_in assertions
-		 * See 'Signaling by BMP' https://reactome.org/content/detail/R-HSA-201451 
-		 * (7 inferences)
-		 */
-		String i_o_rule = "occurs_in";
-		Integer i_o_count = r.checkInitCount(i_o_rule, r);
-		Set<String> i_o_pathways = r.checkInitPathways(i_o_rule, r);
-		Set<InferredOccursIn> inferred_occurs = qrunner.findOccursInReaction();
-		if(!inferred_occurs.isEmpty()) {
-			i_o_count+=inferred_occurs.size();
-			for(InferredOccursIn o : inferred_occurs) {
-				i_o_pathways.add(o.pathway_uri);
-				OWLNamedIndividual reaction = this.makeAnnotatedIndividual(o.reaction_uri);
-				if(o.location_type_uris.size()==1) {
-					//make the occurs in assertion
-					String location_type_uri = o.location_type_uris.iterator().next();
-					OWLClass location_class = df.getOWLClass(IRI.create(location_type_uri));
-					OWLNamedIndividual placeInstance = df.getOWLNamedIndividual(GoCAM.makeRandomIri());
-					addTypeAssertion(placeInstance, location_class);
-					addRefBackedObjectPropertyAssertion(reaction, GoCAM.occurs_in, placeInstance, null, GoCAM.eco_imported_auto, "PMID", null);
-					//remove the now redundant location assertions
-					for(String entity_uri : o.entity_location_instances.keySet()) {
-						OWLNamedIndividual entity = df.getOWLNamedIndividual(IRI.create(entity_uri));
-						OWLNamedIndividual location_instance = df.getOWLNamedIndividual(IRI.create(o.entity_location_instances.get(entity_uri)));
-						applyAnnotatedTripleRemover(entity.getIRI(), located_in.getIRI(), location_instance.getIRI());
-						OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(location_class, location_instance);
-						ontman.removeAxiom(go_cam_ont, classAssertion);
-						deleteOwlEntityAndAllReferencesToIt(location_instance);
-					}
-				}
-			}
-		}
-		r.rule_hitcount.put(i_o_rule, i_o_count);
-		r.rule_pathways.put(i_o_rule, i_o_pathways);		
-		
+
 		/**
 		 * Rule 2: Infer rdf:type Protein Binding
 		 * If a reaction has no GO annotation beyond 'molecular function'
@@ -803,7 +769,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		}
 		r.rule_hitcount.put(binding_rule, binding_count);
 		r.rule_reactions.put(binding_rule, binding_reactions);
-		
+
 		/**
 		 * Rule 3: Infer Protein Transport reactions
 		 * If a reaction has not been provided with an rdf:type 
@@ -821,7 +787,12 @@ final long counterValue = instanceCounter.getAndIncrement();
 		Set<InferredTransport> transports = qrunner.findTransportReactions();		
 		if(transports.size()>0) {
 			transport_count+=transports.size();
+			Set<String> transport_reactions = new HashSet<String>();
 			for(InferredTransport transport : transports) {
+				if(!transport_reactions.add(transport.reaction_uri)){
+					//should only end up with one per reaction.. make sure
+					continue;
+				}
 				transport_pathways.add(transport.pathway_uri);
 				OWLNamedIndividual reaction = this.makeAnnotatedIndividual(transport.reaction_uri);
 				OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(molecular_function, reaction);
@@ -829,10 +800,14 @@ final long counterValue = instanceCounter.getAndIncrement();
 				//add transport type
 				addTypeAssertion(reaction, establishment_of_protein_localization);
 				//record what moved where so the classifier can see it properly
-				OWLNamedIndividual start_loc = this.makeAnnotatedIndividual(transport.input_loc_uri);
-				OWLNamedIndividual end_loc = this.makeAnnotatedIndividual(transport.output_loc_uri);
-				this.addRefBackedObjectPropertyAssertion(reaction, has_target_start_location, start_loc, null, GoCAM.eco_inferred_auto, null, null);
-				this.addRefBackedObjectPropertyAssertion(reaction, has_target_end_location, end_loc, null, GoCAM.eco_inferred_auto, null, null);
+				OWLNamedIndividual start_loc = makeAnnotatedIndividual(makeRandomIri());
+				OWLClass start_loc_type = df.getOWLClass(IRI.create(transport.input_loc_class_uri));
+				addTypeAssertion(start_loc, start_loc_type);				
+				OWLNamedIndividual end_loc = makeAnnotatedIndividual(makeRandomIri());
+				OWLClass end_loc_type = df.getOWLClass(IRI.create(transport.output_loc_class_uri));
+				addTypeAssertion(end_loc, end_loc_type);				
+				addRefBackedObjectPropertyAssertion(reaction, has_target_start_location, start_loc, null, GoCAM.eco_inferred_auto, null, null);
+				addRefBackedObjectPropertyAssertion(reaction, has_target_end_location, end_loc, null, GoCAM.eco_inferred_auto, null, null);
 			}
 			//enabled by needs to know if there are any transport reactions as these should not be included
 			//hence reload graph from ontology
@@ -840,7 +815,45 @@ final long counterValue = instanceCounter.getAndIncrement();
 		}
 		r.rule_hitcount.put(transport_rule, transport_count);
 		r.rule_pathways.put(transport_rule, transport_pathways);
-		
+
+		/**
+		 * Rule 1: infer occurs_in relations
+		 * If all participants in a reaction are located_in the same place,
+		 * Then assert that the reaction occurs_in that place and remove the located_in assertions
+		 * OR, if the strategy is targeted towards curator review, take all of the locations used for INPUTs and add them as occurs_in
+		 * Run after transport inference as this will remove locations
+		 * See 'Signaling by BMP' https://reactome.org/content/detail/R-HSA-201451 
+		 * (7 inferences)
+		 */
+		String i_o_rule = "occurs_in";
+		Integer i_o_count = r.checkInitCount(i_o_rule, r);
+		Set<String> i_o_pathways = r.checkInitPathways(i_o_rule, r);
+		Set<InferredOccursIn> inferred_occurs = qrunner.findOccursInReaction();
+		if(inferred_occurs.isEmpty()) {
+			System.out.println("No occurs in");
+		}else {
+			i_o_count+=inferred_occurs.size();
+			for(InferredOccursIn o : inferred_occurs) {
+				boolean add_occurs = false;
+				if(o.location_type_uris.size()==1||strategy == BioPaxtoGO.ImportStrategy.NoctuaCuration) {
+					add_occurs = true;
+				}	
+				if(add_occurs) {
+					i_o_pathways.add(o.pathway_uri);
+					OWLNamedIndividual reaction = this.makeAnnotatedIndividual(o.reaction_uri);
+					//make the occurs in assertion
+					for(String location_type_uri : o.location_type_uris) {
+						OWLClass location_class = df.getOWLClass(IRI.create(location_type_uri));
+						OWLNamedIndividual placeInstance = df.getOWLNamedIndividual(GoCAM.makeRandomIri());
+						addTypeAssertion(placeInstance, location_class);
+						addRefBackedObjectPropertyAssertion(reaction, GoCAM.occurs_in, placeInstance, null, GoCAM.eco_imported_auto, "PMID", null);
+					}
+				}
+			}
+		}
+		r.rule_hitcount.put(i_o_rule, i_o_count);
+		r.rule_pathways.put(i_o_rule, i_o_pathways);			
+
 		/**
 		 * Rule 4: Infer enabled_by 
 		 * If R1 provides_direct_input_for R2 
@@ -900,7 +913,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		 * NOTE that as of Sept. 18, 2018 the current Reactome release does not include the information needed for this inference
 		 * (which is an instance of the 'Control' class from BioPAX).  
 		 */
-		
+
 		String regulator_rule = "regulator_1";
 		Integer regulator_count = r.checkInitCount(regulator_rule, r);
 		Set<String> regulator_pathways = r.checkInitPathways(regulator_rule, r);
@@ -928,7 +941,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		r.rule_hitcount.put(regulator_rule, regulator_count);
 		r.rule_pathways.put(regulator_rule, regulator_pathways);
 		qrunner = new QRunner(go_cam_ont); 
-		
+
 		/**
 		 * Rule 6: Regulator 2: negative regulation by binding
 		 * If reaction2 is enabled_by entity1
@@ -944,7 +957,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		String regulator_rule_2 = "regulator_2";
 		Integer regulator_count_2 = r.checkInitCount(regulator_rule_2, r);
 		Set<String> regulator_pathways_2 = r.checkInitPathways(regulator_rule_2, r);
-		
+
 		Set<InferredRegulator> ir2_neg = qrunner.getInferredRegulatorsQ2();
 		regulator_count_2+=ir2_neg.size();
 		for(InferredRegulator ir : ir2_neg) {
@@ -968,6 +981,76 @@ final long counterValue = instanceCounter.getAndIncrement();
 		r.rule_hitcount.put(regulator_rule_2, regulator_count_2);
 		r.rule_pathways.put(regulator_rule_2, regulator_pathways_2);
 		qrunner = new QRunner(go_cam_ont); 
+
+		/*
+		 * Noctua Curation strategy rules
+		 */
+		if(strategy == BioPaxtoGO.ImportStrategy.NoctuaCuration) {
+			/**
+			 * Rule Noctua 1 : Delete all location assertions if for noctua curation
+			 * Note that in some cases, location assertions interact with occurs_in property chains resulting in inconsistencies..
+			 * Doing this in ontology instead of just RDF (go_cam.qrunner.deleteEntityLocations();) 
+			 * so we can check it with reasoner
+			 */
+
+			for(OWLObjectPropertyAssertionAxiom a : go_cam_ont.getAxioms(AxiomType.OBJECT_PROPERTY_ASSERTION)) {
+				OWLObjectPropertyExpression p = a.getProperty();
+				if(p.equals(located_in)) {
+					OWLNamedIndividual s = a.getSubject().asOWLNamedIndividual();
+					OWLNamedIndividual o = a.getObject().asOWLNamedIndividual();
+					applyAnnotatedTripleRemover(s.getIRI(), located_in.getIRI(), o.getIRI());
+					ontman.removeAxiom(go_cam_ont, a);
+					deleteOwlEntityAndAllReferencesToIt(o);
+				}
+			}			
+
+			/**
+			 * Noctua Rule 2.  No complexes allowed as inputs or enablers of a reaction, only proteins..
+			 * Find such complexes and replace all statements involving them with statements about their components
+			 */
+			Set<ComplexInput> complex_inputs = qrunner.findComplexInputs();
+			int input_complex_count = 0;
+			String input_complex_rule = "No complexes as input ";
+			Set<String> ic_p = new HashSet<String>();
+			for(ComplexInput complex_input : complex_inputs) {
+				ic_p.add(complex_input.pathway_uri);
+				OWLNamedIndividual reaction = this.makeAnnotatedIndividual(complex_input.reaction_uri);
+				OWLObjectProperty property =df.getOWLObjectProperty(IRI.create(complex_input.property_uri));
+				Map<String, Set<String>> complex_parts = complex_input.complex_parts;
+				for(String complex_uri : complex_parts.keySet()) {
+					OWLNamedIndividual complex = this.makeAnnotatedIndividual(complex_uri);
+					input_complex_count++;
+					//add claims on parts
+					for(String part : complex_parts.get(complex_uri)) {
+						OWLNamedIndividual complex_part = this.makeAnnotatedIndividual(part);
+						//make the new claims
+						Set<OWLAnnotation> annos = getDefaultAnnotations();
+						String explain = "When a complex is the input, enables, or regulator of a reaction, "
+								+ "it is broken into its parts and each is asserted to be an input/etc. "
+								+ "to the molecular function corresponding to the reaction. Here the complex was: "+getaLabel(complex);
+						annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
+						addRefBackedObjectPropertyAssertion(reaction, property, complex_part, null, GoCAM.eco_inferred_auto, null, annos);					
+					}
+					//remove the complex
+					for(OWLObjectPropertyAssertionAxiom oass : go_cam_ont.getObjectPropertyAssertionAxioms(reaction)) {
+						if(oass.getProperty().equals(property)&&oass.getObject().equals(complex)) {
+							for(OWLAnnotation anno : oass.getAnnotations()) {
+								if(anno.getProperty().equals(evidence_prop)) {
+									OWLNamedIndividual evidence = df.getOWLNamedIndividual(anno.getValue().asIRI().get());
+									deleteOwlEntityAndAllReferencesToIt(evidence);
+								}
+							}
+						}
+					}					
+					applyAnnotatedTripleRemover(reaction.getIRI(), property.getIRI(), complex.getIRI());
+					deleteOwlEntityAndAllReferencesToIt(complex);
+				}
+			}
+			r.rule_hitcount.put(input_complex_rule, input_complex_count);
+			r.rule_pathways.put(input_complex_rule, ic_p);
+			qrunner = new QRunner(go_cam_ont); 
+		}
+
 
 		return r;
 	}

@@ -23,12 +23,16 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 import org.geneontology.jena.SesameJena;
+import org.geneontology.rules.engine.Explanation;
+import org.geneontology.rules.engine.Triple;
 import org.geneontology.rules.engine.WorkingMemory;
 import org.geneontology.rules.util.Bridge;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -174,6 +178,7 @@ public class QRunner {
 			QuerySolution qs = results.next();
 			Resource r = qs.getResource("s");
 			unreasonable.add(r.getURI());
+//			<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Nothing>	
 		}
 		qe.close();
 		return unreasonable;
@@ -400,7 +405,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			Resource reaction = qs.getResource("reaction");
 			String reaction_uri = reaction.getURI();
 			//Resource reaction_type = qs.getResource("reaction_type"); 
-			Resource prop = qs.getResource("prop"); 
+			//Resource prop = qs.getResource("prop"); 
 			Resource location_instance = qs.getResource("location_instance"); 
 			String location_instance_uri = location_instance.getURI();
 			Resource location_type = qs.getResource("location_type"); 
@@ -423,17 +428,74 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			reaction_locinfo.put(reaction_uri, o);
 		}
 		qe.close();
-		//check for the ones that are the all the same
+		
 		for(String reaction : reaction_locinfo.keySet()) {
 			InferredOccursIn o = reaction_locinfo.get(reaction);
-			if(o.location_type_uris.size()==1) {
+			//check for the ones that are the all the same
+			//if(o.location_type_uris.size()==1) {
 				occurs.add(o);
-			}
+			//}
 		}
 		
 		return occurs;
 	}
 	
+	public class ComplexInput {
+		String pathway_uri;
+		String reaction_uri;
+		String property_uri;
+		Map<String, Set<String>> complex_parts = new HashMap<String, Set<String>>();
+	}
+	
+	Set<ComplexInput> findComplexInputs(){
+		Set<ComplexInput> complexes = new HashSet<ComplexInput>();
+		String query = null;
+		try {		
+			query = IOUtils.toString(App.class.getResourceAsStream("query2update_find_complex_inputs.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL update from jar \n"+e);
+		}
+		QueryExecution qe = QueryExecutionFactory.create(query, jena);
+		ResultSet results = qe.execSelect();
+		
+		Map<String, ComplexInput> reaction_property_complexes = new HashMap<String, ComplexInput>();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Resource pathway = qs.getResource("pathway");
+			String pathway_uri = "no_pathway via has_part";
+			if(pathway!=null) {
+				pathway_uri = pathway.getURI();
+			}			
+			Resource reaction = qs.getResource("reaction");
+			String reaction_uri = reaction.getURI();
+			Resource complex_instance = qs.getResource("complex"); 
+			String complex_instance_uri = complex_instance.getURI();
+			Resource complex_part = qs.getResource("complex_part"); 
+			String complex_part_uri = complex_part.getURI();
+			RDFNode property = qs.get("property");
+			String property_uri = property.as(Property.class).getURI();
+			if(reaction_uri==null){
+				continue;
+			}
+			ComplexInput o = reaction_property_complexes.get(reaction_uri+property_uri+complex_instance_uri);
+			if(o==null) {
+				o = new ComplexInput();
+				o.reaction_uri = reaction_uri;
+				o.pathway_uri = pathway_uri;			
+				o.property_uri = property_uri;
+			}			
+			Set<String> complex_parts = o.complex_parts.get(complex_instance_uri);
+			if(complex_parts==null) {
+				complex_parts = new HashSet<String>();
+			}
+			complex_parts.add(complex_part_uri);
+			o.complex_parts.put(complex_instance_uri, complex_parts);
+			reaction_property_complexes.put(reaction_uri+property_uri+complex_instance_uri, o);
+		}
+		qe.close();
+		complexes.addAll(reaction_property_complexes.values());
+		return complexes;
+	}
 	
 	int deleteEntityLocations() {
 		int n = 0;

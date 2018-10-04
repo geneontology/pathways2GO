@@ -45,6 +45,23 @@ public class Helper {
 		return s;
 	}
 	
+	public static Set<String> getLabels(String uri, OWLOntology ont){
+		Set<String> labels = new HashSet<String>();
+		Set<OWLAnnotationAssertionAxiom> annos = ont.getAnnotationAssertionAxioms(IRI.create(uri));
+		if(annos==null) {
+			return labels;
+		}
+		for(OWLAnnotationAssertionAxiom a : annos) {
+			if(a.getProperty().isLabel()) {
+				if(a.getValue() instanceof OWLLiteral) {
+					OWLLiteral val = (OWLLiteral) a.getValue();
+					labels.add(val.getLiteral());
+				}
+			}
+		}
+		return labels;
+	}
+	
 	public static Set<String> getLabels(OWLEntity e, OWLOntology ont){
 		Set<String> labels = new HashSet<String>();
 		for(OWLAnnotationAssertionAxiom a : ont.getAnnotationAssertionAxioms(e.getIRI())) {
@@ -60,6 +77,18 @@ public class Helper {
 	
 	public static String getaLabel(OWLEntity e, OWLOntology ont){
 		Set<String> labels = getLabels(e, ont);
+		String label = "";
+		if(labels!=null&&labels.size()>0) {
+			for(String l : labels) {
+				label = l;
+				break;
+			}
+		}
+		return label;
+	}
+	
+	public static String getaLabel(String uri, OWLOntology ont){
+		Set<String> labels = getLabels(uri, ont);
 		String label = "";
 		if(labels!=null&&labels.size()>0) {
 			for(String l : labels) {
