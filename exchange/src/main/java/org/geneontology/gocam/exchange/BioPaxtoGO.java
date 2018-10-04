@@ -104,7 +104,7 @@ public class BioPaxtoGO {
 		NoctuaCuration, //This generates models intended only for curators to improve manually in Noctua, may contain logical oddities
 		DirectImport;   //This generates models that are as close as we can get them to ready for use.  Logic should be sound.  
 	}
-
+	boolean explain_inconsistant_models = false;
 	String blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";
 	GoMappingReport report;
 	GOPlus goplus;
@@ -143,11 +143,11 @@ public class BioPaxtoGO {
 				//"/Users/bgood/Desktop/test/biopax/pathway_commons/kegg_Biotin_metabolism.owl";
 				//"/Users/bgood/Desktop/test/biopax/pathway_commons/PathwayCommons10.wp.BIOPAX.owl";
 
-			//	"/Users/bgood/Desktop/test/biopax/BMP_signaling.owl";
+				//	"/Users/bgood/Desktop/test/biopax/BMP_signaling.owl";
 				//+ "glycogen_synthesis.owl";
-		//		"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
-		//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Sept13_2018.owl";
-		"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
+				//		"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
+				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Sept13_2018.owl";
+				"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
 
 		//"/Users/bgood/Downloads/ERK_cascade.owl";
 		//"/Users/bgood/Downloads/Noncanonical_Wnt_sig.owl";
@@ -411,7 +411,7 @@ public class BioPaxtoGO {
 		report.pathway_class_report.put(pathwayname, reasoner_report);
 		//checks for inferred things with rdf:type OWL:Nothing with a sparql query
 		boolean is_logical = go_cam.validateGoCAM();	
-		
+
 		//checks for inferred classifications for reporting
 		boolean skip_indirect = true;
 		Map<String, Set<String>> inferred_types_by_uri = ArachneAccessor.getInferredTypes(wm, skip_indirect);
@@ -447,28 +447,28 @@ public class BioPaxtoGO {
 			//System.exit(0);
 			report.inconsistent_models.add(outfilename);
 			//explain
-			/*
-			scala.collection.Iterator<Triple> triples = wm.facts().toList().iterator();
-			while(triples.hasNext()) {				
-				Triple triple = triples.next();
-				if(wm.asserted().contains(triple)) {
-					continue;
-				}else { //<http://arachne.geneontology.org/indirect_type>
-					if(triple.p().toString().equals("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>")&&
-							triple.o().toString().equals("<http://www.w3.org/2002/07/owl#Nothing>")) {
-						OWLEntity bad = go_cam.df.getOWLNamedIndividual(IRI.create(triple.s().toString()));
-						System.out.println("inferred inconsistent:"+triple.s()+" "+go_cam.getaLabel(bad));
-						scala.collection.immutable.Set<Explanation> explanations = wm.explain(triple);
-						scala.collection.Iterator<Explanation> e = explanations.iterator();
-						while(e.hasNext()) {
-							Explanation exp = e.next();
-							System.out.println(exp.toString());
-							System.out.println();
+			if(explain_inconsistant_models) {
+				scala.collection.Iterator<Triple> triples = wm.facts().toList().iterator();
+				while(triples.hasNext()) {				
+					Triple triple = triples.next();
+					if(wm.asserted().contains(triple)) {
+						continue;
+					}else { //<http://arachne.geneontology.org/indirect_type>
+						if(triple.p().toString().equals("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>")&&
+								triple.o().toString().equals("<http://www.w3.org/2002/07/owl#Nothing>")) {
+							OWLEntity bad = go_cam.df.getOWLNamedIndividual(IRI.create(triple.s().toString()));
+							System.out.println("inferred inconsistent:"+triple.s()+" "+go_cam.getaLabel(bad));
+							scala.collection.immutable.Set<Explanation> explanations = wm.explain(triple);
+							scala.collection.Iterator<Explanation> e = explanations.iterator();
+							while(e.hasNext()) {
+								Explanation exp = e.next();
+								System.out.println(exp.toString());
+								System.out.println();
+							}
 						}
 					}
 				}
 			}
-			*/
 		}
 	}
 
@@ -901,8 +901,8 @@ public class BioPaxtoGO {
 							defineReactionEntity(go_cam, component, comp_uri);
 						}
 					}
-						//assert it as a complex - needed for correct inference (without loading up the subclass assertion in the above)
-						go_cam.addTypeAssertion(e, GoCAM.go_complex);
+					//assert it as a complex - needed for correct inference (without loading up the subclass assertion in the above)
+					go_cam.addTypeAssertion(e, GoCAM.go_complex);
 
 				}
 			}

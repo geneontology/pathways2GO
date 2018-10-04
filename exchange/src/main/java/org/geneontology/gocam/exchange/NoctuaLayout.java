@@ -50,7 +50,6 @@ public class NoctuaLayout {
 			OWLNamedIndividual pathway = (OWLNamedIndividual)pathways.next();
 
 			//making Pathway basically just a label for what people are looking at
-			//all has_part connections taken out to clear up view
 			//put it at top left
 			int h = 20; 
 			int k = 20; 
@@ -62,20 +61,20 @@ public class NoctuaLayout {
 			Collection<OWLIndividual> reactions_and_subpathways = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont);
 			Set<OWLIndividual> reactions = new HashSet<OWLIndividual>();
 
-			for(OWLIndividual r : reactions_and_subpathways) {
-				for(OWLClassExpression type :EntitySearcher.getTypes(r, go_cam.go_cam_ont)) {
-					OWLClass c = type.asOWLClass();
-					if(c.equals(GoCAM.molecular_function)) {
-						reactions.add(r);
-						break;
-					}
-				}
-			}
+//			for(OWLIndividual r : reactions_and_subpathways) {
+//				for(OWLClassExpression type :EntitySearcher.getTypes(r, go_cam.go_cam_ont)) {
+//					OWLClass c = type.asOWLClass();
+//					if(c.equals(GoCAM.molecular_function)) {
+//						reactions.add(r);
+//						break;
+//					}
+//				}
+//			}
 			//classify reactions: root of causal chain, member of chain, island
 			Set<OWLIndividual> islands = new HashSet<OWLIndividual>();
 			Set<OWLIndividual> chain_roots = new HashSet<OWLIndividual>();
 			Set<OWLIndividual> chain_members = new HashSet<OWLIndividual>();
-			for(OWLIndividual r : reactions) {
+			for(OWLIndividual r : reactions_and_subpathways) {
 				int incoming = 0;
 				int outgoing = 0;
 				Collection<OWLObjectPropertyAssertionAxiom> axioms = getCausalReferencingOPAxioms((OWLEntity) r, go_cam);
@@ -125,7 +124,12 @@ public class NoctuaLayout {
 						op.getProperty().equals(GoCAM.directly_positively_regulates)||
 						op.getProperty().equals(GoCAM.directly_negatively_regulated_by)||
 						op.getProperty().equals(GoCAM.directly_positively_regulated_by)||
-						op.getProperty().equals(GoCAM.provides_direct_input_for)) {
+						op.getProperty().equals(GoCAM.provides_direct_input_for)||
+						//kind of wonky but lets try it..
+						op.getProperty().equals(GoCAM.has_output)||
+						op.getProperty().equals(GoCAM.involved_in_negative_regulation_of)||
+						op.getProperty().equals(GoCAM.involved_in_positive_regulation_of)
+						) {
 					causal_axioms.add(op);
 				}
 			}				
