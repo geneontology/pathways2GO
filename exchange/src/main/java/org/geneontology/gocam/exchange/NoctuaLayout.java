@@ -124,11 +124,7 @@ public class NoctuaLayout {
 						op.getProperty().equals(GoCAM.directly_positively_regulates)||
 						op.getProperty().equals(GoCAM.directly_negatively_regulated_by)||
 						op.getProperty().equals(GoCAM.directly_positively_regulated_by)||
-						op.getProperty().equals(GoCAM.provides_direct_input_for)||
-						//kind of wonky but lets try it..
-						op.getProperty().equals(GoCAM.has_output)||
-						op.getProperty().equals(GoCAM.involved_in_negative_regulation_of)||
-						op.getProperty().equals(GoCAM.involved_in_positive_regulation_of)
+						op.getProperty().equals(GoCAM.provides_direct_input_for)
 						) {
 					causal_axioms.add(op);
 				}

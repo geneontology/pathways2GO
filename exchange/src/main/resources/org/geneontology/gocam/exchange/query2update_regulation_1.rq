@@ -10,7 +10,7 @@ prefix skos: <http://www.w3.org/2004/02/skos/core#>
 		 # Then infer that reaction 2 regulates reaction 1
 		 # (capture if its positive or negative regulation)
 
-select ?reaction1 ?prop ?reaction2 ?pathway # obo:RO_0002023 directly negatively regulated by 
+select ?reaction1 ?prop ?reaction2 ?pathway ?entityZ # obo:RO_0002023 directly negatively regulated by 
 where {
  ?pathway obo:BFO_0000051 ?reaction1 . 
    { 

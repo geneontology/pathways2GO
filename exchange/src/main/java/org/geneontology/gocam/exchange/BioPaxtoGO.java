@@ -91,8 +91,6 @@ import org.semanticweb.owlapi.util.OWLEntityRemover;
  *
  */
 public class BioPaxtoGO {
-	//public static OWLClass reaction_class, pathway_class, protein_class;
-	//public static final IRI biopax_iri = IRI.create("http://www.biopax.org/release/biopax-level3.owl#");
 	public static final String goplus_file = 
 			//"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
 			"/Users/bgood/gocam_input/go-plus-sept-2018.owl";
@@ -101,15 +99,13 @@ public class BioPaxtoGO {
 	Set<String> tbox_files;
 	ImportStrategy strategy;
 	enum ImportStrategy {
-		NoctuaCuration, //This generates models intended only for curators to improve manually in Noctua, may contain logical oddities
-		DirectImport;   //This generates models that are as close as we can get them to ready for use.  Logic should be sound.  
+		NoctuaCuration, //This generates models intended only for curators to improve manually in Noctua, may contain logical oddities.  Strives to get rid of complexes.  
+		DirectImport;   //This generates models that are as close as we can get them to ready for use.  Logic should be sound.  Keeps complexes in and more or less as they are in reactome.  
 	}
 	boolean explain_inconsistant_models = false;
 	String blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";
 	GoMappingReport report;
 	GOPlus goplus;
-
-
 
 	public BioPaxtoGO(){
 		strategy = ImportStrategy.NoctuaCuration;
@@ -135,65 +131,35 @@ public class BioPaxtoGO {
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		BioPaxtoGO bp2g = new BioPaxtoGO();
-		//		String input_folder = "/Users/bgood/Downloads/biopax/";
-		//		String output_folder = "/Users/bgood/Downloads/biopax_converted/";
-		//		bp2g.convertReactomeFolder(input_folder, output_folder);
-
-		String input_biopax = //"/Users/bgood/Desktop/test/biopax/pathway_commons/WP_ACE_Inhibitor_Pathway.owl";
+		String input_biopax = 
+				//"/Users/bgood/Desktop/test/biopax/pathway_commons/WP_ACE_Inhibitor_Pathway.owl";
 				//"/Users/bgood/Desktop/test/biopax/pathway_commons/kegg_Biotin_metabolism.owl";
 				//"/Users/bgood/Desktop/test/biopax/pathway_commons/PathwayCommons10.wp.BIOPAX.owl";
+				//"/Users/bgood/Desktop/test/biopax/BMP_signaling.owl";
+				//"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
+				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Oct4_2018.owl";
+				//"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
+		String converted = "/Users/bgood/Desktop/test/go_cams/converted-";
 
-				//	"/Users/bgood/Desktop/test/biopax/BMP_signaling.owl";
-				//+ "glycogen_synthesis.owl";
-				//		"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
-				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Sept13_2018.owl";
-				"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
-
-		//"/Users/bgood/Downloads/ERK_cascade.owl";
-		//"/Users/bgood/Downloads/Noncanonical_Wnt_sig.owl";
-		//"/Users/bgood/Desktop/test/class-a1-receptors.owl";
-		//"/Users/bgood/Desktop/test/stimuli_sensing.owl";
-		//			"/Users/bgood/Desktop/test/snRNP_Assembly.owl";
-		//			"/Users/bgood/Desktop/test/abc_transporter.owl";
-		//	"/Users/bgood/Desktop/test/transport_small_mlc.owl";
-		//			"/Users/bgood/Desktop/test/abacavir_metabolism.owl";
-		//"/Users/bgood/Desktop/test/gap_junction.owl"; 
-		//				"/Users/bgood/Desktop/test/BMP_signaling.owl"; 
-		//		"/Users/bgood/Desktop/test/Wnt_full_tcf_signaling.owl";
-		//		"/Users/bgood/gocam_input/reactome/march2018/Homo_sapiens.owl";
-
-		//"src/main/resources/reactome/glycolysis/glyco_biopax.owl";
-		//"src/main/resources/reactome/reactome-input-109581.owl";
-		String converted = 
-				"/Users/bgood/Desktop/test/go_cams/converted-";
-		//	"/Users/bgood/Desktop/test/snRNP_Assembly/converted-";
-		//				"/Users/bgood/Desktop/test/abacavir_metabolism_output/converted-";
-		//"/Users/bgood/Desktop/test/Clathrin-mediated-endocytosis-output/converted-";
-		//"/Users/bgood/Desktop/test/Wnt_output/converted-n2-";
-		//"/Users/bgood/Desktop/test/gap_junction_output/converted-";
-		//		"/Users/bgood/Desktop/test/bmp_output/converted-";
-		//"/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-";
-		//"src/main/resources/reactome/output/test/reactome-output-glyco-"; 
-		//"src/main/resources/reactome/output/reactome-output-109581-";
-		//String converted_full = "/Users/bgood/Documents/GitHub/my-noctua-models/models/TCF-dependent_signaling_in_response_to_Wnt";
-		boolean split_by_pathway = true;
+		boolean add_lego_import = false; //unless you never want to open the output in Protege always leave false..(or learn how to use a catalogue file)
+		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
 		boolean save_inferences = false;
 		boolean expand_subpathways = false;  //this is a bad idea for high level nodes like 'Signaling Pathways'
-		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, save_inferences, expand_subpathways);
+		String base_title = "title here";//"Will be replaced if a title can be found for the pathway in its annotations
+		String base_contributor = "https://orcid.org/0000-0002-7334-7852"; //Ben Good
+		String base_provider = "https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";
+		String tag = "unexpanded";
+		if(expand_subpathways) {
+			tag = "expanded";
+		}	
+		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, save_inferences, expand_subpathways, base_title, base_contributor, base_provider, tag, add_lego_import);
 		System.out.println("Writing report");
 		bp2g.report.writeReport("report/");
 		System.out.println("All done");
 	} 
 
-	private void convertReactomeFile(String input_file, String output, boolean split_by_pathway, boolean save_inferences, boolean expand_subpathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
-		boolean add_lego_import = false; //unless you never want to open the output in Protege always leave false..
-		String base_title = "title here";//"FULL TCF-dependent_signaling_in_response_to_Wnt"; 
-		String base_contributor = "https://orcid.org/0000-0002-7334-7852"; //Ben Good
-		String base_provider = "https://www.pathwaycommons.org/";//"https://www.wikipathways.org/";//"https://reactome.org";
-		String tag = "";//"unexpanded";
-		if(expand_subpathways) {
-			tag = "expanded";
-		}
+	private void convertReactomeFile(String input_file, 
+			String output, boolean split_by_pathway, boolean save_inferences, boolean expand_subpathways, String base_title, String base_contributor, String base_provider, String tag, boolean add_lego_import ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		convert(input_file, output, split_by_pathway, add_lego_import, base_title, base_contributor, base_provider, tag, save_inferences, expand_subpathways);
 	}
 
@@ -240,7 +206,7 @@ public class BioPaxtoGO {
 			String base_title, String base_contributor, String base_provider, String tag, 
 			boolean save_inferences, boolean expand_subpathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException  {
 		//set for writing metadata
-		String datasource = null;
+		String datasource = "";
 		if(base_provider.equals("https://reactome.org")) {
 			datasource = "Reactome";
 		}else if(base_provider.equals("https://www.wikipathways.org/")) {
@@ -306,7 +272,9 @@ public class BioPaxtoGO {
 				//check for datasource (seen commonly in Pathway Commons)
 				Set<Provenance> datasources = currentPathway.getDataSource();
 				for(Provenance prov : datasources) {
-					datasource = prov.getDisplayName();
+					if(prov.getDisplayName()!=null) {
+						datasource = prov.getDisplayName();
+					}
 					// there is more provenance buried in comment field 
 					pathway_source_comments.addAll(prov.getComment());
 					//e.g. for a WikiPathways model retrieved from Pathway Commons I see

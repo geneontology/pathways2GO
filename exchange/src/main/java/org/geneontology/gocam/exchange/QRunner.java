@@ -257,21 +257,20 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		String reaction2_uri;
 		String prop_uri;
 		String pathway_uri;
-		InferredRegulator(String r1_uri, String p_uri, String r2_uri, String pathway){
+		String entity_uri;
+		InferredRegulator(String r1_uri, String p_uri, String r2_uri, String pathway, String entity){
 			reaction1_uri = r1_uri;
 			prop_uri = p_uri;
 			reaction2_uri = r2_uri;
 			pathway_uri = pathway;
+			entity_uri = entity;
 		}
 	}
 	
 	Set<InferredRegulator> getInferredRegulatorsQ1() {
 		Set<InferredRegulator> ir = new HashSet<InferredRegulator>();
 		String query = null;
-		try {
-		
-			//updateNR2 = IOUtils.toString(App.class.getResourceAsStream("update_negative_regulation_by_binding.rq"), StandardCharsets.UTF_8);
-			
+		try {		
 			query = IOUtils.toString(App.class.getResourceAsStream("query2update_regulation_1.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL update from jar \n"+e);
@@ -284,8 +283,9 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			Resource reaction2 = qs.getResource("reaction2"); 
 			Resource property = qs.getResource("prop");
 			Resource pathway = qs.getResource("pathway");
+			Resource entity = qs.getResource("entityZ");
 			//reaction1  regulated somehow by reaction 2
-			ir.add(new InferredRegulator(reaction1.getURI(), property.getURI(), reaction2.getURI(), pathway.getURI()));
+			ir.add(new InferredRegulator(reaction1.getURI(), property.getURI(), reaction2.getURI(), pathway.getURI(), entity.getURI()));
 		}
 		qe.close();
 		return ir;
@@ -310,7 +310,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			Resource reaction2 = qs.getResource("reaction2"); 
 			Resource pathway = qs.getResource("pathway");
 			//reaction1  regulated somehow by reaction 2
-			ir.add(new InferredRegulator(reaction1.getURI(), GoCAM.directly_negatively_regulates.getIRI().toString(), reaction2.getURI(), pathway.getURI()));
+			ir.add(new InferredRegulator(reaction1.getURI(), GoCAM.directly_negatively_regulates.getIRI().toString(), reaction2.getURI(), pathway.getURI(), ""));
 		}
 		qe.close();
 		return ir;
