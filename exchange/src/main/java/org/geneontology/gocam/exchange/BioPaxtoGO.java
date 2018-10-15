@@ -137,9 +137,11 @@ public class BioPaxtoGO {
 				//"/Users/bgood/Desktop/test/biopax/pathway_commons/PathwayCommons10.wp.BIOPAX.owl";
 				//"/Users/bgood/Desktop/test/biopax/BMP_signaling.owl";
 				//"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
-				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Oct4_2018.owl";
-				//"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
-		String converted = "/Users/bgood/Desktop/test/go_cams/converted-";
+				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Oct4_2018.owl";
+		//"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
+				"/Users/bgood/Desktop/test/biopax/Wnt_test_oct8_2018.owl";
+		String converted = "/Users/bgood/Desktop/test/go_cams/Wnt_test_oct8_2018-";
+		//"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
 
 		boolean add_lego_import = false; //unless you never want to open the output in Protege always leave false..(or learn how to use a catalogue file)
 		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
@@ -243,7 +245,7 @@ public class BioPaxtoGO {
 
 		boolean add_pathway_components = true;
 		for (Pathway currentPathway : model.getObjects(Pathway.class)){
-			if(!keepPathway(currentPathway)) { //Pathway Commons contains a lot of content free stubs when viewed this way
+			if(!keepPathway(currentPathway, base_provider)) { //Pathway Commons contains a lot of content free stubs when viewed this way
 				continue;
 			}
 			String datasource_id = null;
@@ -325,6 +327,7 @@ public class BioPaxtoGO {
 		if(!split_out_by_pathway) {
 			wrapAndWrite(converted+".ttl", go_cam, tbox_qrunner, save_inferences, save2blazegraph, converted, expand_subpathways);		
 		}
+		
 		System.out.println("done with file "+input_biopax);
 	}
 
@@ -333,13 +336,16 @@ public class BioPaxtoGO {
 	 * @param pathway
 	 * @return
 	 */
-	boolean keepPathway(Pathway pathway) {
+	boolean keepPathway(Pathway pathway, String base_provider) {
 		boolean keep = false;
-		Set<Process> processes = pathway.getPathwayComponent();
-		if(processes!=null&&processes.size()>1) {
+		if(base_provider.equals("https://reactome.org")) {
 			keep = true;
+		}else {
+			Set<Process> processes = pathway.getPathwayComponent();
+			if(processes!=null&&processes.size()>1) {
+				keep = true;
+			}
 		}
-
 		return keep;
 	}
 
@@ -690,8 +696,7 @@ public class BioPaxtoGO {
 					//name the class with the uniprot id for now..
 					//NOTE different protein versions are grouped together into the same root class by the conversion
 					//e.g. Q9UKV3 gets the uniproteins ACIN1, ACIN1(1-1093), ACIN1(1094-1341)
-					go_cam.addLabel(uniprotein_class, id);
-					//until something is imported that understands the uniprot entities, assert that they are proteins
+					//assert that they are proteins (for use without neo import which would clarify that)
 					go_cam.addTypeAssertion(e,  uniprotein_class);
 				}else { //no entity reference so look for parts 
 					Set<PhysicalEntity> prot_parts = protein.getMemberPhysicalEntity();

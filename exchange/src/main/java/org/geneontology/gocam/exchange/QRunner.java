@@ -245,8 +245,8 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			Resource reaction1 = qs.getResource("reaction1"); 
 			Resource reaction2 = qs.getResource("reaction2"); 
 			Resource enabler = qs.getResource("input");
-			Resource pathway = qs.getResource("pathway");
-			ie.add(new InferredEnabler(reaction2.getURI(), reaction1.getURI(), enabler.getURI(), pathway.getURI()));
+			//Resource pathway = qs.getResource("pathway");
+			ie.add(new InferredEnabler(reaction2.getURI(), reaction1.getURI(), enabler.getURI(), null));
 		}
 		qe.close();
 		return ie;

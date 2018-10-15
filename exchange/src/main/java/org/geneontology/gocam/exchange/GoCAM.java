@@ -892,7 +892,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 			enabler_count+=ies.size();
 		}
 		for(InferredEnabler ie : ies) {			
-			enabler_pathways.add(ie.pathway_uri);
+			//enabler_pathways.add(ie.pathway_uri);
 			//create ?reaction2 obo:RO_0002333 ?input
 			OWLNamedIndividual e = this.makeAnnotatedIndividual(ie.enabler_uri);
 			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ie.reaction2_uri);
