@@ -547,6 +547,7 @@ public class BioPaxtoGO {
 			for(PathwayStep step1 : steps) {
 				Set<Process> events = step1.getStepProcess();
 				Set<PathwayStep> step2s = step1.getNextStep();
+				Set<PathwayStep> previousSteps = step1.getNextStepOf();
 				for(PathwayStep step2 : step2s) {
 					Set<Process> nextEvents = step2.getStepProcess();
 					for(Process event : events) {
@@ -565,6 +566,32 @@ public class BioPaxtoGO {
 								//if its been defined, ought to at least have a label
 								if(go_cam.getaLabel(e2).equals("")){
 									defineReactionEntity(go_cam, nextEvent, e2_iri);		
+								}
+							}
+						}
+					}
+				}
+				//adding in previous step (which may be from a different pathway)
+				for(PathwayStep prevStep : previousSteps) {
+					Set<Process> prevEvents = prevStep.getStepProcess();
+					for(Process event : events) {
+						for(Process prevEvent : prevEvents) {
+							//	prevEvent directly_provides_input_for Event
+							if((event.getModelInterface().equals(BiochemicalReaction.class))&&
+									(prevEvent.getModelInterface().equals(BiochemicalReaction.class))) {
+								System.out.println("Adding prevStep "+event.getDisplayName()+" prev "+prevEvent.getDisplayName());
+								IRI event_iri = GoCAM.makeGoCamifiedIRI(event.getUri());
+								IRI prevEvent_iri = GoCAM.makeGoCamifiedIRI(prevEvent.getUri());
+								OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(prevEvent_iri);
+								OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(event_iri);
+								go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.provides_direct_input_for, e2, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, "Reactome", null);
+								//in some cases, the reaction may connect off to a different pathway and hence not be caught in above loop to define reaction entities
+								//e.g. Recruitment of SET1 methyltransferase complex  -> APC promotes disassembly of beta-catenin transactivation complex
+								//are connected yet in different pathways
+								//if its been defined, ought to at least have a label
+								if(go_cam.getaLabel(e1).equals("")){
+									defineReactionEntity(go_cam, prevEvent, prevEvent_iri);		
+									//TODO add a part of linking to parent pathway (could be different from one we are looking at now)
 								}
 							}
 						}
