@@ -689,8 +689,9 @@ final long counterValue = instanceCounter.getAndIncrement();
 		for (OWLAnnotationAssertionAxiom annAx : EntitySearcher.getAnnotationAssertionAxioms(e.getIRI(), this.go_cam_ont)) {
 			ontman.removeAxiom(go_cam_ont, annAx);
 		}
-		for (OWLAxiom annAx :EntitySearcher.getReferencingAxioms(e, this.go_cam_ont)) {
-			ontman.removeAxiom(go_cam_ont, annAx);
+		for (OWLAxiom aAx :EntitySearcher.getReferencingAxioms(e, this.go_cam_ont)) {
+			//now remove the axiom
+			ontman.removeAxiom(go_cam_ont, aAx);
 		}
 	}
 
@@ -738,6 +739,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 * @throws IOException 
 	 */
 	RuleResults applySparqlRules(BioPaxtoGO.ImportStrategy strategy) {
+		boolean make_noctua_visible = false;
+
 		RuleResults r = new RuleResults();
 
 		/**
@@ -953,7 +956,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 			this.addRefBackedObjectPropertyAssertion(r1, o, r2, null, GoCAM.eco_inferred_auto, null, annos);
 			//delete the entity regulates process relation 
 			applyAnnotatedTripleRemover(r2.getIRI(), o.getIRI(), entity.getIRI());
-			
+
 		}
 		r.rule_hitcount.put(regulator_rule, regulator_count);
 		r.rule_pathways.put(regulator_rule, regulator_pathways);
@@ -1041,23 +1044,31 @@ final long counterValue = instanceCounter.getAndIncrement();
 					for(String part : complex_parts.get(complex_uri)) {
 						OWLNamedIndividual complex_part = this.makeAnnotatedIndividual(part);
 						Set<OWLAnnotation> annos = getDefaultAnnotations();
-						if(property.equals(has_output)) { //just remove it for now
-							applyAnnotatedTripleRemover(complex.getIRI(), has_part.getIRI(), complex_part.getIRI());
+						if(property.equals(has_output)) { //TODO, figure this out.. just remove it for now
+						//	applyAnnotatedTripleRemover(reaction.getIRI(), property.getIRI(), complex.getIRI());
+						//	applyAnnotatedTripleRemover(complex.getIRI(), has_part.getIRI(), complex_part.getIRI());
 							deleteOwlEntityAndAllReferencesToIt(complex_part);
-						}else if(property.equals(involved_in_positive_regulation_of)||property.equals(involved_in_negative_regulation_of)) {
-							String explain = "When a complex is involved in the non-catalytic regulation of a reaction, "
-									+ "it is broken into its parts and each is asserted to be a regulator  "
-									+ "of the molecular function corresponding to the reaction. Here the complex was: "+getaLabel(complex);
-							annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
-							addRefBackedObjectPropertyAssertion(complex_part, property, reaction, null, GoCAM.eco_inferred_auto, null, annos);	
-						}else {
+						}
+						else if(property.equals(involved_in_positive_regulation_of)||property.equals(involved_in_negative_regulation_of)) {
+							//taking these out for now
+							deleteOwlEntityAndAllReferencesToIt(complex_part);
+//							String explain = "When a complex is involved in the non-catalytic regulation of a reaction, "
+//									+ "it is broken into its parts and each is asserted to be a regulator  "
+//									+ "of the molecular function corresponding to the reaction. Here the complex was: "+getaLabel(complex);
+//							annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
+//							addRefBackedObjectPropertyAssertion(complex_part, property, reaction, null, GoCAM.eco_inferred_auto, null, annos);	
+						}
+						else {
 							String explain = "When a complex is an input of or an enabler of a reaction, "
 									+ "it is broken into its parts and each is asserted to be an input or enabler  "
-									+ "of the molecular function corresponding to the reaction. Here the complex was: "+getaLabel(complex);
+									+ "of the molecular function corresponding to the reaction. "
+									+ "It is now the curator's job to decide which is the appropriate gene product to select as the enabler.  "
+									+ "Here the complex was: "+getaLabel(complex);
 							annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
-							addRefBackedObjectPropertyAssertion(reaction, property, complex_part, null, GoCAM.eco_inferred_auto, null, annos);					
+							addRefBackedObjectPropertyAssertion(reaction, property, complex_part, null, GoCAM.eco_inferred_auto, null, annos);
 						}
 					}
+
 					//remove the complex
 					//first remove evidence statements
 					for(OWLObjectPropertyAssertionAxiom oass : go_cam_ont.getObjectPropertyAssertionAxioms(reaction)) {
@@ -1070,6 +1081,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 							}
 						}
 					}	
+					//note these work in the opposite direction
 					if(property.equals(involved_in_positive_regulation_of)||property.equals(involved_in_negative_regulation_of)) {
 						for(OWLObjectPropertyAssertionAxiom oass : go_cam_ont.getObjectPropertyAssertionAxioms(complex)) {
 							if(oass.getProperty().equals(property)&&oass.getObject().equals(reaction)) {
