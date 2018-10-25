@@ -15,7 +15,6 @@ prefix skos: <http://www.w3.org/2004/02/skos/core#>
 
 select ?reaction  ?start_location_type ?end_location_type ?start_location ?end_location ?thing_type ?pathway 
 where {
-  	?pathway obo:BFO_0000051 ?reaction . 
   	#reaction annotated to root (check for reasoning..)
   	?reaction rdf:type obo:GO_0003674 .
   	#has an output
@@ -48,6 +47,8 @@ where {
 	filter(?end_location_type != <http://www.w3.org/2002/07/owl#NamedIndividual>) . 
 	filter(?end_location_type != <http://purl.obolibrary.org/obo/GO_0005575>) . 
 	filter(?start_location_type != <http://purl.obolibrary.org/obo/GO_0005575>) . 
+	
+	OPTIONAL{?pathway obo:BFO_0000051 ?reaction }
 }
 
 # protein containing complex <http://purl.obolibrary.org/obo/GO_0032991>

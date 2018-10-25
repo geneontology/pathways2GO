@@ -6,8 +6,7 @@ prefix biopax: <http://www.biopax.org/release/biopax-level3.owl#>
 prefix skos: <http://www.w3.org/2004/02/skos/core#>
 
 select distinct ?reaction2 ?reaction1 ?reaction2enablerLabel ?reaction2Label ?reaction1Label ?pathway #directly negatively regulated by obo:RO_0002023
-where {
- 	?pathway obo:BFO_0000051 ?reaction1 . 
+where { 
   ?reaction2 obo:RO_0002333 ?reaction2enabler . #enabled by                      
   ?reaction1 obo:RO_0002233 ?inputA . #has input
   ?reaction1 obo:RO_0002233 ?inputB . #has input 
@@ -27,6 +26,7 @@ where {
    ?r1output skos:exactMatch ?C .
    }
   FILTER (!BOUND(?reaction3))
+  OPTIONAL{?pathway obo:BFO_0000051 ?reaction1 }
  } 
 
 #TEST with Reactome:Signaling by BMP 

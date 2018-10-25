@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 
 import org.biopax.paxtools.io.BioPAXIOHandler;
 import org.biopax.paxtools.io.SimpleIOHandler;
+import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level2.catalysis;
 import org.biopax.paxtools.model.level3.BiochemicalReaction;
@@ -106,6 +107,7 @@ public class BioPaxtoGO {
 	String blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";
 	GoMappingReport report;
 	GOPlus goplus;
+	Model biopax_model;
 
 	public BioPaxtoGO(){
 		strategy = ImportStrategy.NoctuaCuration;
@@ -138,9 +140,10 @@ public class BioPaxtoGO {
 				//"/Users/bgood/Desktop/test/biopax/BMP_signaling.owl";
 				//"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
 				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Oct4_2018.owl";
-		//"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
-				"/Users/bgood/Desktop/test/biopax/Wnt_test_oct8_2018.owl";
-		String converted = "/Users/bgood/Desktop/test/go_cams/Wnt_test_oct8_2018-";
+				//"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
+				//		"/Users/bgood/Desktop/test/biopax/Wnt_test_oct8_2018.owl";
+				"/Users/bgood/Desktop/test/biopax/SignalingByWNTcomplete.owl";
+		String converted = "/Users/bgood/Desktop/test/go_cams/Wnt_complete_2018-";
 		//"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
 
 		boolean add_lego_import = false; //unless you never want to open the output in Protege always leave false..(or learn how to use a catalogue file)
@@ -220,7 +223,7 @@ public class BioPaxtoGO {
 		//read biopax pathway(s)
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileInputStream f = new FileInputStream(input_biopax);
-		Model model = handler.convertFromOWL(f);
+		biopax_model = handler.convertFromOWL(f);
 		int n_pathways = 0;
 		//set up ontology (used if not split)
 		String base_ont_title = base_title;
@@ -241,10 +244,9 @@ public class BioPaxtoGO {
 		Blazer blaze = go_cam.initializeBlazeGraph(journal);
 		QRunner tbox_qrunner = go_cam.initializeQRunnerForTboxInference(tbox_files);
 		//list pathways
-		int total_pathways = model.getObjects(Pathway.class).size();
-
+		int total_pathways = biopax_model.getObjects(Pathway.class).size();
 		boolean add_pathway_components = true;
-		for (Pathway currentPathway : model.getObjects(Pathway.class)){
+		for (Pathway currentPathway : biopax_model.getObjects(Pathway.class)){
 			if(!keepPathway(currentPathway, base_provider)) { //Pathway Commons contains a lot of content free stubs when viewed this way
 				continue;
 			}
@@ -301,14 +303,12 @@ public class BioPaxtoGO {
 			//define it (add types etc)
 			definePathwayEntity(go_cam, currentPathway, datasource_id, expand_subpathways, add_pathway_components);	
 			//get and set parent pathways
-			//currently viewing one model as a complete thing - leaving out outgoing connections.  
-			if(ImportStrategy.DirectImport != null) {
-				Set<String> pubids = getPubmedIds(currentPathway);
-				for(Pathway parent_pathway : currentPathway.getPathwayComponentOf()) {				
-					OWLNamedIndividual parent = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(parent_pathway.getUri()));
-					go_cam.addRefBackedObjectPropertyAssertion(p, GoCAM.part_of, parent, pubids, GoCAM.eco_imported_auto,  "PMID", null);
-					definePathwayEntity(go_cam, parent_pathway, datasource_id, expand_subpathways, add_pathway_components);
-				}
+			Set<String> pubids = getPubmedIds(currentPathway);
+			for(Pathway parent_pathway : currentPathway.getPathwayComponentOf()) {				
+				OWLNamedIndividual parent = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(parent_pathway.getUri()));
+				go_cam.addRefBackedObjectPropertyAssertion(p, GoCAM.part_of, parent, pubids, GoCAM.eco_imported_auto,  "PMID", null);
+				//don't add all the information on the parent pathway to this pathway
+				definePathwayEntity(go_cam, parent_pathway, datasource_id, false, false);
 			}
 			//write results
 			if(split_out_by_pathway) {
@@ -327,7 +327,7 @@ public class BioPaxtoGO {
 		if(!split_out_by_pathway) {
 			wrapAndWrite(converted+".ttl", go_cam, tbox_qrunner, save_inferences, save2blazegraph, converted, expand_subpathways);		
 		}
-		
+
 		System.out.println("done with file "+input_biopax);
 	}
 
@@ -579,7 +579,6 @@ public class BioPaxtoGO {
 							//	prevEvent directly_provides_input_for Event
 							if((event.getModelInterface().equals(BiochemicalReaction.class))&&
 									(prevEvent.getModelInterface().equals(BiochemicalReaction.class))) {
-								System.out.println("Adding prevStep "+event.getDisplayName()+" prev "+prevEvent.getDisplayName());
 								IRI event_iri = GoCAM.makeGoCamifiedIRI(event.getUri());
 								IRI prevEvent_iri = GoCAM.makeGoCamifiedIRI(prevEvent.getUri());
 								OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(prevEvent_iri);
@@ -642,13 +641,13 @@ public class BioPaxtoGO {
 	 * @throws IOException 
 	 */
 	private void defineReactionEntity(GoCAM go_cam, Entity entity, IRI this_iri) throws IOException {
+		if(this_iri==null) {
+			this_iri = GoCAM.makeGoCamifiedIRI(entity.getUri());
+		}		
+
 		//add entity to ontology, whatever it is
-		OWLNamedIndividual e = null;
-		if(this_iri!=null) {
-			e = go_cam.makeAnnotatedIndividual(this_iri);
-		}else {
-			e = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(entity.getUri()));
-		}
+		OWLNamedIndividual e = go_cam.makeAnnotatedIndividual(this_iri);
+
 		//check specifically for Reactome id
 		String reactome_id = "";
 		for(Xref xref : entity.getXref()) {
@@ -974,29 +973,6 @@ public class BioPaxtoGO {
 				//TemplateDirectionType tempdirtype = ((TemplateReaction) entity).getTemplateDirection();
 			}
 
-			//Conversion reaction = (Conversion)(entity);
-			//TODO get the preceding event
-			//This is not necessary to get the connectivity when querying the integrated pathway collection
-			//the outgoing connections are present in the preceding pathway - e.g. 
-			//tbid binds to inactive BAK protein has preceding event translocation of tBID to mitichondria
-			//connection not shown in pathway containing tbid binds to inactive BAK protein but is shown 
-			//in pathway containing translocation of tBID to mitichondria 
-			// e.g. translocation of tBID to mitichondria -- provides direct input for -- tbid binds to inactive BAK protein
-
-			//e.g. pathway 'Mitochondrial recruitment of Drp1' (reaction116) has preceeding event 'Caspase mediated cleavage of BAP31' [Homo sapiens] Reaction 94
-			//94 - stepProcessOf - next Step - stepProcess 
-			//			if(entity.getDisplayName().equals("Caspase mediated cleavage of BAP31")) {
-			//				System.out.println(entity);
-			//				BiochemicalReaction e_r = (BiochemicalReaction)entity;
-			//				Set<PathwayStep> steps_of = e_r.getStepProcessOf();
-			//				for(PathwayStep step : steps_of) {
-			//					for(PathwayStep s : step.getNextStep()) {
-			//						System.out.println("BAP31.."+s.getStepProcess());
-			//						System.out.println(s.getStepProcess()+" has preceding event "+e);
-			//					}
-			//				}
-			//			}
-
 			//link to participants in reaction
 			if(entity instanceof Conversion) {
 				ConversionDirectionType direction = ((Conversion) entity).getConversionDirection();
@@ -1092,6 +1068,28 @@ public class BioPaxtoGO {
 
 					Set<Controller> controller_entities = controller.getController();
 					for(Controller controller_entity : controller_entities) {
+						//if the controller is produced by a reaction in another pathway, then we want to bring that reaction into this model
+						//so we can see the causal relationships between it and the reaction we have here
+						Set<Interaction> events_controller_is_in = controller_entity.getParticipantOf();
+						if(controller_entity.getUri().equals("http://www.reactome.org/biopax/66/195721#Complex37")) {
+							System.out.println("h");
+						}
+						for(Interaction event : events_controller_is_in) {
+							if(event.getUri()!=controller.getUri()) {
+								//then we should be in some different, yet related reaction - mainly the one that produced the controller molecule
+								//stop recursive loops
+								IRI event_iri = GoCAM.makeGoCamifiedIRI(event.getUri());
+								if(go_cam.go_cam_ont.containsIndividualInSignature(event_iri)){
+									continue;
+								}else {
+									defineReactionEntity(go_cam, event, event_iri);
+									BioPAXElement bp_element = biopax_model.getByID(controller_entity.getUri());
+								}
+								//[http://www.reactome.org/biopax/66/195721#Control9, http://www.reactome.org/biopax/66/195721#BiochemicalReaction100]
+
+							}
+						}
+
 						IRI iri = null;
 						iri = GoCAM.makeGoCamifiedIRI(controller_entity.getUri()+entity.getUri()+"controller");
 						defineReactionEntity(go_cam, controller_entity, iri);

@@ -1045,8 +1045,6 @@ final long counterValue = instanceCounter.getAndIncrement();
 						OWLNamedIndividual complex_part = this.makeAnnotatedIndividual(part);
 						Set<OWLAnnotation> annos = getDefaultAnnotations();
 						if(property.equals(has_output)) { //TODO, figure this out.. just remove it for now
-						//	applyAnnotatedTripleRemover(reaction.getIRI(), property.getIRI(), complex.getIRI());
-						//	applyAnnotatedTripleRemover(complex.getIRI(), has_part.getIRI(), complex_part.getIRI());
 							deleteOwlEntityAndAllReferencesToIt(complex_part);
 						}
 						else if(property.equals(involved_in_positive_regulation_of)||property.equals(involved_in_negative_regulation_of)) {

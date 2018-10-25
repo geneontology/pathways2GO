@@ -285,7 +285,11 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			Resource pathway = qs.getResource("pathway");
 			Resource entity = qs.getResource("entityZ");
 			//reaction1  regulated somehow by reaction 2
-			ir.add(new InferredRegulator(reaction1.getURI(), property.getURI(), reaction2.getURI(), pathway.getURI(), entity.getURI()));
+			String pathway_uri = "";
+			if(pathway!=null) {
+				pathway_uri = pathway.getURI();
+			}
+			ir.add(new InferredRegulator(reaction1.getURI(), property.getURI(), reaction2.getURI(), pathway_uri, entity.getURI()));
 		}
 		qe.close();
 		return ir;
@@ -310,7 +314,11 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			Resource reaction2 = qs.getResource("reaction2"); 
 			Resource pathway = qs.getResource("pathway");
 			//reaction1  regulated somehow by reaction 2
-			ir.add(new InferredRegulator(reaction1.getURI(), GoCAM.directly_negatively_regulates.getIRI().toString(), reaction2.getURI(), pathway.getURI(), ""));
+			String pathway_uri = "";
+			if(pathway!=null) {
+				pathway_uri = pathway.getURI();
+			}
+			ir.add(new InferredRegulator(reaction1.getURI(), GoCAM.directly_negatively_regulates.getIRI().toString(), reaction2.getURI(), pathway_uri, ""));
 		}
 		qe.close();
 		return ir;
@@ -358,7 +366,9 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		while (results.hasNext()) {
 			QuerySolution qs = results.next();
 			Resource pathway = qs.getResource("pathway");
-			String pathway_uri = pathway.getURI();
+			
+			String pathway_uri = "";
+			if(pathway!=null) {pathway_uri = pathway.getURI();}
 			Resource reaction = qs.getResource("reaction"); 
 			Resource start = qs.getResource("start_location_type"); 
 			Resource end = qs.getResource("end_location_type"); 
