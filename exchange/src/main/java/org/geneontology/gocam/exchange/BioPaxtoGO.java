@@ -1085,14 +1085,11 @@ public class BioPaxtoGO {
 									//stop recursive loops
 									continue;
 								}else {
-									//Todo if floating nodes become a problem add a filter here to only include
-									//reactions we know will end up getting connected
-//									if(event instanceof BiochemicalReaction) {
-//										Set<PhysicalEntity> related_entities = ((BiochemicalReaction) entity).getRight();
-//										if(related_entities.contains(controller_entity)) {
-											defineReactionEntity(go_cam, event, event_iri);
-//										}
-//									}
+									//limit to reactions as mostly we are interested in upstream processes
+									//that generate the inputs that control the current reaction
+									if(event instanceof BiochemicalReaction) {
+										defineReactionEntity(go_cam, event, event_iri);
+									}
 								}
 							}
 						}
