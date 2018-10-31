@@ -108,7 +108,7 @@ public class BioPaxtoGO {
 	GoMappingReport report;
 	GOPlus goplus;
 	Model biopax_model;
-	boolean causal_recurse = false;
+	boolean causal_recurse = true;
 
 	public BioPaxtoGO(){
 		strategy = ImportStrategy.NoctuaCuration;
@@ -368,7 +368,7 @@ public class BioPaxtoGO {
 	private void wrapAndWrite(String outfilename, GoCAM go_cam, QRunner tbox_qrunner, boolean save_inferences, boolean save2blazegraph, String pathwayname, boolean expand_subpathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {		
 		WorkingMemory wm_with_tbox = tbox_qrunner.arachne.createInferredModel(go_cam.go_cam_ont,true, true);	
 		System.out.println("Report before local rules");
-		GoCAMReport gocam_report = new GoCAMReport(wm_with_tbox);
+		GoCAMReport gocam_report = new GoCAMReport(wm_with_tbox, outfilename);
 		
 		//set up a sparqlable kb in sync with ontology
 		System.out.println("setting up rdf model for sparql rules");
@@ -390,7 +390,7 @@ public class BioPaxtoGO {
 
 		wm_with_tbox = tbox_qrunner.arachne.createInferredModel(go_cam.go_cam_ont,true, true);	
 		System.out.println("Report after local rules");
-		gocam_report = new GoCAMReport(wm_with_tbox);
+		gocam_report = new GoCAMReport(wm_with_tbox, outfilename);
 		//		GoCAMReport after = go_cam.getGoCAMReport();
 //		ReasonerReport reasoner_report = new ReasonerReport(before, after);
 //TODO		report.pathway_class_report.put(pathwayname, reasoner_report);

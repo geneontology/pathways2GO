@@ -1,0 +1,36 @@
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+prefix obo: <http://purl.obolibrary.org/obo/>
+prefix biopax: <http://www.biopax.org/release/biopax-level3.owl#>
+prefix skos: <http://www.w3.org/2004/02/skos/core#>
+        
+PREFIX BP: <http://purl.obolibrary.org/obo/GO_0008150>
+PREFIX MF: <http://purl.obolibrary.org/obo/GO_0003674>
+PREFIX CC: <http://purl.obolibrary.org/obo/GO_0005575>
+
+#get the components where things occur or are located in
+select distinct ?component ?relation  
+where {
+	?function ?relation ?place_instance . 
+	VALUES ?relation 
+	{obo:BFO_0000066 obo:RO_0001025} .
+	?place_instance rdf:type ?component .
+	FILTER ( ?component != owl:NamedIndividual ) . 
+	FILTER (
+     !EXISTS {
+ 		?place_instance  <http://arachne.geneontology.org/indirect_type> ?component  
+ 	} )
+}
+
+#obo:RO_0002233 obo:RO_0002333 obo:RO_0002234
+
+# RO_0002024  directly positively regulated by 
+# RO_0002023  directly negatively regulated by 
+# RO_0002334 regulated by
+# obo:RO_0002233 has input 
+# obo:RO_0002333 enabled by
+# RO_0002234 has output
+# obo:BFO_0000051 has part
+# obo:RO_0002413 provides direct input for
+# BFO_0000066 occurs_in

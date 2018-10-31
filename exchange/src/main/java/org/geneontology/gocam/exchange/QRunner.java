@@ -127,33 +127,21 @@ public class QRunner {
 	}
 
 	Map<String, Set<String>> getPathways() {
-		Map<String, Set<String>> pathway_type = new HashMap<String, Set<String>>();
-		String q = null;
-		try {
-			q = IOUtils.toString(App.class.getResourceAsStream("get_pathways.rq"), StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			System.out.println("Could not load SPARQL query from jar \n"+e);
-		}
-		QueryExecution qe = QueryExecutionFactory.create(q, jena);
-		ResultSet results = qe.execSelect();
-		while (results.hasNext()) {
-			QuerySolution qs = results.next();
-			Resource pathway = qs.getResource("pathway");
-			Resource parent =  qs.getResource("type");
-			Set<String> ps = pathway_type.get(pathway.getURI());
-			if(ps == null) { ps = new HashSet<String>();}
-			ps.add(parent.getURI());
-			pathway_type.put(pathway.getURI(), ps);
-		}
-		qe.close();
-		return pathway_type;
+		return getThingTypeMap("get_pathways.rq","pathway","type");
 	}
 	
 	Map<String, Set<String>> getFunctions() {
-		Map<String, Set<String>> function_type = new HashMap<String, Set<String>>();
+		return getThingTypeMap("get_functions.rq","function","type");
+	}
+	Map<String, Set<String>> getComplexClasses() {
+		return getThingTypeMap("get_complexes.rq","complex","type");
+	}
+	
+	Map<String, Set<String>> getThingTypeMap(String query_file, String thingvar, String typevar) {
+		Map<String, Set<String>> thing_type = new HashMap<String, Set<String>>();
 		String q = null;
 		try {
-			q = IOUtils.toString(App.class.getResourceAsStream("get_functions.rq"), StandardCharsets.UTF_8);
+			q = IOUtils.toString(App.class.getResourceAsStream(query_file), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL query from jar \n"+e);
 		}
@@ -161,23 +149,45 @@ public class QRunner {
 		ResultSet results = qe.execSelect();
 		while (results.hasNext()) {
 			QuerySolution qs = results.next();
-			Resource pathway = qs.getResource("function");
-			Resource parent =  qs.getResource("type");
-			Set<String> ps = function_type.get(pathway.getURI());
+			Resource thing = qs.getResource(thingvar);
+			Resource type =  qs.getResource(typevar);
+			Set<String> ps = thing_type.get(thing.getURI());
 			if(ps == null) { ps = new HashSet<String>();}
-			ps.add(parent.getURI());
-			function_type.put(pathway.getURI(), ps);
+			ps.add(type.getURI());
+			thing_type.put(thing.getURI(), ps);
 		}
 		qe.close();
-		return function_type;
+		return thing_type;
 	}
 	
 	Map<String, Integer> getRelations() {
 		Map<String, Integer> relations = new HashMap<String, Integer>();
-		String q = null; String q_e = null;
+		relations = getThingCount("get_function_relations.rq", "relation");
+		Map<String, Integer> r2 = getThingCount("get_entity_function_relations.rq", "relation");
+		relations.putAll(r2);
+		return relations;
+	}
+	
+	Map<String, Integer> getProteins() {
+		return getThingCount("get_proteins.rq", "protein_class");
+	}
+	Map<String, Integer> getChemicals() {
+		return getThingCount("get_chemicals.rq", "chemical_class");
+	}
+	
+	Map<String, Integer> getComplexes() {
+		return getThingCount("get_complexes.rq", "complex");
+	}
+	
+	Map<String, Integer> getComponents() {
+		return getThingCount("get_components.rq", "component");
+	}
+	
+	Map<String, Integer> getThingCount(String query_file, String varName) {
+		Map<String, Integer> things = new HashMap<String, Integer>();
+		String q = null; 
 		try {
-			q = IOUtils.toString(App.class.getResourceAsStream("get_function_relations.rq"), StandardCharsets.UTF_8);
-			q_e = IOUtils.toString(App.class.getResourceAsStream("get_entity_function_relations.rq"), StandardCharsets.UTF_8);
+			q = IOUtils.toString(App.class.getResourceAsStream(query_file), StandardCharsets.UTF_8);
 
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL query from jar \n"+e);
@@ -186,27 +196,16 @@ public class QRunner {
 		ResultSet results = qe.execSelect();
 		while (results.hasNext()) {
 			QuerySolution qs = results.next();
-			Resource relation = qs.getResource("relation");
-			Integer c = relations.get(relation.getURI());
+			Resource relation = qs.getResource(varName);
+			Integer c = things.get(relation.getURI());
 			if(c==null) { c = 0;}
 			c++;
-			relations.put(relation.getURI(), c);
+			things.put(relation.getURI(), c);
 		}
 		qe.close();
-		qe = QueryExecutionFactory.create(q_e, jena);
-		results = qe.execSelect();
-		while (results.hasNext()) {
-			QuerySolution qs = results.next();
-			Resource relation = qs.getResource("relation");
-			Integer c = relations.get(relation.getURI());
-			if(c==null) { c = 0;}
-			c++;
-			relations.put(relation.getURI(), c);
-		}
-		qe.close();
-		return relations;
+		
+		return things;
 	}
-	
 	
 	int nTriples() {
 		int n = 0;
