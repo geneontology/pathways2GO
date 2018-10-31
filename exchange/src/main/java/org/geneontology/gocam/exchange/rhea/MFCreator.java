@@ -26,7 +26,7 @@ import org.apache.jena.vocabulary.OWL;
 import org.biopax.paxtools.model.level3.BiochemicalReaction;
 import org.geneontology.gocam.exchange.App;
 import org.geneontology.gocam.exchange.ArachneAccessor;
-import org.geneontology.gocam.exchange.ClassificationReport;
+import org.geneontology.gocam.exchange.GoCAMReport;
 import org.geneontology.gocam.exchange.GoCAM;
 import org.geneontology.gocam.exchange.GoMappingReport;
 import org.geneontology.gocam.exchange.Helper;
@@ -423,12 +423,12 @@ public class MFCreator {
 			System.out.println(gocam_ttl.getName());
 			GoCAM react_gocam = new GoCAM(gocam_ttl.getAbsolutePath());
 			react_gocam.qrunner = new QRunner(react_gocam.go_cam_ont); 
-			ClassificationReport before = react_gocam.getClassificationReport();		
+			GoCAMReport before = react_gocam.getGoCAMReport();		
 			//don't want to reload tbox each time..
 			boolean rebuild_tbox_with_go_cam_ont = false;
 			//this will also rebuild the rdf version of the ontology, adding things it infers
 			WorkingMemory wm = react_gocam.applyArachneInference(tbox_qrunner, rebuild_tbox_with_go_cam_ont);
-			ClassificationReport after = react_gocam.getClassificationReport();
+			GoCAMReport after = react_gocam.getGoCAMReport();
 			ReasonerReport reasoner_report = new ReasonerReport(before, after);
 			report.pathway_class_report.put(gocam_ttl.getName(), reasoner_report);
 			//			boolean is_logical = react_gocam.validateGoCAM();	

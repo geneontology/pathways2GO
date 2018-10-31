@@ -91,6 +91,10 @@ public class QRunner {
 		jena = makeJenaModel(abox, null);
 	}
 
+	public QRunner (WorkingMemory wm) {
+		jena = makeJenaModel(wm);
+	}
+	
 //	public void updateAboxAndApplyRules(OWLOntology abox, boolean add_property_definitions, boolean add_class_definitions) {
 //		//this is needed to get the little type and subclass assignments made in go_cams to stitch things together
 //		arachne.makeExpandedRuleSet(abox);
@@ -122,6 +126,88 @@ public class QRunner {
 		return model;
 	}
 
+	Map<String, Set<String>> getPathways() {
+		Map<String, Set<String>> pathway_type = new HashMap<String, Set<String>>();
+		String q = null;
+		try {
+			q = IOUtils.toString(App.class.getResourceAsStream("get_pathways.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL query from jar \n"+e);
+		}
+		QueryExecution qe = QueryExecutionFactory.create(q, jena);
+		ResultSet results = qe.execSelect();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Resource pathway = qs.getResource("pathway");
+			Resource parent =  qs.getResource("type");
+			Set<String> ps = pathway_type.get(pathway.getURI());
+			if(ps == null) { ps = new HashSet<String>();}
+			ps.add(parent.getURI());
+			pathway_type.put(pathway.getURI(), ps);
+		}
+		qe.close();
+		return pathway_type;
+	}
+	
+	Map<String, Set<String>> getFunctions() {
+		Map<String, Set<String>> function_type = new HashMap<String, Set<String>>();
+		String q = null;
+		try {
+			q = IOUtils.toString(App.class.getResourceAsStream("get_functions.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL query from jar \n"+e);
+		}
+		QueryExecution qe = QueryExecutionFactory.create(q, jena);
+		ResultSet results = qe.execSelect();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Resource pathway = qs.getResource("function");
+			Resource parent =  qs.getResource("type");
+			Set<String> ps = function_type.get(pathway.getURI());
+			if(ps == null) { ps = new HashSet<String>();}
+			ps.add(parent.getURI());
+			function_type.put(pathway.getURI(), ps);
+		}
+		qe.close();
+		return function_type;
+	}
+	
+	Map<String, Integer> getRelations() {
+		Map<String, Integer> relations = new HashMap<String, Integer>();
+		String q = null; String q_e = null;
+		try {
+			q = IOUtils.toString(App.class.getResourceAsStream("get_function_relations.rq"), StandardCharsets.UTF_8);
+			q_e = IOUtils.toString(App.class.getResourceAsStream("get_entity_function_relations.rq"), StandardCharsets.UTF_8);
+
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL query from jar \n"+e);
+		}
+		QueryExecution qe = QueryExecutionFactory.create(q, jena);
+		ResultSet results = qe.execSelect();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Resource relation = qs.getResource("relation");
+			Integer c = relations.get(relation.getURI());
+			if(c==null) { c = 0;}
+			c++;
+			relations.put(relation.getURI(), c);
+		}
+		qe.close();
+		qe = QueryExecutionFactory.create(q_e, jena);
+		results = qe.execSelect();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Resource relation = qs.getResource("relation");
+			Integer c = relations.get(relation.getURI());
+			if(c==null) { c = 0;}
+			c++;
+			relations.put(relation.getURI(), c);
+		}
+		qe.close();
+		return relations;
+	}
+	
+	
 	int nTriples() {
 		int n = 0;
 		String q = null;

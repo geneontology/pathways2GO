@@ -47,6 +47,7 @@ public class GOPlus {
 	Map<String, String> replaced_by_map;
 	Map<String, Set<String>> xref_gos;
 	String obo_base ="http://purl.obolibrary.org/obo/";
+	OWLReasoner go_reasoner;
 	/**
 	 * @throws OWLOntologyCreationException 
 	 * 
@@ -58,7 +59,7 @@ public class GOPlus {
 		xref_gos = new HashMap<String, Set<String>>();	
 		GoCAM tmp = new GoCAM();//make the init functions run..
 		System.out.println("GOPlus loaded, axioms "+go.getAxiomCount());
-		OWLReasoner go_reasoner = createReasoner(go);
+		go_reasoner = createReasoner(go);
 
 		//build a map of all the xrefs in the ontology
 		//probably a more efficient way to do this...

@@ -3,6 +3,8 @@
  */
 package org.geneontology.gocam.exchange;
 
+
+
 /**
  * @author bgood
  *
@@ -16,7 +18,7 @@ public class ReasonerReport {
 	/**
 	 * 
 	 */
-	public ReasonerReport(ClassificationReport dumb, ClassificationReport smart) {
+	public ReasonerReport(GoCAMReport dumb, GoCAMReport smart) {
 		mf_new_class_count = (smart.mf_count-smart.mf_unclassified) - (dumb.mf_count-dumb.mf_unclassified);
 		bp_new_class_count = (smart.bp_count-smart.bp_unclassified) - (dumb.bp_count-dumb.bp_unclassified);
 		cc_new_class_count = (smart.cc_count-smart.cc_unclassified) - (dumb.cc_count-dumb.cc_unclassified);
@@ -31,4 +33,6 @@ public class ReasonerReport {
 		complex_new_class_count = 0;
 		total_new_classified_instances = 0;
 	}
+	
+	
 }

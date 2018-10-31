@@ -1,0 +1,45 @@
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+prefix obo: <http://purl.obolibrary.org/obo/>
+prefix biopax: <http://www.biopax.org/release/biopax-level3.owl#>
+prefix skos: <http://www.w3.org/2004/02/skos/core#>
+        
+PREFIX BP: <http://purl.obolibrary.org/obo/GO_0008150>
+PREFIX MF: <http://purl.obolibrary.org/obo/GO_0003674>
+PREFIX CC: <http://purl.obolibrary.org/obo/GO_0005575>
+
+# retrieve (asserted) causal relations between processes (mfs and bps) in the active graph
+# the values restriction on relations is the only part that
+# has the effect of limiting the results to asserted relations
+# taking it out, you get e.g. lots of relations like 'mereotopologically related to'
+# note that inverse properties are both not reported and taken advantage 
+# e.g. we just ask for has_part and not part_of - part_of assertions may generate has_parts and vice versa
+
+select distinct ?function1 ?relation ?function2
+where {
+	?function1 ?relation ?function2 . 
+	VALUES ?relation 
+	{obo:BFO_0000051 
+	obo:RO_0002024 obo:RO_0002023 
+	obo:RO_0002413} .
+ 	?function1 rdf:type ?type1 . 
+ 	?type1 rdfs:subClassOf* ?upper1 .
+ 	VALUES ?upper1 { MF: BP: } . 
+ 	?function2 rdf:type ?type2 . 
+ 	?type2 rdfs:subClassOf* ?upper2 . 
+ 	VALUES ?upper2 { MF: BP: } . 
+ 	FILTER (?function1 != ?function2) 
+}
+
+#obo:RO_0002233 obo:RO_0002333 obo:RO_0002234
+
+# RO_0002024  directly positively regulated by 
+# RO_0002023  directly negatively regulated by 
+# RO_0002334 regulated by
+# obo:RO_0002233 has input 
+# obo:RO_0002333 enabled by
+# RO_0002234 has output
+# obo:BFO_0000051 has part
+# obo:RO_0002413 provides direct input for
+# BFO_0000066 occurs_in
