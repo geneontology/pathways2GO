@@ -1,0 +1,60 @@
+Reactome node type	Reactome Label	Asserted GO types	Inferred GO types
+Pathway	Signaling by BMP	BMP signaling pathway,	
+function	ACVRL1 binds BMP9,BMP10	protein binding,	protein-containing complex binding,
+function	AMHR2 binds AMH	protein binding,	
+function	Formation of a heteromeric BMP receptor complex	protein binding,	protein-containing complex binding,
+function	The ligand trap binds the ligand BMP2, blocking BMP signalling	protein binding,	molecular function regulator,protein-containing complex binding,
+function	I-Smad competes with R-Smad1/5/8 for type I receptor	protein binding,	protein serine/threonine kinase inhibitor activity,receptor inhibitor activity,protein-containing complex binding,
+function	Type II receptor phosphorylates type I receptor	activin receptor activity, type II,	nucleotide receptor activity,
+function	Ubiquitin-dependent degradation controls basal levels of R-Smad1/5/8	ubiquitin protein ligase activity,	
+function	BMP2 binds to the receptor complex	transforming growth factor beta receptor binding,	protein-containing complex binding,
+function	SKI complexes with the Smad complex, suppressing BMP2 signalling	protein binding,	protein-containing complex binding,
+function	Ubiquitin-dependent degradation of the Smad complex terminates BMP2 signalling	ubiquitin-protein transferase activity,	
+function	I-Smad binds to type I receptor, preventing Smad1/5/8 from being activated	protein binding,	protein-containing complex binding,
+function	The phospho-R-Smad1/5/8:Co-Smad transfers to the nucleus	protein binding,	
+function	An anchoring protein, Endofin, recruits R-Smad1/5/8	protein binding,	protein-containing complex binding,
+function	Phospho-R-Smad1/5/8 forms a complex with Co-Smad	protein binding,	
+function	Phospho-R-Smad1/5/8 dissociates from the receptor complex	protein binding,	
+function	Activated type I receptor phosphorylates R-Smad1/5/8 directly	transmembrane receptor protein serine/threonine kinase activity,	nucleotide receptor activity,
+function	I-Smad competes with Co-Smad for R-Smad1/5/8	protein binding,	protein-containing complex binding,
+complex	p-2S-SMAD1/5/8:SMAD4:SKI		
+complex	BMP:p-BMPR:Endofin:SMAD1/5/8		
+complex	BMP:BMPR		
+complex	BMP:p-BMPR:Endofin:p-2S-SMAD1/5/8		
+complex	BMP:p-BMPR:I-SMAD:SMURF		
+complex	BMPRII:BMPRI		
+complex	BMP:BMPRII:P-BMPRI		receptor complex,serine/threonine protein kinase complex,
+complex	I-SMAD		
+complex	AMH dimer:AMHR2 dimer		
+complex	BMP2:BMP type II receptor:Phospho-BMP type I receptor:I-SMAD		
+complex	BMPRII dimer		
+complex	p-2S-SMAD1/5/8:SMAD4		
+complex	GDF2 dimer, BMP10 dimer		
+complex	BMP:p-BMPR:Endofin:SMAD1/5/8		
+complex	BMP:BMPRII:P-BMPRI		
+complex	I-SMAD:p-2S-SMAD1/5/8		
+complex	p-2S-SMAD1/5/8:SMAD4		
+complex	ACVRL1:GDF2 dimer, BMP10 dimer		
+complex	SMAD1/5/8		
+complex	p-2S-SMAD1/5/8:SMAD4		
+complex	BMPRII:BMPRI		
+complex	BMPRI dimer		
+complex	BMP:p-BMPR:Endofin:p-2S-SMAD1/5/8		
+complex	BMP:BMPRII:P-BMPRI		
+complex	Nuclear ubiquitin ligase		transferase complex,
+complex	p-2S-SMAD1/5/8		
+complex	BMP:p-BMPR:Endofin		
+complex	BMP:BMPR		activin receptor complex,
+complex	Ligand Trap:BMP2		
+complex	BMP:BMPR		
+complex	Ligand Trap		
+complex	p-2S-SMAD1/5/8:SMAD4		
+complex	BMP:BMPRII:P-BMPRI		
+complex	SMURF		ubiquitin ligase complex,
+complex	p-2S-SMAD1/5/8		
+complex	p-2S-SMAD1/5/8:SMAD4		
+complex	SMAD1/5/8		
+complex	BMP:BMPRII:P-BMPRI		
+complex	I-SMAD:SMURF		
+complex	p-2S-SMAD1/5/8		
+complex	I-SMAD		

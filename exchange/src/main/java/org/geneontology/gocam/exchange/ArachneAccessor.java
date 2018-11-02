@@ -103,7 +103,7 @@ public class ArachneAccessor {
 	 * @param add_class_definitions
 	 * @return
 	 */
-	WorkingMemory createInferredModel(OWLOntology abox_ontology, boolean add_property_definitions, boolean add_class_definitions) {
+	public WorkingMemory createInferredModel(OWLOntology abox_ontology, boolean add_property_definitions, boolean add_class_definitions) {
 		Set<Statement> statements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(abox_ontology)).asJava();		
 		Set<Triple> triples = statements.stream().map(s -> Bridge.tripleFromJena(s.asTriple())).collect(Collectors.toSet());
 		try {

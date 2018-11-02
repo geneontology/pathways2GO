@@ -51,9 +51,9 @@ import scala.collection.JavaConverters;
  *
  */
 public class QRunner {
-	Model jena;
-	ArachneAccessor arachne;
-	WorkingMemory wm;
+	public Model jena;
+	public ArachneAccessor arachne;
+	public WorkingMemory wm;
 	/**
 	 * @throws OWLOntologyCreationException 
 	 * 

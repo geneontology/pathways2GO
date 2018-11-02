@@ -423,12 +423,14 @@ public class MFCreator {
 			System.out.println(gocam_ttl.getName());
 			GoCAM react_gocam = new GoCAM(gocam_ttl.getAbsolutePath());
 			react_gocam.qrunner = new QRunner(react_gocam.go_cam_ont); 
-			GoCAMReport before = react_gocam.getGoCAMReport();		
+			WorkingMemory wm_with_tbox = tbox_qrunner.arachne.createInferredModel(go_cam.go_cam_ont,true, true);	
+			System.out.println("Report before local rules");
+			GoCAMReport before = new GoCAMReport(wm_with_tbox, gocam_ttl.getName(), go_cam, go_cam.go_cam_ont);	
 			//don't want to reload tbox each time..
 			boolean rebuild_tbox_with_go_cam_ont = false;
-			//this will also rebuild the rdf version of the ontology, adding things it infers
-			WorkingMemory wm = react_gocam.applyArachneInference(tbox_qrunner, rebuild_tbox_with_go_cam_ont);
-			GoCAMReport after = react_gocam.getGoCAMReport();
+			wm_with_tbox = tbox_qrunner.arachne.createInferredModel(go_cam.go_cam_ont,true, true);	
+			System.out.println("Report before local rules");
+			GoCAMReport after = new GoCAMReport(wm_with_tbox, gocam_ttl.getName(), go_cam, go_cam.go_cam_ont);	
 			ReasonerReport reasoner_report = new ReasonerReport(before, after);
 			report.pathway_class_report.put(gocam_ttl.getName(), reasoner_report);
 			//			boolean is_logical = react_gocam.validateGoCAM();	
@@ -438,19 +440,6 @@ public class MFCreator {
 			if(reasoner_report.mf_new_class_count!=0||x%100==0) {
 				System.out.println(x+" new inferred MFs count: "+reasoner_report.mf_new_class_count);
 			}
-			boolean skip_indirect = true;
-			Map<String, Set<String>> inferred_types_by_uri = ArachneAccessor.getInferredTypes(wm, skip_indirect);
-			Map<String, Set<String>> inferred_types = new HashMap<String, Set<String>>();
-			//add labels
-			for(String uri : inferred_types_by_uri.keySet()) {
-				String u = uri.replace(">", "");
-				u = u.replace("<", "");
-				OWLEntity e = react_gocam.df.getOWLNamedIndividual(IRI.create(u));
-				String label = react_gocam.getaLabel(e);
-				label = label+"\t"+uri;
-				inferred_types.put(label,inferred_types_by_uri.get(uri));
-			}
-			report.pathway_inferred_types.put(gocam_ttl.getName(), inferred_types);	
 
 			//iterate through the reactions
 

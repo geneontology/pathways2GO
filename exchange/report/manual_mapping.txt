@@ -1,0 +1,19 @@
+Reactome Node Type	Reactome label	curated GO MF	curated GO_BP	both	controller_type	
+Reaction	BMP2 binds to the receptor complex	GO_0005160 	none		Catalysis 
+Reaction	Formation of a heteromeric BMP receptor complex	none	none		none
+Reaction	Phospho-R-Smad1/5/8 forms a complex with Co-Smad	none	none		none
+Reaction	The ligand trap binds the ligand BMP2, blocking BMP signalling	none	none		none
+Reaction	SKI complexes with the Smad complex, suppressing BMP2 signalling	none	none		none
+Reaction	The phospho-R-Smad1/5/8:Co-Smad transfers to the nucleus	none	none		none
+Reaction	AMHR2 binds AMH	none	none		none
+Reaction	I-Smad competes with R-Smad1/5/8 for type I receptor	none	none		none
+Reaction	I-Smad competes with Co-Smad for R-Smad1/5/8	none	none		none
+Reaction	Phospho-R-Smad1/5/8 dissociates from the receptor complex	none	none		none
+Reaction	Activated type I receptor phosphorylates R-Smad1/5/8 directly	GO_0004675 	none		Catalysis 
+Reaction	I-Smad binds to type I receptor, preventing Smad1/5/8 from being activated	none	none		none
+Reaction	Ubiquitin-dependent degradation controls basal levels of R-Smad1/5/8	GO_0061630 	none		Catalysis 
+Reaction	An anchoring protein, Endofin, recruits R-Smad1/5/8	none	none		none
+Reaction	Type II receptor phosphorylates type I receptor	GO_0016362 	none		Catalysis 
+Reaction	Ubiquitin-dependent degradation of the Smad complex terminates BMP2 signalling	GO_0004842 	none		Catalysis 
+Pathway	Signaling by BMP	none	GO_0030509 		none
+Reaction	ACVRL1 binds BMP9,BMP10	none	none		none

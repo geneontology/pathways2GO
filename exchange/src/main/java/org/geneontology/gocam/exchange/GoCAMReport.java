@@ -17,6 +17,7 @@ import org.apache.jena.rdf.model.Statement;
 import org.geneontology.rules.engine.WorkingMemory;
 import org.geneontology.rules.util.Bridge;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLOntology;
 
 /**
  * @author bgood
@@ -25,11 +26,7 @@ import org.semanticweb.owlapi.model.IRI;
 public class GoCAMReport {
 	Model model = ModelFactory.createDefaultModel();
 	String name = "";
-	int mf_unclassified = 0;
-	int bp_unclassified = 0;
-	int cc_unclassified = 0;
-	int complex_unclassified = 0;
-	
+	//n nodes of each type
 	int mf_count = 0;
 	int bp_count = 0;
 	int relation_count = 0;
@@ -37,64 +34,244 @@ public class GoCAMReport {
 	int complex_count = 0;
 	int protein_count = 0;
 	int chemical_count = 0;
+	//node to class mappings
+	Map<String, Set<String>> pathway_types = new HashMap<String, Set<String>>();
+	Map<String, Set<String>> pathway_inferred_types = new HashMap<String, Set<String>>();
+	Map<String, Set<String>> pathway_asserted_types = new HashMap<String, Set<String>>();
+	Map<String, Set<String>> function_types = new HashMap<String, Set<String>>();
+	Map<String, Set<String>> function_inferred_types = new HashMap<String, Set<String>>();
+	Map<String, Set<String>> function_asserted_types = new HashMap<String, Set<String>>();
+	Map<String, Set<String>> complex_types = new HashMap<String, Set<String>>();
+	Map<String, Set<String>> complex_inferred_types = new HashMap<String, Set<String>>();
+	Map<String, Set<String>> complex_asserted_types = new HashMap<String, Set<String>>();
+	Map<String, Set<String>> all_types = new HashMap<String, Set<String>>();
+	//counts inferences and classifications
+	int mf_unclassified = 0;
+	int mf_inferred_type = 0;
+	int mf_deepened = 0;
+	int bp_unclassified = 0;
+	int bp_inferred_type = 0;
+	int bp_deepened = 0;
+	int cc_unclassified = 0;
+	int complex_unclassified = 0;
+	int complex_inferred_type = 0;
+	int complex_deepened = 0;
+	//for convenience (and not passing around ontologies for later)
+	Map<String, String> uri_term = new HashMap<String, String>();
 
-	Set<String> mf_labels = new HashSet<String>();
-	Set<String> mf_to_root_labels = new HashSet<String>();
-	Set<String> bp_labels = new HashSet<String>();
-	Set<String> bp_to_root_labels = new HashSet<String>();
-	Set<String> cc_labels = new HashSet<String>();
-	Set<String> cc_to_root_labels = new HashSet<String>();
-	Set<String> complex_labels = new HashSet<String>();
-	Set<String> complex_to_root_labels = new HashSet<String>();
 	public GoCAMReport() {};
-	
+
+
+	public String makeMappingReport() {
+		String report = "";
+		for(String pathway_uri : pathway_types.keySet()) {
+			report+="Pathway\t"+uri_term.get(pathway_uri)+"\t";
+			if(pathway_asserted_types!=null&&pathway_asserted_types.size()>0) {
+				Set<String> types = pathway_asserted_types.get(pathway_uri);
+				if(types!=null) {
+					for(String type : types) {
+						String label = uri_term.get(type);
+						report+=label+",";
+					}
+				}
+			}
+			report+="\t";
+			if(pathway_inferred_types!=null&&pathway_inferred_types.size()>0) {
+				Set<String> types = pathway_inferred_types.get(pathway_uri);
+				if(types!=null) {
+					for(String type : types) {
+						String label = uri_term.get(type);
+						report+=label+",";
+					}
+				}
+			}
+			report+="\n";			
+		}
+
+		for(String function_uri : function_types.keySet()) {
+			report+="function\t"+uri_term.get(function_uri)+"\t";
+			if(function_asserted_types!=null&&function_asserted_types.size()>0) {
+				Set<String> types = function_asserted_types.get(function_uri);
+				if(types!=null) {
+					for(String type : types) {
+						String label = uri_term.get(type);
+						report+=label+",";
+					}
+				}
+			}
+			report+="\t";
+			if(function_inferred_types!=null&&function_inferred_types.size()>0) {
+				Set<String> types = function_inferred_types.get(function_uri);
+				if(types!=null) {
+					for(String type : types) {
+						String label = uri_term.get(type);
+						report+=label+",";
+					}
+				}
+			}
+
+			report+="\n";			
+		}
+
+		for(String complex_uri : complex_types.keySet()) {
+			report+="complex\t"+uri_term.get(complex_uri)+"\t";
+			if(complex_asserted_types!=null&&complex_asserted_types.size()>0) {
+				Set<String> types = complex_asserted_types.get(complex_uri);
+				if(types!=null) {
+					for(String type : types) {
+						String label = uri_term.get(type);
+						report+=label+",";
+					}
+				}
+			}
+			report+="\t";
+			if(complex_inferred_types!=null&&complex_inferred_types.size()>0) {
+				Set<String> types = complex_inferred_types.get(complex_uri);
+				if(types!=null) {
+					for(String type : types) {
+						String label = uri_term.get(type);
+						report+=label+",";
+					}
+				}
+			}
+			report+="\n";			
+		}
+
+		return report;
+	}
 
 	/**
 	 * This and the SPARQL queries that underlie it expect a WorkingMemory object containing
 	 * a reasoned set of triples that includes the ontology graphs.  
 	 * @param wm
 	 */
-	public GoCAMReport(WorkingMemory wm, String n) {
+	public GoCAMReport(WorkingMemory wm, String n, GoCAM go_cam, OWLOntology go) {
 		name = n;
 		QRunner qr = new QRunner(wm);
-		Map<String, Set<String>> pathway_types = qr.getPathways();
+		pathway_types = qr.getPathways();
 		bp_count = pathway_types.keySet().size();
-		Map<String, Set<String>> function_types = qr.getFunctions();
+		function_types = qr.getFunctions();
 		mf_count = function_types.keySet().size();
-		Map<String, Set<String>> complex_types = qr.getComplexClasses();
+		complex_types = qr.getComplexClasses();
 		complex_count = complex_types.keySet().size();
-		
+		//function inferences
 		for(String function_node : function_types.keySet()) {
-			if(function_types.get(function_node).size()==1) {
+			boolean no_manual_type = false;
+			boolean counted = false;
 			for(String type : function_types.get(function_node)) {
 				if(type.equals("http://purl.obolibrary.org/obo/GO_0003674")) {
-					mf_unclassified++;
+					if(!counted) {
+						mf_unclassified++;
+					}
+					no_manual_type = true;
+					counted = true;
 				}
 			}
+			counted = false;
+			for(String type : function_types.get(function_node)) {
+				if(!type.equals("http://purl.obolibrary.org/obo/GO_0003674")) {
+					boolean inferred = wasInferred(wm, function_node, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", type);
+					if(inferred) {		
+						Set<String> itypes = function_inferred_types.get(function_node);
+						if(itypes==null) {itypes = new HashSet<String>();}
+						itypes.add(type);
+						function_inferred_types.put(function_node, itypes);
+						if(!counted) {
+							if(!no_manual_type) {
+								mf_deepened++;
+							}else {
+								mf_inferred_type++;
+							}
+							counted = true;
+						}
+					}else {
+						Set<String> atypes = function_asserted_types.get(function_node);
+						if(atypes==null) {atypes = new HashSet<String>();}
+						atypes.add(type);
+						function_asserted_types.put(function_node, atypes);
+					}
+				}
 			}
 		}
-		for(String bp_node : pathway_types.keySet()) {
-			if(pathway_types.get(bp_node).size()==1) {
-			for(String type : pathway_types.get(bp_node)) {
+		//bp inferences GO_0008150
+		for(String pathway_node : pathway_types.keySet()) {
+			boolean no_manual_type = false;
+			boolean counted = false;
+			for(String type : pathway_types.get(pathway_node)) {
 				if(type.equals("http://purl.obolibrary.org/obo/GO_0008150")) {
-					bp_unclassified++;
+					if(!counted) {
+						bp_unclassified++;
+					}
+					no_manual_type = true;
+					counted = true;
 				}
 			}
+			counted = false;
+			for(String type : pathway_types.get(pathway_node)) {
+				if(!type.equals("http://purl.obolibrary.org/obo/GO_0008150")) {
+					boolean inferred = wasInferred(wm, pathway_node, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", type);
+					if(inferred) {		
+						Set<String> itypes = pathway_inferred_types.get(pathway_node);
+						if(itypes==null) {itypes = new HashSet<String>();}
+						itypes.add(type);
+						pathway_inferred_types.put(pathway_node, itypes);
+						if(!counted) {
+							if(!no_manual_type) {
+								bp_deepened++;
+							}else {
+								bp_inferred_type++;
+							}
+							counted = true;
+						}
+					}else {
+						Set<String> atypes = pathway_asserted_types.get(pathway_node);
+						if(atypes==null) {atypes = new HashSet<String>();}
+						atypes.add(type);
+						pathway_asserted_types.put(pathway_node, atypes);
+					}
+				}
 			}
 		}
+		//complex GO_0032991
 		for(String complex_node : complex_types.keySet()) {
-			if(complex_types.get(complex_node).size()==1) {
+			boolean no_manual_type = false;
+			boolean counted = false;
 			for(String type : complex_types.get(complex_node)) {
 				if(type.equals("http://purl.obolibrary.org/obo/GO_0032991")) {
-					complex_unclassified++;
-				}else {
-					boolean inferred = wasInferred(wm, complex_node, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", type);
-					System.out.println(inferred +" "+ complex_node+"\t"+type);
+					if(!counted) {
+						complex_unclassified++;
+					}
+					no_manual_type = true;
+					counted = true;
 				}
 			}
+			counted = false;
+			for(String type : complex_types.get(complex_node)) {
+				if(!type.equals("http://purl.obolibrary.org/obo/GO_0032991")) {
+					boolean inferred = wasInferred(wm, complex_node, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", type);
+					if(inferred) {		
+						Set<String> itypes = complex_inferred_types.get(complex_node);
+						if(itypes==null) {itypes = new HashSet<String>();}
+						itypes.add(type);
+						complex_inferred_types.put(complex_node, itypes);
+						if(!counted) {
+							if(!no_manual_type) {
+								complex_deepened++;
+							}else {
+								complex_inferred_type++;
+							}
+							counted = true;
+						}
+					}else {
+						Set<String> atypes = complex_asserted_types.get(complex_node);
+						if(atypes==null) {atypes = new HashSet<String>();}
+						atypes.add(type);
+						complex_asserted_types.put(complex_node, atypes);
+					}
+				}
 			}
 		}
-		
+
 		Map<String, Integer> relation_n = qr.getRelations();
 		relation_count = relation_n.keySet().size();
 		Map<String, Integer> protein_n = qr.getProteins();
@@ -102,27 +279,39 @@ public class GoCAMReport {
 		Map<String, Integer> chemical_n = qr.getChemicals();
 		chemical_count = chemical_n.keySet().size();
 		Map<String, Integer> complex_n = qr.getComplexes();
-		complex_count = complex_n.keySet().size();
-		
-		
+		complex_count = complex_n.keySet().size();	
 		Map<String, Integer> component_n = qr.getComponents();
 		cc_count = component_n.keySet().size();
-		
+
+		all_types.putAll(complex_types);
+		all_types.putAll(pathway_types);
+		all_types.putAll(function_types);
+		for(String node_uri : all_types.keySet()){
+			String label = Helper.getaLabel(node_uri, go_cam.go_cam_ont);
+			uri_term.put(node_uri, label);
+			for(String type_uri : all_types.get(node_uri)) {
+				String type_label = Helper.getaLabel(type_uri, go);
+				uri_term.put(type_uri, type_label);
+			}
+		}
+
 		System.out.println("Unique classes/properties asserted in model:");
 		System.out.println("pathways: "+bp_count);
 		System.out.println("unclassified pathways: "+bp_unclassified);
+		System.out.println("inferred classes for pathways: "+bp_inferred_type);
 		System.out.println("functions: "+mf_count);
 		System.out.println("unclassified functions: "+mf_unclassified);
+		System.out.println("inferred classes for functions: "+mf_inferred_type);
 		System.out.println("relations: "+relation_count);
 		System.out.println("proteins: "+protein_count);
 		System.out.println("chemicals: "+chemical_count);
 		System.out.println("complexes: "+complex_count);
 		System.out.println("unclassified complexes: "+complex_unclassified);
+		System.out.println("inferred classes for complexes: "+complex_inferred_type);
 		System.out.println("Cellular components: "+cc_count);
-		System.out.println(component_n.keySet());
 	}
-	
-	
+
+
 	public boolean wasInferred(WorkingMemory wm, String subject, String predicate, String object) {		
 		Resource s = model.createResource(subject);
 		Property p = model.createProperty(predicate);
@@ -133,12 +322,12 @@ public class GoCAMReport {
 		boolean inferred = !wm.asserted().contains(arachne_triple);
 		return inferred;
 	}
-	
+
 	/**
 	 * Build a report for this go_cam using an Arachne-inferred set of triples (WorkingMemory) for that model
 	 * @param wm
 	 * @param go_cam
-	 
+
 	public GoCAMReport(WorkingMemory wm, GoCAM go_cam){
 		String mf_uri = "<"+GoCAM.molecular_function.getIRI().toURI().toString()+">";
 		String bp_uri = "<"+GoCAM.bp_class.getIRI().toURI().toString()+">";

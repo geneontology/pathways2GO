@@ -328,31 +328,31 @@ public class GoCAM {
 		has_target_start_location = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002338"));
 	}
 	
-	public GoCAMReport getGoCAMReport(){
-		GoCAMReport class_report = new GoCAMReport();
-		for(OWLIndividual mf : EntitySearcher.getIndividuals(molecular_function, go_cam_ont)) {
-			class_report.mf_count++;
-			class_report.mf_labels.add(this.getaLabel((OWLEntity) mf));
-		}
-		for(OWLIndividual bp : EntitySearcher.getIndividuals(bp_class, go_cam_ont)) {
-			class_report.bp_count++;
-			class_report.bp_labels.add(this.getaLabel((OWLEntity) bp));
-		}
-		for(OWLIndividual cc : EntitySearcher.getIndividuals(cc_class, go_cam_ont)) {
-			class_report.cc_count++;
-			class_report.cc_labels.add(this.getaLabel((OWLEntity) cc));
-		}		
-		for(OWLIndividual complex : EntitySearcher.getIndividuals(go_complex, go_cam_ont)) {
-			class_report.complex_count++;
-			class_report.complex_labels.add(this.getaLabel((OWLEntity) complex));
-		}
-		
-		class_report.mf_unclassified = countUnclassifiedRDF(molecular_function, go_cam_ont);
-		class_report.bp_unclassified = countUnclassifiedRDF(bp_class, go_cam_ont);
-		class_report.cc_unclassified = countUnclassifiedRDF(cc_class, go_cam_ont);
-		class_report.complex_unclassified = countUnclassifiedRDF(go_complex, go_cam_ont);
-		return class_report;
-	}
+//	public GoCAMReport getGoCAMReport(){
+//		GoCAMReport class_report = new GoCAMReport();
+//		for(OWLIndividual mf : EntitySearcher.getIndividuals(molecular_function, go_cam_ont)) {
+//			class_report.mf_count++;
+//			class_report.mf_labels.add(this.getaLabel((OWLEntity) mf));
+//		}
+//		for(OWLIndividual bp : EntitySearcher.getIndividuals(bp_class, go_cam_ont)) {
+//			class_report.bp_count++;
+//			class_report.bp_labels.add(this.getaLabel((OWLEntity) bp));
+//		}
+//		for(OWLIndividual cc : EntitySearcher.getIndividuals(cc_class, go_cam_ont)) {
+//			class_report.cc_count++;
+//			class_report.cc_labels.add(this.getaLabel((OWLEntity) cc));
+//		}		
+//		for(OWLIndividual complex : EntitySearcher.getIndividuals(go_complex, go_cam_ont)) {
+//			class_report.complex_count++;
+//			class_report.complex_labels.add(this.getaLabel((OWLEntity) complex));
+//		}
+//		
+//		class_report.mf_unclassified = countUnclassifiedRDF(molecular_function, go_cam_ont);
+//		class_report.bp_unclassified = countUnclassifiedRDF(bp_class, go_cam_ont);
+//		class_report.cc_unclassified = countUnclassifiedRDF(cc_class, go_cam_ont);
+//		class_report.complex_unclassified = countUnclassifiedRDF(go_complex, go_cam_ont);
+//		return class_report;
+//	}
 
 	public int countUnclassifiedRDF(OWLClass root_class, OWLOntology ont) {
 		int un = 0; 

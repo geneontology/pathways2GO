@@ -19,14 +19,13 @@ public class GoMappingReport {
 	public Set<String> deprecated_classes = new HashSet<String>();
 	public Set<String> inconsistent_models = new HashSet<String>();
 	public Map<String, ReasonerReport> pathway_class_report = new HashMap<String, ReasonerReport>();
-	public Map<String,Map<String, Set<String>>> pathway_inferred_types = new HashMap<String,Map<String, Set<String>>>();
-	
+
 	public void writeReport(String root_folder) throws IOException{
-		String mapping_report_file = root_folder+"mapping.txt";
+		String inferred_mapping_report_file = root_folder+"manual_plus_inferred_mapping.txt";
+		String mapping_report_file = root_folder+"manual_mapping.txt";
 		String chebi_usage_file = root_folder+"chebi_usage.txt";
 		String deprecated_file = root_folder+"deprecated_terms_used.txt";
 		String inconsistent_file = root_folder+"inconsistent_models.txt";
-		String inference_file = root_folder+"inferred_types.txt";
 		String reasoner_value_file = root_folder+"reasoner_value.txt";
 		String summary_file = root_folder+"ReportSummary.txt";
 		Set<Process> all_processes = new HashSet<Process>(bp2go_mf.keySet());		
@@ -36,7 +35,7 @@ public class GoMappingReport {
 		float n_reactions_tagged_mf = 0; float n_reactions_tagged_bp = 0; float n_reactions_tagged_both = 0; 
 		float n_pathways_tagged_mf = 0; float n_pathways_tagged_bp = 0; float n_pathways_tagged_both = 0; 
 		FileWriter report = new FileWriter(mapping_report_file, false);
-		report.write("Reactome Node Type\tReactome label\tGO MF\tGO_BP\tboth\tcontroller_type\t\n");
+		report.write("Reactome Node Type\tReactome label\tcurated GO MF\tcurated GO_BP\tboth\tcontroller_type\t\n");
 		for(Process p : all_processes) {
 			Set<String> mf = bp2go_mf.get(p);
 			Set<String> bp = bp2go_bp.get(p);
@@ -94,7 +93,8 @@ public class GoMappingReport {
 			String row = thingtype+"\t"+p.getDisplayName()+"\t"+mf_out+"\t"+bp_out+"\t"+both+"\t"+control_out+"\n";
 			report.write(row);
 		}
-		report.close();
+		report.close();		
+		
 		FileWriter chebi_report = new FileWriter(chebi_usage_file);
 		chebi_report.write("chebi_uri\ttype\tcount\n");
 		for(String chebi : chebi_count.keySet()) {
@@ -113,25 +113,14 @@ public class GoMappingReport {
 			logic_report.write(d+"\n");
 		}
 		logic_report.close();
-		//Map<String,Map<String, Set<String>>> pathway_inferred_types
-		FileWriter inf_report = new FileWriter(inference_file);
-		inf_report.write("pathway\tindividual label\tindividual uri\tinferred_type\n");
-		for(String pathway : pathway_inferred_types.keySet()) {			
-			Map<String, Set<String>> thing_types = pathway_inferred_types.get(pathway);
-			for(String thing : thing_types.keySet()) {
-				Set<String> types = thing_types.get(thing);
-				for(String type : types) {
-					if(type.contains("GO_")) {//skip all the BFO stuff..
-						inf_report.write(pathway+"\t"+thing+"\t"+type+"\n");	
-					}
-				}
-			}
-		}
-		inf_report.close();
+		
+		FileWriter inferred_mapping_report = new FileWriter(inferred_mapping_report_file);
+		String header = "Reactome node type\tReactome Label\tAsserted GO types\tInferred GO types\n";
+		inferred_mapping_report.write(header);
 		
 		ReasonerReport inf_summary = new ReasonerReport();
 		FileWriter value_file = new FileWriter(reasoner_value_file);
-		value_file.write("pathway\tnew_bp\tnew_mf\tnew_cc\tnew_complex\tnew_total\n");
+		value_file.write("pathway\tnew_bp\tnew_mf\tnew_cc\tnew_complex\tnew_total\tdeepened_bp\tdeepened_mf\tdeepened_cc\tdeepened_complex\tdeepened_total\n");
 		for(String pathway : pathway_class_report.keySet()) {
 			ReasonerReport r = pathway_class_report.get(pathway);
 			inf_summary.bp_new_class_count+=r.bp_new_class_count;
@@ -139,9 +128,20 @@ public class GoMappingReport {
 			inf_summary.cc_new_class_count+=r.cc_new_class_count;
 			inf_summary.complex_new_class_count+=r.complex_new_class_count;
 			inf_summary.total_new_classified_instances+=r.total_new_classified_instances;
-			value_file.write(pathway+"\t"+r.bp_new_class_count+"\t"+r.mf_new_class_count+"\t"+r.cc_new_class_count+"\t"+r.complex_new_class_count+"\t"+r.total_new_classified_instances+"\n");
+			
+			inf_summary.bp_deepened_class_count+=r.bp_deepened_class_count;
+			inf_summary.mf_deepened_class_count+=r.mf_deepened_class_count;
+			inf_summary.cc_deepened_class_count+=r.cc_deepened_class_count;
+			inf_summary.complex_deepened_class_count+=r.complex_deepened_class_count;
+			inf_summary.total_deepened_classified_instances+=r.total_deepened_classified_instances;
+			
+			value_file.write(pathway+"\t"+r.bp_new_class_count+"\t"+r.mf_new_class_count+"\t"+r.cc_new_class_count+"\t"+r.complex_new_class_count+"\t"+r.total_new_classified_instances+"\t");
+			value_file.write(r.bp_deepened_class_count+"\t"+r.mf_deepened_class_count+"\t"+r.cc_deepened_class_count+"\t"+r.complex_deepened_class_count+"\t"+r.total_deepened_classified_instances+"\n");
+			inferred_mapping_report.write(r.gocamreport.makeMappingReport());
 		}
 		value_file.close();
+		inferred_mapping_report.close();
+		
 		FileWriter summary = new FileWriter(summary_file);			
 		summary.write("Without considering reasoning for instance classification - just looking at direct Reactome assertions...\n");
 		summary.write("Pathways:"+n_pathways+" with bp:"+n_pathways_tagged_bp+" with mf:"+n_pathways_tagged_mf+" both:"+n_pathways_tagged_both+"\n");
@@ -154,6 +154,12 @@ public class GoMappingReport {
 		summary.write("\t"+inf_summary.mf_new_class_count+"\tnew mf\n");
 		summary.write("\t"+inf_summary.cc_new_class_count+"\tnew cc\n");
 		summary.write("\t"+inf_summary.complex_new_class_count+"\tnew complex\n");
+		summary.write("\nFor classified instances, reasoner can add "+inf_summary.total_deepened_classified_instances+" non-trivial (not BFO, non-root GO) deeper classifications for:\n");
+		summary.write("\t"+inf_summary.bp_deepened_class_count+"\tdeepened bp\n");
+		summary.write("\t"+inf_summary.mf_deepened_class_count+"\tdeepened mf\n");
+		summary.write("\t"+inf_summary.cc_deepened_class_count+"\tdeepened cc\n");
+		summary.write("\t"+inf_summary.complex_deepened_class_count+"\tdeepened complex\n");
+		
 		summary.close();
 	}
 }

@@ -111,7 +111,7 @@ public class BioPaxtoGO {
 	boolean causal_recurse = true;
 
 	public BioPaxtoGO(){
-		strategy = ImportStrategy.NoctuaCuration;
+		strategy = ImportStrategy.DirectImport; //ImportStrategy.NoctuaCuration;
 		report = new GoMappingReport();
 		tbox_files = new HashSet<String>();
 		tbox_files.add(goplus_file);
@@ -366,10 +366,6 @@ public class BioPaxtoGO {
 	 * @throws IOException
 	 */
 	private void wrapAndWrite(String outfilename, GoCAM go_cam, QRunner tbox_qrunner, boolean save_inferences, boolean save2blazegraph, String pathwayname, boolean expand_subpathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {		
-		WorkingMemory wm_with_tbox = tbox_qrunner.arachne.createInferredModel(go_cam.go_cam_ont,true, true);	
-		System.out.println("Report before local rules");
-		GoCAMReport gocam_report = new GoCAMReport(wm_with_tbox, outfilename);
-		
 		//set up a sparqlable kb in sync with ontology
 		System.out.println("setting up rdf model for sparql rules");
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
@@ -380,44 +376,14 @@ public class BioPaxtoGO {
 		System.out.println("Rule results:\n"+rule_results.toString());
 		//sparql rules make additions to go_cam_ont, add them to the rdf model 
 		//set up to apply OWL inference to test for consistency and add classifications
-		//go_cam.go_cam_ont is ready and equals the Abox..
-		//TODO capture cases where classes are added where none existed before.
-//		GoCAMReport before = go_cam.getGoCAMReport();		
-		//don't want to reload tbox each time..
-		boolean rebuild_tbox_with_go_cam_ont = false;
-		//this will also rebuild the rdf version of the ontology, adding things it infers
-//		WorkingMemory wm_no_tbox = go_cam.applyArachneInference(tbox_qrunner, rebuild_tbox_with_go_cam_ont);
+		//go_cam.go_cam_ont is ready and equals the Abox.. go_cam.qrunner also ready
 
-		wm_with_tbox = tbox_qrunner.arachne.createInferredModel(go_cam.go_cam_ont,true, true);	
+		WorkingMemory wm_with_tbox = tbox_qrunner.arachne.createInferredModel(go_cam.go_cam_ont,true, true);	
 		System.out.println("Report after local rules");
-		gocam_report = new GoCAMReport(wm_with_tbox, outfilename);
-		//		GoCAMReport after = go_cam.getGoCAMReport();
-//		ReasonerReport reasoner_report = new ReasonerReport(before, after);
-//TODO		report.pathway_class_report.put(pathwayname, reasoner_report);
-		
-		
-		
-		
-		//checks for inferred things with rdf:type OWL:Nothing with a sparql query
-		boolean is_logical = go_cam.validateGoCAM();	
+		GoCAMReport gocam_report_after_rules = new GoCAMReport(wm_with_tbox, outfilename, go_cam, goplus.go);
+		ReasonerReport reasoner_report = new ReasonerReport(gocam_report_after_rules);
+		report.pathway_class_report.put(pathwayname, reasoner_report);
 
-		//checks for inferred classifications for reporting
-		boolean skip_indirect = true;
-		Map<String, Set<String>> inferred_types_by_uri = ArachneAccessor.getInferredTypes(wm_with_tbox, skip_indirect);
-		Map<String, Set<String>> inferred_types = new HashMap<String, Set<String>>();
-		//add labels
-		for(String uri : inferred_types_by_uri.keySet()) {
-			String u = uri.replace(">", "");
-			u = u.replace("<", "");
-			OWLEntity e = go_cam.df.getOWLNamedIndividual(IRI.create(u));
-			String label = go_cam.getaLabel(e);
-			label = label+"\t"+uri;
-			inferred_types.put(label,inferred_types_by_uri.get(uri));
-		}
-		report.pathway_inferred_types.put(pathwayname, inferred_types);
-		//synchronize jena model <- with owl-api model	 
-		//go_cam_ont should have everything we want at this point
-		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
 		if(strategy == ImportStrategy.NoctuaCuration) {
 			//adds coordinates to go_cam_ont model 
 			NoctuaLayout layout = new NoctuaLayout(go_cam);
@@ -429,6 +395,8 @@ public class BioPaxtoGO {
 		System.out.println("writing....");
 		go_cam.writeGoCAM_jena(outfilename, save2blazegraph);
 		System.out.println("done writing...");
+		//checks for inferred things with rdf:type OWL:Nothing with a sparql query
+		boolean is_logical = go_cam.validateGoCAM();	
 		if(!is_logical) {
 			//System.out.println("Illogical go_cam..  stopping");
 			//System.exit(0);
