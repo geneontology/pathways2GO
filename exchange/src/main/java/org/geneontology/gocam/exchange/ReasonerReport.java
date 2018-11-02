@@ -45,7 +45,7 @@ public class ReasonerReport {
 	public ReasonerReport(GoCAMReport dumb, GoCAMReport smart) {
 		mf_new_class_count = (smart.mf_count-smart.mf_unclassified) - (dumb.mf_count-dumb.mf_unclassified);
 		bp_new_class_count = (smart.bp_count-smart.bp_unclassified) - (dumb.bp_count-dumb.bp_unclassified);
-		cc_new_class_count = (smart.cc_count-smart.cc_unclassified) - (dumb.cc_count-dumb.cc_unclassified);
+		cc_new_class_count = (smart.distinct_cc_count-smart.cc_unclassified) - (dumb.distinct_cc_count-dumb.cc_unclassified);
 		complex_new_class_count = (smart.complex_count-smart.complex_unclassified) - (dumb.complex_count-dumb.complex_unclassified);
 		total_new_classified_instances = mf_new_class_count + bp_new_class_count + cc_new_class_count + complex_new_class_count;
 	

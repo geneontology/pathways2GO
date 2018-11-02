@@ -1030,13 +1030,13 @@ final long counterValue = instanceCounter.getAndIncrement();
 		 * note that these can be very slow for large models
 		 */
 		if(strategy == BioPaxtoGO.ImportStrategy.NoctuaCuration) {
+			System.out.println("Starting noctua curation specific rules");
 			/**
 			 * Rule Noctua 1 : Delete all location assertions if for noctua curation
 			 * Note that in some cases, location assertions interact with occurs_in property chains resulting in inconsistencies..
 			 * Doing this in ontology instead of just RDF (go_cam.qrunner.deleteEntityLocations();) 
 			 * so we can check it with reasoner
 			 */
-
 			for(OWLObjectPropertyAssertionAxiom a : go_cam_ont.getAxioms(AxiomType.OBJECT_PROPERTY_ASSERTION)) {
 				OWLObjectPropertyExpression p = a.getProperty();
 				if(p.equals(located_in)) {
@@ -1047,7 +1047,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 					deleteOwlEntityAndAllReferencesToIt(o);
 				}
 			}			
-
+			System.out.println("Eliminated 'located in' assertions");
 			/**
 			 * Noctua Rule 2.  No complexes allowed as inputs or enablers of a reaction, only proteins..
 			 * Find such complexes and replace all statements involving them with statements about their components
@@ -1090,7 +1090,6 @@ final long counterValue = instanceCounter.getAndIncrement();
 							addRefBackedObjectPropertyAssertion(reaction, property, complex_part, null, GoCAM.eco_inferred_auto, null, annos);
 						}
 					}
-
 					//remove the complex
 					//first remove evidence statements
 					for(OWLObjectPropertyAssertionAxiom oass : go_cam_ont.getObjectPropertyAssertionAxioms(reaction)) {
@@ -1125,7 +1124,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 			r.rule_hitcount.put(input_complex_rule, input_complex_count);
 			r.rule_pathways.put(input_complex_rule, ic_p);
 			qrunner = new QRunner(go_cam_ont); 
-	
+			System.out.println("Deleted all complexes");
 		}
 
 

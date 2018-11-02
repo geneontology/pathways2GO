@@ -29,11 +29,11 @@ public class GoCAMReport {
 	//n nodes of each type
 	int mf_count = 0;
 	int bp_count = 0;
-	int relation_count = 0;
-	int cc_count = 0;
+	int distinct_relation_count = 0;
+	int distinct_cc_count = 0;
 	int complex_count = 0;
-	int protein_count = 0;
-	int chemical_count = 0;
+	int distinct_protein_count = 0;
+	int distinct_chemical_count = 0;
 	//node to class mappings
 	Map<String, Set<String>> pathway_types = new HashMap<String, Set<String>>();
 	Map<String, Set<String>> pathway_inferred_types = new HashMap<String, Set<String>>();
@@ -56,12 +56,19 @@ public class GoCAMReport {
 	int complex_unclassified = 0;
 	int complex_inferred_type = 0;
 	int complex_deepened = 0;
+	int n_reactions = 0;
+	int n_pathways = 0;
 	//for convenience (and not passing around ontologies for later)
 	Map<String, String> uri_term = new HashMap<String, String>();
 
 	public GoCAMReport() {};
 
 
+	public String makeSimpleContentReport() {
+		String row = bp_count+"\t"+mf_count+"\t"+complex_count+"\t"+distinct_protein_count+"\t"+distinct_chemical_count+"\t"+distinct_cc_count+"\t"+distinct_relation_count+"\n";
+		return row;
+	}
+	
 	public String makeMappingReport() {
 		String report = "";
 		for(String pathway_uri : pathway_types.keySet()) {
@@ -273,15 +280,15 @@ public class GoCAMReport {
 		}
 
 		Map<String, Integer> relation_n = qr.getRelations();
-		relation_count = relation_n.keySet().size();
+		distinct_relation_count = relation_n.keySet().size();
 		Map<String, Integer> protein_n = qr.getProteins();
-		protein_count = protein_n.keySet().size();
+		distinct_protein_count = protein_n.keySet().size();
 		Map<String, Integer> chemical_n = qr.getChemicals();
-		chemical_count = chemical_n.keySet().size();
+		distinct_chemical_count = chemical_n.keySet().size();
 		Map<String, Integer> complex_n = qr.getComplexes();
 		complex_count = complex_n.keySet().size();	
 		Map<String, Integer> component_n = qr.getComponents();
-		cc_count = component_n.keySet().size();
+		distinct_cc_count = component_n.keySet().size();
 
 		all_types.putAll(complex_types);
 		all_types.putAll(pathway_types);
@@ -294,21 +301,6 @@ public class GoCAMReport {
 				uri_term.put(type_uri, type_label);
 			}
 		}
-
-		System.out.println("Unique classes/properties asserted in model:");
-		System.out.println("pathways: "+bp_count);
-		System.out.println("unclassified pathways: "+bp_unclassified);
-		System.out.println("inferred classes for pathways: "+bp_inferred_type);
-		System.out.println("functions: "+mf_count);
-		System.out.println("unclassified functions: "+mf_unclassified);
-		System.out.println("inferred classes for functions: "+mf_inferred_type);
-		System.out.println("relations: "+relation_count);
-		System.out.println("proteins: "+protein_count);
-		System.out.println("chemicals: "+chemical_count);
-		System.out.println("complexes: "+complex_count);
-		System.out.println("unclassified complexes: "+complex_unclassified);
-		System.out.println("inferred classes for complexes: "+complex_inferred_type);
-		System.out.println("Cellular components: "+cc_count);
 	}
 
 

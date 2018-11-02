@@ -28,6 +28,7 @@ public class GoMappingReport {
 		String inconsistent_file = root_folder+"inconsistent_models.txt";
 		String reasoner_value_file = root_folder+"reasoner_value.txt";
 		String summary_file = root_folder+"ReportSummary.txt";
+		String content_file = root_folder+"content_size.txt";
 		Set<Process> all_processes = new HashSet<Process>(bp2go_mf.keySet());		
 		all_processes.addAll(new HashSet<Process>(bp2go_bp.keySet()));
 		all_processes.addAll(new HashSet<Process>(bp2go_controller.keySet()));
@@ -117,7 +118,9 @@ public class GoMappingReport {
 		FileWriter inferred_mapping_report = new FileWriter(inferred_mapping_report_file);
 		String header = "Reactome node type\tReactome Label\tAsserted GO types\tInferred GO types\n";
 		inferred_mapping_report.write(header);
-		
+		FileWriter content = new FileWriter(content_file);
+		String content_header = "bp_count\tmf_count\tcomplex_count\tdistinct_protein_count\tdistinct_chemical_count\tdistinct_cc_count\tdistinct_relation_count\n";
+		content.write(content_header);
 		ReasonerReport inf_summary = new ReasonerReport();
 		FileWriter value_file = new FileWriter(reasoner_value_file);
 		value_file.write("pathway\tnew_bp\tnew_mf\tnew_cc\tnew_complex\tnew_total\tdeepened_bp\tdeepened_mf\tdeepened_cc\tdeepened_complex\tdeepened_total\n");
@@ -137,10 +140,12 @@ public class GoMappingReport {
 			
 			value_file.write(pathway+"\t"+r.bp_new_class_count+"\t"+r.mf_new_class_count+"\t"+r.cc_new_class_count+"\t"+r.complex_new_class_count+"\t"+r.total_new_classified_instances+"\t");
 			value_file.write(r.bp_deepened_class_count+"\t"+r.mf_deepened_class_count+"\t"+r.cc_deepened_class_count+"\t"+r.complex_deepened_class_count+"\t"+r.total_deepened_classified_instances+"\n");
-			inferred_mapping_report.write(r.gocamreport.makeMappingReport());
+			inferred_mapping_report.write(pathway+"\t"+r.gocamreport.makeMappingReport());
+			content.write(r.gocamreport.makeSimpleContentReport());
 		}
 		value_file.close();
 		inferred_mapping_report.close();
+		content.close();
 		
 		FileWriter summary = new FileWriter(summary_file);			
 		summary.write("Without considering reasoning for instance classification - just looking at direct Reactome assertions...\n");
@@ -158,8 +163,8 @@ public class GoMappingReport {
 		summary.write("\t"+inf_summary.bp_deepened_class_count+"\tdeepened bp\n");
 		summary.write("\t"+inf_summary.mf_deepened_class_count+"\tdeepened mf\n");
 		summary.write("\t"+inf_summary.cc_deepened_class_count+"\tdeepened cc\n");
-		summary.write("\t"+inf_summary.complex_deepened_class_count+"\tdeepened complex\n");
-		
+		summary.write("\t"+inf_summary.complex_deepened_class_count+"\tdeepened complex\n");	
 		summary.close();
+		
 	}
 }

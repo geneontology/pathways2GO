@@ -108,10 +108,10 @@ public class BioPaxtoGO {
 	GoMappingReport report;
 	GOPlus goplus;
 	Model biopax_model;
-	boolean causal_recurse = true;
+	boolean causal_recurse = false;
 
 	public BioPaxtoGO(){
-		strategy = ImportStrategy.DirectImport; //ImportStrategy.NoctuaCuration;
+		strategy = ImportStrategy.NoctuaCuration;  //ImportStrategy.DirectImport;
 		report = new GoMappingReport();
 		tbox_files = new HashSet<String>();
 		tbox_files.add(goplus_file);
@@ -138,12 +138,12 @@ public class BioPaxtoGO {
 				//"/Users/bgood/Desktop/test/biopax/pathway_commons/WP_ACE_Inhibitor_Pathway.owl";
 				//"/Users/bgood/Desktop/test/biopax/pathway_commons/kegg_Biotin_metabolism.owl";
 				//"/Users/bgood/Desktop/test/biopax/pathway_commons/PathwayCommons10.wp.BIOPAX.owl";
-				"/Users/bgood/Desktop/test/biopax/BMP_signaling.owl";
+				//"/Users/bgood/Desktop/test/biopax/BMP_signaling.owl";
 				//"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
 				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Oct4_2018.owl";
 				//"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
 				//		"/Users/bgood/Desktop/test/biopax/Wnt_test_oct8_2018.owl";
-			//	"/Users/bgood/Desktop/test/biopax/SignalingByWNTcomplete.owl";
+				"/Users/bgood/Desktop/test/biopax/SignalingByWNTcomplete.owl";
 		String converted = "/Users/bgood/Desktop/test/go_cams/Wnt_complete_2018-";
 		//"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
 
