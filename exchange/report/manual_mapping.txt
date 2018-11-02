@@ -1,179 +1,24 @@
 Reactome Node Type	Reactome label	curated GO MF	curated GO_BP	both	controller_type	
-Reaction	DVL1 is ubiquitinated by HECW1	GO_0061630 	none		Catalysis 
-Reaction	DACT1 binds DVL2	none	none		none
-Reaction	Ubiquitinated DVL1 is degraded by the proteasome	GO_0004175 	none		Catalysis 
-Reaction	Tankyrase ADP-ribosylates AXIN	GO_0003950 	none		Catalysis 
-Reaction	Tankyrase binds AXIN	none	none		none
-Reaction	RNF146 ubiquitinates ADP-ribosylated AXIN	GO_0061630 	none		Catalysis 
-Reaction	RNF146 binds RibC-AXIN:TNKS complex	none	none		none
-Reaction	SMURF2 binds AXIN	none	none		none
-Reaction	Ub-RibC-AXIN is degraded by the proteasome	GO_0004175 	none		Catalysis 
-Reaction	AXIN is ubiquitinated by SMURF2	GO_0061630 	none		Catalysis 
-Reaction	YWHAZ and XPO1 mediate the nuclear export of beta-catenin	none	none		none
-Reaction	XPO1 binds the beta-catenin:CBY complex	none	none		none
-Reaction	CHD8 binds beta-catenin to negatively regulate WNT-dependent gene expression	none	none		none
-Reaction	CTNNBIP1 binds beta-catenin	none	none		none
-Reaction	TCF:Beta-catenin binds SOX proteins	none	none		none
-Reaction	Beta-catenin binds SOX proteins	none	none		none
-Reaction	DVL is ubiquitinated by CUL3:KLHL12:RBX1	GO_0061630 	none		Catalysis 
-Reaction	DVL is bound by the CUL3:KLHL12:RBX1 ubiquitin ligase complex	none	none		none
-Reaction	DVL1 is bound by the HECT ubiquitin ligase HECW1	none	none		none
-Reaction	Ubiquitinated DVL is degraded by the proteasome	GO_0004175 	none		Catalysis 
-Reaction	Multi-ubiquitination of phospho-beta-catenin by RBX1:SCF(beta-TrCP1)	none	none		none
-Reaction	Association of beta-catenin with the RBX1:SCF(beta-TrCP1) ubiquitin ligase complex	none	none		none
-Reaction	TCF/LEF binds WNT promoters	none	none		none
-Reaction	Degradation of ubiquitinated beta catenin by the proteasome	GO_0004175 	GO_0043161 	both	Catalysis 
-Reaction	TLE oligomerizes	none	none		none
-Reaction	secretion of WNT ligands	none	none		none
-Reaction	WNTs are secreted in exosomes	none	none		none
-Reaction	WLS:WNT complex is internalized for maturation into exosomes	none	none		none
-Reaction	Phosphorylation of phospho-(Ser45 ) at Thr 41 by GSK-3	GO_0016301 	none		Non-catalytic-INHIBITION Catalysis 
-Reaction	WNT ligands traffic to the plasma membrane	none	none		none
-Reaction	CXXC4 binds DVL to prevent AXIN binding	none	none		none
-Reaction	Phosphorylation of phospho-(Ser45,Thr41,Ser37) at Ser33 by GSK-3	GO_0016301 	none		Non-catalytic-INHIBITION Catalysis 
-Pathway	WNT5A-dependent internalization of FZD4	none	none		none
-Reaction	sFRP binds WNT3A and inhibits WNT:FZD binding	none	none		none
-Reaction	Phosphorylation of phospho- (Ser45, Thr41) beta-catenin at Ser37 by GSK-3	GO_0016301 	none		Non-catalytic-INHIBITION Catalysis 
-Reaction	WIF1 binds WNTs	none	none		none
-Reaction	Dissociation of beta-catenin from Axin and association of beta catenin with phospho-(20 aa) APC in the detruction complex	none	none		none
-Pathway	Ca2+ pathway	none	GO_0007223 		none
-Reaction	SOST binds LRP5/6	none	none		none
-Reaction	WLS is endocytosed to the early endosome	none	none		none
-Reaction	Phosphorylation of APC component of the destruction complex	GO_0016301 	none		Catalysis 
-Pathway	WNT5A-dependent internalization of FZD2, FZD5 and ROR2	none	none		none
-Reaction	DVL is recruited to the receptor	none	none		none
-Reaction	WNTs bind the FZD receptor to initiate PCP pathway	none	none		none
-Reaction	Canonical WNT signaling through the atypical receptor RYK	none	none		none
-Reaction	DVL binds CCDC88C	none	none		none
-Reaction	USP34 deubiquitinates AXIN1,AXIN2	GO_0036459 	none		Catalysis 
-Reaction	WLS binds WNT ligands in the Golgi	none	none		none
-Reaction	Ubiquitinated AXIN is degraded by the proteasome	GO_0004175 	none		Catalysis 
-Reaction	WNT ligands traffic to the Golgi	none	none		Non-catalytic-ACTIVATION 
-Reaction	ZNRF3 ubiquitinates FZD to promote its downregulation	GO_0061630 	none		Catalysis 
-Reaction	ppDVL binds DAAM1	none	none		none
-Reaction	PORCN palmitoleoylates N-glycosyl WNTs	GO_0008374 	none		Catalysis 
-Reaction	ZNRF3,RNF43 binds the FZD:LRP5/6 receptor complex	none	none		none
-Reaction	WNT-dependent phosphorylation of DVL	GO_0004674 	none		Catalysis 
-Reaction	N-linked glycosylation of WNTs	none	none		none
-Reaction	APC is K63-polyubiquitinated	GO_0061630 	none		Catalysis 
-Reaction	Expression of AXIN1 gene	none	none		none
-Reaction	AXIN is phosphorylated in the destruction complex	GO_0004674 	none		Catalysis 
-Reaction	Assembly of the destruction complex	none	GO_1904885 		none
-Reaction	Phosphorylation of beta-catenin at Ser45 by CK1 alpha	GO_0016301 	none		Catalysis 
-Reaction	Association of beta-catenin with the destruction complex	none	none		none
-Reaction	RSPOs bind LGRs	none	none		none
-Reaction	DAAM1 recruits GTP-bound RHOA	none	none		none
-Reaction	USP8 deubiquitinates FZD to potentiate WNT signaling	GO_0004843 	none		Catalysis 
-Reaction	ZNRF3 autoubiquitinates to promote its internalization	GO_0061630 	none		Catalysis 
-Reaction	RSPO:LGR binds ZNRF3	none	none		none
-Reaction	DKK promotes clathrin-dependent internalization of LRP6	none	none		none
-Reaction	WNT5A binds ROR2 and VANGL2	none	none		none
-Reaction	Retromer recycles WLS to the Golgi	none	none		none
-Reaction	DKK and KRM bind LRP5/6	none	none		none
-Reaction	RYK binds WNT5A and VANGL2	none	none		none
-Reaction	Retromer associates with WLS	none	none		none
-Reaction	DAAM1 recruits PFN1	none	none		none
-Reaction	Expression of AMER1 gene	none	none		none
-Reaction	ppDVL recruits RAC	none	none		none
-Reaction	WLS dissociates from retromer	none	none		none
-Reaction	WNT5A binding to FZD promotes PRICKLE1 degradation	none	none		none
-Reaction	VANGL2 is required for asymmetric membrane localization of FZD3	none	none		none
-Reaction	SCRIB is required for asymmetric membrane localization of VANGL2	none	none		none
-Reaction	VANGL2 is phosphorylated in response to WNT5A	GO_0004674 	none		Catalysis 
-Reaction	DVL2 is phosphorylated after WNT5A binding to FZD	GO_0004674 	none		Catalysis Non-catalytic-ACTIVATION 
-Reaction	Beta-catenin translocates to the nucleus	none	GO_0060828 		none
-Reaction	Beta-catenin is released from the destruction complex	none	none		Non-catalytic-ACTIVATION 
-Reaction	TCF7L1/TCF7L2/LEF1:CTNNB1 bind the MYC gene	none	none		Non-catalytic-INHIBITION 
-Reaction	SMURF1/2 ubiquitinates PRICKLE1	GO_0061630 	none		Catalysis 
-Reaction	FZD recruits DVL to the receptor complex	none	none		none
-Reaction	SMURF1/2 are recruited to the DVL2:PARD6A complex	none	none		none
-Reaction	PP2A dephosphorylates AXIN, APC and CTNNB1 in the destruction complex	GO_0004722 	none		Catalysis 
-Reaction	FRAT proteins bind GSK3beta	none	none		none
-Reaction	DVL2 is phosphorylated by PKC	GO_0004697 	none		Catalysis 
-Reaction	Phosphorylation of LRP5/6 cytoplasmic domain by membrane-associated GSK3beta	GO_0004674 	none		Catalysis 
-Reaction	WNT5A-FZD4 recruits DVL2	none	none		none
-Reaction	DVL recruits GSK3beta:AXIN1 to the receptor complex	none	none		none
-Reaction	WNT5A binds FZD4	none	none		none
-Reaction	WNT3A stimulates the caveolin-dependent internalization of FZD5:p-LRP6	none	none		none
-Reaction	PRICKLE1 is degraded by the proteasome	GO_0004175 	none		Catalysis 
-Reaction	Phosphorylation of LRP5/6 cytoplasmic domain by CSNKI	GO_0004674 	none		Catalysis 
-Reaction	FZD2, FZD5 and ROR2 are internalized in a WNT5A and clathrin-dependent manner	none	none		Non-catalytic-ACTIVATION 
-Pathway	Degradation of beta-catenin by the destruction complex	none	none		none
-Reaction	WNT5A binds FZD and ROR receptors	none	none		none
-Pathway	Beta-catenin phosphorylation cascade	none	none		none
-Reaction	WNT5A:FZD4 is endocytosed	none	none		none
-Pathway	Repression of WNT target genes	none	none		none
-Reaction	p-DVL2 recruits AP-2 and beta-arrestin 2 to promote clathrin-mediated endocytosis	none	none		none
-Pathway	TCF dependent signaling in response to WNT	none	none		none
-Pathway	WNT mediated activation of DVL	none	none		none
-Pathway	Disassembly of the destruction complex and recruitment of AXIN to the membrane	none	GO_1904886 		none
-Pathway	Formation of the beta-catenin:TCF transactivating complex	none	GO_1904837 		none
-Reaction	WNT signaling stimulates CSNK1-dependent phosphorylation of DVL	GO_0004674 	none		Catalysis 
-Reaction	CSNK2-mediated phosphorylation of DVL	GO_0016301 	none		Catalysis 
-Reaction	DVL-associated PIP5K1B phosphorylates PI4P to PI(4,5)P2	GO_0016308 	none		Catalysis 
-Reaction	Phosphorylated DVL recruits PIP5K1B to the plasma membrane	none	none		none
-Pathway	Beta-catenin independent WNT signaling	none	GO_0035567 		none
-Pathway	Negative regulation of TCF-dependent signaling by DVL-interacting proteins	none	none		none
-Pathway	Asymmetric localization of PCP proteins	none	none		none
-Pathway	PCP/CE pathway	none	GO_0060071 		none
-Reaction	WNT:FZD complex promotes G-protein nucleotide exchange	GO_0005085 	none		Catalysis 
-Pathway	Degradation of AXIN	none	GO_0090263 		none
-Reaction	FZD recruits trimeric G-proteins	none	none		none
-Pathway	Degradation of DVL	none	GO_0090090 		none
-Reaction	WNT5A and WNT11 bind FZD receptors to initiate Ca2+ signaling	none	none		none
-Reaction	TLE recruits HDAC1 to WNT promoters	none	none		none
-Pathway	Negative regulation of TCF-dependent signaling by WNT ligand antagonists	none	GO_0090090 		none
-Reaction	TLE tetramers bind TCF/LEF at WNT promoters	none	none		none
-Pathway	Regulation of FZD by ubiquitination	none	none		none
-Reaction	Translocation and activation of PKC alpha in response to WNT signaling	none	none		none
-Reaction	TCF7L2/TCF7L1 bind CTBP1 to repress WNT target genes	none	none		none
-Reaction	PLC beta-mediated PIP2 hydrolysis	GO_0004629 	none		Catalysis 
-Reaction	TLE forms non-functional complexes with AES	none	none		none
-Reaction	Gbeta:gamma activation of PLC beta	none	none		none
-Reaction	WNT binds to FZD and LRP5/6	none	none		Non-catalytic-INHIBITION 
-Pathway	Signaling by WNT	none	GO_0016055 		none
-Pathway	Deactivation of the beta-catenin transactivating complex	none	none		none
-Reaction	G-protein subunits dissociate from WNT:FZD complex	none	none		none
-Reaction	Transcription of canonical WNT targets is repressed by the TLE:HDAC and TCF/CTBP complexes	none	none		Non-catalytic-INHIBITION 
-Pathway	WNT ligand biogenesis and trafficking	none	none		none
-Pathway	Binding of TCF/LEF:CTNNB1 to target gene promoters	none	none		none
-Reaction	Calcineurin binds and dephosphorylates NFAT1 in response to WNT/Ca2+ signaling	GO_0033192 	none		Catalysis 
-Reaction	Activation of Calcineurin	none	none		none
-Reaction	IP3 binds to the IP3 receptor, opening the endoplasmic reticulum Ca2+ channel	none	none		none
-Reaction	Beta-catenin recruits TRRAP/KAT5 HAT components	none	none		none
-Reaction	YWHAZ binds p-CBY:CTNNB1	none	none		none
-Reaction	PDE6 hydrolyses cGMP to GMP	GO_0047555 	none		Catalysis 
-Reaction	XIAP binds TLE	none	none		none
-Reaction	G alpha t2 binds and activates PDE6	none	none		none
-Reaction	KAT5 HAT complex acetylates TCF4 gene at histone H4	GO_0004402 	none		Catalysis 
-Reaction	Decreasing cGMP concentration promotes intracellular Ca2+ release in response to WNT	GO_0005261 	none		Catalysis 
-Reaction	XIAP dissociates from ub-TLE	none	none		none
-Reaction	Translocation of NFATC1:CaN:CaM to nucleus	none	none		none
-Reaction	XIAP monoubiquinates TLE	GO_0061630 	none		Catalysis 
-Reaction	Dissociation of CaM and CAMK2 autophosphorylation	GO_0004674 	none		Catalysis 
-Reaction	beta-catenin is replaced by repression complexes at the promoter	none	none		none
-Reaction	Autophosphorylation and activation of CAMK2	GO_0004674 	none		Catalysis 
-Reaction	APC promotes disassembly of beta-catenin transactivation complex	none	none		none
-Reaction	PRKG is activated by binding to high levels of cGMP in the absence of WNT signaling	none	none		none
-Reaction	AKT phosphorylates CBY1	GO_0004674 	none		Catalysis 
-Reaction	Active calmodulin binds CAMK2	none	none		none
-Reaction	CBY1 binds beta-catenin	none	none		none
-Reaction	Activation of MAP3K7 in response to WNT	GO_0004674 	none		Catalysis 
-Reaction	CAMK2 binds MAP3K7	none	none		none
-Reaction	SET1 complex trimethylates H3K4 at the MYC gene	GO_0042800 	none		Catalysis 
-Reaction	Recruitment of SET1 methyltransferase complex	none	none		none
-Reaction	Activation of NLK	GO_0004674 	none		Catalysis Non-catalytic-ACTIVATION 
-Reaction	NLK mRNA translation controlled by miR-92b	none	none		Non-catalytic-INHIBITION 
-Reaction	TCF/LEF:CTNNB1 bind the AXIN2 gene	none	none		none
-Reaction	miR-92b binds 3'UTR of NLK mRNA	none	none		none
-Reaction	TCF7L1/TCF7L2/LEF1:CTNNB1 promote transcription of the MYC gene	none	none		Non-catalytic-ACTIVATION 
-Reaction	NLK phosphorylates TCF/LEF	GO_0004674 	none		Catalysis 
-Reaction	Beta-catenin displaces TLE:HDAC1 from TCF/LEF	none	none		none
-Reaction	NLK translocates to nucleus	none	none		none
-Reaction	TCF/LEF:CTNNB1 promote transcription of AXIN2	none	none		Non-catalytic-ACTIVATION 
-Reaction	Beta-catenin recruits CBP/p300	none	none		none
-Reaction	Beta-catenin:TCF associates with BCL9 and PYGO	none	none		none
-Reaction	Transcription of canonical WNT targets is negatively regulated by NLK-dependent phosphorylation of TCF/LEF	none	none		Non-catalytic-ACTIVATION 
-Reaction	Beta-catenin recruits SMARCA4	none	none		none
-Reaction	TCF/LEF:CTNNB1 bind canonical WNT target promoters	none	none		Non-catalytic-INHIBITION 
-Reaction	Beta-catenin recruits CDC73 and LEO1	none	none		none
+Reaction	Calcium binds calmodulin	none	none		none
+Pathway	Inactivation, recovery and regulation of the phototransduction cascade	none	GO_0022400 		none
+Reaction	Activation of RasGRF	GO_0005231 	none		Catalysis 
+Pathway	VEGFR2 mediated cell proliferation	none	none		none
+Pathway	CaM pathway	none	none		none
+Reaction	Inhibition of ADRBK2 by calmodulin	none	none		Non-catalytic-INHIBITION 
+Reaction	KAMKMT transfers 3xCH3 groups from 3xAdoMet to CALM1	GO_0018025 	none		Catalysis 
+Pathway	Smooth Muscle Contraction	none	GO_0006936 		none
+Pathway	Sodium/Calcium exchangers	none	none		none
+Pathway	Protein methylation	none	GO_0006479 		none
+Pathway	Transport of inorganic cations/anions and amino acids/oligopeptides	none	GO_0006811 		none
+Pathway	Ion homeostasis	none	GO_1903779 		none
+Pathway	CLEC7A (Dectin-1) induces NFAT activation	none	none		none
+Reaction	SLC8A1,2,3 exchange 3Na+ for Ca2+	GO_0005432 	none		Non-catalytic-INHIBITION Catalysis Non-catalytic-ACTIVATION 
+Reaction	K+-independent Li+/Ca2+ exchanger transport	GO_0015368 	none		Catalysis 
+Pathway	FCERI mediated Ca+2 mobilization	none	none		none
+Reaction	SLC24A5 exchanges cytosolic 4Na+ for Golgi luminal Ca2+, K+	GO_0008273 	none		Catalysis 
+Pathway	Ras activation upon Ca2+ influx through NMDA receptor	none	none		none
+Reaction	SLC24A1-4 exchange extracellular 4Na+ for cytosolic Ca2+, K+	GO_0008273 	none		Catalysis 
+Pathway	Reduction of cytosolic Ca++ levels	none	none		none
+Pathway	Activation of NMDA receptors and postsynaptic events	none	none		none
+Pathway	Antigen activates B Cell Receptor (BCR) leading to generation of second messengers	none	none		none
+Pathway	Calmodulin induced events	none	none		none
