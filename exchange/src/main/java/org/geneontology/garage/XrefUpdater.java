@@ -66,9 +66,10 @@ public class XrefUpdater {
 	public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException, IOException {
 		XrefUpdater u = new XrefUpdater();
 		//u.updateRheaXrefs();
-		u.updateReactomeXrefs();
+		//u.updateReactomeXrefs();
+		u.dropReactomeXrefs();
 	}
-	
+
 	public void updateRheaXrefs() throws IOException, OWLOntologyCreationException, OWLOntologyStorageException {
 		Set<MappingResult> results = new HashSet<MappingResult>();
 		RheaConverter rc = new RheaConverter();
@@ -82,7 +83,7 @@ public class XrefUpdater {
 		System.out.println("map size = "+bi_master.size());
 		String ontf = 
 				//"src/main/resources/org/geneontology/gocam/exchange/go.owl";
-		"/Users/bgood/Documents/GitHub/go-ontology/src/ontology/go-edit.obo";
+				"/Users/bgood/Documents/GitHub/go-ontology/src/ontology/go-edit.obo";
 		//-edit.obo";
 		//"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
 		OWLOntologyManager mgr = OWLManager.createOWLOntologyManager();
@@ -219,8 +220,8 @@ public class XrefUpdater {
 		//Helper.writeOntology("/Users/bgood/Desktop/test/tmp/go-rhea-test.owl", ont);
 		Helper.writeOntologyAsObo("/Users/bgood/Documents/GitHub/go-ontology/src/ontology/go-edit.obo", ont);
 		//deleting 28781 anno axioms and adding 2421
-//map size = 6365
-//		deleting 4117 anno axioms and adding 4117
+		//map size = 6365
+		//		deleting 4117 anno axioms and adding 4117
 
 	}
 
@@ -228,7 +229,7 @@ public class XrefUpdater {
 		Set<MappingResult> results = new HashSet<MappingResult>();
 		List<String> ascii_problems = new ArrayList<String>();
 		String output_ontology_file = "/Users/bgood/Desktop/test/tmp/test-go-edit.obo";
-								//"/Users/bgood/Documents/GitHub/go-ontology/src/ontology/go-edit.obo";
+		//"/Users/bgood/Documents/GitHub/go-ontology/src/ontology/go-edit.obo";
 		String ontf = "/Users/bgood/Documents/GitHub/go-ontology/src/ontology/go-edit.obo";
 		String report_file = "/Users/bgood/Desktop/test/tmp/xref_update_report.txt";
 		//"src/main/resources/org/geneontology/gocam/exchange/go.owl";//-edit.obo";
@@ -410,6 +411,125 @@ public class XrefUpdater {
 						OWLAnnotation new_definition_annotation = df.getOWLAnnotation(a.getProperty(), definition_value);						
 						OWLAnnotationAssertionAxiom a2 = df.getOWLAnnotationAssertionAxiom(a.getSubject(), new_definition_annotation, anno_annos);
 						new_id_axioms.add(a2);
+					}
+				}
+
+
+			}
+		}
+		System.out.println("deleting "+delete_axioms.size()+" anno axioms and adding "+new_id_axioms.size());
+
+		//report
+		FileWriter w = new FileWriter(report_file);
+		w.write("r.go_term\tr.old_react_id\tr.replaced_by\tr.action\tr.reason\tr.property\n");
+		for(MappingResult r : results) {
+			w.write(r.go_term+"\t"+r.old_id+"\t"+r.replaced_by+"\t"+r.action+"\t"+r.reason+"\t"+r.property+"\n");
+		}
+		w.close();
+
+		mgr.removeAxioms(ont, delete_axioms);
+		mgr.addAxioms(ont, new_id_axioms);
+		Helper.writeOntologyAsObo(output_ontology_file, ont);
+		//deleting 28781 anno axioms and adding 2421
+		//deleting 28831 anno axioms and adding 2956
+		//deleting 28837 anno axioms and adding 2962
+		//deleting 28837 anno axioms and adding 2972
+
+		System.out.println("Ascii problems "+ascii_problems.size());
+		for(String a : ascii_problems) {
+			System.out.println(a);
+		}
+	}
+
+	public void dropReactomeXrefs() throws OWLOntologyCreationException, IOException, OWLOntologyStorageException {
+		Set<MappingResult> results = new HashSet<MappingResult>();
+		List<String> ascii_problems = new ArrayList<String>();
+		String output_ontology_file = "/Users/bgood/Desktop/test/tmp/test-go-edit.obo";
+		//"/Users/bgood/Documents/GitHub/go-ontology/src/ontology/go-edit.obo";
+		String ontf = "/Users/bgood/Documents/GitHub/go-ontology/src/ontology/go-edit.obo";
+		String report_file = "/Users/bgood/Desktop/test/tmp/xref_update_report.txt";
+		//"src/main/resources/org/geneontology/gocam/exchange/go.owl";//-edit.obo";
+		//"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
+
+		OWLOntologyManager mgr = OWLManager.createOWLOntologyManager();
+		OWLDataFactory df = mgr.getOWLDataFactory();
+		OWLOntology ont = mgr.loadOntologyFromOntologyDocument(new File(ontf));
+		Set<OWLClass> classes = ont.getClassesInSignature();
+		OWLAnnotationProperty xref = df.getOWLAnnotationProperty(IRI.create("http://www.geneontology.org/formats/oboInOwl#hasDbXref"));
+		OWLAnnotationProperty exact_synonym = df.getOWLAnnotationProperty(IRI.create("http://www.geneontology.org/formats/oboInOwl#hasExactSynonym"));
+		OWLAnnotationProperty rdfslabel = df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI());
+		OWLAnnotationProperty rdfscomment = df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_COMMENT.getIRI());
+		OWLAnnotationProperty definition = df.getOWLAnnotationProperty(IRI.create("http://purl.obolibrary.org/obo/IAO_0000115"));
+		Set<OWLAxiom> new_id_axioms = new HashSet<OWLAxiom>();
+		Set<OWLAxiom> delete_axioms = new HashSet<OWLAxiom>();
+		for(OWLClass c : classes) {
+			Collection<OWLAnnotationAssertionAxiom> aaa = EntitySearcher.getAnnotationAssertionAxioms(c, ont);
+			for(OWLAnnotationAssertionAxiom a : aaa) {
+				OWLAnnotation anno = a.getAnnotation();
+				//top level xref assertions
+				if(anno.getProperty().equals(xref)) {
+					OWLAnnotationValue v = anno.getValue();
+					String xref_id = v.asLiteral().get().getLiteral();
+					if(xref_id.contains(".")) {
+						xref_id = xref_id.substring(0, xref_id.indexOf("."));
+					}
+					Collection<OWLAnnotation> anno_annos = a.getAnnotations(rdfslabel);
+					if(xref_id.contains("REACT_")) {
+						//delete all previous Reactome xrefs
+						delete_axioms.add(a);
+						String xref_label = null;
+						for(OWLAnnotation anno_anno : anno_annos) {
+							if(anno_anno.getProperty().equals(rdfslabel)) {
+								OWLAnnotationValue vv = anno_anno.getValue();
+								xref_label = vv.asLiteral().get().getLiteral();
+								MappingResult no_map = new MappingResult();
+								no_map.action = "delete";
+								no_map.delete_xref_axiom = a;
+								no_map.go_term = c.getIRI().toString();
+								no_map.new_xref_axiom = null;
+								no_map.old_id = xref_id;
+								no_map.reason = "non-human";
+								no_map.replaced_by = "NA";
+								no_map.property = "direct\txref";
+								results.add(no_map);
+							}
+						}
+					}
+				}
+				//xrefs in definitions, synonyms etc.
+				//	if(anno.getProperty().equals(definition)||anno.getProperty().equals(exact_synonym)) {
+				else {
+					Set<OWLAnnotation> anno_annos = a.getAnnotations(xref);
+					boolean update = false;
+					String new_reactome_id = "";
+					Set<OWLAnnotation> annos_to_remove = new HashSet<OWLAnnotation>();
+					Set<OWLAnnotation> annos_to_add = new HashSet<OWLAnnotation>();
+					for(OWLAnnotation anno_anno : anno_annos) {
+						String v = anno_anno.getValue().asLiteral().get().getLiteral();
+						if(v.contains("REACT_")) {
+							update  = true;
+							//as above, all old reactome ids get removed.  
+							//if there are mappings, they are replaced
+							annos_to_remove.add(anno_anno);
+							String old_id = v;
+							if(v.contains(".")) {
+								old_id = v.substring(0, v.indexOf("."));
+							}
+							MappingResult no_map = new MappingResult();
+							no_map.action = "delete";
+							no_map.delete_xref_axiom = a;
+							no_map.go_term = c.getIRI().toString();
+							no_map.new_xref_axiom = null;
+							no_map.old_id = old_id;
+							no_map.reason = "no mapping provided";
+							no_map.replaced_by = "NA";
+							no_map.property = "indirect\t"+anno.getProperty().toString();
+							results.add(no_map);
+						}
+					}
+					if(update) {
+						anno_annos.removeAll(annos_to_remove);
+						delete_axioms.add(a);						
 					}
 				}
 
