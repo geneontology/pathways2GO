@@ -68,19 +68,35 @@ public class GoCAMReport {
 		String row = bp_count+"\t"+mf_count+"\t"+complex_count+"\t"+distinct_protein_count+"\t"+distinct_chemical_count+"\t"+distinct_cc_count+"\t"+distinct_relation_count+"\n";
 		return row;
 	}
+
+	//String header = "Reactome node type\tReactome Label\tCurator asserted GO types\tRule-assigned types\tInferred GO types\n";
 	
 	public String makeMappingReport() {
 		String report = "";
 		for(String pathway_uri : pathway_types.keySet()) {
 			report+="Pathway\t"+uri_term.get(pathway_uri)+"\t";
 			if(pathway_asserted_types!=null&&pathway_asserted_types.size()>0) {
+				Set<String> rule_types = new HashSet<String>();
 				Set<String> types = pathway_asserted_types.get(pathway_uri);
 				if(types!=null) {
+					for(String type : types) {
+						if(type.equals("")||type.equals("")) {
+							rule_types.add(type);
+						}else {
+							String label = uri_term.get(type);
+							report+=label+",";
+						}
+					}
+				}
+				report+="\t";
+				if(rule_types.size()>0) {
 					for(String type : types) {
 						String label = uri_term.get(type);
 						report+=label+",";
 					}
 				}
+			}else {
+				report+="\t";
 			}
 			report+="\t";
 			if(pathway_inferred_types!=null&&pathway_inferred_types.size()>0) {
@@ -98,13 +114,27 @@ public class GoCAMReport {
 		for(String function_uri : function_types.keySet()) {
 			report+="function\t"+uri_term.get(function_uri)+"\t";
 			if(function_asserted_types!=null&&function_asserted_types.size()>0) {
+				Set<String> rule_types = new HashSet<String>();
 				Set<String> types = function_asserted_types.get(function_uri);
 				if(types!=null) {
+					for(String type : types) {
+						if(type.equals(GoCAM.protein_binding.getIRI().toURI().toString())||type.equals(GoCAM.establishment_of_protein_localization.getIRI().toURI().toString())) {
+							rule_types.add(type);
+						}else {
+							String label = uri_term.get(type);
+							report+=label+",";
+						}
+					}
+				}
+				report+="\t";
+				if(rule_types.size()>0) {
 					for(String type : types) {
 						String label = uri_term.get(type);
 						report+=label+",";
 					}
 				}
+			}else {
+				report+="\t";
 			}
 			report+="\t";
 			if(function_inferred_types!=null&&function_inferred_types.size()>0) {
@@ -123,13 +153,27 @@ public class GoCAMReport {
 		for(String complex_uri : complex_types.keySet()) {
 			report+="complex\t"+uri_term.get(complex_uri)+"\t";
 			if(complex_asserted_types!=null&&complex_asserted_types.size()>0) {
+				Set<String> rule_types = new HashSet<String>();
 				Set<String> types = complex_asserted_types.get(complex_uri);
 				if(types!=null) {
+					for(String type : types) {
+						if(type.equals("")||type.equals("")) {
+							rule_types.add(type);
+						}else {
+							String label = uri_term.get(type);
+							report+=label+",";
+						}
+					}
+				}
+				report+="\t";
+				if(rule_types.size()>0) {
 					for(String type : types) {
 						String label = uri_term.get(type);
 						report+=label+",";
 					}
 				}
+			}else {
+				report+="\t";
 			}
 			report+="\t";
 			if(complex_inferred_types!=null&&complex_inferred_types.size()>0) {
@@ -298,7 +342,9 @@ public class GoCAMReport {
 			uri_term.put(node_uri, label);
 			for(String type_uri : all_types.get(node_uri)) {
 				String type_label = Helper.getaLabel(type_uri, go);
-				uri_term.put(type_uri, type_label);
+				String acc = type_uri;
+				acc = acc.replaceAll("http://purl.obolibrary.org/obo/", "");
+				uri_term.put(type_uri, acc+": "+type_label);
 			}
 		}
 	}

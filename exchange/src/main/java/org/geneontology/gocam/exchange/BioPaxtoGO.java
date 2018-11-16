@@ -109,9 +109,10 @@ public class BioPaxtoGO {
 	GOPlus goplus;
 	Model biopax_model;
 	boolean causal_recurse = false;
+	Map<String, String> gocamid_sourceid = new HashMap<String, String>();
 
 	public BioPaxtoGO(){
-		strategy = ImportStrategy.NoctuaCuration;  //ImportStrategy.DirectImport;
+		strategy = ImportStrategy.DirectImport;  //ImportStrategy.NoctuaCuration;
 		report = new GoMappingReport();
 		tbox_files = new HashSet<String>();
 		tbox_files.add(goplus_file);
@@ -138,15 +139,15 @@ public class BioPaxtoGO {
 				//"/Users/bgood/Desktop/test/biopax/pathway_commons/WP_ACE_Inhibitor_Pathway.owl";
 				//"/Users/bgood/Desktop/test/biopax/pathway_commons/kegg_Biotin_metabolism.owl";
 				//"/Users/bgood/Desktop/test/biopax/pathway_commons/PathwayCommons10.wp.BIOPAX.owl";
-				//"/Users/bgood/Desktop/test/biopax/BMP_signaling.owl";
+				"/Users/bgood/Desktop/test/biopax/BMP_signaling.owl";
 				//"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
-				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Oct4_2018.owl";
-				//"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
-				//		"/Users/bgood/Desktop/test/biopax/Wnt_test_oct8_2018.owl";
-				//"/Users/bgood/Desktop/test/biopax/SignalingByWNTcomplete.owl";
+				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Oct4_2018.owl";
+		//"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
+		//		"/Users/bgood/Desktop/test/biopax/Wnt_test_oct8_2018.owl";
+		//"/Users/bgood/Desktop/test/biopax/SignalingByWNTcomplete.owl";
 		String converted = 
-		//"/Users/bgood/Desktop/test/go_cams/Wnt_complete_2018-";
-		"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
+				//"/Users/bgood/Desktop/test/go_cams/Wnt_complete_2018-";
+				"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
 
 		boolean add_lego_import = false; //unless you never want to open the output in Protege always leave false..(or learn how to use a catalogue file)
 		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
@@ -250,7 +251,9 @@ public class BioPaxtoGO {
 		boolean add_pathway_components = true;
 		for (Pathway currentPathway : biopax_model.getObjects(Pathway.class)){
 			go_cam.name = currentPathway.getDisplayName();
-			if(!keepPathway(currentPathway, base_provider)) { //Pathway Commons contains a lot of content free stubs when viewed this way
+			if(!keepPathway(currentPathway, base_provider))
+					//||!go_cam.name.equals("SUMO is transferred from E1 to E2 (UBE2I, UBC9)")) 
+			{ //Pathway Commons contains a lot of content free stubs when viewed this way
 				continue;
 			}
 			String datasource_id = null;
@@ -497,7 +500,7 @@ public class BioPaxtoGO {
 						|| process instanceof GeneticInteraction 
 						|| process instanceof MolecularInteraction 
 						|| process instanceof Interaction){
-					defineReactionEntity(go_cam, process, GoCAM.makeGoCamifiedIRI(process.getUri()), true);				
+					defineReactionEntity(go_cam, process, GoCAM.makeGoCamifiedIRI(process.getUri()), false);				
 					//attach child pathways
 				}else if(process.getModelInterface().equals(Pathway.class)){				
 					definePathwayEntity(go_cam, (Pathway)process, reactome_id, expand_subpathways, false);	
@@ -535,7 +538,7 @@ public class BioPaxtoGO {
 									//are connected yet in different pathways
 									//if its been defined, ought to at least have a label
 									if(go_cam.getaLabel(e2).equals("")){
-										defineReactionEntity(go_cam, nextEvent, e2_iri, true);		
+										defineReactionEntity(go_cam, nextEvent, e2_iri, false);		
 									}
 								}
 							}
@@ -559,7 +562,7 @@ public class BioPaxtoGO {
 									//are connected yet in different pathways
 									//if its been defined, ought to at least have a label
 									if(go_cam.getaLabel(e1).equals("")){
-										defineReactionEntity(go_cam, prevEvent, prevEvent_iri, true);		
+										defineReactionEntity(go_cam, prevEvent, prevEvent_iri, false);		
 									}
 								}
 							}
@@ -571,9 +574,9 @@ public class BioPaxtoGO {
 		Collection<OWLClassExpression> types = EntitySearcher.getTypes(pathway_e, go_cam.go_cam_ont);				
 		if(types.isEmpty()) { 
 			//default to bp
-				go_cam.addTypeAssertion(pathway_e, GoCAM.bp_class);	
+			go_cam.addTypeAssertion(pathway_e, GoCAM.bp_class);	
 		}
-		
+
 		return pathway_e;
 	}
 
@@ -619,9 +622,12 @@ public class BioPaxtoGO {
 	private void defineReactionEntity(GoCAM go_cam, Entity entity, IRI this_iri, boolean follow_controllers) throws IOException {
 		if(this_iri==null) {
 			this_iri = GoCAM.makeGoCamifiedIRI(entity.getUri());
-		}		
-		System.out.println("definining reaction entity "+entity.getDisplayName()+" "+entity.getModelInterface().getName());
-		//add entity to ontology, whatever it is
+		}
+		if(entity instanceof Interaction) {
+			System.out.println("definining reaction entity "+entity.getDisplayName()+" follow controllers "+follow_controllers);
+			System.out.println();
+		}
+			//add entity to ontology, whatever it is
 		OWLNamedIndividual e = go_cam.makeAnnotatedIndividual(this_iri);
 
 		//check specifically for Reactome id
@@ -1066,6 +1072,9 @@ public class BioPaxtoGO {
 				if(control_type==null) {
 					control_type = new HashSet<String>();
 				}
+				//keep track of where the reaction we are talking about controlling is coming from
+				Set<Pathway> current_pathways = ((Interaction) entity).getPathwayComponentOf();
+
 				//find controllers 
 				Set<Control> controllers = ((Process) entity).getControlledOf();
 				for(Control controller : controllers) {
@@ -1105,9 +1114,38 @@ public class BioPaxtoGO {
 					for(Controller controller_entity : controller_entities) {
 						//if the controller is produced by a reaction in another pathway, then we want to bring that reaction into this model
 						//so we can see the causal relationships between it and the reaction we have here
-						Set<Interaction> events_controller_is_in = controller_entity.getParticipantOf();
-						for(Interaction event : events_controller_is_in) {
-							if(event.getUri()!=controller.getUri()) {
+						//only do this if its not a small molecule...  ADP etc. make this intractable
+						//limit to proteins and complexes 
+						if(!(controller_entity instanceof SmallMolecule)) {
+							Set<Interaction> events_controller_is_in = controller_entity.getParticipantOf();
+							events_controller_is_in.remove(controller); //we know that the current control event is covered
+							//criteria for adding an event to this model, this way
+							//it has the controller_entity as an output						
+							Set<Interaction> events_to_add = new HashSet<Interaction>();
+							boolean in_this_pathway =false;
+							for(Interaction event : events_controller_is_in) {
+								Set<Pathway> event_pathways = event.getPathwayComponentOf();
+								event_pathways.retainAll(current_pathways);
+								if(event_pathways.size()>0) {
+									in_this_pathway = true;
+									break;
+								}
+							}
+							if(!in_this_pathway) {
+								for(Interaction event : events_controller_is_in) {
+									if(event instanceof Conversion) {
+										//TODO making a directionality assumption here 
+										Set<PhysicalEntity> outputs = ((Conversion) event).getRight();
+										if(outputs.contains(controller_entity)) {									
+											events_to_add.add(event);
+										}
+									}
+								}	
+							}
+							if(events_to_add.size()>5) {
+								System.out.println("uh oh..");
+							}
+							for(Interaction event : events_to_add) {
 								//then we should be in some different, yet related reaction 
 								//- mainly looking for the one that produced the controller molecule
 								IRI event_iri = GoCAM.makeGoCamifiedIRI(event.getUri());

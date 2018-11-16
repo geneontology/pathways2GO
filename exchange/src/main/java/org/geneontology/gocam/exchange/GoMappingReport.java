@@ -19,10 +19,40 @@ public class GoMappingReport {
 	public Set<String> deprecated_classes = new HashSet<String>();
 	public Set<String> inconsistent_models = new HashSet<String>();
 	public Map<String, ReasonerReport> pathway_class_report = new HashMap<String, ReasonerReport>();
-
+//	public Map<String, Set<String>> uri_types;
+	
+//	public Map<String, Set<String>> makeMasterManualMapByURI(){
+//		uri_types = new HashMap<String, Set<String>>();
+//		for(Process p : bp2go_mf.keySet()) {
+//			String uri = GoCAM.makeGoCamifiedIRIstring(p.getUri());
+//			Set<String> types = new HashSet<String>();
+//			for(String t : bp2go_mf.get(p)) {
+//				types.add(GoCAM.obo_iri+t);
+//			}
+//			uri_types.put(uri, types);
+//		}
+//		for(Process p : bp2go_bp.keySet()) {
+//			String uri = GoCAM.makeGoCamifiedIRIstring(p.getUri());
+//			Set<String> types = new HashSet<String>();
+//			for(String t : bp2go_bp.get(p)) {
+//				types.add(GoCAM.obo_iri+t);
+//			}
+//			uri_types.put(uri, types);
+//		}
+//		for(Process p : bp2go_controller.keySet()) {
+//			String uri = GoCAM.makeGoCamifiedIRIstring(p.getUri());
+//			Set<String> types = new HashSet<String>();
+//			for(String t : bp2go_controller.get(p)) {
+//				types.add(GoCAM.obo_iri+t);
+//			}
+//			uri_types.put(uri, types);
+//		}
+//		return uri_types;
+//	}
+	
 	public void writeReport(String root_folder) throws IOException{
 		String inferred_mapping_report_file = root_folder+"manual_plus_inferred_mapping.txt";
-		String mapping_report_file = root_folder+"manual_mapping.txt";
+		String manual_mapping_report_file = root_folder+"manual_mapping.txt";
 		String chebi_usage_file = root_folder+"chebi_usage.txt";
 		String deprecated_file = root_folder+"deprecated_terms_used.txt";
 		String inconsistent_file = root_folder+"inconsistent_models.txt";
@@ -32,11 +62,12 @@ public class GoMappingReport {
 		Set<Process> all_processes = new HashSet<Process>(bp2go_mf.keySet());		
 		all_processes.addAll(new HashSet<Process>(bp2go_bp.keySet()));
 		all_processes.addAll(new HashSet<Process>(bp2go_controller.keySet()));
+	//	uri_types = makeMasterManualMapByURI();
 		float n_reactions = 0; float n_pathways = 0; 
 		float n_reactions_tagged_mf = 0; float n_reactions_tagged_bp = 0; float n_reactions_tagged_both = 0; 
 		float n_pathways_tagged_mf = 0; float n_pathways_tagged_bp = 0; float n_pathways_tagged_both = 0; 
-		FileWriter report = new FileWriter(mapping_report_file, false);
-		report.write("Reactome Node Type\tReactome label\tcurated GO MF\tcurated GO_BP\tboth\tcontroller_type\t\n");
+		FileWriter manual_mapping_report = new FileWriter(manual_mapping_report_file, false);
+		manual_mapping_report.write("Reactome Node Type\tReactome label\tcurated GO MF\tcurated GO_BP\tboth\tcontroller_type\t\n");
 		for(Process p : all_processes) {
 			Set<String> mf = bp2go_mf.get(p);
 			Set<String> bp = bp2go_bp.get(p);
@@ -92,9 +123,9 @@ public class GoMappingReport {
 				}
 			}
 			String row = thingtype+"\t"+p.getDisplayName()+"\t"+mf_out+"\t"+bp_out+"\t"+both+"\t"+control_out+"\n";
-			report.write(row);
+			manual_mapping_report.write(row);
 		}
-		report.close();		
+		manual_mapping_report.close();		
 		
 		FileWriter chebi_report = new FileWriter(chebi_usage_file);
 		chebi_report.write("chebi_uri\ttype\tcount\n");
@@ -116,10 +147,10 @@ public class GoMappingReport {
 		logic_report.close();
 		
 		FileWriter inferred_mapping_report = new FileWriter(inferred_mapping_report_file);
-		String header = "Reactome node type\tReactome Label\tAsserted GO types\tInferred GO types\n";
+		String header = "Reactome node type\tReactome Label\tCurator asserted GO types\tRule-assigned types\tInferred GO types\n";
 		inferred_mapping_report.write(header);
 		FileWriter content = new FileWriter(content_file);
-		String content_header = "bp_count\tmf_count\tcomplex_count\tdistinct_protein_count\tdistinct_chemical_count\tdistinct_cc_count\tdistinct_relation_count\n";
+		String content_header = "BP\tbp_count\tmf_count\tcomplex_count\tdistinct_protein_count\tdistinct_chemical_count\tdistinct_cc_count\tdistinct_relation_count\n";
 		content.write(content_header);
 		ReasonerReport inf_summary = new ReasonerReport();
 		FileWriter value_file = new FileWriter(reasoner_value_file);
@@ -140,8 +171,8 @@ public class GoMappingReport {
 			
 			value_file.write(pathway+"\t"+r.bp_new_class_count+"\t"+r.mf_new_class_count+"\t"+r.cc_new_class_count+"\t"+r.complex_new_class_count+"\t"+r.total_new_classified_instances+"\t");
 			value_file.write(r.bp_deepened_class_count+"\t"+r.mf_deepened_class_count+"\t"+r.cc_deepened_class_count+"\t"+r.complex_deepened_class_count+"\t"+r.total_deepened_classified_instances+"\n");
-			inferred_mapping_report.write(pathway+"\t"+r.gocamreport.makeMappingReport());
-			content.write(r.gocamreport.makeSimpleContentReport());
+			inferred_mapping_report.write(r.gocamreport.makeMappingReport());
+			content.write(pathway+"\t"+r.gocamreport.makeSimpleContentReport());
 		}
 		value_file.close();
 		inferred_mapping_report.close();
@@ -167,4 +198,7 @@ public class GoMappingReport {
 		summary.close();
 		
 	}
+	
+	
+
 }

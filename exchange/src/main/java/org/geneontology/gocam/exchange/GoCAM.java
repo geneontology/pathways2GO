@@ -539,8 +539,13 @@ final long counterValue = instanceCounter.getAndIncrement();
 		return IRI.create(iri);
 	}
 
-	public static IRI makeGoCamifiedIRI(String uri) {
+	public static String makeGoCamifiedIRIstring(String uri) {
 		String iri = base_iri+uri.hashCode();
+		return iri;
+	}
+	
+	public static IRI makeGoCamifiedIRI(String uri) {
+		String iri = makeGoCamifiedIRIstring(uri);
 		return IRI.create(iri);
 	}
 	/**

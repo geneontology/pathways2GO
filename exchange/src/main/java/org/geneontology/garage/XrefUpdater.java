@@ -66,8 +66,8 @@ public class XrefUpdater {
 	public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException, IOException {
 		XrefUpdater u = new XrefUpdater();
 		//u.updateRheaXrefs();
-		//u.updateReactomeXrefs();
-		u.dropReactomeXrefs();
+		u.updateReactomeXrefs();
+		//u.dropReactomeXrefs();
 	}
 
 	public void updateRheaXrefs() throws IOException, OWLOntologyCreationException, OWLOntologyStorageException {
@@ -226,6 +226,7 @@ public class XrefUpdater {
 	}
 
 	public void updateReactomeXrefs() throws OWLOntologyCreationException, IOException, OWLOntologyStorageException {
+		boolean drop_all_direct = true;
 		Set<MappingResult> results = new HashSet<MappingResult>();
 		List<String> ascii_problems = new ArrayList<String>();
 		String output_ontology_file = "/Users/bgood/Desktop/test/tmp/test-go-edit.obo";
@@ -284,7 +285,8 @@ public class XrefUpdater {
 							if(anno_anno.getProperty().equals(rdfslabel)) {
 								OWLAnnotationValue vv = anno_anno.getValue();
 								xref_label = vv.asLiteral().get().getLiteral();
-								if(!xref_label.contains("Homo sapiens")&&new_id==null) {
+								if(!xref_label.contains("Homo sapiens")&&new_id==null
+										||drop_all_direct) {
 									MappingResult no_map = new MappingResult();
 									no_map.action = "delete";
 									no_map.delete_xref_axiom = a;
@@ -296,7 +298,7 @@ public class XrefUpdater {
 									no_map.property = "direct\txref";
 									results.add(no_map);
 								}else {
-									if(new_id==null) {
+									if(new_id==null||drop_all_direct) {
 										System.out.println("No mapping for\txref\t"+xref_id+"\t"+c);
 										MappingResult no_map = new MappingResult();
 										no_map.action = "delete";
@@ -312,7 +314,7 @@ public class XrefUpdater {
 								}
 							}
 						}
-						if(new_id!=null) {
+						if(new_id!=null&&!drop_all_direct) {
 							//update annotation							
 							//make annotation annotations..
 							Set<OWLAnnotation> n_anno_annos = new HashSet<OWLAnnotation>();
