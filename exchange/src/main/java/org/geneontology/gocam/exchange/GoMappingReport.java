@@ -147,7 +147,7 @@ public class GoMappingReport {
 		logic_report.close();
 		
 		FileWriter inferred_mapping_report = new FileWriter(inferred_mapping_report_file);
-		String header = "Reactome node type\tReactome Label\tCurator asserted GO types\tRule-assigned types\tInferred GO types\n";
+		String header = "Reactome node type\tReactome Label\tReactome Id\tCurator asserted GO types\tRule-assigned types\tInferred GO types\n";
 		inferred_mapping_report.write(header);
 		FileWriter content = new FileWriter(content_file);
 		String content_header = "BP\tbp_count\tmf_count\tcomplex_count\tdistinct_protein_count\tdistinct_chemical_count\tdistinct_cc_count\tdistinct_relation_count\n";
@@ -171,7 +171,7 @@ public class GoMappingReport {
 			
 			value_file.write(pathway+"\t"+r.bp_new_class_count+"\t"+r.mf_new_class_count+"\t"+r.cc_new_class_count+"\t"+r.complex_new_class_count+"\t"+r.total_new_classified_instances+"\t");
 			value_file.write(r.bp_deepened_class_count+"\t"+r.mf_deepened_class_count+"\t"+r.cc_deepened_class_count+"\t"+r.complex_deepened_class_count+"\t"+r.total_deepened_classified_instances+"\n");
-			inferred_mapping_report.write(r.gocamreport.makeMappingReport());
+			inferred_mapping_report.write(r.gocamreport.makeNRMappingReport());
 			content.write(pathway+"\t"+r.gocamreport.makeSimpleContentReport());
 		}
 		value_file.close();
@@ -179,7 +179,10 @@ public class GoMappingReport {
 		content.close();
 		
 		FileWriter summary = new FileWriter(summary_file);			
-		summary.write("Without considering reasoning for instance classification - just looking at direct Reactome assertions...\n");
+		summary.write("Note the following is reported from a GO-CAM perspective, not a Reactome one.  \n"
+				+ "Where Reactome may consider a complex appearing in multiple reactions as one entity, GO-CAM considers each instance separately. \n "
+				+ "As a result number for classifications (especially complexes) may be larger here then they would be were this reported from a Reactome perspective. \n"
+				+ "Without considering reasoning for instance classification - just looking at direct Reactome assertions...\n");
 		summary.write("Pathways:"+n_pathways+" with bp:"+n_pathways_tagged_bp+" with mf:"+n_pathways_tagged_mf+" both:"+n_pathways_tagged_both+"\n");
 		summary.write("% pathways no bp: "+((n_pathways-n_pathways_tagged_bp)/n_pathways)+"\n");
 		summary.write("Reactions:"+n_reactions+" with bp:"+n_reactions_tagged_bp+" with mf:"+n_reactions_tagged_mf+" both:"+n_reactions_tagged_both+"\n");

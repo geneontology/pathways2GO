@@ -489,6 +489,18 @@ public class GoCAM {
 		return anno;
 	}
 
+	public void addDatabaseXref(OWLNamedIndividual e, String reactome_id) {
+		if(reactome_id==null) {
+			return;
+		}		
+		OWLLiteral id = df.getOWLLiteral(reactome_id);
+		OWLAnnotation id_anno = df.getOWLAnnotation(database_cross_reference, id);
+		OWLAxiom idaxiom = df.getOWLAnnotationAssertionAxiom(e.getIRI(), id_anno);
+		ontman.addAxiom(go_cam_ont, idaxiom);
+		return;
+		
+	}
+	
 	public void addLabel(OWLEntity entity, String label) {
 		if(label==null) {
 			return;
@@ -497,7 +509,6 @@ public class GoCAM {
 		OWLAnnotation label_anno = df.getOWLAnnotation(rdfs_label, lbl);
 		OWLAxiom labelaxiom = df.getOWLAnnotationAssertionAxiom(entity.getIRI(), label_anno);
 		ontman.addAxiom(go_cam_ont, labelaxiom);
-		//ontman.applyChanges();
 		return;
 	}
 
@@ -1203,5 +1214,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		//return wm to access inferences and explanations
 		return wm;
 	}
+
+
 
 }

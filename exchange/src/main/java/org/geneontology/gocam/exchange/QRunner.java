@@ -136,6 +136,33 @@ public class QRunner {
 	Map<String, Set<String>> getComplexClasses() {
 		return getThingTypeMap("get_complexes.rq","complex","type");
 	}
+	Map<String, Set<String>> getXrefs(){
+		return getThingAnnoMap("get_xrefs.rq","thing","xref");
+	}
+	
+	Map<String, Set<String>> getThingAnnoMap(String query_file, String thingvar, String annovar) {
+		Map<String, Set<String>> thing_anno = new HashMap<String, Set<String>>();
+		String q = null;
+		try {
+			q = IOUtils.toString(App.class.getResourceAsStream(query_file), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL query from jar \n"+e);
+		}
+		QueryExecution qe = QueryExecutionFactory.create(q, jena);
+		ResultSet results = qe.execSelect();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Resource thing = qs.getResource(thingvar);
+			Literal anno = qs.getLiteral(annovar);
+			String a = anno.getString();
+			Set<String> ps = thing_anno.get(thing.getURI());
+			if(ps == null) { ps = new HashSet<String>();}
+			ps.add(a);
+			thing_anno.put(thing.getURI(), ps);
+		}
+		qe.close();
+		return thing_anno;
+	}
 	
 	Map<String, Set<String>> getThingTypeMap(String query_file, String thingvar, String typevar) {
 		Map<String, Set<String>> thing_type = new HashMap<String, Set<String>>();

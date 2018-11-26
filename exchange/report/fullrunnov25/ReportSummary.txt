@@ -1,0 +1,21 @@
+Note the following is reported from a GO-CAM perspective, not a Reactome one.  
+Where Reactome may consider a complex appearing in multiple reactions as one entity, GO-CAM considers each instance separately. 
+ As a result number for classifications (especially complexes) may be larger here then they would be were this reported from a Reactome perspective. 
+Without considering reasoning for instance classification - just looking at direct Reactome assertions...
+Pathways:2244.0 with bp:977.0 with mf:0.0 both:0.0
+% pathways no bp: 0.56461674
+Reactions:11798.0 with bp:478.0 with mf:5208.0 both:277.0
+% reactions no mf: 0.55856925
+% reactions with no bp: 0.95948464
+
+For unclassified instances, reasoner can add 8838 non-trivial (not BFO, non-root GO) classifications for:
+	170	new bp
+	4158	new mf
+	0	new cc
+	4510	new complex
+
+For classified instances, reasoner can add 1587 non-trivial (not BFO, non-root GO) deeper classifications for:
+	755	deepened bp
+	832	deepened mf
+	0	deepened cc
+	0	deepened complex

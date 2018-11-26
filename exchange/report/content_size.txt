@@ -1,2 +1,0 @@
-bp_count	mf_count	complex_count	distinct_protein_count	distinct_chemical_count	distinct_cc_count	distinct_relation_count
-15	8	0	30	12	5	5
