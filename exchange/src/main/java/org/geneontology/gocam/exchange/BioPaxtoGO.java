@@ -92,11 +92,14 @@ import org.semanticweb.owlapi.util.OWLEntityRemover;
  *
  */
 public class BioPaxtoGO {
-	public static final String goplus_file = 
-			//"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
-			"/Users/bgood/gocam_input/go-plus-sept-2018.owl";
-	public static final String neo_file = 
-			"/Users/bgood/gocam_input/neo.owl";
+	//TODO replace this with a configuration that accepts go-lego and uses a catalogue file to set up local imports of everything
+	public static final String ro_file = "/Users/bgood/gocam_ontology/ro.owl"; 
+	public static final String goplus_file = "/Users/bgood/gocam_ontology/go-plus.owl";
+	public static final String neo_file = "/Users/bgood/gocam_ontology/neo.owl";
+	public static final String legorel_file = "/Users/bgood/gocam_ontology/legorel.owl"; 
+	public static final String go_bfo_bridge_file = "/Users/bgood/gocam_ontology/go-bfo-bridge.owl"; 
+	public static final String eco_base_file = "/Users/bgood/gocam_ontology/eco-base.owl"; 
+	
 	Set<String> tbox_files;
 	ImportStrategy strategy;
 	enum ImportStrategy {
@@ -109,19 +112,27 @@ public class BioPaxtoGO {
 	GOPlus goplus;
 	Model biopax_model;
 	Map<String, String> gocamid_sourceid = new HashMap<String, String>();
+	//
+	static boolean add_lego_import = false; //unless you never want to open the output in Protege always leave false..(or learn how to use a catalogue file)
+	static boolean save_inferences = false;  //adds inferences to blazegraph journal
+	static boolean expand_subpathways = false;  //this is a bad idea for high level nodes like 'Signaling Pathways'
 	//these define the extent to which information from other pathways is brought into the pathway in question
 	//leaving all false, limits the reactions captured in each pathway to those shown in a e.g. Reactome view of the pathway
-	boolean causal_recurse = false;
-	boolean add_pathway_parents = false;
-	boolean add_neighoring_events = true;
-	boolean add_upstream_controller_events = true;
+	static boolean causal_recurse = false;
+	static boolean add_pathway_parents = false;
+	static boolean add_neighboring_events = true;
+	static boolean add_upstream_controller_events = true;
 
 	public BioPaxtoGO(){
-		strategy = ImportStrategy.DirectImport;  //ImportStrategy.NoctuaCuration;
+		strategy = ImportStrategy.NoctuaCuration; //ImportStrategy.DirectImport;  
 		report = new GoMappingReport();
 		tbox_files = new HashSet<String>();
 		tbox_files.add(goplus_file);
-		tbox_files.add(neo_file);
+	//	tbox_files.add(neo_file);
+		tbox_files.add(ro_file);
+		tbox_files.add(legorel_file);
+		tbox_files.add(go_bfo_bridge_file);
+		tbox_files.add(eco_base_file);
 		try {
 			goplus = new GOPlus();
 		} catch (OWLOntologyCreationException e) {
@@ -154,10 +165,6 @@ public class BioPaxtoGO {
 				//"/Users/bgood/Desktop/test/go_cams/Wnt_complete_2018-";
 				"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
 
-		boolean add_lego_import = false; //unless you never want to open the output in Protege always leave false..(or learn how to use a catalogue file)
-		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
-		boolean save_inferences = false;
-		boolean expand_subpathways = false;  //this is a bad idea for high level nodes like 'Signaling Pathways'
 		String base_title = "title here";//"Will be replaced if a title can be found for the pathway in its annotations
 		String base_contributor = "https://orcid.org/0000-0002-7334-7852"; //Ben Good
 		String base_provider = "https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";
@@ -165,15 +172,17 @@ public class BioPaxtoGO {
 		if(expand_subpathways) {
 			tag = "expanded";
 		}	
-		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, save_inferences, expand_subpathways, base_title, base_contributor, base_provider, tag, add_lego_import);
-		System.out.println("Writing report");
-		bp2g.report.writeReport("report/");
-		System.out.println("All done");
+		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
+		String test_pathway = "activated TAK1 mediates p38 MAPK activation";//null;//"Clathrin-mediated endocytosis";
+		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathway);
+//		System.out.println("Writing report");
+//		bp2g.report.writeReport("report/");
+//		System.out.println("All done");
 	} 
 
 	private void convertReactomeFile(String input_file, 
-			String output, boolean split_by_pathway, boolean save_inferences, boolean expand_subpathways, String base_title, String base_contributor, String base_provider, String tag, boolean add_lego_import ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
-		convert(input_file, output, split_by_pathway, add_lego_import, base_title, base_contributor, base_provider, tag, save_inferences, expand_subpathways);
+			String output, boolean split_by_pathway, String base_title, String base_contributor, String base_provider, String tag, String test_pathway) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
+		convert(input_file, output, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathway);
 	}
 
 	private void convertReactomeFolder(String input_folder, String output_folder, boolean save_inferences, boolean expand_subpathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
@@ -190,7 +199,7 @@ public class BioPaxtoGO {
 				String species = input_biopax.getName();
 				if(species.contains(".owl")) { //ignore other kinds of files.. like DS_STORE!
 					String output_file_stub = output_folder+"/reactome-"+species.replaceAll(".owl", "-");
-					convert(input_biopax.getAbsolutePath(), output_file_stub, split_by_pathway, add_lego_import, base_title, base_contributor, base_provider, species, save_inferences, expand_subpathways);
+					convert(input_biopax.getAbsolutePath(), output_file_stub, split_by_pathway, base_title, base_contributor, base_provider, species, null);
 				}
 			}
 		} 
@@ -215,9 +224,8 @@ public class BioPaxtoGO {
 	 */
 	private void convert(
 			String input_biopax, String converted, 
-			boolean split_out_by_pathway, boolean add_lego_import,
-			String base_title, String base_contributor, String base_provider, String tag, 
-			boolean save_inferences, boolean expand_subpathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException  {
+			boolean split_out_by_pathway, 
+			String base_title, String base_contributor, String base_provider, String tag, String test_pathway_name) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException  {
 		//set for writing metadata
 		String datasource = "";
 		if(base_provider.equals("https://reactome.org")) {
@@ -260,10 +268,10 @@ public class BioPaxtoGO {
 //			}
 			
 			go_cam.name = currentPathway.getDisplayName();
-			if(!keepPathway(currentPathway, base_provider))
-				//||!go_cam.name.equals("Transport of inorganic cations/anions and amino acids/oligopeptides"))
-					//||!go_cam.name.equals("Adenylate cyclase inhibitory pathway"))
-			{ //Pathway Commons contains a lot of content free stubs when viewed this way
+			if(!keepPathway(currentPathway, base_provider)){ //Pathway Commons contains a lot of content free stubs when viewed this way
+				continue;
+			}
+			if(test_pathway_name!=null&&!test_pathway_name.equals(go_cam.name)) {
 				continue;
 			}
 			String datasource_id = null;
@@ -321,10 +329,10 @@ public class BioPaxtoGO {
 			definePathwayEntity(go_cam, currentPathway, datasource_id, expand_subpathways, add_pathway_components);	
 			//get and set parent pathways
 			if(add_pathway_parents) {
-				Set<String> pubids = getPubmedIds(currentPathway);
+				//Set<String> pubids = getPubmedIds(currentPathway);
 				for(Pathway parent_pathway : currentPathway.getPathwayComponentOf()) {				
 					OWLNamedIndividual parent = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(parent_pathway.getUri()));
-					go_cam.addRefBackedObjectPropertyAssertion(parent, GoCAM.has_part, p, pubids, GoCAM.eco_imported_auto,  "PMID", null);
+					go_cam.addRefBackedObjectPropertyAssertion(parent, GoCAM.has_part, p, Collections.singleton(datasource_id), GoCAM.eco_imported_auto,  "reactome", null);
 					//don't add all the information on the parent pathway to this pathway
 					definePathwayEntity(go_cam, parent_pathway, datasource_id, false, false);
 				}
@@ -335,7 +343,7 @@ public class BioPaxtoGO {
 				n = n.replaceAll("/", "-");	
 				n = n.replaceAll(" ", "_");
 				String outfilename = converted+n+".ttl";	
-				wrapAndWrite(outfilename, go_cam, tbox_qrunner, save_inferences, save2blazegraph, n, expand_subpathways);
+				wrapAndWrite(outfilename, go_cam, tbox_qrunner, save_inferences, save2blazegraph, n, expand_subpathways, datasource_id);
 				//reset for next pathway.
 				go_cam.ontman.removeOntology(go_cam.go_cam_ont);
 				go_cam.qrunner = null;
@@ -344,7 +352,7 @@ public class BioPaxtoGO {
 		}	
 		//export all
 		if(!split_out_by_pathway) {
-			wrapAndWrite(converted+".ttl", go_cam, tbox_qrunner, save_inferences, save2blazegraph, converted, expand_subpathways);		
+			wrapAndWrite(converted+".ttl", go_cam, tbox_qrunner, save_inferences, save2blazegraph, converted, expand_subpathways, null);		
 		}
 
 		System.out.println("done with file "+input_biopax);
@@ -381,24 +389,24 @@ public class BioPaxtoGO {
 	 * @throws RDFHandlerException
 	 * @throws IOException
 	 */
-	private void wrapAndWrite(String outfilename, GoCAM go_cam, QRunner tbox_qrunner, boolean save_inferences, boolean save2blazegraph, String pathwayname, boolean expand_subpathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {		
+	private void wrapAndWrite(String outfilename, GoCAM go_cam, QRunner tbox_qrunner, boolean save_inferences, boolean save2blazegraph, String pathwayname, boolean expand_subpathways, String reactome_id) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {		
 		//set up a sparqlable kb in sync with ontology
 		System.out.println("setting up rdf model for sparql rules");
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
 		//infer new edges based on sparql matching
 		System.out.println("Before sparql inference -  triples: "+go_cam.qrunner.nTriples());
-		GoCAM.RuleResults rule_results = go_cam.applySparqlRules(strategy);
+		GoCAM.RuleResults rule_results = go_cam.applySparqlRules(strategy, reactome_id);
 		System.out.println("After sparql inference -  triples: "+go_cam.qrunner.nTriples());
 		System.out.println("Rule results:\n"+rule_results.toString());
 		//sparql rules make additions to go_cam_ont, add them to the rdf model 
 		//set up to apply OWL inference to test for consistency and add classifications
 		//go_cam.go_cam_ont is ready and equals the Abox.. go_cam.qrunner also ready
 
-		WorkingMemory wm_with_tbox = tbox_qrunner.arachne.createInferredModel(go_cam.go_cam_ont,true, true);	
-		System.out.println("Report after local rules");
-		GoCAMReport gocam_report_after_rules = new GoCAMReport(wm_with_tbox, outfilename, go_cam, goplus.go);
-		ReasonerReport reasoner_report = new ReasonerReport(gocam_report_after_rules);
-		report.pathway_class_report.put(pathwayname, reasoner_report);
+//		WorkingMemory wm_with_tbox = tbox_qrunner.arachne.createInferredModel(go_cam.go_cam_ont,true, true);	
+//		System.out.println("Report after local rules");
+//		GoCAMReport gocam_report_after_rules = new GoCAMReport(wm_with_tbox, outfilename, go_cam, goplus.go);
+//		ReasonerReport reasoner_report = new ReasonerReport(gocam_report_after_rules);
+//		report.pathway_class_report.put(pathwayname, reasoner_report);
 
 		if(strategy == ImportStrategy.NoctuaCuration) {
 			//adds coordinates to go_cam_ont model 
@@ -418,28 +426,28 @@ public class BioPaxtoGO {
 			//System.exit(0);
 			report.inconsistent_models.add(outfilename);
 			//explain
-			if(explain_inconsistant_models) {
-				scala.collection.Iterator<Triple> triples = wm_with_tbox.facts().toList().iterator();
-				while(triples.hasNext()) {				
-					Triple triple = triples.next();
-					if(wm_with_tbox.asserted().contains(triple)) {
-						continue;
-					}else { //<http://arachne.geneontology.org/indirect_type>
-						if(triple.p().toString().equals("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>")&&
-								triple.o().toString().equals("<http://www.w3.org/2002/07/owl#Nothing>")) {
-							OWLEntity bad = go_cam.df.getOWLNamedIndividual(IRI.create(triple.s().toString()));
-							System.out.println("inferred inconsistent:"+triple.s()+" "+go_cam.getaLabel(bad));
-							scala.collection.immutable.Set<Explanation> explanations = wm_with_tbox.explain(triple);
-							scala.collection.Iterator<Explanation> e = explanations.iterator();
-							while(e.hasNext()) {
-								Explanation exp = e.next();
-								System.out.println(exp.toString());
-								System.out.println();
-							}
-						}
-					}
-				}
-			}
+//			if(explain_inconsistant_models) {
+//				scala.collection.Iterator<Triple> triples = wm_with_tbox.facts().toList().iterator();
+//				while(triples.hasNext()) {				
+//					Triple triple = triples.next();
+//					if(wm_with_tbox.asserted().contains(triple)) {
+//						continue;
+//					}else { //<http://arachne.geneontology.org/indirect_type>
+//						if(triple.p().toString().equals("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>")&&
+//								triple.o().toString().equals("<http://www.w3.org/2002/07/owl#Nothing>")) {
+//							OWLEntity bad = go_cam.df.getOWLNamedIndividual(IRI.create(triple.s().toString()));
+//							System.out.println("inferred inconsistent:"+triple.s()+" "+go_cam.getaLabel(bad));
+//							scala.collection.immutable.Set<Explanation> explanations = wm_with_tbox.explain(triple);
+//							scala.collection.Iterator<Explanation> e = explanations.iterator();
+//							while(e.hasNext()) {
+//								Explanation exp = e.next();
+//								System.out.println(exp.toString());
+//								System.out.println();
+//							}
+//						}
+//					}
+//				}
+//			}
 		}
 	}
 
@@ -460,7 +468,7 @@ public class BioPaxtoGO {
 			}
 		}
 		//references
-		Set<String> pubids = getPubmedIds(pathway);
+		//Set<String> pubids = getPubmedIds(pathway);
 		//annotations and go
 		Set<Xref> xrefs = pathway.getXref();	
 		Set<String> mappedgo = report.bp2go_bp.get(pathway);
@@ -506,14 +514,14 @@ public class BioPaxtoGO {
 					continue;
 				}
 				OWLNamedIndividual child = go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(process.getUri()));
-				go_cam.addRefBackedObjectPropertyAssertion(pathway_e, GoCAM.has_part, child, pubids, GoCAM.eco_imported_auto, "PMID", null);
+				go_cam.addRefBackedObjectPropertyAssertion(pathway_e, GoCAM.has_part, child, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, "reactome", null);
 				//attach reactions that make up the pathway
 				if(process instanceof Conversion 
 						|| process instanceof TemplateReaction
 						|| process instanceof GeneticInteraction 
 						|| process instanceof MolecularInteraction 
 						|| process instanceof Interaction){
-					defineReactionEntity(go_cam, process, GoCAM.makeGoCamifiedIRI(process.getUri()), false);				
+					defineReactionEntity(go_cam, process, GoCAM.makeGoCamifiedIRI(process.getUri()), false, reactome_id);				
 					//attach child pathways
 				}
 				else if(process.getModelInterface().equals(Pathway.class)){		
@@ -538,6 +546,10 @@ public class BioPaxtoGO {
 					for(PathwayStep step2 : step2s) {
 						Set<Process> nextEvents = step2.getStepProcess();
 						for(Process event : events) {
+//							if(event.getDisplayName().equals("ROS oxidize thioredoxin and activate MAP3K5")||
+//									event.getDisplayName().startsWith("RAS signaling and prolonged interferon-beta stimulation promote genera")) {
+//								System.out.println();
+//							}
 							for(Process nextEvent : nextEvents) {
 								//	Event directly_provides_input_for NextEvent
 								if((event.getModelInterface().equals(BiochemicalReaction.class))&&
@@ -546,7 +558,7 @@ public class BioPaxtoGO {
 									Set<Pathway> event_pathways = event.getPathwayComponentOf();
 									Set<Pathway> next_event_pathways = nextEvent.getPathwayComponentOf();
 									if((event_pathways.contains(pathway)&&next_event_pathways.contains(pathway))||
-											add_neighoring_events) {
+											add_neighboring_events) {
 										IRI e1_iri = GoCAM.makeGoCamifiedIRI(event.getUri());
 										IRI e2_iri = GoCAM.makeGoCamifiedIRI(nextEvent.getUri());
 										OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(e1_iri);
@@ -557,7 +569,7 @@ public class BioPaxtoGO {
 										//are connected yet in different pathways
 										//if its been defined, ought to at least have a label
 										if(go_cam.getaLabel(e2).equals("")){
-											defineReactionEntity(go_cam, nextEvent, e2_iri, false);		
+											defineReactionEntity(go_cam, nextEvent, e2_iri, false, reactome_id);		
 										}
 									}
 								}
@@ -576,7 +588,7 @@ public class BioPaxtoGO {
 									Set<Pathway> event_pathways = event.getPathwayComponentOf();
 									Set<Pathway> prev_event_pathways = prevEvent.getPathwayComponentOf();
 									if((event_pathways.contains(pathway)&&prev_event_pathways.contains(pathway))||
-											add_neighoring_events) {							
+											add_neighboring_events) {							
 										IRI event_iri = GoCAM.makeGoCamifiedIRI(event.getUri());
 										IRI prevEvent_iri = GoCAM.makeGoCamifiedIRI(prevEvent.getUri());
 										OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(prevEvent_iri);
@@ -587,7 +599,7 @@ public class BioPaxtoGO {
 										//are connected yet in different pathways
 										//if its been defined, ought to at least have a label
 										if(go_cam.getaLabel(e1).equals("")){
-											defineReactionEntity(go_cam, prevEvent, prevEvent_iri, false);		
+											defineReactionEntity(go_cam, prevEvent, prevEvent_iri, false, reactome_id);		
 										}
 									}
 								}
@@ -645,28 +657,31 @@ public class BioPaxtoGO {
 	 * @return
 	 * @throws IOException 
 	 */
-	private void defineReactionEntity(GoCAM go_cam, Entity entity, IRI this_iri, boolean follow_controllers) throws IOException {
+	private void defineReactionEntity(GoCAM go_cam, Entity entity, IRI this_iri, boolean follow_controllers, String pathway_id) throws IOException {
 		if(this_iri==null) {
 			this_iri = GoCAM.makeGoCamifiedIRI(entity.getUri());
 		}
-		if(entity instanceof Interaction) {
-		System.out.println("definining reaction entity "+entity.getDisplayName()+" follow controllers "+follow_controllers);
-		System.out.println();
-		}else if (entity instanceof Pathway) {
-			System.out.println("Defining pathway as a reaction ");
-		}
+		Set<String> dbids = new HashSet<String>();
+		dbids.add(pathway_id);
+//		if(entity instanceof Interaction) {
+//		System.out.println("definining reaction entity "+entity.getDisplayName()+" follow controllers "+follow_controllers);
+//		System.out.println();
+//		}else if (entity instanceof Pathway) {
+//			System.out.println("Defining pathway as a reaction ");
+//		}
 		//add entity to ontology, whatever it is
 		OWLNamedIndividual e = go_cam.makeAnnotatedIndividual(this_iri);
 
 		//check specifically for Reactome id
-		String reactome_id = "";
+		String reactome_entity_id = "";
 		for(Xref xref : entity.getXref()) {
 			if(xref.getModelInterface().equals(UnificationXref.class)) {
 				UnificationXref r = (UnificationXref)xref;	    			
 				if(r.getDb().equals("Reactome")) {
-					reactome_id = r.getId();
-					if(reactome_id.startsWith("R-HSA")) {
-						go_cam.addDatabaseXref(e, reactome_id);
+					reactome_entity_id = r.getId();
+					if(reactome_entity_id.startsWith("R-HSA")) {
+						go_cam.addDatabaseXref(e, reactome_entity_id);
+						dbids.add(reactome_entity_id);
 						break;
 					}
 				}
@@ -675,7 +690,7 @@ public class BioPaxtoGO {
 		//this allows linkage between different OWL individuals in the GO-CAM sense that correspond to the same thing in the BioPax sense
 		go_cam.addUriAnnotations2Individual(e.getIRI(),GoCAM.skos_exact_match, IRI.create(entity.getUri()));	
 		//check for annotations
-		Set<String> pubids = getPubmedIds(entity);
+	//	Set<String> pubids = getPubmedIds(entity);		
 		String entity_name = entity.getDisplayName();
 		go_cam.addLabel(e, entity_name);
 		//attempt to localize the entity (only if Physical Entity because that is how Reactome views existence in space)
@@ -709,7 +724,7 @@ public class BioPaxtoGO {
 								//go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(loc.getUri()+entity.getUri()));
 								go_cam.addLabel(xref_go_loc, location_term);
 								go_cam.addTypeAssertion(loc_e, xref_go_loc);
-								go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.located_in, loc_e, pubids, GoCAM.eco_imported_auto, "PMID", null);		
+								go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.located_in, loc_e, dbids, GoCAM.eco_imported_auto, "reactome", null);		
 								if(strategy == ImportStrategy.NoctuaCuration) {
 									go_cam.addLiteralAnnotations2Individual(e.getIRI(), GoCAM.rdfs_comment, "located_in "+location_term);
 								}
@@ -745,9 +760,9 @@ public class BioPaxtoGO {
 							OWLNamedIndividual prot_part_entity = 
 									//go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(prot_part.getUri()+entity.getUri())); 
 									go_cam.df.getOWLNamedIndividual(GoCAM.makeRandomIri()); 
-							go_cam.addObjectPropertyAssertion(e, GoCAM.has_part, prot_part_entity, null);		
+							go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_part, prot_part_entity, dbids, GoCAM.eco_imported_auto, "Reactome", null);		
 							//define them = hopefully get out a name and a class for the sub protein.	
-							defineReactionEntity(go_cam, prot_part, prot_part_entity.getIRI(), true);					
+							defineReactionEntity(go_cam, prot_part, prot_part_entity.getIRI(), true, pathway_id);					
 						}
 						//though it clutters the display, this is needed to enable Arachne inference without adding tbox assertions from each model
 						//
@@ -835,7 +850,7 @@ public class BioPaxtoGO {
 							//assert entity here is a chemical instance
 							go_cam.addTypeAssertion(e, GoCAM.chemical_entity);
 							//connect it to the role
-							go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_role, rolei, null, GoCAM.eco_imported_auto, null, null);
+							go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_role, rolei, dbids, GoCAM.eco_imported_auto, "reactome", null);
 							chebi_report_key = chebi_uri+"\t"+entity.getDisplayName()+"\trole";
 						}else { //presumably its a chemical entity if not a role								
 							go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_entity, null);	
@@ -905,8 +920,8 @@ public class BioPaxtoGO {
 							IRI comp_uri = //GoCAM.makeGoCamifiedIRI(component.getUri()+entity.getUri());
 									GoCAM.makeRandomIri();
 							OWLNamedIndividual component_entity = go_cam.df.getOWLNamedIndividual(comp_uri);
-							go_cam.addObjectPropertyAssertion(e, GoCAM.has_part, component_entity, null);
-							defineReactionEntity(go_cam, component, comp_uri, true);
+							go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_part, component_entity, dbids, GoCAM.eco_imported_auto,  "reactome", null);
+							defineReactionEntity(go_cam, component, comp_uri, true, pathway_id);
 						}
 					}
 					//assert it as a complex - needed for correct inference (without loading up the subclass assertion in the above)
@@ -944,13 +959,13 @@ public class BioPaxtoGO {
 									IRI e2_iri = GoCAM.makeGoCamifiedIRI(nextEvent.getUri());
 									OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(e1_iri);
 									OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(e2_iri);
-									go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.provides_direct_input_for, e2, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, "Reactome", null);
+									go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.provides_direct_input_for, e2, dbids, GoCAM.eco_imported_auto, "Reactome", null);
 									//in some cases, the reaction may connect off to a different pathway and hence not be caught in above loop to define reaction entities
 									//e.g. Recruitment of SET1 methyltransferase complex  -> APC promotes disassembly of beta-catenin transactivation complex
 									//are connected yet in different pathways
 									//if its been defined, ought to at least have a label
 									if(go_cam.getaLabel(e2).equals("")){
-										defineReactionEntity(go_cam, nextEvent, e2_iri, true);		
+										defineReactionEntity(go_cam, nextEvent, e2_iri, true, pathway_id);		
 									}
 								}
 							}
@@ -961,16 +976,16 @@ public class BioPaxtoGO {
 						Set<Process> prevEvents = prevStep.getStepProcess();
 						for(Process event : events) {
 							for(Process prevEvent : prevEvents) {
-								if(add_neighoring_events) {								
+								if(add_neighboring_events) {								
 									if((event.getModelInterface().equals(BiochemicalReaction.class))&&
 											(prevEvent.getModelInterface().equals(BiochemicalReaction.class))) {
 										IRI event_iri = GoCAM.makeGoCamifiedIRI(event.getUri());
 										IRI prevEvent_iri = GoCAM.makeGoCamifiedIRI(prevEvent.getUri());
 										OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(prevEvent_iri);
 										OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(event_iri);
-										go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.provides_direct_input_for, e2, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, "Reactome", null);
+										go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.provides_direct_input_for, e2, dbids, GoCAM.eco_imported_auto, "Reactome", null);
 										if(go_cam.getaLabel(e1).equals("")){
-											defineReactionEntity(go_cam, prevEvent, prevEvent_iri, true);		
+											defineReactionEntity(go_cam, prevEvent, prevEvent_iri, true, pathway_id);		
 										}
 									}
 								}
@@ -990,34 +1005,34 @@ public class BioPaxtoGO {
 					if(interactor instanceof PhysicalEntity) {
 						IRI i_iri = GoCAM.makeRandomIri();
 						OWLNamedIndividual i_entity = go_cam.df.getOWLNamedIndividual(i_iri);
-						defineReactionEntity(go_cam, interactor, i_iri, true);
-						go_cam.addObjectPropertyAssertion(e, GoCAM.has_participant, i_entity, go_cam.getDefaultAnnotations());
+						defineReactionEntity(go_cam, interactor, i_iri, true, pathway_id);		
+						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_participant, i_entity, dbids, GoCAM.eco_imported_auto,  "reactome",go_cam.getDefaultAnnotations());
 						physical_participants.add(i_entity);
 					}else {
 						OWLNamedIndividual part_mf = go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(interactor.getUri()));
-						defineReactionEntity(go_cam, interactor, part_mf.getIRI(), true);
-						go_cam.addObjectPropertyAssertion(e, GoCAM.has_part, part_mf, go_cam.getDefaultAnnotations());
+						defineReactionEntity(go_cam, interactor, part_mf.getIRI(), true, pathway_id);
+						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_part, part_mf, dbids, GoCAM.eco_imported_auto,  "reactome", go_cam.getDefaultAnnotations());
 						process_participants.add(part_mf);
 					}					
 				}
 				for(OWLNamedIndividual p1 : physical_participants) {
 					for(OWLNamedIndividual p2 : physical_participants) {
 						if(!p1.equals(p2)) {
-							go_cam.addObjectPropertyAssertion(p1, GoCAM.interacts_with, p2, go_cam.getDefaultAnnotations());
+							go_cam.addRefBackedObjectPropertyAssertion(p1, GoCAM.interacts_with, p2, dbids, GoCAM.eco_imported_auto,  "reactome", go_cam.getDefaultAnnotations());
 						}
 					}
 				}
 				for(OWLNamedIndividual p1 : process_participants) {
 					for(OWLNamedIndividual p2 : process_participants) {
 						if(!p1.equals(p2)) {
-							go_cam.addObjectPropertyAssertion(p1, GoCAM.functionally_related_to, p2, go_cam.getDefaultAnnotations());
+							go_cam.addRefBackedObjectPropertyAssertion(p1, GoCAM.functionally_related_to, p2, dbids, GoCAM.eco_imported_auto,  "reactome", go_cam.getDefaultAnnotations());
 						}
 					}
 				}
 				for(OWLNamedIndividual p1 : physical_participants) {
 					for(OWLNamedIndividual p2 : process_participants) {
 						if(!p1.equals(p2)) {
-							go_cam.addObjectPropertyAssertion(p2, GoCAM.enabled_by, p1, go_cam.getDefaultAnnotations());
+							go_cam.addRefBackedObjectPropertyAssertion(p2, GoCAM.enabled_by, p1, dbids, GoCAM.eco_imported_auto,  "reactome", go_cam.getDefaultAnnotations());
 						}
 					}
 				}
@@ -1028,8 +1043,8 @@ public class BioPaxtoGO {
 					//IRI o_iri = IRI.create(output.getUri()+e.hashCode());
 					IRI o_iri = GoCAM.makeGoCamifiedIRI(output.getUri()+entity.getUri());
 					OWLNamedIndividual output_entity = go_cam.df.getOWLNamedIndividual(o_iri);
-					defineReactionEntity(go_cam, output, o_iri, true);
-					go_cam.addObjectPropertyAssertion(e, GoCAM.has_output, output_entity, go_cam.getDefaultAnnotations());
+					defineReactionEntity(go_cam, output, o_iri, true, pathway_id);
+					go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_output, output_entity, dbids, GoCAM.eco_imported_auto,  "reactome", go_cam.getDefaultAnnotations());
 				}
 				//not used ?
 				//NucleicAcid nuc = ((TemplateReaction) entity).getTemplate();
@@ -1043,7 +1058,7 @@ public class BioPaxtoGO {
 				if(add_pathway_parents) {
 					for(Pathway bp_pathway : ((Interaction) entity).getPathwayComponentOf()) {
 						OWLNamedIndividual pathway = definePathwayEntity(go_cam, bp_pathway, null, false, false);
-						go_cam.addRefBackedObjectPropertyAssertion(pathway,GoCAM.has_part, e,pubids, GoCAM.eco_imported_auto,  "PMID", null);
+						go_cam.addRefBackedObjectPropertyAssertion(pathway,GoCAM.has_part, e,dbids, GoCAM.eco_imported_auto,  "reactome", null);
 					}
 				}
 
@@ -1077,16 +1092,16 @@ public class BioPaxtoGO {
 						IRI i_iri = null;
 						i_iri = GoCAM.makeGoCamifiedIRI(input.getUri()+entity.getUri()+"input");
 						OWLNamedIndividual input_entity = go_cam.df.getOWLNamedIndividual(i_iri);
-						defineReactionEntity(go_cam, input, i_iri, true);
-						go_cam.addObjectPropertyAssertion(e, GoCAM.has_input, input_entity,go_cam.getDefaultAnnotations());
+						defineReactionEntity(go_cam, input, i_iri, true, pathway_id);
+						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_input, input_entity,dbids, GoCAM.eco_imported_auto,  "reactome", go_cam.getDefaultAnnotations());
 					}}
 				if(outputs!=null) {
 					for(PhysicalEntity output : outputs) {
 						IRI o_iri = null;
 						o_iri = GoCAM.makeGoCamifiedIRI(output.getUri()+entity.getUri()+"output");
 						OWLNamedIndividual output_entity = go_cam.df.getOWLNamedIndividual(o_iri);
-						defineReactionEntity(go_cam, output, o_iri, true);
-						go_cam.addObjectPropertyAssertion(e, GoCAM.has_output, output_entity, go_cam.getDefaultAnnotations());
+						defineReactionEntity(go_cam, output, o_iri, true, pathway_id);
+						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_output, output_entity, dbids, GoCAM.eco_imported_auto,  "reactome", go_cam.getDefaultAnnotations());
 					}}
 			}
 
@@ -1187,7 +1202,7 @@ public class BioPaxtoGO {
 									//limit to reactions as mostly we are interested in upstream processes
 									//that generate the inputs that control the current reaction
 									if(event instanceof BiochemicalReaction && follow_controllers) {
-										defineReactionEntity(go_cam, event, event_iri, false);
+										defineReactionEntity(go_cam, event, event_iri, false, pathway_id);
 									}
 								}
 							}
@@ -1195,27 +1210,27 @@ public class BioPaxtoGO {
 
 						IRI iri = null;
 						iri = GoCAM.makeGoCamifiedIRI(controller_entity.getUri()+entity.getUri()+"controller");
-						defineReactionEntity(go_cam, controller_entity, iri, true);
+						defineReactionEntity(go_cam, controller_entity, iri, true, pathway_id);
 						//the protein or complex
 						OWLNamedIndividual controller_e = go_cam.df.getOWLNamedIndividual(iri);
 						//the controlling physical entity enables that function/reaction
 						//on occasion there are refs associated with the controller.
-						Set<String> controllerpubrefs = getPubmedIds(controller_entity);		
+//						Set<String> controllerpubrefs = getPubmedIds(controller_entity);		
 
 						//define relationship between controller entity and reaction
 						//if catalysis then always enabled by
 						if(is_catalysis) {
-							go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, controller_e, controllerpubrefs, GoCAM.eco_imported_auto, "PMID", null);	
+							go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, controller_e, dbids, GoCAM.eco_imported_auto, "reactome", null);	
 						}else {
 							//otherwise look at text 
 							//define how the molecular function (process) relates to the reaction (process)
 							if(ctype.toString().startsWith("INHIBITION")){
-								go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.involved_in_negative_regulation_of, e, controllerpubrefs, GoCAM.eco_imported_auto, "PMID", null);	
+								go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.involved_in_negative_regulation_of, e, dbids, GoCAM.eco_imported_auto, "reactome", null);	
 							}else if(ctype.toString().startsWith("ACTIVATION")){
-								go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.involved_in_positive_regulation_of, e, controllerpubrefs, GoCAM.eco_imported_auto, "PMID", null);
+								go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.involved_in_positive_regulation_of, e, dbids, GoCAM.eco_imported_auto, "reactome", null);
 							}else {
 								//default to regulates
-								go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.involved_in_regulation_of,  e, controllerpubrefs, GoCAM.eco_imported_auto, "PMID", null);
+								go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.involved_in_regulation_of,  e, dbids, GoCAM.eco_imported_auto, "reactome", null);
 							}
 						}
 					}
@@ -1244,10 +1259,12 @@ public class BioPaxtoGO {
 							OWLNamedIndividual bp_i = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(entity.getUri()+goid+"individual"));
 							go_cam.addLiteralAnnotations2Individual(bp_i.getIRI(), GoCAM.rdfs_comment, "Asserted direct link between reaction and biological process, independent of current pathway");
 							go_cam.addTypeAssertion(bp_i, xref_go_func);
-							go_cam.addRefBackedObjectPropertyAssertion(bp_i,GoCAM.has_part, e, null, GoCAM.eco_imported_auto, "", null);
+							go_cam.addRefBackedObjectPropertyAssertion(bp_i,GoCAM.has_part, e, dbids, GoCAM.eco_imported_auto, "reactome", null);
 							//use the same name and id as the entity in question as, from Reactome perspective, its about the same thing and otherwise we have no name..
 							go_cam.addLabel(bp_i, "reaction:"+entity_name+": is xrefed to this process");
-							go_cam.addDatabaseXref(bp_i, reactome_id);
+							if(reactome_entity_id!=null) {
+								go_cam.addDatabaseXref(bp_i, reactome_entity_id);
+							}
 						}
 					}
 				}	
@@ -1320,7 +1337,7 @@ public class BioPaxtoGO {
 	}
 
 
-	private Set<String> getPubmedIds(Entity entity) {
+	private Set<String> getPubmedIdsFromReactomeXrefs(Entity entity) {
 		Set<String> pmids = new HashSet<String>();
 		for(Xref xref : entity.getXref()) {
 			if(xref.getModelInterface().equals(PublicationXref.class)) {
