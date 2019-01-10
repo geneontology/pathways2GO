@@ -3,6 +3,10 @@
  */
 package org.geneontology.gocam.exchange;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -75,48 +79,48 @@ public class GoCAMReport {
 	public String makeNRMappingReport() {
 		Set<String> ids = new HashSet<String>();
 		String report = "";
-		
+
 		Map<String, Set<String>> p_inferred_pathway_types = new HashMap<String, Set<String>>();
 		if(pathway_inferred_types!=null) {
-		for(String pathway_uri : pathway_inferred_types.keySet()) {
-			String entity = uri_term.get(pathway_uri);
-			Set<String> types = pathway_inferred_types.get(pathway_uri);
-			if(types!=null) {
-				Set<String> etypes = p_inferred_pathway_types.get(entity);
-				if(etypes==null) { etypes = new HashSet<String>();}
-				etypes.addAll(types);
-				p_inferred_pathway_types.put(entity, etypes);
+			for(String pathway_uri : pathway_inferred_types.keySet()) {
+				String entity = uri_term.get(pathway_uri);
+				Set<String> types = pathway_inferred_types.get(pathway_uri);
+				if(types!=null) {
+					Set<String> etypes = p_inferred_pathway_types.get(entity);
+					if(etypes==null) { etypes = new HashSet<String>();}
+					etypes.addAll(types);
+					p_inferred_pathway_types.put(entity, etypes);
+				}
 			}
-		}
 		}
 		Map<String, Set<String>> p_inferred_function_types = new HashMap<String, Set<String>>();
 		if(function_inferred_types!=null) {
-		for(String function_uri : function_inferred_types.keySet()) {
-			String entity = uri_term.get(function_uri);
-			Set<String> types = function_inferred_types.get(function_uri);
-			if(types!=null) {
-				Set<String> etypes = p_inferred_function_types.get(entity);
-				if(etypes==null) { etypes = new HashSet<String>();}
-				etypes.addAll(types);
-				p_inferred_function_types.put(entity, etypes);
+			for(String function_uri : function_inferred_types.keySet()) {
+				String entity = uri_term.get(function_uri);
+				Set<String> types = function_inferred_types.get(function_uri);
+				if(types!=null) {
+					Set<String> etypes = p_inferred_function_types.get(entity);
+					if(etypes==null) { etypes = new HashSet<String>();}
+					etypes.addAll(types);
+					p_inferred_function_types.put(entity, etypes);
+				}
 			}
 		}
-		}
-		
+
 		Map<String, Set<String>> p_inferred_complex_types = new HashMap<String, Set<String>>();
 		if(complex_inferred_types!=null) {
-		for(String complex_uri : complex_inferred_types.keySet()) {
-			String entity = uri_term.get(complex_uri);
-			Set<String> types = complex_inferred_types.get(complex_uri);
-			if(types!=null) {
-				Set<String> etypes = p_inferred_complex_types.get(entity);
-				if(etypes==null) { etypes = new HashSet<String>();}
-				etypes.addAll(types);
-				p_inferred_complex_types.put(entity, etypes);
+			for(String complex_uri : complex_inferred_types.keySet()) {
+				String entity = uri_term.get(complex_uri);
+				Set<String> types = complex_inferred_types.get(complex_uri);
+				if(types!=null) {
+					Set<String> etypes = p_inferred_complex_types.get(entity);
+					if(etypes==null) { etypes = new HashSet<String>();}
+					etypes.addAll(types);
+					p_inferred_complex_types.put(entity, etypes);
+				}
 			}
 		}
-		}
-		
+
 		for(String pathway_uri : pathway_types.keySet()) {
 			if(ids.contains(uri_term.get(pathway_uri))) {
 				continue;
@@ -249,16 +253,16 @@ public class GoCAMReport {
 
 		return report;
 	}
-	
+
 	public String makeMappingReportWithOneRowForEachGoCAMEntity() {
-//		Set<String> idsmm = new HashSet<String>();
+		//		Set<String> idsmm = new HashSet<String>();
 		String report = "";
 		for(String pathway_uri : pathway_types.keySet()) {
-//			if(ids.contains(uri_term.get(pathway_uri))) {
-//				continue;
-//			}else {
-//				ids.add(uri_term.get(pathway_uri));
-//			}
+			//			if(ids.contains(uri_term.get(pathway_uri))) {
+			//				continue;
+			//			}else {
+			//				ids.add(uri_term.get(pathway_uri));
+			//			}
 			report+="Pathway\t"+uri_term.get(pathway_uri)+"\t";
 			if(pathway_asserted_types!=null&&pathway_asserted_types.size()>0) {
 				Set<String> rule_types = new HashSet<String>();
@@ -297,11 +301,11 @@ public class GoCAMReport {
 		}
 
 		for(String function_uri : function_types.keySet()) {
-//			if(ids.contains(uri_term.get(function_uri))) {
-//				continue;
-//			}else {
-//				ids.add(uri_term.get(function_uri));
-//			}
+			//			if(ids.contains(uri_term.get(function_uri))) {
+			//				continue;
+			//			}else {
+			//				ids.add(uri_term.get(function_uri));
+			//			}
 			report+="function\t"+uri_term.get(function_uri)+"\t";
 			if(function_asserted_types!=null&&function_asserted_types.size()>0) {
 				Set<String> rule_types = new HashSet<String>();
@@ -341,11 +345,11 @@ public class GoCAMReport {
 		}
 
 		for(String complex_uri : complex_types.keySet()) {
-//			if(ids.contains(uri_term.get(complex_uri))) {
-//				continue;
-//			}else {
-//				ids.add(uri_term.get(complex_uri));
-//			}
+			//			if(ids.contains(uri_term.get(complex_uri))) {
+			//				continue;
+			//			}else {
+			//				ids.add(uri_term.get(complex_uri));
+			//			}
 			report+="complex\t"+uri_term.get(complex_uri)+"\t";
 			if(complex_asserted_types!=null&&complex_asserted_types.size()>0) {
 				Set<String> rule_types = new HashSet<String>();
@@ -407,7 +411,7 @@ public class GoCAMReport {
 			boolean counted = false;
 			for(String type : function_types.get(function_node)) {
 				if(type.equals("http://purl.obolibrary.org/obo/GO_0003674")
-					||type.equals("http://purl.obolibrary.org/obo/GO_0005515")) {
+						||type.equals("http://purl.obolibrary.org/obo/GO_0005515")) {
 					if(!counted) {
 						mf_unclassified++;
 					}
@@ -447,7 +451,7 @@ public class GoCAMReport {
 			boolean counted = false;
 			for(String type : pathway_types.get(pathway_node)) {
 				if(type.equals("http://purl.obolibrary.org/obo/GO_0008150")||
-				   type.equals("http://purl.obolibrary.org/obo/GO_0045184")) {
+						type.equals("http://purl.obolibrary.org/obo/GO_0045184")) {
 					if(!counted) {
 						bp_unclassified++;
 					}
@@ -506,7 +510,7 @@ public class GoCAMReport {
 					some_manual = true;
 				}
 			}
-		
+
 			if(some_inferred) {
 				if(some_manual){
 					complex_deepened++;
@@ -616,6 +620,118 @@ public class GoCAMReport {
 				}
 			}
 		}
-	}*/
+	}
+	 * @throws IOException */
 
+	public static void secondaryReportProcessing(String input_file) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(input_file));
+		reader.readLine();
+		String line = reader.readLine();
+		Set<String> nr = new HashSet<String>();
+		int n_rows = 0; int n_pathways = 0; int n_reactions = 0; int n_complexes = 0;
+		int n_curated_pathways = 0; int n_curated_reactions = 0; int n_curated_complexes = 0;
+		int n_rule_classified_pathways = 0; int n_rule_classified_reactions = 0; int n_rule_classified_complexes = 0;
+		int n_owl_classified_pathways = 0; int n_owl_classified_reactions = 0; int n_owl_classified_complexes = 0;
+		Map<String, Set<String>> curated_type_reactions = new HashMap<String, Set<String>>();
+		Map<String, Set<String>> curated_type_pathways = new HashMap<String, Set<String>>();
+		Map<String, Set<String>> curated_type_complexes = new HashMap<String, Set<String>>();
+		Map<String, Set<String>> rule_type_reactions = new HashMap<String, Set<String>>();
+		Map<String, Set<String>> rule_type_pathways = new HashMap<String, Set<String>>();
+		Map<String, Set<String>> rule_type_complexes = new HashMap<String, Set<String>>();
+		Map<String, Set<String>> inferred_type_reactions = new HashMap<String, Set<String>>();
+		Map<String, Set<String>> inferred_type_pathways = new HashMap<String, Set<String>>();
+		Map<String, Set<String>> inferred_type_complexes = new HashMap<String, Set<String>>();
+		while(line!=null) {
+				n_rows++;
+				String[] row = line.split(",",-1);	
+				//Reactome node type	Reactome Label	Reactome Id	Curator asserted GO types	Rule-assigned types	Inferred GO types
+				String node_type = row[0]; String label = row[1]; String reactome_id = row[2];
+				String curated_types = row[3]; String rule_types = row[4]; String inferred_types = row[5];
+			if(!nr.add(reactome_id+node_type)) { //note that you get different classifications for the same reactome thing.. this just report on one, so under-reporting
+				System.out.println("redun "+reactome_id);
+			}else {
+				if(node_type.equals("Biological Process")&&(!label.contains("reaction:"))) {
+					if(!curated_types.equals("")) {
+						n_curated_pathways++;
+						curated_type_pathways = splitNode(reactome_id, curated_type_pathways, curated_types);
+					}
+					if(!rule_types.equals("")) {
+						n_rule_classified_pathways++;
+						rule_type_pathways = splitNode(reactome_id, rule_type_pathways, rule_types);
+					}else {
+						n_pathways++; //rules currently only operate on mfs for localization
+					}
+					if(!inferred_types.equals("")) {
+						n_owl_classified_pathways++;
+						inferred_type_pathways = splitNode(reactome_id, inferred_type_pathways, inferred_types);
+					}
+					
+				}
+				if(node_type.equals("Molecular Function")) {
+					n_reactions++;
+					if(!curated_types.equals("")) {
+						n_curated_reactions++;
+						curated_type_reactions = splitNode(reactome_id, curated_type_reactions, curated_types);
+					}
+					if(!rule_types.equals("")) {
+						n_rule_classified_reactions++;
+						rule_type_reactions = splitNode(reactome_id, rule_type_reactions, rule_types);
+					}
+					if(!inferred_types.equals("")) {
+						n_owl_classified_reactions++;
+						inferred_type_reactions = splitNode(reactome_id, inferred_type_reactions, inferred_types);
+					}
+				}
+				if(node_type.equals("Complex")) {
+					n_complexes++;
+					if(!curated_types.equals("")) {
+						n_curated_complexes++;
+						curated_type_complexes = splitNode(reactome_id, curated_type_complexes, curated_types);
+					}
+					if(!rule_types.equals("")) {
+						n_rule_classified_complexes++;
+						rule_type_complexes = splitNode(reactome_id, rule_type_complexes, rule_types);
+					}
+					if(!inferred_types.equals("")) {
+						n_owl_classified_complexes++;
+						inferred_type_complexes = splitNode(reactome_id, inferred_type_complexes, inferred_types);
+					}
+				}
+				
+			}
+			line = reader.readLine();			
+		}
+		reader.close();
+		
+		System.out.println("n rows "+n_rows);
+		System.out.println("n pathways "+n_pathways+" n_curated_pathways "+n_curated_pathways+
+				" n_rule_classified_pathways "+n_rule_classified_pathways+" n_owl_classified_pathways "+n_owl_classified_pathways);
+		System.out.println();
+		System.out.println("n reactions "+n_reactions+" n_curated_reactions "+n_curated_reactions+
+				" n_rule_classified_reactions "+n_rule_classified_reactions+" n_owl_classified_reactions "+n_owl_classified_reactions);
+		System.out.println();
+		System.out.println("n complexes "+n_complexes+" n_curated_complexes "+n_curated_complexes+
+				" n_rule_classified_complexes "+n_rule_classified_complexes+" n_owl_classified_complexes "+n_owl_classified_complexes);
+		System.out.println();
+				
+	}
+	public static Map<String, Set<String>> splitNode(String reactome_id, Map<String, Set<String>> map, String tosplit){
+		if(tosplit!=null) {
+			String[] types = tosplit.split(";");
+			if(types!=null&&types.length>0) {
+			for(String type : types) {
+				Set<String> entities = map.get(type);
+				if(entities==null) { entities = new HashSet<String>();}
+				entities.add(reactome_id);
+				map.put(type, entities);
+			}}
+		}
+		return map;
+	}
+	
+	
+	public static void main(String[] args) throws IOException {
+		String i = "/Users/bgood/Desktop/manual_plus_inferred_mapping_tabbed.csv";
+		secondaryReportProcessing(i);
+	}
 }

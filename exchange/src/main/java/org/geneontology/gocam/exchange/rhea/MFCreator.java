@@ -126,7 +126,7 @@ public class MFCreator {
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException, IOException {
 		String ontology_input_file = null; //add an ontology you want to modofy or leave null to make a new one
-		String ontology_output_file = "/Users/bgood/Desktop/test/tmp/test_rhea_axioms_union.ttl";
+		String ontology_output_file = "/Users/bgood/Desktop/test/tmp/test_rhea_all_axioms_union.ttl";
 		Set<String> test_classes = new HashSet<String>(); //leave null for all
 		test_classes.add("http://purl.obolibrary.org/obo/GO_0003978");
 		test_classes.add("http://purl.obolibrary.org/obo/GO_0008108");
@@ -134,7 +134,7 @@ public class MFCreator {
 		test_classes.add("http://purl.obolibrary.org/obo/GO_0004659");
 		test_classes.add("http://purl.obolibrary.org/obo/GO_0004452");
 		test_classes.add("http://purl.obolibrary.org/obo/GO_0047863");
-		MFCreator m = new MFCreator(ontology_input_file, ontology_output_file, AxiomStrategy.Union, test_classes);		
+		MFCreator m = new MFCreator(ontology_input_file, ontology_output_file, AxiomStrategy.Union, null);		
 		m.buildAndExportMFAxioms();
 	}
 

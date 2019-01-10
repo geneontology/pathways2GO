@@ -17,6 +17,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.RDFS;
@@ -80,8 +85,15 @@ public class App {
 
 	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 
+		String abox_file = "/Users/bgood/blazegraph-runner-1.2.5/bin/reactome-homosapiens-Clathrin-mediated_endocytosis.ttl";
+		String tbox_file = "/Users/bgood/gocam_input/go-plus-sept-2018.owl";
 		
-		
+		BioPaxtoGO bptg = new BioPaxtoGO();
+		QRunner qrunner = testInference(abox_file, bptg.tbox_files);
+		String outfilename = "/Users/bgood/blazegraph/test_combined_more.ttl";
+		String journal = "/Users/bgood/blazegraph/blazegraph.jnl";
+		makeBlazeGraphJournal(qrunner, outfilename, journal);
+		System.out.println("all done");
 		
 		//		String ontf = "/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-A_tetrasaccharide_linker_sequence_is_required_for_GAG_synthesis.ttl";
 		//		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
@@ -94,6 +106,19 @@ public class App {
 	}
 
 
+	static void makeBlazeGraphJournal(QRunner qrunner, String outfilename, String journal) throws OWLOntologyStorageException, OWLOntologyCreationException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
+		File outfilefile = new File(outfilename);	
+		//use jena export
+		System.out.println("writing n triples: "+qrunner.nTriples());
+		qrunner.dumpModel(outfilefile, "TURTLE");
+		//reads in file created above and converts to journal
+		//clean out any prior data in store
+		FileWriter clean = new FileWriter(journal, false);
+		clean.write("");
+		clean.close();
+		Blazer blaze = new Blazer(journal);
+		blaze.importModelToDatabase(outfilefile);
+	}
 
 	public static void lookForControlInReactome() throws OWLOntologyCreationException {
 		String ontf = "/Users/bgood/Desktop/test/biopax/Homo_sapiens_Sept13_2018.owl";
@@ -289,7 +314,16 @@ public class App {
 		q.dumpModel("/Users/bgood/reactome-go-cam-models/all_human_no_inference.ttl", "TURTLE");
 	}
 
-	public static void testInference(String abox_file, String tbox_file) throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException {
+	private static QRunner testInference(OWLOntology abox, OWLOntology tbox, boolean add_inferences,
+			boolean add_property_definitions, boolean add_class_definitions) throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException {
+		
+		List<OWLOntology> boxes = new ArrayList<OWLOntology>();
+		boxes.add(tbox);
+		return(testInference(abox, boxes, add_inferences, add_property_definitions, add_class_definitions));
+	}
+
+
+	public static QRunner testInference(String abox_file, Set<String> tbox_files) throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException {
 		//prepare an abox (taken from Arachne test case)
 		// https://github.com/balhoff/arachne/tree/master/src/test/resources/org/geneontology/rules
 		OWLOntologyManager aman = OWLManager.createOWLOntologyManager();
@@ -299,22 +333,43 @@ public class App {
 		//String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
 		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
 		System.out.println("Loading tbox ontology ");
-		OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
+		List<OWLOntology> boxes = new ArrayList<OWLOntology>();
+		for(String tbox_file : tbox_files) {
+			OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
+			boxes.add(tbox);
+		}
 		System.out.println("Building arachne for inference ");
 
 		boolean add_inferences = true;
 		boolean add_property_definitions = true;
 		boolean add_class_definitions = true;
-		QRunner inf = testInference(abox, tbox, add_inferences, add_property_definitions, add_class_definitions);
+		QRunner inf = testInference(abox, boxes, add_inferences, add_property_definitions, add_class_definitions);
+		return inf;
 	}
 
+	public static void testCausal(QRunner qrunner) {
+			String q = 
+					"prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " + 
+					"SELECT ?subject ?object WHERE { " 
+							+"?subject http://purl.obolibrary.org/obo/RO_0002410 ?object  " + 
+					"   } ";
+			QueryExecution qe = QueryExecutionFactory.create(q, qrunner.jena);
+			ResultSet results = qe.execSelect();
+			while (results.hasNext()) {
+				QuerySolution qs = results.next();
+				Resource s = qs.getResource("subject");
+				Resource o = qs.getResource("object");
+			}
+			qe.close();
+	}
+	
 	//TODO Maybe someday unit tests..  
-	public static QRunner testInference(OWLOntology abox, OWLOntology tbox, 
+	public static QRunner testInference(OWLOntology abox, List<OWLOntology> tboxes, 
 			boolean add_inferences, boolean add_property_definitions, boolean add_class_definitions)  throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException {
+		boolean printall = false;
 		//Test reading, reasoning, query
-
 		//build the graph
-		QRunner q = new QRunner(Collections.singleton(tbox), abox, add_inferences, add_property_definitions, add_class_definitions);
+		QRunner q = new QRunner(tboxes, abox, add_inferences, add_property_definitions, add_class_definitions);
 		//ask it questions
 		boolean c = q.isConsistent();
 		System.out.println("Is it consistent? "+c);
@@ -337,7 +392,7 @@ public class App {
 				Triple triple = triples.next();
 				if(q.wm.asserted().contains(triple)) {
 					continue;
-				}else { //<http://arachne.geneontology.org/indirect_type>
+				}else if (printall) { //<http://arachne.geneontology.org/indirect_type>
 					if(triple.p().toString().equals("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>")) {
 						System.out.println("inferred "+triple.s()+" "+triple.p()+" "+triple.o());
 						scala.collection.immutable.Set<Explanation> explanations = q.wm.explain(triple);

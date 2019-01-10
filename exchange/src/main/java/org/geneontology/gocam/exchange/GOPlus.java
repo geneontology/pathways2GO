@@ -37,7 +37,7 @@ import com.google.common.base.Optional;
  *
  */
 public class GOPlus {
-	String go_loc = "/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
+	String go_loc = BioPaxtoGO.goplus_file;
 	OWLOntology go;
 	OWLOntologyManager ontman;				
 	OWLDataFactory df;
