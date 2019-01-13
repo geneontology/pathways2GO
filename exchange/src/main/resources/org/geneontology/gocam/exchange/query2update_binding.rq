@@ -26,7 +26,12 @@ where {
    	#that is part of the complex (at class level)
    	?output obo:BFO_0000051 ?output_part .
    	?output_part rdf:type ?output_part_type .  #uniprot protein etc.
-   	?input rdf:type ?output_part_type
+   	?input rdf:type ?output_part_type .
+   	
+   	#this is unsatisfying.. but better than nothing
+   	#without it, query is finding reactions where the input complex has the same elements as the output complex
+   	?reaction rdfs:label ?reaction_label .
+    FILTER regex(?reaction_label, "bind") 
 }
 
 # obo:RO_0002233 has input 

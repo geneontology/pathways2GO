@@ -711,6 +711,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 	//		qrunner.jena = qrunner.makeJenaModel(qrunner.wm);
 	//	}
 
+	//TODO this is super slow.  Find a new pattern.
 	void applyAnnotatedTripleRemover(IRI subject, IRI predicate, IRI object) {
 		OWLOntologyWalker walker = new OWLOntologyWalker(Collections.singleton(go_cam_ont));
 		UpdateAnnotationsVisitor updater = new UpdateAnnotationsVisitor(walker, subject, predicate, object);
@@ -719,14 +720,30 @@ final long counterValue = instanceCounter.getAndIncrement();
 			for(OWLAxiom a : updater.getAxioms()) {
 				ontman.removeAxiom(go_cam_ont, a);
 			}
+			for(OWLAnnotation a : updater.getAnnotations()) {
+				OWLAnnotationProperty p = a.getProperty();
+				if(p.equals(evidence_prop)) {
+					//then we are looking at the Evidence instance as the target of the property
+					OWLAnnotationValue v = a.getValue();
+					OWLNamedIndividual anno_entity = df.getOWLNamedIndividual(v.asIRI().get());
+					deleteOwlEntityAndAllReferencesToIt(anno_entity);
+				}
+			}
 		}
 	}
-
-	void deleteOwlEntityAndAllReferencesToIt(OWLEntity e) {
+	
+	void deleteOwlEntityAndAllReferencesToIt(OWLEntity e) {		
 		for (OWLAnnotationAssertionAxiom annAx : EntitySearcher.getAnnotationAssertionAxioms(e.getIRI(), this.go_cam_ont)) {
 			ontman.removeAxiom(go_cam_ont, annAx);
 		}
 		for (OWLAxiom aAx :EntitySearcher.getReferencingAxioms(e, this.go_cam_ont)) {
+			//delete evidence nodes associated with axioms discussing this entity
+			for(OWLAnnotation anno : aAx.getAnnotations()) {
+				if(anno.getProperty().equals(evidence_prop)) {
+					OWLNamedIndividual evidence = df.getOWLNamedIndividual(anno.getValue().asIRI().get());
+					deleteOwlEntityAndAllReferencesToIt(evidence);
+				}
+			}
 			//now remove the axiom
 			ontman.removeAxiom(go_cam_ont, aAx);
 		}
@@ -1053,10 +1070,9 @@ final long counterValue = instanceCounter.getAndIncrement();
 			for(OWLObjectPropertyAssertionAxiom a : go_cam_ont.getAxioms(AxiomType.OBJECT_PROPERTY_ASSERTION)) {
 				OWLObjectPropertyExpression p = a.getProperty();
 				if(p.equals(located_in)) {
-					//OWLNamedIndividual s = a.getSubject().asOWLNamedIndividual();
+					OWLNamedIndividual s = a.getSubject().asOWLNamedIndividual();
 					OWLNamedIndividual o = a.getObject().asOWLNamedIndividual();
-					//applyAnnotatedTripleRemover(s.getIRI(), located_in.getIRI(), o.getIRI());
-					//ontman.removeAxiom(go_cam_ont, a);
+					applyAnnotatedTripleRemover(s.getIRI(), located_in.getIRI(), o.getIRI());
 					deleteOwlEntityAndAllReferencesToIt(o);
 				}
 			}			
