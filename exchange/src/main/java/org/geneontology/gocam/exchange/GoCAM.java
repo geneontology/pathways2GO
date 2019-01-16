@@ -327,32 +327,32 @@ public class GoCAM {
 		has_target_end_location = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002339"));
 		has_target_start_location = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002338"));
 	}
-	
-//	public GoCAMReport getGoCAMReport(){
-//		GoCAMReport class_report = new GoCAMReport();
-//		for(OWLIndividual mf : EntitySearcher.getIndividuals(molecular_function, go_cam_ont)) {
-//			class_report.mf_count++;
-//			class_report.mf_labels.add(this.getaLabel((OWLEntity) mf));
-//		}
-//		for(OWLIndividual bp : EntitySearcher.getIndividuals(bp_class, go_cam_ont)) {
-//			class_report.bp_count++;
-//			class_report.bp_labels.add(this.getaLabel((OWLEntity) bp));
-//		}
-//		for(OWLIndividual cc : EntitySearcher.getIndividuals(cc_class, go_cam_ont)) {
-//			class_report.cc_count++;
-//			class_report.cc_labels.add(this.getaLabel((OWLEntity) cc));
-//		}		
-//		for(OWLIndividual complex : EntitySearcher.getIndividuals(go_complex, go_cam_ont)) {
-//			class_report.complex_count++;
-//			class_report.complex_labels.add(this.getaLabel((OWLEntity) complex));
-//		}
-//		
-//		class_report.mf_unclassified = countUnclassifiedRDF(molecular_function, go_cam_ont);
-//		class_report.bp_unclassified = countUnclassifiedRDF(bp_class, go_cam_ont);
-//		class_report.cc_unclassified = countUnclassifiedRDF(cc_class, go_cam_ont);
-//		class_report.complex_unclassified = countUnclassifiedRDF(go_complex, go_cam_ont);
-//		return class_report;
-//	}
+
+	//	public GoCAMReport getGoCAMReport(){
+	//		GoCAMReport class_report = new GoCAMReport();
+	//		for(OWLIndividual mf : EntitySearcher.getIndividuals(molecular_function, go_cam_ont)) {
+	//			class_report.mf_count++;
+	//			class_report.mf_labels.add(this.getaLabel((OWLEntity) mf));
+	//		}
+	//		for(OWLIndividual bp : EntitySearcher.getIndividuals(bp_class, go_cam_ont)) {
+	//			class_report.bp_count++;
+	//			class_report.bp_labels.add(this.getaLabel((OWLEntity) bp));
+	//		}
+	//		for(OWLIndividual cc : EntitySearcher.getIndividuals(cc_class, go_cam_ont)) {
+	//			class_report.cc_count++;
+	//			class_report.cc_labels.add(this.getaLabel((OWLEntity) cc));
+	//		}		
+	//		for(OWLIndividual complex : EntitySearcher.getIndividuals(go_complex, go_cam_ont)) {
+	//			class_report.complex_count++;
+	//			class_report.complex_labels.add(this.getaLabel((OWLEntity) complex));
+	//		}
+	//		
+	//		class_report.mf_unclassified = countUnclassifiedRDF(molecular_function, go_cam_ont);
+	//		class_report.bp_unclassified = countUnclassifiedRDF(bp_class, go_cam_ont);
+	//		class_report.cc_unclassified = countUnclassifiedRDF(cc_class, go_cam_ont);
+	//		class_report.complex_unclassified = countUnclassifiedRDF(go_complex, go_cam_ont);
+	//		return class_report;
+	//	}
 
 	public int countUnclassifiedRDF(OWLClass root_class, OWLOntology ont) {
 		int un = 0; 
@@ -436,7 +436,7 @@ public class GoCAM {
 		addBasicAnnotations2Individual(iri, this.base_contributor, this.base_date, this.base_provider);
 		return i;
 	}
-	
+
 	OWLNamedIndividual makeUnannotatedIndividual(IRI iri) {
 		OWLNamedIndividual i = df.getOWLNamedIndividual(iri);		
 		return i;
@@ -496,9 +496,9 @@ public class GoCAM {
 		OWLAxiom idaxiom = df.getOWLAnnotationAssertionAxiom(e.getIRI(), id_anno);
 		ontman.addAxiom(go_cam_ont, idaxiom);
 		return;
-		
+
 	}
-	
+
 	public void addLabel(OWLEntity entity, String label) {
 		if(label==null) {
 			return;
@@ -552,7 +552,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		String iri = base_iri+uri.hashCode();
 		return iri;
 	}
-	
+
 	public static IRI makeGoCamifiedIRI(String uri) {
 		String iri = makeGoCamifiedIRIstring(uri);
 		return IRI.create(iri);
@@ -657,7 +657,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 * @param individual
 	 * @param type
 	 */
-	void addTypeAssertion(OWLNamedIndividual individual, OWLClass type) {
+	void addTypeAssertion(OWLNamedIndividual individual, OWLClassExpression type) {
 		OWLClassAssertionAxiom isa_xrefedbp = df.getOWLClassAssertionAxiom(type, individual);
 		ontman.addAxiom(go_cam_ont, isa_xrefedbp);
 		//ontman.applyChanges();		
@@ -731,21 +731,37 @@ final long counterValue = instanceCounter.getAndIncrement();
 			}
 		}
 	}
-	
-	void deleteOwlEntityAndAllReferencesToIt(OWLEntity e) {		
-		for (OWLAnnotationAssertionAxiom annAx : EntitySearcher.getAnnotationAssertionAxioms(e.getIRI(), this.go_cam_ont)) {
-			ontman.removeAxiom(go_cam_ont, annAx);
-		}
-		for (OWLAxiom aAx :EntitySearcher.getReferencingAxioms(e, this.go_cam_ont)) {
-			//delete evidence nodes associated with axioms discussing this entity
-			for(OWLAnnotation anno : aAx.getAnnotations()) {
-				if(anno.getProperty().equals(evidence_prop)) {
-					OWLNamedIndividual evidence = df.getOWLNamedIndividual(anno.getValue().asIRI().get());
-					deleteOwlEntityAndAllReferencesToIt(evidence);
-				}
+
+	void deleteOwlEntityAndAllReferencesToIt(OWLEntity e) {	
+		Collection<OWLAnnotationAssertionAxiom> node_annotations = EntitySearcher.getAnnotationAssertionAxioms(e.getIRI(), this.go_cam_ont);
+		if(node_annotations!=null) {
+			for (OWLAnnotationAssertionAxiom annAx : node_annotations) {
+				ontman.removeAxiom(go_cam_ont, annAx);
 			}
-			//now remove the axiom
-			ontman.removeAxiom(go_cam_ont, aAx);
+		}
+		Collection<OWLAxiom> referencing_axioms = EntitySearcher.getReferencingAxioms(e, this.go_cam_ont);
+		if(referencing_axioms !=null) {
+			for (OWLAxiom aAx : referencing_axioms) {
+				//if it references a location node, zap that one too.
+				for(OWLObjectProperty prop : aAx.getObjectPropertiesInSignature()) {
+					if(prop.equals(located_in)) {
+						OWLObjectPropertyAssertionAxiom o = (OWLObjectPropertyAssertionAxiom)aAx;
+						OWLNamedIndividual i = o.getObject().asOWLNamedIndividual();
+						if(!i.equals(e)) { //already in process of deleting
+							deleteOwlEntityAndAllReferencesToIt(i);
+						}
+					}
+				}
+				//delete evidence nodes associated with axioms discussing this entity
+				for(OWLAnnotation anno : aAx.getAnnotations()) {
+					if(anno.getProperty().equals(evidence_prop)) {
+						OWLNamedIndividual evidence = df.getOWLNamedIndividual(anno.getValue().asIRI().get());
+						deleteOwlEntityAndAllReferencesToIt(evidence);
+					}
+				}
+				//now remove the axiom
+				ontman.removeAxiom(go_cam_ont, aAx);
+			}
 		}
 	}
 
@@ -1103,11 +1119,11 @@ final long counterValue = instanceCounter.getAndIncrement();
 						else if(property.equals(involved_in_positive_regulation_of)||property.equals(involved_in_negative_regulation_of)) {
 							//taking these out for now
 							deleteOwlEntityAndAllReferencesToIt(complex_part);
-//							String explain = "When a complex is involved in the non-catalytic regulation of a reaction, "
-//									+ "it is broken into its parts and each is asserted to be a regulator  "
-//									+ "of the molecular function corresponding to the reaction. Here the complex was: "+getaLabel(complex);
-//							annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
-//							addRefBackedObjectPropertyAssertion(complex_part, property, reaction, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "reactome", annos);	
+							//							String explain = "When a complex is involved in the non-catalytic regulation of a reaction, "
+							//									+ "it is broken into its parts and each is asserted to be a regulator  "
+							//									+ "of the molecular function corresponding to the reaction. Here the complex was: "+getaLabel(complex);
+							//							annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
+							//							addRefBackedObjectPropertyAssertion(complex_part, property, reaction, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "reactome", annos);	
 						}
 						else {
 							String explain = "When a complex is an input of or an enabler of a reaction, "

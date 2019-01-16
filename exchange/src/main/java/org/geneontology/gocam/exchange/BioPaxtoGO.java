@@ -80,12 +80,14 @@ import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLObjectUnionOf;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.search.EntitySearcher;
 import org.semanticweb.owlapi.util.OWLEntityRemover;
+import org.semarglproject.vocab.OWL;
 
 /**
  * @author bgood
@@ -748,27 +750,39 @@ public class BioPaxtoGO {
 					//e.g. Q9UKV3 gets the uniproteins ACIN1, ACIN1(1-1093), ACIN1(1094-1341)
 					//assert that they are proteins (for use without neo import which would clarify that)
 					go_cam.addTypeAssertion(e,  uniprotein_class);
-				}else { //no entity reference so look for parts 
+				}else { //no entity reference so look for parts
 					Set<PhysicalEntity> prot_parts = protein.getMemberPhysicalEntity();
 					if(prot_parts!=null) {					
-						//if its made of parts and it doesn't have its own unique protein name, call it a complex..	
+						//if its made of parts and not otherwise typed, call it a Union.	
 						Set<String> cnames = new HashSet<String>();
+						Set<OWLNamedIndividual> owl_members = new HashSet<OWLNamedIndividual>();
 						for(PhysicalEntity prot_part : prot_parts) {
 							cnames.add(prot_part.getDisplayName());
-							//hook up parts	
-							//define it independently within this context
-							OWLNamedIndividual prot_part_entity = 
-									//go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(prot_part.getUri()+entity.getUri())); 
-									go_cam.df.getOWLNamedIndividual(GoCAM.makeRandomIri()); 
-							go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_part, prot_part_entity, dbids, GoCAM.eco_imported_auto, "Reactome", null);		
+							//hook up parts into one thing
+							OWLNamedIndividual prot_part_entity = go_cam.df.getOWLNamedIndividual(GoCAM.makeRandomIri()); 
+							owl_members.add(prot_part_entity);
+							//this would add them as parts of the entity in question (previously called a protein complex)
+							//go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_part, prot_part_entity, dbids, GoCAM.eco_imported_auto, "Reactome", null);		
 							//define them = hopefully get out a name and a class for the sub protein.	
 							defineReactionEntity(go_cam, prot_part, prot_part_entity.getIRI(), true, pathway_id);					
 						}
-						//though it clutters the display, this is needed to enable Arachne inference without adding tbox assertions from each model
-						//
-						go_cam.addTypeAssertion(e, GoCAM.go_complex);
-						//}
-					}else { 
+						//these aren't actually complexes, they are loose collections of molecules
+						//go_cam.addTypeAssertion(e, GoCAM.go_complex);
+						//TODO investigate a named upper type for a union entity? 
+						Set<OWLClassExpression> protein_classes = new HashSet<OWLClassExpression>();
+						for(OWLNamedIndividual member : owl_members) {
+							Collection<OWLClassExpression> types = EntitySearcher.getTypes(member, go_cam.go_cam_ont);
+							for(OWLClassExpression type : types) {
+								if(!type.asOWLClass().getIRI().toString().equals(OWL.NAMED_INDIVIDUAL)) {
+									protein_classes.add(type);
+								}
+							}
+							//discard the individual from the ontology.  no need for it.
+							go_cam.deleteOwlEntityAndAllReferencesToIt(member);
+						}
+						OWLObjectUnionOf union_exp = go_cam.df.getOWLObjectUnionOf(protein_classes);
+						go_cam.addTypeAssertion(e,  union_exp);
+					}else { //punt..
 						go_cam.addTypeAssertion(e,  GoCAM.chebi_protein);
 					}
 				}
