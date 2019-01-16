@@ -436,6 +436,34 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		return ir;
 	}
 	
+	Set<InferredRegulator> getInferredRegulatorsQ3() {
+		Set<InferredRegulator> ir = new HashSet<InferredRegulator>();
+		String query = null;
+		try {		
+			query = IOUtils.toString(App.class.getResourceAsStream("query2update_regulation_3.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL update from jar \n"+e);
+		}
+		QueryExecution qe = QueryExecutionFactory.create(query, jena);
+		ResultSet results = qe.execSelect();
+		int t = 0;
+		while (results.hasNext()) {
+			t++;
+			QuerySolution qs = results.next();
+			Resource reaction1 = qs.getResource("reaction1"); 
+			Resource reaction2 = qs.getResource("reaction2"); 
+			Resource pathway = qs.getResource("pathway");
+			//reaction1  regulated somehow by reaction 2
+			String pathway_uri = "";
+			if(pathway!=null) {
+				pathway_uri = pathway.getURI();
+			}
+			ir.add(new InferredRegulator(reaction1.getURI(), GoCAM.directly_positively_regulates.getIRI().toString(), reaction2.getURI(), pathway_uri, ""));
+		}
+		qe.close();
+		return ir;
+	}
+	
 	Set<String> findBindingReactions() {
 		Set<String> binders = new HashSet<String>();
 		String query = null;

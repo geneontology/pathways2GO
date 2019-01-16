@@ -1036,7 +1036,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		 * If reaction2 is enabled_by entity1
 		 * And reaction1 has entity1 as an input
 		 * And reaction1 has entity2 as an input
-		 * And reaction1 has a complex containign entity1 and entity2 as output
+		 * And reaction1 has a complex containing entity1 and entity2 as output
 		 * Then infer that reaction1 directly_negatively_regulates reaction2
 		 * (by binding up the entity that enables reaction2 to happen).
 		 * 
@@ -1071,6 +1071,36 @@ final long counterValue = instanceCounter.getAndIncrement();
 		r.rule_pathways.put(regulator_rule_2, regulator_pathways_2);
 		qrunner = new QRunner(go_cam_ont); 
 
+		/**
+		 * Regulator rule 3.
+		 */
+		String regulator_rule_3 = "regulator_3";
+		Integer regulator_count_3 = r.checkInitCount(regulator_rule_3, r);
+		Set<String> regulator_pathways_3 = r.checkInitPathways(regulator_rule_3, r);
+
+		Set<InferredRegulator> ir3_pos = qrunner.getInferredRegulatorsQ3();
+		regulator_count_3+=ir3_pos.size();
+		for(InferredRegulator ir : ir3_pos) {
+			regulator_pathways_3.add(ir.pathway_uri);
+			//create ?reaction2 obo:RO_0002333 ?input
+			OWLNamedIndividual r1 = this.makeAnnotatedIndividual(ir.reaction1_uri);
+			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ir.reaction2_uri);
+			OWLObjectProperty o = df.getOWLObjectProperty(IRI.create(ir.prop_uri));
+			String r1_label = "'"+this.getaLabel(r1)+"'";
+			String r2_label = "'"+this.getaLabel(r2)+"'";
+			String o_label = "'"+this.getaLabel(o)+"'";
+			Set<OWLAnnotation> annos = getDefaultAnnotations();
+			String explain = "(rule:reg3) The relation "+r1_label+" "+o_label+" "+r2_label+" was inferred because:\n "+
+					"reaction1 has an output that is the enabler of reaction 2. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
+			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
+			this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "reactome", annos);
+			applyAnnotatedTripleRemover(r1.getIRI(), provides_direct_input_for.getIRI(), r2.getIRI());
+			System.out.println("reg2 "+r1+" "+o+" "+r2);
+		}	
+		r.rule_hitcount.put(regulator_rule_3, regulator_count_3);
+		r.rule_pathways.put(regulator_rule_3, regulator_pathways_3);
+		qrunner = new QRunner(go_cam_ont); 
+		
 		/*
 		 * Noctua Curation strategy rules
 		 * note that these can be very slow for large models
@@ -1093,6 +1123,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 				}
 			}			
 			System.out.println("Eliminated 'located in' assertions");
+			
 			/**
 			 * Noctua Rule 2.  No complexes allowed as inputs, regulators or enablers of a reaction, only proteins..
 			 * Find such complexes and replace all statements involving them with statements about their components
