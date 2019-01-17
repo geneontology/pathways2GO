@@ -124,7 +124,8 @@ public class NoctuaLayout {
 						op.getProperty().equals(GoCAM.directly_positively_regulates)||
 						op.getProperty().equals(GoCAM.directly_negatively_regulated_by)||
 						op.getProperty().equals(GoCAM.directly_positively_regulated_by)||
-						op.getProperty().equals(GoCAM.provides_direct_input_for)
+						op.getProperty().equals(GoCAM.provides_direct_input_for)||
+						op.getProperty().equals(GoCAM.causally_upstream_of)
 						) {
 					causal_axioms.add(op);
 				}
@@ -166,7 +167,7 @@ public class NoctuaLayout {
 		go_cam.addLiteralAnnotations2Individual(((OWLNamedIndividual) node).getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(x));
 		go_cam.addLiteralAnnotations2Individual(((OWLNamedIndividual) node).getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(y));
 		//recursively lay out children
-		Collection<OWLIndividual> children = EntitySearcher.getObjectPropertyValues(node, GoCAM.provides_direct_input_for, go_cam.go_cam_ont);
+		Collection<OWLIndividual> children = EntitySearcher.getObjectPropertyValues(node, GoCAM.causally_upstream_of, go_cam.go_cam_ont);
 		if(children.size()==0) {
 			Collection<OWLObjectPropertyAssertionAxiom> axioms = getCausalReferencingOPAxioms((OWLEntity) node, go_cam);
 			for(OWLObjectPropertyAssertionAxiom axiom : axioms) {
@@ -232,7 +233,7 @@ public class NoctuaLayout {
 			ordered_chain.add(node);
 		}
 		//get causal child 
-		Collection<OWLIndividual> children = EntitySearcher.getObjectPropertyValues(node, GoCAM.provides_direct_input_for, go_cam.go_cam_ont);
+		Collection<OWLIndividual> children = EntitySearcher.getObjectPropertyValues(node, GoCAM.causally_upstream_of, go_cam.go_cam_ont);
 		if(children.size()==0) {
 			Collection<OWLObjectPropertyAssertionAxiom> axioms = getCausalReferencingOPAxioms((OWLEntity) node, go_cam);
 			for(OWLObjectPropertyAssertionAxiom axiom : axioms) {

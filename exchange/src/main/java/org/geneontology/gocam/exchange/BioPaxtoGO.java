@@ -565,7 +565,7 @@ public class BioPaxtoGO {
 										IRI e2_iri = GoCAM.makeGoCamifiedIRI(nextEvent.getUri());
 										OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(e1_iri);
 										OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(e2_iri);
-										go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.provides_direct_input_for, e2, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, "Reactome", null);
+										go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.causally_upstream_of, e2, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, "Reactome", null);
 										//in some cases, the reaction may connect off to a different pathway and hence not be caught in above loop to define reaction entities
 										//e.g. Recruitment of SET1 methyltransferase complex  -> APC promotes disassembly of beta-catenin transactivation complex
 										//are connected yet in different pathways
@@ -583,7 +583,7 @@ public class BioPaxtoGO {
 						Set<Process> prevEvents = prevStep.getStepProcess();
 						for(Process event : events) {
 							for(Process prevEvent : prevEvents) {
-								//	prevEvent directly_provides_input_for Event
+								//	prevEvent upstream of Event
 								if((event.getModelInterface().equals(BiochemicalReaction.class))&&
 										(prevEvent.getModelInterface().equals(BiochemicalReaction.class))) {
 
@@ -595,7 +595,7 @@ public class BioPaxtoGO {
 										IRI prevEvent_iri = GoCAM.makeGoCamifiedIRI(prevEvent.getUri());
 										OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(prevEvent_iri);
 										OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(event_iri);
-										go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.provides_direct_input_for, e2, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, "Reactome", null);
+										go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.causally_upstream_of, e2, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, "Reactome", null);
 										//in some cases, the reaction may connect off to a different pathway and hence not be caught in above loop to define reaction entities
 										//e.g. Recruitment of SET1 methyltransferase complex  -> APC promotes disassembly of beta-catenin transactivation complex
 										//are connected yet in different pathways
@@ -966,14 +966,14 @@ public class BioPaxtoGO {
 						Set<Process> nextEvents = nextStep.getStepProcess();
 						for(Process event : events) {
 							for(Process nextEvent : nextEvents) {
-								//	Event directly_provides_input_for NextEvent
+								//	Event causally_upstream_of NextEvent
 								if((event.getModelInterface().equals(BiochemicalReaction.class))&&
 										(nextEvent.getModelInterface().equals(BiochemicalReaction.class))) {
 									IRI e1_iri = GoCAM.makeGoCamifiedIRI(event.getUri());
 									IRI e2_iri = GoCAM.makeGoCamifiedIRI(nextEvent.getUri());
 									OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(e1_iri);
 									OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(e2_iri);
-									go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.provides_direct_input_for, e2, dbids, GoCAM.eco_imported_auto, "Reactome", null);
+									go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.causally_upstream_of, e2, dbids, GoCAM.eco_imported_auto, "Reactome", null);
 									//in some cases, the reaction may connect off to a different pathway and hence not be caught in above loop to define reaction entities
 									//e.g. Recruitment of SET1 methyltransferase complex  -> APC promotes disassembly of beta-catenin transactivation complex
 									//are connected yet in different pathways
@@ -997,7 +997,7 @@ public class BioPaxtoGO {
 										IRI prevEvent_iri = GoCAM.makeGoCamifiedIRI(prevEvent.getUri());
 										OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(prevEvent_iri);
 										OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(event_iri);
-										go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.provides_direct_input_for, e2, dbids, GoCAM.eco_imported_auto, "Reactome", null);
+										go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.causally_upstream_of, e2, dbids, GoCAM.eco_imported_auto, "Reactome", null);
 										if(go_cam.getaLabel(e1).equals("")){
 											defineReactionEntity(go_cam, prevEvent, prevEvent_iri, true, pathway_id);		
 										}

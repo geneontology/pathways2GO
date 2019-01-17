@@ -1094,7 +1094,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 					"reaction1 has an output that is the enabler of reaction 2. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 			this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "reactome", annos);
-			applyAnnotatedTripleRemover(r1.getIRI(), provides_direct_input_for.getIRI(), r2.getIRI());
+			applyAnnotatedTripleRemover(r1.getIRI(), causally_upstream_of.getIRI(), r2.getIRI());
 		}	
 		r.rule_hitcount.put(regulator_rule_3, regulator_count_3);
 		r.rule_pathways.put(regulator_rule_3, regulator_pathways_3);
