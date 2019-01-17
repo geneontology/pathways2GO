@@ -1098,6 +1098,37 @@ final long counterValue = instanceCounter.getAndIncrement();
 		}	
 		r.rule_hitcount.put(regulator_rule_3, regulator_count_3);
 		r.rule_pathways.put(regulator_rule_3, regulator_pathways_3);
+		//don't re-initialize the query model yet.  If we remove the causally upstream of relation, the next rule can't fire
+		//and it is possible for a reaction to both catalyze and provide input for a another reaction.  
+		//qrunner = new QRunner(go_cam_ont); 
+		
+		/*
+		 * provides input for inference
+		 */
+		String provides_input_rule = "provides_input";
+		Integer provides_input_count = r.checkInitCount(provides_input_rule, r);
+		Set<String> provides_input_pathways = r.checkInitPathways(provides_input_rule, r);
+
+		Set<InferredRegulator> provides_input = qrunner.getInferredInputProviders();
+		provides_input_count+=provides_input.size();
+		for(InferredRegulator ir : provides_input) {
+			regulator_pathways_3.add(ir.pathway_uri);
+			//create ?reaction2 obo:RO_0002333 ?input
+			OWLNamedIndividual r1 = this.makeAnnotatedIndividual(ir.reaction1_uri);
+			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ir.reaction2_uri);
+			OWLObjectProperty o = df.getOWLObjectProperty(IRI.create(ir.prop_uri));
+			String r1_label = "'"+this.getaLabel(r1)+"'";
+			String r2_label = "'"+this.getaLabel(r2)+"'";
+			String o_label = "'"+this.getaLabel(o)+"'";
+			Set<OWLAnnotation> annos = getDefaultAnnotations();
+			String explain = "(rule:provides_input) The relation "+r1_label+" "+o_label+" "+r2_label+" was inferred because:\n "+
+					"reaction1 has an output that is an input of reaction 2. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
+			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
+			this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "reactome", annos);
+			applyAnnotatedTripleRemover(r1.getIRI(), causally_upstream_of.getIRI(), r2.getIRI());
+		}	
+		r.rule_hitcount.put(provides_input_rule, provides_input_count);
+		r.rule_pathways.put(provides_input_rule, provides_input_pathways);
 		qrunner = new QRunner(go_cam_ont); 
 		
 		/*

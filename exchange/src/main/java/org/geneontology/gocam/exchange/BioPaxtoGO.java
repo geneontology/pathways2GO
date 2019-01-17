@@ -175,7 +175,7 @@ public class BioPaxtoGO {
 			tag = "expanded";
 		}	
 		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
-		String test_pathway = "activated TAK1 mediates p38 MAPK activation";//null;//"Clathrin-mediated endocytosis";
+		String test_pathway = "Signaling by BMP";//null;//activated TAK1 mediates p38 MAPK activation"Clathrin-mediated endocytosis";
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathway);
 //		System.out.println("Writing report");
 //		bp2g.report.writeReport("report/");
