@@ -175,7 +175,7 @@ public class BioPaxtoGO {
 			tag = "expanded";
 		}	
 		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
-		String test_pathway = "Signaling by BMP";//null;//activated TAK1 mediates p38 MAPK activation"Clathrin-mediated endocytosis";
+		String test_pathway = "Signaling by BMP";//"activated TAK1 mediates p38 MAPK activation";//null;//"Clathrin-mediated endocytosis";
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathway);
 //		System.out.println("Writing report");
 //		bp2g.report.writeReport("report/");
@@ -1301,7 +1301,11 @@ public class BioPaxtoGO {
 					}
 					//default to mf
 					if(!ecmapped) {
-						go_cam.addTypeAssertion(e, GoCAM.molecular_function);	
+						if(isBindingReaction(e, go_cam)) {
+							go_cam.addTypeAssertion(e, GoCAM.protein_binding);	
+						}else {
+							go_cam.addTypeAssertion(e, GoCAM.molecular_function);	
+						}
 					}
 				}
 				//The GO-CAM OWL for the reaction and all of its parts should now be assembled.  
@@ -1314,6 +1318,22 @@ public class BioPaxtoGO {
 		return;
 	}
 
+	private boolean isBindingReaction(OWLNamedIndividual reaction, GoCAM go_cam) {
+		boolean binder = false;
+		String r_label = go_cam.getaLabel(reaction);
+		//collect inputs and outputs
+		Collection<OWLIndividual> inputs = EntitySearcher.getObjectPropertyValues(reaction, GoCAM.has_input, go_cam.go_cam_ont);
+		Collection<OWLIndividual> outputs = EntitySearcher.getObjectPropertyValues(reaction, GoCAM.has_output, go_cam.go_cam_ont);
+		//reactome rule is simply to count to see if there are fewer outputs then inputs
+		if(inputs.size()>outputs.size()) {
+			binder = true;
+			System.out.println(r_label+" is a binder ");
+		}else {
+			System.out.println(r_label+" is NOT a binder ");
+		}
+		return binder;
+	}
+	
 	Set<OWLClass> getTypesFromECs(BiochemicalReaction reaction, GoCAM go_cam){
 		Set<OWLClass> gos = new HashSet<OWLClass>();
 		for(String ec : reaction.getECNumber()) {

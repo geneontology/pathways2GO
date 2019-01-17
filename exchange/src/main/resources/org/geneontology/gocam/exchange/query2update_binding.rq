@@ -13,7 +13,7 @@ prefix skos: <http://www.w3.org/2004/02/skos/core#>
 #proposed
 #there is an output complex that contains one of the inputs as a part of it
 
-select ?reaction # for update
+select ?reaction ?output_part_individual ?input_individual ?output_complex # for update
 where {
   	#reaction annotated to root (check for reasoning..)
   	?reaction rdf:type obo:GO_0003674 .
@@ -30,8 +30,10 @@ where {
    	
    	#this is unsatisfying.. but better than nothing
    	#without it, query is finding reactions where the input complex has the same elements as the output complex
-   	?reaction rdfs:label ?reaction_label .
-    FILTER regex(?reaction_label, "bind") 
+  	#?reaction rdfs:label ?reaction_label .
+  	#FILTER regex(?reaction_label, "bind") 
+  	
+  #	FILTER NOT EXISTS { }
 }
 
 # obo:RO_0002233 has input 

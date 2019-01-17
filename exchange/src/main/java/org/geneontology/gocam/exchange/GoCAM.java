@@ -821,7 +821,12 @@ final long counterValue = instanceCounter.getAndIncrement();
 		 * 
 		 * See 'Signaling by BMP' https://reactome.org/content/detail/R-HSA-201451 
 		 * (12 inferences)
-		 */
+		 
+		 //This rule as written here and in SPARQL was over predicting.  Its been replaced by simple rule
+		 //employed by Reactome itself, to identify binding reactions.  If there are more inputs than outputs
+		 //and the reaction is not otherwise, typed, than its binding.  This seems to work very well.
+		 //implemented as a test in the main BioPaxtoGO reaction creation loop.
+		 
 		String binding_rule = "binding";
 		Integer binding_count = r.checkInitCount(binding_rule, r);
 		Set<String> binding_reactions = r.checkInitReactions(binding_rule, r);
@@ -843,7 +848,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		}
 		r.rule_hitcount.put(binding_rule, binding_count);
 		r.rule_reactions.put(binding_rule, binding_reactions);
-
+	*/
 		/**
 		 * Rule 3: Infer Protein Transport reactions
 		 * If a reaction has not been provided with an rdf:type 
