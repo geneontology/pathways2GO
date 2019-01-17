@@ -1095,7 +1095,6 @@ final long counterValue = instanceCounter.getAndIncrement();
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 			this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "reactome", annos);
 			applyAnnotatedTripleRemover(r1.getIRI(), provides_direct_input_for.getIRI(), r2.getIRI());
-			System.out.println("reg2 "+r1+" "+o+" "+r2);
 		}	
 		r.rule_hitcount.put(regulator_rule_3, regulator_count_3);
 		r.rule_pathways.put(regulator_rule_3, regulator_pathways_3);

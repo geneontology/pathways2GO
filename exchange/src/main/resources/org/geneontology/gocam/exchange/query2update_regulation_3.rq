@@ -22,9 +22,11 @@ where {
   ?r1output skos:exactMatch ?A . 
   ?reaction2enabler skos:exactMatch ?A .
   filter(?reaction1 != ?reaction2) .
+	optional {
     ?reaction2enabler rdfs:label ?reaction2enablerLabel .
     ?reaction2 rdfs:label ?reaction2Label .
     ?reaction1 rdfs:label ?reaction1Label .
+    }
  } 
 
 #TEST with Reactome:Signaling by BMP 
