@@ -6,3 +6,6 @@
 /inferred_types.txt
 /mapping.txt
 /reasoner_value.txt
+/content_size.txt
+/manual_mapping.txt
+/manual_plus_inferred_mapping.txt
