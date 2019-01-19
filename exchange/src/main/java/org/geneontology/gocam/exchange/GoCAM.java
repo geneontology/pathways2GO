@@ -102,7 +102,8 @@ public class GoCAM {
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in,
 	directly_positively_regulated_by, directly_negatively_regulated_by, involved_in_regulation_of, involved_in_negative_regulation_of, involved_in_positive_regulation_of,
 	directly_negatively_regulates, directly_positively_regulates, has_role, causally_upstream_of, causally_upstream_of_negative_effect, causally_upstream_of_positive_effect,
-	has_target_end_location, has_target_start_location, interacts_with, has_participant, functionally_related_to;
+	has_target_end_location, has_target_start_location, interacts_with, has_participant, functionally_related_to,
+	contributes_to;
 
 	public static OWLClass 
 	bp_class, continuant_class, process_class, go_complex, cc_class, molecular_function, 
@@ -326,6 +327,7 @@ public class GoCAM {
 
 		has_target_end_location = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002339"));
 		has_target_start_location = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002338"));
+		contributes_to = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002326"));
 	}
 
 	//	public GoCAMReport getGoCAMReport(){

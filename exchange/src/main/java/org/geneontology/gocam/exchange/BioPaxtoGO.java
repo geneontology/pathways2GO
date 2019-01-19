@@ -114,6 +114,7 @@ public class BioPaxtoGO {
 	GOPlus goplus;
 	Model biopax_model;
 	Map<String, String> gocamid_sourceid = new HashMap<String, String>();
+	ReactomeExtras reactome_extras;
 	//
 	static boolean add_lego_import = false; //unless you never want to open the output in Protege always leave false..(or learn how to use a catalogue file)
 	static boolean save_inferences = false;  //adds inferences to blazegraph journal
@@ -138,6 +139,12 @@ public class BioPaxtoGO {
 		try {
 			goplus = new GOPlus();
 		} catch (OWLOntologyCreationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			reactome_extras = new ReactomeExtras();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -175,7 +182,7 @@ public class BioPaxtoGO {
 			tag = "expanded";
 		}	
 		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
-		String test_pathway = "Signaling by BMP";//"activated TAK1 mediates p38 MAPK activation";//null;//"Clathrin-mediated endocytosis";
+		String test_pathway = "activated TAK1 mediates p38 MAPK activation";//"activated TAK1 mediates p38 MAPK activation";//null;//"Clathrin-mediated endocytosis";
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathway);
 //		System.out.println("Writing report");
 //		bp2g.report.writeReport("report/");
@@ -1138,6 +1145,7 @@ public class BioPaxtoGO {
 				//find controllers 
 				Set<Control> controllers = ((Process) entity).getControlledOf();
 				for(Control controller : controllers) {
+					
 					ControlType ctype = controller.getControlType();	
 					boolean is_catalysis = false;
 					if(controller.getModelInterface().equals(Catalysis.class)) {
@@ -1150,6 +1158,9 @@ public class BioPaxtoGO {
 					//check for reactome mappings
 					//dig out the GO molecular function and create an individual for it
 					Set<Xref> xrefs = controller.getXref(); //controller is either a 'control', 'catalysis', 'Modulation', or 'TemplateReactionRegulation'
+					String controller_event_id = null;
+					ReactomeExtras.ActiveSite active_site = null;
+					String active_site_id = null;
 					for(Xref xref : xrefs) {
 						if(xref.getModelInterface().equals(RelationshipXref.class)) {
 							RelationshipXref ref = (RelationshipXref)xref;	    			
@@ -1166,6 +1177,12 @@ public class BioPaxtoGO {
 								//add the go function class as a type for the reaction instance being controlled here
 								go_cam.addTypeAssertion(e, xref_go_func);
 								go_mf.add(goid);
+							}else if(db.startsWith("reactome database id")&&reactome_extras!=null){
+								controller_event_id = ref.getId();
+								active_site = reactome_extras.controller_active.get(controller_event_id);
+								if(active_site!=null) {
+									active_site_id = active_site.active_unit_id;
+								}
 							}
 						}
 					}	
@@ -1221,20 +1238,41 @@ public class BioPaxtoGO {
 								}
 							}
 						}
-
+						//this is the non-recursive part.. (and we usually aren't recursing anyway)
 						IRI iri = null;
 						iri = GoCAM.makeGoCamifiedIRI(controller_entity.getUri()+entity.getUri()+"controller");
 						defineReactionEntity(go_cam, controller_entity, iri, true, pathway_id);
 						//the protein or complex
 						OWLNamedIndividual controller_e = go_cam.df.getOWLNamedIndividual(iri);
 						//the controlling physical entity enables that function/reaction
-						//on occasion there are refs associated with the controller.
-//						Set<String> controllerpubrefs = getPubmedIds(controller_entity);		
-
+						//check if there is an activeUnit annotation (reactome only)
+						OWLNamedIndividual active_unit = null;
+						if(active_site_id!=null) {
+							//find the sub-entity of the controller that is the activeUnit
+							Collection<OWLIndividual> parts = EntitySearcher.getObjectPropertyValues(controller_e, GoCAM.has_part, go_cam.go_cam_ont);						
+							for(OWLIndividual part : parts) {
+								Collection<OWLAnnotation> dbxrefs = EntitySearcher.getAnnotationObjects(part.asOWLNamedIndividual(), go_cam.go_cam_ont, GoCAM.database_cross_reference);
+								for(OWLAnnotation dbxref : dbxrefs) {
+									String dbid = dbxref.getValue().asLiteral().get().getLiteral();
+									if(dbid.equals(active_site_id)) {
+										active_unit = part.asOWLNamedIndividual();
+										break;
+									}
+								}
+							}						
+						}
+						
 						//define relationship between controller entity and reaction
 						//if catalysis then always enabled by
 						if(is_catalysis) {
-							go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, controller_e, dbids, GoCAM.eco_imported_auto, "reactome", null);	
+							//active unit known
+							if(active_unit!=null) {
+								go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, active_unit, dbids, GoCAM.eco_imported_auto, "reactome", null);	
+								//make the complex itself a contributor
+								go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.contributes_to, e, dbids, GoCAM.eco_imported_auto, "reactome", null);	
+							}else {
+								go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, controller_e, dbids, GoCAM.eco_imported_auto, "reactome", null);	
+							}
 						}else {
 							//otherwise look at text 
 							//define how the molecular function (process) relates to the reaction (process)
