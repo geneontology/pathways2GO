@@ -2,7 +2,7 @@ reactome_graph_active_units.csv
 
 Can be generated from the neo4j version of the Reactome database with the query:
 
-MATCH (reaction:Reaction {speciesName:"Homo sapiens"})-[:catalystActivity]->(control_event:CatalystActivity)-[:activeUnit]->(active_unit:PhysicalEntity)
+MATCH (reaction:ReactionLikeEvent {speciesName:"Homo sapiens"})-[:catalystActivity]->(control_event:CatalystActivity)-[:activeUnit]->(active_unit:PhysicalEntity)
 RETURN reaction.stId, control_event.dbId, active_unit.stId
 
 The file tracks relations between control events and the active units of the controller for those events.  

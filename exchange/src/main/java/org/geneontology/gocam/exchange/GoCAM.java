@@ -1164,7 +1164,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 			/**
 			 * Noctua Rule 2.  No complexes allowed as inputs, regulators or enablers of a reaction, only proteins..
 			 * Find such complexes and replace all statements involving them with statements about their components
-			 */
+			 
 			Set<ComplexInput> complex_inputs = qrunner.findComplexInputs();
 			int input_complex_count = 0;
 			String input_complex_rule = "No complexes as input or output ";
@@ -1238,8 +1238,9 @@ final long counterValue = instanceCounter.getAndIncrement();
 			r.rule_pathways.put(input_complex_rule, ic_p);
 			qrunner = new QRunner(go_cam_ont); 
 			System.out.println("Deleted all complexes");
+		*/
+		
 		}
-
 
 		return r;
 	}
