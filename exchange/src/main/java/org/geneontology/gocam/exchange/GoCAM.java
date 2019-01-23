@@ -1150,6 +1150,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 			 * Doing this in ontology instead of just RDF (go_cam.qrunner.deleteEntityLocations();) 
 			 * so we can check it with reasoner
 			 */
+			//TODO this is slow.  To speed up handle location and occurs in (above) in first layer of code (non-sparql)
 			for(OWLObjectPropertyAssertionAxiom a : go_cam_ont.getAxioms(AxiomType.OBJECT_PROPERTY_ASSERTION)) {
 				OWLObjectPropertyExpression p = a.getProperty();
 				if(p.equals(located_in)) {
