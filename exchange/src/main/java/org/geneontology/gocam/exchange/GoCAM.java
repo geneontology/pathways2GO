@@ -894,12 +894,12 @@ final long counterValue = instanceCounter.getAndIncrement();
 				String explain1 = "This relation was inferred because a protein that was an input to the reaction started out in the target location "+getaLabel(end_loc_type)
 				+ " and then, as a consequence of the reaction/process was transported to another location.";
 				annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain1)));				
-				addRefBackedObjectPropertyAssertion(reaction, has_target_start_location, start_loc, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "reactome", annos);
+				addRefBackedObjectPropertyAssertion(reaction, has_target_start_location, start_loc, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "Reactome", annos);
 				String explain2 = "This relation was inferred because a protein that was an input to the reaction started one location "
 						+ " and then, as a consequence of the reaction/process was transported to the target end location "+getaLabel(end_loc_type);
 				Set<OWLAnnotation> annos2 = getDefaultAnnotations();
 				annos2.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain2)));
-				addRefBackedObjectPropertyAssertion(reaction, has_target_end_location, end_loc, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "reactome", annos2);
+				addRefBackedObjectPropertyAssertion(reaction, has_target_end_location, end_loc, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "Reactome", annos2);
 			}
 			//enabled by needs to know if there are any transport reactions as these should not be included
 			//hence reload graph from ontology
@@ -941,7 +941,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 						annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain1)));		
 						OWLNamedIndividual placeInstance = df.getOWLNamedIndividual(GoCAM.makeRandomIri());
 						addTypeAssertion(placeInstance, location_class);
-						addRefBackedObjectPropertyAssertion(reaction, GoCAM.occurs_in, placeInstance, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, "reactome_id", annos);
+						addRefBackedObjectPropertyAssertion(reaction, GoCAM.occurs_in, placeInstance, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, "Reactome", annos);
 					}
 				}
 			}
@@ -988,7 +988,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 					+ r1_label+" has output "+e_label+" and \n"
 					+ r2_label+ " has input "+e_label+" .  The original has_input relation to "+e_label+" was replaced. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
-			this.addRefBackedObjectPropertyAssertion(r2, enabled_by, e, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "reactome", annos);
+			this.addRefBackedObjectPropertyAssertion(r2, enabled_by, e, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "Reactome", annos);
 		}
 		r.rule_hitcount.put(enabler_rule, enabler_count);
 		r.rule_pathways.put(enabler_rule, enabler_pathways);
@@ -1029,7 +1029,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 			String explain = "The is relation was inferred because reaction1 has output "+entity_label+" and "
 					+ entity_label+" "+reg+" reaction2.  Note that this regulation is non-catalytic. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
-			this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "reactome", annos);
+			this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "Reactome", annos);
 			//delete the entity regulates process relation 
 			applyAnnotatedTripleRemover(r2.getIRI(), o.getIRI(), entity.getIRI());
 
@@ -1071,7 +1071,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 					r1_label+" is enabled by B. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 			//this.addObjectPropertyAssertion(r1, o, r2, annos);
-			this.addRefBackedObjectPropertyAssertion(r2, o, r1, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "reactome", annos);
+			this.addRefBackedObjectPropertyAssertion(r2, o, r1, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "Reactome", annos);
 			//			System.out.println("reg2 "+r1+" "+o+" "+r2);
 		}	
 		r.rule_hitcount.put(regulator_rule_2, regulator_count_2);
@@ -1100,7 +1100,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 			String explain = "(rule:reg3) The relation "+r1_label+" "+o_label+" "+r2_label+" was inferred because:\n "+
 					"reaction1 has an output that is the enabler of reaction 2. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
-			this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "reactome", annos);
+			this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "Reactome", annos);
 			applyAnnotatedTripleRemover(r1.getIRI(), causally_upstream_of.getIRI(), r2.getIRI());
 		}	
 		r.rule_hitcount.put(regulator_rule_3, regulator_count_3);
@@ -1131,7 +1131,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 			String explain = "(rule:provides_input) The relation "+r1_label+" "+o_label+" "+r2_label+" was inferred because:\n "+
 					"reaction1 has an output that is an input of reaction 2. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
-			this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "reactome", annos);
+			this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "Reactome", annos);
 			applyAnnotatedTripleRemover(r1.getIRI(), causally_upstream_of.getIRI(), r2.getIRI());
 		}	
 		r.rule_hitcount.put(provides_input_rule, provides_input_count);
@@ -1192,7 +1192,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 							//									+ "it is broken into its parts and each is asserted to be a regulator  "
 							//									+ "of the molecular function corresponding to the reaction. Here the complex was: "+getaLabel(complex);
 							//							annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
-							//							addRefBackedObjectPropertyAssertion(complex_part, property, reaction, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "reactome", annos);	
+							//							addRefBackedObjectPropertyAssertion(complex_part, property, reaction, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "Reactome", annos);	
 						}
 						else {
 							String explain = "When a complex is an input of or an enabler of a reaction, "
@@ -1201,7 +1201,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 									+ "It is now the curator's job to decide which is the appropriate gene product to select as the enabler.  "
 									+ "Here the complex was: "+getaLabel(complex);
 							annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
-							addRefBackedObjectPropertyAssertion(reaction, property, complex_part, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "reactome", annos);
+							addRefBackedObjectPropertyAssertion(reaction, property, complex_part, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "Reactome", annos);
 						}
 					}
 					//remove the complex
