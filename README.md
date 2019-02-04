@@ -9,10 +9,10 @@ Code for converting between biological pathways (e.g. Reactome, Wikipathways) ex
 - Web server for hosting, reasoning over GO-CAMs https://github.com/geneontology/minerva
 - Rule-based OWL reasoner optimized for large t-box, small a-box https://github.com/balhoff/arachne
 - Work in progress OWL reasoner https://github.com/balhoff/whelk
+- Current home of generated GO-CAM models - https://github.com/geneontology/noctua-models/tree/dev  
 
 ## Related Websites
-- http://noctua-dev.berkeleybop.org 
-- https://github.com/geneontology/noctua-models/tree/dev 
+- Development browser/editor with pathways converted to GO-CAMs http://noctua-dev.berkeleybop.org 
 
 ## Related Presentations
 - Keynote at Rocky Bioinformatics https://www.slideshare.net/goodb/integrating-pathway-databases-with-gene-ontology-causal-activity-models
