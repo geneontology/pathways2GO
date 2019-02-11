@@ -961,7 +961,11 @@ final long counterValue = instanceCounter.getAndIncrement();
 		 * 
 		 * See 'Signaling by BMP' https://reactome.org/content/detail/R-HSA-201451 
 		 * (6 inferences)
-		 */
+		 * 
+		 * Deprecated Feb 11, 2019 do to changes below regarding use of provides_direct_input_for 
+		 * positively regulates and causally upstream of.
+		 * 
+		 
 		//infer and change some inputs to enablers
 		String enabler_rule = "enabler";
 		Integer enabler_count = r.checkInitCount(enabler_rule, r);
@@ -993,7 +997,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 		r.rule_hitcount.put(enabler_rule, enabler_count);
 		r.rule_pathways.put(enabler_rule, enabler_pathways);
 		qrunner = new QRunner(go_cam_ont); 
-
+		*/
+		
 		/**
 		 * Rule 5: Regulator 1: direct assertion 
 		 * If an entity is involved_in_regulation_of reaction1 
@@ -1080,6 +1085,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 
 		/**
 		 * Regulator rule 3.
+		 * reaction1 causally upstream of reaction2 
+		 * reaction1 has an output that is the enabler of reaction 2
 		 */
 		String regulator_rule_3 = "regulator_3";
 		Integer regulator_count_3 = r.checkInitCount(regulator_rule_3, r);
