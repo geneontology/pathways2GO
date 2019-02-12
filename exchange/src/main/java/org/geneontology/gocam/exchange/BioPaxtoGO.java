@@ -878,8 +878,6 @@ public class BioPaxtoGO {
 							chebi_report_key = chebi_uri+"\t"+entity.getDisplayName()+"\trole";
 						}else { //presumably its a chemical entity if not a role								
 							go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_entity, null);	
-							//name the class with the chebi id
-							go_cam.addLabel(mlc_class, chebi_id);
 							//assert its a chemical instance
 							go_cam.addTypeAssertion(e, mlc_class);
 							chebi_report_key =  chebi_uri+"\t"+entity.getDisplayName()+"\tchemical";
