@@ -173,6 +173,10 @@ public class GoCAM {
 		OWLAnnotation state_anno = df.getOWLAnnotation(state_prop, df.getOWLLiteral("development"));
 		OWLAxiom stateaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, state_anno);
 		ontman.addAxiom(go_cam_ont, stateaxiom);
+		
+		OWLAnnotation provider_anno = df.getOWLAnnotation(provided_by_prop, df.getOWLLiteral(base_provider));
+		OWLAxiom provideraxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, provider_anno);
+		ontman.addAxiom(go_cam_ont, provideraxiom);
 
 	}
 
