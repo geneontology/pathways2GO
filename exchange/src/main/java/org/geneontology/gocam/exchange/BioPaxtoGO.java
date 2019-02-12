@@ -168,7 +168,8 @@ public class BioPaxtoGO {
 				//"/Users/bgood/Desktop/test/biopax/pathway_commons/PathwayCommons10.wp.BIOPAX.owl";
 				//"/Users/bgood/Desktop/test/biopax/BMP_signaling.owl";
 				//"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
-				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Dec2018.owl";
+				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Dec2018.owl";
+				"/Users/bgood/Desktop/test/biopax/RAF-independent_MAPK1_3_activation.owl";
 		//"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
 		//		"/Users/bgood/Desktop/test/biopax/Wnt_test_oct8_2018.owl";
 		//"/Users/bgood/Desktop/test/biopax/SignalingByWNTcomplete.owl";
@@ -906,7 +907,7 @@ public class BioPaxtoGO {
 				//is it a controller ?
 				Set<Control> controlled_by_complex = complex.getControllerOf();
 				//does it have any active unit annotations ?
-				Set<String> active_site_ids = getActiveSites(controlled_by_complex);
+				Set<String> active_site_local_ids = getActiveSites(controlled_by_complex);
 				//recursively get all parts
 				Set<PhysicalEntity> level1 = complex.getComponent();
 				level1.addAll(complex.getMemberPhysicalEntity());
@@ -954,16 +955,26 @@ public class BioPaxtoGO {
 							owl_members.add(component_entity);
 							defineReactionEntity(go_cam, component, comp_uri, true, pathway_id);
 							//only add the individuals when there is an active site annotation on the complex
-							if(active_site_ids.size()>0) {							
-								Collection<OWLAnnotation> dbxrefs = EntitySearcher.getAnnotationObjects(component_entity, go_cam.go_cam_ont, GoCAM.database_cross_reference);
+							if(active_site_local_ids.size()>0) {							
 								boolean is_active_site = false;
-								for(OWLAnnotation dbxref : dbxrefs) {
-									String dbid = dbxref.getValue().asLiteral().get().getLiteral();
-									if(active_site_ids.contains(dbid)) {
-										is_active_site = true;
-										break;
-									}
+								String biopax_local_id = getBioPaxLocalId(component_entity, go_cam);
+								biopax_local_id = biopax_local_id.substring(biopax_local_id.indexOf("#"));
+								if(active_site_local_ids.contains(biopax_local_id)) {
+									is_active_site = true;
 								}
+//below depends on use of globally unique ids from reactome as we had from neo4j
+//now we are using local ids...								
+//								Collection<OWLAnnotation> dbxrefs = EntitySearcher.getAnnotationObjects(component_entity, go_cam.go_cam_ont, GoCAM.database_cross_reference);
+//								for(OWLAnnotation dbxref : dbxrefs) {
+//									String dbid = dbxref.getValue().asLiteral().get().getLiteral();
+//									if(active_site_ids.contains(dbid)) {
+//										is_active_site = true;
+//										break;
+//									}
+//								}
+//using (e.getIRI(),GoCAM.skos_exact_match, IRI.create(entity.getUri()));								
+								
+								
 								if(is_active_site) {
 									active_site_iris.add(comp_uri);
 									go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_part, component_entity, dbids, GoCAM.eco_imported_auto,  "Reactome", null);
@@ -1404,21 +1415,35 @@ public class BioPaxtoGO {
 	private Set<String> getActiveSites(Set<Control> controlled_by_complex) {
 		Set<String> active_site_ids = new HashSet<String>();
 		for(Control controller : controlled_by_complex) {
-			for(Xref xref : controller.getXref()) {
-				if(xref.getModelInterface().equals(RelationshipXref.class)) {
-					RelationshipXref ref = (RelationshipXref)xref;	    			
-					//here we add the referenced GO class as a type. 
-					//#BioPAX4
-					String db = ref.getDb().toLowerCase();
-					if(db.startsWith("reactome database id")&&reactome_extras!=null){
-						String controller_event_id = ref.getId();
-						ReactomeExtras.ActiveSite active_site = reactome_extras.controller_active.get(controller_event_id);
-						if(active_site!=null) {
-							active_site_ids.add(active_site.active_unit_id);
-						}
-					}
+			for(String comment : controller.getComment()) {
+				if(comment.startsWith("activeUnit:")) {
+					String[] c = comment.split(" ");
+					String local_protein_id = c[1];
+					//looks like #Protein3
+					active_site_ids.add(local_protein_id);
 				}
 			}
+			
+			// the following assumes we are getting active site information out of another source and caching it
+			// (typically the reactome graph db)
+			// since January 2019, reactome has agreed to put this information in a comment on the control event
+			// e.g. activeUnit: #Protein3
+//			for(Xref xref : controller.getXref()) {
+//				if(xref.getModelInterface().equals(RelationshipXref.class)) {
+//					RelationshipXref ref = (RelationshipXref)xref;	    			
+//					//here we add the referenced GO class as a type. 
+//					//#BioPAX4
+//					String db = ref.getDb().toLowerCase();
+//					if(db.startsWith("reactome database id")&&reactome_extras!=null){
+//						String controller_event_id = ref.getId();
+//						ReactomeExtras.ActiveSite active_site = reactome_extras.controller_active.get(controller_event_id);
+//						if(active_site!=null) {
+//							active_site_ids.add(active_site.active_unit_id);
+							//looks like e.g. R-HSA-5693527 
+//						}
+//					}
+//				}
+//			}
 		}
 		return active_site_ids;
 
@@ -1549,7 +1574,23 @@ public class BioPaxtoGO {
 		return all_parts;
 	}
 
-
+	private String getBioPaxLocalId(OWLEntity go_cam_entity, GoCAM go_cam) {
+		String local_id = null;
+		Collection<OWLAnnotation> ids = EntitySearcher.getAnnotationObjects(go_cam_entity, go_cam.go_cam_ont, GoCAM.skos_exact_match);
+		if(ids.size()>1) {
+			System.out.println("mapping error - multiple local ids for "+go_cam_entity.toStringID()+" "+ids);
+			System.exit(0);
+		}else if(ids.size()==1) {
+			OWLAnnotation a = ids.iterator().next();
+			if(a.getValue().asIRI().isPresent()) {
+				local_id = a.getValue().asIRI().get().toString();
+			}else {
+				System.out.println("mapping error - missing local ids for "+go_cam_entity.toStringID());
+				System.exit(0);
+			}
+		}
+		return local_id;
+	}
 
 
 }
