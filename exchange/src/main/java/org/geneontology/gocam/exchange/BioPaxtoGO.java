@@ -98,7 +98,6 @@ public class BioPaxtoGO {
 	//TODO replace this with a configuration that accepts go-lego and uses a catalogue file to set up local imports of everything
 	public static final String ro_file = "/Users/bgood/gocam_ontology/ro.owl"; 
 	public static final String goplus_file = "/Users/bgood/gocam_ontology/go-plus.owl";
-	public static final String neo_file = "/Users/bgood/gocam_ontology/neo.owl";
 	public static final String legorel_file = "/Users/bgood/gocam_ontology/legorel.owl"; 
 	public static final String go_bfo_bridge_file = "/Users/bgood/gocam_ontology/go-bfo-bridge.owl"; 
 	public static final String eco_base_file = "/Users/bgood/gocam_ontology/eco-base.owl"; 
@@ -133,7 +132,6 @@ public class BioPaxtoGO {
 		report = new GoMappingReport();
 		tbox_files = new HashSet<String>();
 		tbox_files.add(goplus_file);
-		//	tbox_files.add(neo_file);
 		tbox_files.add(ro_file);
 		tbox_files.add(legorel_file);
 		tbox_files.add(go_bfo_bridge_file);
@@ -982,10 +980,12 @@ public class BioPaxtoGO {
 							}
 						}
 					}
-					//assert it as a complex - needed for correct inference (without loading up the subclass assertion in the above)
-					go_cam.addTypeAssertion(e, GoCAM.go_complex);
 					// assert it as an intersection of parts
 					Set<OWLClassExpression> part_classes = new HashSet<OWLClassExpression>();
+					//assert it as a complex - needed for correct inference (without loading up the subclass assertion in the above)
+					//go_cam.addTypeAssertion(e, GoCAM.go_complex);
+					//intersection of complex and 
+					part_classes.add(GoCAM.go_complex);
 					for(OWLNamedIndividual member : owl_members) {
 						Collection<OWLClassExpression> types = EntitySearcher.getTypes(member, go_cam.go_cam_ont);
 						for(OWLClassExpression type : types) {
