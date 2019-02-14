@@ -860,10 +860,11 @@ final long counterValue = instanceCounter.getAndIncrement();
 		 * If a reaction has not been provided with an rdf:type 
 		 * and the input entities are the same as the output entities
 		 * and the input entities have different locations from the output entities
+		 * and the entities are not complexes (limited to individual proteins) 
 		 * then tag it as rdf:type 'establishment of protein localization' (notably a BP not an MF)
 		 * and add has_target_end_location and has_target_start_location attributes to the reaction node
-		 * See: 'Deactivation of the beta-catenin transactivating complex' https://reactome.org/PathwayBrowser/#/R-HSA-3769402
-		 * (1 inference for reaction 'Beta-catenin translocates to the nucleus', 'https://reactome.org/PathwayBrowser/#/R-HSA-201681&SEL=R-HSA-201669&PATH=R-HSA-162582,R-HSA-195721'
+		 * See: 'TCF dependent signaling in response to WNT' https://reactome.org/PathwayBrowser/#/R-HSA-201681&SEL=R-HSA-201669&PATH=R-HSA-162582,R-HSA-195721
+		 * (1 inference for reaction 'Beta-catenin translocates to the nucleus'
 		 *  Downstream dependency alert: do this before enabler inference step below since we don't want that rule to fire on transport reactions
 		 */
 		String transport_rule = "transport";
@@ -1040,7 +1041,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 			this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "Reactome", annos);
 			//delete the entity regulates process relation 
-			applyAnnotatedTripleRemover(r2.getIRI(), o.getIRI(), entity.getIRI());
+			applyAnnotatedTripleRemover(entity.getIRI(), o.getIRI(), r2.getIRI());
 
 		}
 		r.rule_hitcount.put(regulator_rule, regulator_count);
@@ -1148,6 +1149,68 @@ final long counterValue = instanceCounter.getAndIncrement();
 		r.rule_hitcount.put(provides_input_rule, provides_input_count);
 		r.rule_pathways.put(provides_input_rule, provides_input_pathways);
 		qrunner = new QRunner(go_cam_ont); 
+		
+		/**
+		 * Rule: entity involved in regulation of function 
+Binding has_input E1
+Binding enabled_by E2
+Binding +-_regulates R
+Binding part_of +-_regulation_of BP
+	⇐ 	
+E1 +- involved_in_regulation_of R
+R enabled_by E2
+BP has_part R
+
+		 */
+		String entity_regulator_rule = "entity_regulator_1";
+		Integer entity_regulator_count = r.checkInitCount(entity_regulator_rule, r);
+		Set<String> entity_regulator_pathways = r.checkInitPathways(entity_regulator_rule, r);
+		Set<InferredRegulator> ers = qrunner.getInferredAnonymousRegulators();
+		entity_regulator_count+=ers.size();
+		for(InferredRegulator er : ers) {
+			entity_regulator_pathways.add(er.pathway_uri);
+			OWLNamedIndividual reaction = this.makeAnnotatedIndividual(er.reaction1_uri);
+			OWLObjectProperty prop = GoCAM.directly_negatively_regulates;
+			OWLNamedIndividual regulator = this.makeAnnotatedIndividual(er.entity_uri);
+			OWLNamedIndividual enabler = this.makeAnnotatedIndividual(er.enabler_uri);
+			OWLNamedIndividual pathway = this.makeAnnotatedIndividual(er.pathway_uri);
+			String reg = " is involved in negative regulation of ";
+			OWLObjectProperty prop_for_deletion = GoCAM.involved_in_negative_regulation_of;
+			if(er.prop_uri.equals("http://purl.obolibrary.org/obo/RO_0002429")) {
+				prop = GoCAM.directly_positively_regulates;
+				reg = " is involved in positive regulation of ";
+				prop_for_deletion = GoCAM.involved_in_positive_regulation_of;
+			}
+			Set<OWLAnnotation> annos = getDefaultAnnotations();
+			//add the process regulates relation
+			String regulator_label = getaLabel(regulator);
+			String explain = "The relation was inferred because "+regulator_label
+					+reg+" the reaction.  See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
+			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
+			
+			//make the MF node
+			OWLNamedIndividual binding_node = makeAnnotatedIndividual(makeRandomIri());
+			addTypeAssertion(binding_node, binding);
+			addRefBackedObjectPropertyAssertion(binding_node, has_input, regulator, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "Reactome", annos);
+			addRefBackedObjectPropertyAssertion(binding_node, enabled_by, enabler, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "Reactome", annos);
+			addRefBackedObjectPropertyAssertion(binding_node, prop, reaction, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "Reactome", annos);
+			
+			//make a BP node
+			OWLNamedIndividual bp_node = makeAnnotatedIndividual(makeRandomIri());
+			addTypeAssertion(bp_node, bp_class);
+			addRefBackedObjectPropertyAssertion(binding_node, part_of, bp_node, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "Reactome", annos);
+			addRefBackedObjectPropertyAssertion(bp_node, prop, pathway, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "Reactome", annos);
+
+		//	this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(reactome_id), GoCAM.eco_inferred_auto, "Reactome", annos);
+			//delete the entity regulates process relation 
+			applyAnnotatedTripleRemover(regulator.getIRI(), prop_for_deletion.getIRI(), reaction.getIRI());
+
+		}
+		r.rule_hitcount.put(entity_regulator_rule, entity_regulator_count);
+		r.rule_pathways.put(entity_regulator_rule, entity_regulator_pathways);
+		qrunner = new QRunner(go_cam_ont); 
+		
+		
 		
 		/*
 		 * Noctua Curation strategy rules

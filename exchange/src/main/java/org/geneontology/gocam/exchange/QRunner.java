@@ -370,6 +370,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		String prop_uri;
 		String pathway_uri;
 		String entity_uri;
+		String enabler_uri; 
 		InferredRegulator(String r1_uri, String p_uri, String r2_uri, String pathway, String entity){
 			reaction1_uri = r1_uri;
 			prop_uri = p_uri;
@@ -462,6 +463,37 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		}
 		qe.close();
 		return ir;
+	}
+	
+	Set<InferredRegulator> getInferredAnonymousRegulators() {
+		Set<InferredRegulator> irs = new HashSet<InferredRegulator>();
+		String query = null;
+		try {		
+			query = IOUtils.toString(App.class.getResourceAsStream("query2update_entity_regulation1.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL update from jar \n"+e);
+		}
+		QueryExecution qe = QueryExecutionFactory.create(query, jena);
+		ResultSet results = qe.execSelect();
+	// ?reaction ?prop ?pathway ?enabler ?regulator 
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Resource reaction = qs.getResource("reaction"); 
+			Resource property = qs.getResource("prop");
+			Resource pathway = qs.getResource("pathway");
+			Resource regulator = qs.getResource("regulator");
+			Resource enabler = qs.getResource("enabler");
+			
+			String pathway_uri = "";
+			if(pathway!=null) {
+				pathway_uri = pathway.getURI();
+			}
+			InferredRegulator ir = new InferredRegulator(reaction.getURI(), property.getURI(), reaction.getURI(), pathway_uri, regulator.getURI());
+			ir.enabler_uri = enabler.getURI();
+			irs.add(ir);
+		}
+		qe.close();
+		return irs;
 	}
 	
 	Set<InferredRegulator> getInferredInputProviders() {
