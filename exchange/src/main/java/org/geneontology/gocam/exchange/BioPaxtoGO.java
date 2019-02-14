@@ -167,7 +167,8 @@ public class BioPaxtoGO {
 				//"/Users/bgood/Desktop/test/biopax/BMP_signaling.owl";
 				//"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
 				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Dec2018.owl";
-				"/Users/bgood/Desktop/test/biopax/RAF-independent_MAPK1_3_activation.owl";
+				//"/Users/bgood/Desktop/test/biopax/RAF-independent_MAPK1_3_activation.owl";
+				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Jan2019.owl";
 		//"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
 		//		"/Users/bgood/Desktop/test/biopax/Wnt_test_oct8_2018.owl";
 		//"/Users/bgood/Desktop/test/biopax/SignalingByWNTcomplete.owl";
@@ -183,7 +184,7 @@ public class BioPaxtoGO {
 			tag = "expanded";
 		}	
 		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
-		String test_pathway = null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
+		String test_pathway = "Signaling by BMP";//"RAF-independent MAPK1/3 activation";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathway);
 		//		System.out.println("Writing report");
 		//		bp2g.report.writeReport("report/");
@@ -747,10 +748,13 @@ public class BioPaxtoGO {
 				}
 			}
 			//now get more specific type information
-			//Protein	
-			if(entity.getModelInterface().equals(Protein.class)) {
-				Protein protein = (Protein)entity;
-				String id = getUniprotProteinId(protein);
+			//Protein or entity set
+			if(entity.getModelInterface().equals(Protein.class)||entity.getModelInterface().equals(PhysicalEntity.class)) {
+				String id = null;				
+				if(entity.getModelInterface().equals(Protein.class)) {
+					Protein protein = (Protein)entity;
+					id = getUniprotProteinId(protein);
+				}			
 				if(id!=null) {
 					//create the specific protein class
 					OWLClass uniprotein_class = go_cam.df.getOWLClass(IRI.create(GoCAM.uniprot_iri + id)); 
@@ -761,7 +765,8 @@ public class BioPaxtoGO {
 					//assert that they are proteins (for use without neo import which would clarify that)
 					go_cam.addTypeAssertion(e,  uniprotein_class);
 				}else { //no entity reference so look for parts
-					Set<PhysicalEntity> prot_parts = protein.getMemberPhysicalEntity();
+					PhysicalEntity entity_set = (PhysicalEntity)entity;
+					Set<PhysicalEntity> prot_parts = entity_set.getMemberPhysicalEntity();
 					if(prot_parts!=null) {					
 						//if its made of parts and not otherwise typed, call it a Union.	
 						Set<String> cnames = new HashSet<String>();
@@ -783,15 +788,20 @@ public class BioPaxtoGO {
 						for(OWLNamedIndividual member : owl_members) {
 							Collection<OWLClassExpression> types = EntitySearcher.getTypes(member, go_cam.go_cam_ont);
 							for(OWLClassExpression type : types) {
-								if(!type.asOWLClass().getIRI().toString().equals(OWL.NAMED_INDIVIDUAL)) {
+								if(type.isAnonymous()||!type.asOWLClass().getIRI().toString().equals(OWL.NAMED_INDIVIDUAL)) {
 									protein_classes.add(type);
 								}
 							}
 							//discard the individual from the ontology.  no need for it.
 							go_cam.deleteOwlEntityAndAllReferencesToIt(member);
 						}
-						OWLObjectUnionOf union_exp = go_cam.df.getOWLObjectUnionOf(protein_classes);
-						go_cam.addTypeAssertion(e,  union_exp);
+						if(protein_classes.size()>1) {
+							OWLObjectUnionOf union_exp = go_cam.df.getOWLObjectUnionOf(protein_classes);
+							go_cam.addTypeAssertion(e,  union_exp);
+						}else if(protein_classes.size()==1){
+							OWLClassExpression one_protein = protein_classes.iterator().next();
+							go_cam.addTypeAssertion(e,  one_protein);
+						}
 					}else { //punt..
 						go_cam.addTypeAssertion(e,  GoCAM.chebi_protein);
 					}
