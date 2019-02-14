@@ -124,8 +124,8 @@ public class BioPaxtoGO {
 	//leaving all false, limits the reactions captured in each pathway to those shown in a e.g. Reactome view of the pathway
 	static boolean causal_recurse = false;
 	static boolean add_pathway_parents = false;
-	static boolean add_neighboring_events = true;
-	static boolean add_upstream_controller_events = true;
+	static boolean add_neighboring_events_from_other_pathways = false;
+	static boolean add_upstream_controller_events_from_other_pathways = false;
 
 	public BioPaxtoGO(){
 		strategy = ImportStrategy.NoctuaCuration; //ImportStrategy.DirectImport;  
@@ -184,7 +184,7 @@ public class BioPaxtoGO {
 			tag = "expanded";
 		}	
 		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
-		String test_pathway = "Signaling by BMP";//"RAF-independent MAPK1/3 activation";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
+		String test_pathway = "activated TAK1 mediates p38 MAPK activation"; //"Signaling by BMP";//"RAF-independent MAPK1/3 activation";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathway);
 		//		System.out.println("Writing report");
 		//		bp2g.report.writeReport("report/");
@@ -571,7 +571,7 @@ public class BioPaxtoGO {
 									Set<Pathway> event_pathways = event.getPathwayComponentOf();
 									Set<Pathway> next_event_pathways = nextEvent.getPathwayComponentOf();
 									if((event_pathways.contains(pathway)&&next_event_pathways.contains(pathway))||
-											add_neighboring_events) {
+											add_neighboring_events_from_other_pathways) {
 										IRI e1_iri = GoCAM.makeGoCamifiedIRI(event.getUri());
 										IRI e2_iri = GoCAM.makeGoCamifiedIRI(nextEvent.getUri());
 										OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(e1_iri);
@@ -601,7 +601,7 @@ public class BioPaxtoGO {
 									Set<Pathway> event_pathways = event.getPathwayComponentOf();
 									Set<Pathway> prev_event_pathways = prevEvent.getPathwayComponentOf();
 									if((event_pathways.contains(pathway)&&prev_event_pathways.contains(pathway))||
-											add_neighboring_events) {							
+											add_neighboring_events_from_other_pathways) {							
 										IRI event_iri = GoCAM.makeGoCamifiedIRI(event.getUri());
 										IRI prevEvent_iri = GoCAM.makeGoCamifiedIRI(prevEvent.getUri());
 										OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(prevEvent_iri);
@@ -1059,7 +1059,7 @@ public class BioPaxtoGO {
 						Set<Process> prevEvents = prevStep.getStepProcess();
 						for(Process event : events) {
 							for(Process prevEvent : prevEvents) {
-								if(add_neighboring_events) {								
+								if(add_neighboring_events_from_other_pathways) {								
 									if((event.getModelInterface().equals(BiochemicalReaction.class))&&
 											(prevEvent.getModelInterface().equals(BiochemicalReaction.class))) {
 										IRI event_iri = GoCAM.makeGoCamifiedIRI(event.getUri());
@@ -1251,11 +1251,11 @@ public class BioPaxtoGO {
 
 					Set<Controller> controller_entities = controller.getController();
 					for(Controller controller_entity : controller_entities) {
-						//if the controller is produced by a reaction in another pathway, then we want to bring that reaction into this model
+						//if the controller is produced by a reaction in another pathway, then we may want to bring that reaction into this model
 						//so we can see the causal relationships between it and the reaction we have here
 						//only do this if its not a small molecule...  ADP etc. make this intractable
 						//limit to proteins and complexes 
-						if(add_upstream_controller_events&&!(controller_entity instanceof SmallMolecule)) {
+						if(add_upstream_controller_events_from_other_pathways&&!(controller_entity instanceof SmallMolecule)) {
 							Set<Interaction> events_controller_is_in = controller_entity.getParticipantOf();
 							events_controller_is_in.remove(controller); //we know that the current control event is covered
 							//criteria for adding an event to this model, this way
