@@ -22,7 +22,7 @@ where {
    #obo:RO_0002430  involved_in_negative_regulation_of 
    ?regulator ?prop  ?reaction .   
     		VALUES ?prop { obo:RO_0002430 obo:RO_0002429} . 
-   ?reaction obo:RO_0002333 ?enabler .  
+   OPTIONAL {?reaction obo:RO_0002333 ?enabler .  }
 }
 
 # RO_0002024  directly positively regulated by 

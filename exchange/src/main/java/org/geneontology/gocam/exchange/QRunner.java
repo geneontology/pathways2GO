@@ -482,14 +482,18 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			Resource property = qs.getResource("prop");
 			Resource pathway = qs.getResource("pathway");
 			Resource regulator = qs.getResource("regulator");
-			Resource enabler = qs.getResource("enabler");
 			
 			String pathway_uri = "";
 			if(pathway!=null) {
 				pathway_uri = pathway.getURI();
 			}
 			InferredRegulator ir = new InferredRegulator(reaction.getURI(), property.getURI(), reaction.getURI(), pathway_uri, regulator.getURI());
-			ir.enabler_uri = enabler.getURI();
+			Resource enabler = qs.getResource("enabler");
+			if(enabler != null) {
+				ir.enabler_uri = enabler.getURI();
+			}else {
+				ir.enabler_uri = null;
+			}
 			irs.add(ir);
 		}
 		qe.close();
