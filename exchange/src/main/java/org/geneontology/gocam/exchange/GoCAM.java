@@ -1163,7 +1163,7 @@ Binding part_of +-_regulation_of BP
 E1 +- involved_in_regulation_of R
 R enabled_by E2
 BP has_part R
-
+*/
 		 
 		String entity_regulator_rule = "entity_regulator_1";
 		Integer entity_regulator_count = r.checkInitCount(entity_regulator_rule, r);
@@ -1220,7 +1220,7 @@ BP has_part R
 		r.rule_hitcount.put(entity_regulator_rule, entity_regulator_count);
 		r.rule_pathways.put(entity_regulator_rule, entity_regulator_pathways);
 		qrunner = new QRunner(go_cam_ont); 
-*/
+
 
 
 		/*
@@ -1344,6 +1344,15 @@ BP has_part R
 	 */
 	private OWLNamedIndividual cloneIndividual(OWLNamedIndividual source) {
 		OWLNamedIndividual clone = makeAnnotatedIndividual(makeRandomIri());
+		Collection<OWLAnnotationAssertionAxiom> annotation_axioms = EntitySearcher.getAnnotationAssertionAxioms(source, go_cam_ont);
+		Iterator<OWLAnnotationAssertionAxiom> ai = annotation_axioms.iterator();
+		while(ai.hasNext()) {
+			OWLAnnotationAssertionAxiom ax = ai.next();
+			OWLAnnotationAssertionAxiom aprop = (OWLAnnotationAssertionAxiom)ax;
+			OWLAnnotationAssertionAxiom a_ax = df.getOWLAnnotationAssertionAxiom((OWLAnnotationSubject) clone.getIRI(), aprop.getAnnotation());
+			AddAxiom addAxiom = new AddAxiom(go_cam_ont, a_ax);
+			ontman.applyChange(addAxiom);
+		}	
 		Collection<OWLAxiom> axioms = EntitySearcher.getReferencingAxioms(source, go_cam_ont);
 		Iterator<OWLAxiom> i = axioms.iterator();
 		while(i.hasNext()) {
@@ -1363,12 +1372,7 @@ BP has_part R
 					AddAxiom addAxiom = new AddAxiom(go_cam_ont, add_prop_axiom);
 					ontman.applyChange(addAxiom);
 				}
-			} else if(ax.isOfType(AxiomType.ANNOTATION_ASSERTION)) {
-				OWLAnnotationAssertionAxiom aprop = (OWLAnnotationAssertionAxiom)ax;
-				OWLAnnotationAssertionAxiom a_ax = df.getOWLAnnotationAssertionAxiom((OWLAnnotationSubject) clone, aprop.getAnnotation());
-				AddAxiom addAxiom = new AddAxiom(go_cam_ont, a_ax);
-				ontman.applyChange(addAxiom);
-			}
+			} 
 		}
 		Collection<OWLClassExpression> types = EntitySearcher.getTypes(source, go_cam_ont);
 		Iterator<OWLClassExpression> typesi = types.iterator();

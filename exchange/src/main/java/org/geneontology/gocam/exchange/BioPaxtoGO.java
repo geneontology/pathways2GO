@@ -168,8 +168,8 @@ public class BioPaxtoGO {
 				//"/Users/bgood/Desktop/test/biopax/BMP_signaling.owl";
 				//"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
 				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Dec2018.owl";
-				"/Users/bgood/Desktop/test/biopax/RAF-independent_MAPK1_3_activation.owl";
-		//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Jan2019.owl";
+				//"/Users/bgood/Desktop/test/biopax/RAF-independent_MAPK1_3_activation.owl";
+		"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Jan2019.owl";
 		//"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
 		//		"/Users/bgood/Desktop/test/biopax/Wnt_test_oct8_2018.owl";
 		//"/Users/bgood/Desktop/test/biopax/SignalingByWNTcomplete.owl";
@@ -186,7 +186,7 @@ public class BioPaxtoGO {
 		}	
 		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
 		//TODO for Kimberly IRE1alpha activates chaperones  - compare to http://noctua.geneontology.org/editor/graph/gomodel:5b528b1100000186 
-		String test_pathway = null;//"RAF-independent MAPK1/3 activation";//"Glycolysis";//"TCF dependent signaling in response to WNT";//"Signaling by BMP";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
+		String test_pathway = "IRE1alpha activates chaperones";//"Signaling by BMP";//"Glycolysis"; //null;//"RAF-independent MAPK1/3 activation";//"Glycolysis";//"TCF dependent signaling in response to WNT";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathway);
 		//		System.out.println("Writing report");
 		//		bp2g.report.writeReport("report/");
@@ -1284,7 +1284,6 @@ public class BioPaxtoGO {
 									IRI active_iri = GoCAM.makeRandomIri();
 									defineReactionEntity(go_cam, member, active_iri, false, pathway_id);
 									active_unit = go_cam.df.getOWLNamedIndividual(active_iri);	
-									go_cam.addLabel(active_unit, "ACTIVE");
 									go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.has_part, active_unit, dbids, GoCAM.eco_imported_auto,  default_namespace_prefix, null);
 									go_cam.addComment(active_unit, "active unit");
 									break;
