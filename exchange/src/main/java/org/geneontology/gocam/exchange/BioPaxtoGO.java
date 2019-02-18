@@ -1286,7 +1286,6 @@ public class BioPaxtoGO {
 									active_unit = go_cam.df.getOWLNamedIndividual(active_iri);	
 									go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.has_part, active_unit, dbids, GoCAM.eco_imported_auto,  default_namespace_prefix, null);
 									go_cam.addComment(active_unit, "active unit");
-									break;
 								}
 							}		
 						}
