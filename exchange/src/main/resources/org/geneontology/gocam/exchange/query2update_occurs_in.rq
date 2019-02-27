@@ -10,7 +10,7 @@ prefix skos: <http://www.w3.org/2004/02/skos/core#>
 
 select ?pathway ?reaction ?location_instance ?location_type ?entity  
 where {
-  	?pathway obo:BFO_0000051 ?reaction . 
+  	?reaction obo:BFO_0000050 ?pathway . 
   	#reaction with inputs/outputs/enablers/regulators/etc.  
   	{
   	?reaction (obo:RO_0002233|obo:RO_0002333|obo:RO_0002430|obo:RO_0002429) ?entity . 

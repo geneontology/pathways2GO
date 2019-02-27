@@ -48,7 +48,7 @@ where {
 	filter(?end_location_type != <http://purl.obolibrary.org/obo/GO_0005575>) . 
 	filter(?start_location_type != <http://purl.obolibrary.org/obo/GO_0005575>) . 
 	
-	OPTIONAL{?pathway obo:BFO_0000051 ?reaction }
+	OPTIONAL{?reaction obo:BFO_0000050 ?pathway }
 }
 
 # protein containing complex <http://purl.obolibrary.org/obo/GO_0032991>

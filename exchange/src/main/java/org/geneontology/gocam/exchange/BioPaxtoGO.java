@@ -345,7 +345,7 @@ public class BioPaxtoGO {
 				//Set<String> pubids = getPubmedIds(currentPathway);
 				for(Pathway parent_pathway : currentPathway.getPathwayComponentOf()) {				
 					OWLNamedIndividual parent = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(parent_pathway.getUri()));
-					go_cam.addRefBackedObjectPropertyAssertion(parent, GoCAM.has_part, p, Collections.singleton(datasource_id), GoCAM.eco_imported_auto,  default_namespace_prefix, null);
+					go_cam.addRefBackedObjectPropertyAssertion(p, GoCAM.part_of, parent, Collections.singleton(datasource_id), GoCAM.eco_imported_auto,  default_namespace_prefix, null);
 					//don't add all the information on the parent pathway to this pathway
 					definePathwayEntity(go_cam, parent_pathway, datasource_id, false, false);
 				}
@@ -529,7 +529,7 @@ public class BioPaxtoGO {
 					continue;
 				}
 				OWLNamedIndividual child = go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(process.getUri()));
-				go_cam.addRefBackedObjectPropertyAssertion(pathway_e, GoCAM.has_part, child, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, default_namespace_prefix, null);
+				go_cam.addRefBackedObjectPropertyAssertion(child, GoCAM.part_of, pathway_e, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, default_namespace_prefix, null);
 				//attach reactions that make up the pathway
 				if(process instanceof Conversion 
 						|| process instanceof TemplateReaction
@@ -1060,7 +1060,7 @@ public class BioPaxtoGO {
 					}else {
 						OWLNamedIndividual part_mf = go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(interactor.getUri()));
 						defineReactionEntity(go_cam, interactor, part_mf.getIRI(), true, pathway_id);
-						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_part, part_mf, dbids, GoCAM.eco_imported_auto,  default_namespace_prefix, go_cam.getDefaultAnnotations());
+						go_cam.addRefBackedObjectPropertyAssertion(part_mf, GoCAM.part_of, e, dbids, GoCAM.eco_imported_auto,  default_namespace_prefix, go_cam.getDefaultAnnotations());
 						process_participants.add(part_mf);
 					}					
 				}
@@ -1107,7 +1107,7 @@ public class BioPaxtoGO {
 				if(add_pathway_parents) {
 					for(Pathway bp_pathway : ((Interaction) entity).getPathwayComponentOf()) {
 						OWLNamedIndividual pathway = definePathwayEntity(go_cam, bp_pathway, null, false, false);
-						go_cam.addRefBackedObjectPropertyAssertion(pathway,GoCAM.has_part, e,dbids, GoCAM.eco_imported_auto,  default_namespace_prefix, null);
+						go_cam.addRefBackedObjectPropertyAssertion(e,GoCAM.part_of, pathway,dbids, GoCAM.eco_imported_auto,  default_namespace_prefix, null);
 					}
 				}
 
@@ -1361,7 +1361,7 @@ public class BioPaxtoGO {
 							OWLNamedIndividual bp_i = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(entity.getUri()+goid+"individual"));
 							go_cam.addLiteralAnnotations2Individual(bp_i.getIRI(), GoCAM.rdfs_comment, "Asserted direct link between reaction and biological process, independent of current pathway");
 							go_cam.addTypeAssertion(bp_i, xref_go_func);
-							go_cam.addRefBackedObjectPropertyAssertion(bp_i,GoCAM.has_part, e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null);
+							go_cam.addRefBackedObjectPropertyAssertion(e,GoCAM.part_of, bp_i, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null);
 							//use the same name and id as the entity in question as, from Reactome perspective, its about the same thing and otherwise we have no name..
 							go_cam.addLabel(bp_i, "reaction:"+entity_name+": is xrefed to this process");
 							if(reactome_entity_id!=null) {

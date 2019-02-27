@@ -20,7 +20,7 @@ select distinct ?function1 ?relation ?function2
 where {
 	?function1 ?relation ?function2 . 
 	VALUES ?relation 
-	{obo:BFO_0000051 
+	{obo:BFO_0000051 obo:BFO_0000050 
 	obo:RO_0002024 obo:RO_0002023 
 	obo:RO_0002413} .
  	?function1 rdf:type ?type1 . 

@@ -10,7 +10,7 @@ delete {
   ?value ?prop2 ?value2 
 } 
  where{
-  ?pathway obo:BFO_0000051 ?reaction . 
+  ?reaction obo:BFO_0000050 ?pathway . 
   ?reaction rdf:type obo:GO_0003674 .
   ?pathway rdf:type obo:GO_0008150 .
   ?anno_node owl:annotatedSource ?pathway .

@@ -17,7 +17,7 @@ prefix skos: <http://www.w3.org/2004/02/skos/core#>
 
 select ?reaction ?prop ?pathway ?enabler ?regulator 
 where {
-   ?pathway obo:BFO_0000051 ?reaction . 
+   ?reaction obo:BFO_0000050 ?pathway . 
    #RO_0002429 involved_in_positive_regulation_of
    #obo:RO_0002430  involved_in_negative_regulation_of 
    ?regulator ?prop  ?reaction .   

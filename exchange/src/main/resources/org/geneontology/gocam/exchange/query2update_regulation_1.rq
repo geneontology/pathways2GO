@@ -36,7 +36,7 @@ where {
     ?entityY rdf:type ?uniprot .
     ?uniprot rdfs:subClassOf obo:CHEBI_36080 . 
    }
-   OPTIONAL{?pathway obo:BFO_0000051 ?reaction1 }
+   OPTIONAL{?reaction1 obo:BFO_0000050 ?pathway }
 }
 
  #   ?entityZ rdf:type ?entity_class .
