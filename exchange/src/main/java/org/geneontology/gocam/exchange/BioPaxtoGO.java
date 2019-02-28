@@ -68,6 +68,7 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.semanticweb.owlapi.model.AxiomType;
+import org.semanticweb.owlapi.model.ClassExpressionType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationValue;
@@ -187,7 +188,7 @@ public class BioPaxtoGO {
 		}	
 		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
 		//TODO for Kimberly IRE1alpha activates chaperones  - compare to http://noctua.geneontology.org/editor/graph/gomodel:5b528b1100000186 
-		String test_pathway = "IRE1alpha activates chaperones";//"Signaling by BMP";//"Generation of second messenger molecules";//"Glycolysis"; //null;//"RAF-independent MAPK1/3 activation";//"Glycolysis";//"TCF dependent signaling in response to WNT";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
+		String test_pathway = "IRE1alpha activates chaperones"; //"Signaling by BMP";//"Generation of second messenger molecules";//"Glycolysis"; //null;//"RAF-independent MAPK1/3 activation";//"Glycolysis";//"TCF dependent signaling in response to WNT";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathway);
 		//		System.out.println("Writing report");
 		//		bp2g.report.writeReport("report/");
@@ -833,12 +834,12 @@ public class BioPaxtoGO {
 							UnificationXref uref = (UnificationXref)xref;	
 							if(uref.getDb().equals("ENSEMBL")) {
 								go_cam.addDatabaseXref(e, "ENSEMBL:"+id);
-//								OWLClass gene_class = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + id)); 
-//								go_cam.addSubclassAssertion(gene_class, GoCAM.chebi_dna, null);										
-//								//name the class with the gene id
-//								go_cam.addLabel(gene_class, id);
-//								//assert a continuant
-//								go_cam.addTypeAssertion(e, gene_class);
+								//								OWLClass gene_class = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + id)); 
+								//								go_cam.addSubclassAssertion(gene_class, GoCAM.chebi_dna, null);										
+								//								//name the class with the gene id
+								//								go_cam.addLabel(gene_class, id);
+								//								//assert a continuant
+								//								go_cam.addTypeAssertion(e, gene_class);
 							}
 						}
 					}
@@ -866,13 +867,13 @@ public class BioPaxtoGO {
 							UnificationXref uref = (UnificationXref)xref;	
 							if(uref.getDb().equals("ENSEMBL")) {
 								go_cam.addDatabaseXref(e, "ENSEMBL:"+id);
-//TODO if at some point go-cam decides to represent transcripts etc. then we'll update here to use the ensembl etc. ids.  
-//								OWLClass gene_class = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + id)); 
-//								go_cam.addSubclassAssertion(gene_class, GoCAM.chebi_rna, null);										
-//								//name the class with the gene id
-//								go_cam.addLabel(gene_class, id);
-//								//assert a continuant
-//								go_cam.addTypeAssertion(e, gene_class);
+								//TODO if at some point go-cam decides to represent transcripts etc. then we'll update here to use the ensembl etc. ids.  
+								//								OWLClass gene_class = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + id)); 
+								//								go_cam.addSubclassAssertion(gene_class, GoCAM.chebi_rna, null);										
+								//								//name the class with the gene id
+								//								go_cam.addLabel(gene_class, id);
+								//								//assert a continuant
+								//								go_cam.addTypeAssertion(e, gene_class);
 							}
 						}
 					}
@@ -1432,7 +1433,9 @@ public class BioPaxtoGO {
 					//default to mf
 					if(!ecmapped) {
 						Binder b = isBindingReaction(e, go_cam);
-						if(b.protein_binding) {
+						if(b.protein_complex_binding) {
+							go_cam.addTypeAssertion(e, GoCAM.protein_complex_binding);	
+						}else if(b.protein_binding) {
 							go_cam.addTypeAssertion(e, GoCAM.protein_binding);	
 						}else if(b.binding){
 							go_cam.addTypeAssertion(e, GoCAM.binding);
@@ -1487,12 +1490,13 @@ public class BioPaxtoGO {
 		return active_site_ids;
 
 	}
-	
+
 	class Binder {
+		boolean protein_complex_binding = false;
 		boolean protein_binding = false;
 		boolean binding = false;
 	}
-	
+
 	private Binder isBindingReaction(OWLNamedIndividual reaction, GoCAM go_cam) {
 		Binder binder = new Binder();
 		//String r_label = go_cam.getaLabel(reaction);
@@ -1503,14 +1507,18 @@ public class BioPaxtoGO {
 		if(inputs.size()>outputs.size()) {
 			binder.binding = true;
 			binder.protein_binding = true;
+			binder.protein_complex_binding = false;
+			//for protein binding, all members must be proteins
 			for(OWLIndividual input : inputs) {
 				Collection<OWLClassExpression> types = EntitySearcher.getTypes(input, go_cam.go_cam_ont);
 				boolean is_protein_thing = false;
 				for(OWLClassExpression type : types) {
-					String iri = type.asOWLClass().getIRI().toString();
-					if(iri.contains("uniprot")||iri.contains("CHEBI_36080")||iri.contains("GO_0032991")) {
-						is_protein_thing = true;
-						break;
+					if(type.getClassExpressionType().equals(ClassExpressionType.OWL_CLASS)) {
+						String iri = type.asOWLClass().getIRI().toString();
+						if(iri.contains("uniprot")||iri.contains("CHEBI_36080")) {
+							is_protein_thing = true;
+							break;
+						}
 					}
 				}
 				if(!is_protein_thing) {
@@ -1518,8 +1526,28 @@ public class BioPaxtoGO {
 					break;
 				}
 			}
+			if(!binder.protein_binding) {
+				//if any member of the input group is a complex, then assert complex binding
+				for(OWLIndividual input : inputs) {
+					Collection<OWLClassExpression> types = EntitySearcher.getTypes(input, go_cam.go_cam_ont);
+					boolean is_complex_thing = false;
+					for(OWLClassExpression type : types) {
+						if(type.getClassExpressionType().equals(ClassExpressionType.OBJECT_INTERSECTION_OF)) {
+							OWLObjectIntersectionOf complex = (OWLObjectIntersectionOf)type;
+							if(complex.containsEntityInSignature(GoCAM.go_complex)) {
+								is_complex_thing = true;
+								break;
+							}
+						}
+					}
+					if(is_complex_thing) {
+						binder.protein_complex_binding = true;
+						break;
+					}
+				}
+			}
 		}
-		System.out.println("binding reaction? "+go_cam.getaLabel(reaction)+" binding "+binder.binding+" protein binding "+binder.protein_binding);
+		System.out.println("binding reaction? "+go_cam.getaLabel(reaction)+" binding "+binder.binding+" protein binding "+binder.protein_binding+" protein complex binding "+binder.protein_complex_binding);
 		return binder;
 	}
 

@@ -112,8 +112,9 @@ public class GoCAM {
 	bp_class, continuant_class, process_class, go_complex, cc_class, molecular_function, 
 	eco_imported, eco_imported_auto, eco_inferred_auto, 
 	chebi_protein, chebi_gene, chemical_entity, chemical_role, 
-	catalytic_activity, binding, signal_transducer_activity, transporter_activity,
-	protein_binding, establishment_of_protein_localization,
+	catalytic_activity, signal_transducer_activity, transporter_activity,
+	binding, protein_binding, protein_complex_binding, 
+	establishment_of_protein_localization,
 	chebi_mrna, chebi_rna, chebi_dna, unfolded_protein;
 	public OWLOntology go_cam_ont;
 	public OWLDataFactory df;
@@ -210,6 +211,7 @@ public class GoCAM {
 		catalytic_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0003824"));
 		binding = df.getOWLClass(IRI.create(obo_iri+"GO_0005488"));
 		protein_binding = df.getOWLClass(IRI.create(obo_iri+"GO_0005515"));
+		protein_complex_binding = df.getOWLClass(IRI.create(obo_iri+"GO_0044877"));	
 		establishment_of_protein_localization = df.getOWLClass(IRI.create(obo_iri+"GO_0045184"));
 
 		signal_transducer_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0004871"));
@@ -254,8 +256,6 @@ public class GoCAM {
 		chebi_dna = df.getOWLClass(IRI.create(obo_iri+"CHEBI_16991"));
 		unfolded_protein = df.getOWLClass(IRI.create(obo_iri+"HINO_0008749"));
 		addLabel(unfolded_protein, "unfolded protein");
-		//[CHEBI:33699] messenger RNA
-
 		//part of
 		part_of = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000050"));
 		addLabel(part_of, "part of"); 
