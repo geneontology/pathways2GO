@@ -113,7 +113,8 @@ public class GoCAM {
 	eco_imported, eco_imported_auto, eco_inferred_auto, 
 	chebi_protein, chebi_gene, chemical_entity, chemical_role, 
 	catalytic_activity, binding, signal_transducer_activity, transporter_activity,
-	protein_binding, establishment_of_protein_localization;
+	protein_binding, establishment_of_protein_localization,
+	chebi_mrna, chebi_rna, chebi_dna, unfolded_protein;
 	public OWLOntology go_cam_ont;
 	public OWLDataFactory df;
 	public OWLOntologyManager ontman;
@@ -203,7 +204,7 @@ public class GoCAM {
 
 
 		//Will add classes and relations as we need them now. 
-		//TODO Work on using imports later to ensure we don't produce incorrect ids..
+		//TODO add something to validate that ids are correct..  
 		//classes	
 
 		catalytic_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0003824"));
@@ -246,9 +247,14 @@ public class GoCAM {
 		addLabel(chebi_protein, "chebi protein");
 		chebi_gene = df.getOWLClass(IRI.create(obo_iri + "CHEBI_33695"));
 		addLabel(chebi_gene, "chebi gene"); 
-
 		chemical_entity =df.getOWLClass(IRI.create(obo_iri+"CHEBI_24431"));
 		addLabel(chemical_entity, "chemical entity");
+		chebi_mrna = df.getOWLClass(IRI.create(obo_iri+"CHEBI_33699"));
+		chebi_rna = df.getOWLClass(IRI.create(obo_iri+"CHEBI_33697"));
+		chebi_dna = df.getOWLClass(IRI.create(obo_iri+"CHEBI_16991"));
+		unfolded_protein = df.getOWLClass(IRI.create(obo_iri+"HINO_0008749"));
+		addLabel(unfolded_protein, "unfolded protein");
+		//[CHEBI:33699] messenger RNA
 
 		//part of
 		part_of = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000050"));
@@ -496,11 +502,11 @@ public class GoCAM {
 		return anno;
 	}
 
-	public void addDatabaseXref(OWLNamedIndividual e, String reactome_id) {
-		if(reactome_id==null) {
+	public void addDatabaseXref(OWLNamedIndividual e, String xref_id) {
+		if(xref_id==null) {
 			return;
 		}		
-		OWLLiteral id = df.getOWLLiteral(reactome_id);
+		OWLLiteral id = df.getOWLLiteral(xref_id);
 		OWLAnnotation id_anno = df.getOWLAnnotation(database_cross_reference, id);
 		OWLAxiom idaxiom = df.getOWLAnnotationAssertionAxiom(e.getIRI(), id_anno);
 		ontman.addAxiom(go_cam_ont, idaxiom);
@@ -1488,7 +1494,6 @@ BP has_part R
 		for(OWLAxiom axiom : all_axioms) {
 			Set<OWLAnnotation> all_annos = axiom.getAnnotations();
 			for(OWLAnnotation anno : all_annos) {
-				System.out.println(anno.getProperty());
 				if(anno.getProperty().equals(evidence_prop)) {
 					if(anno.getValue().asIRI().isPresent()) {
 						OWLNamedIndividual a = this.makeUnannotatedIndividual(anno.getValue().asIRI().get());
@@ -1504,7 +1509,7 @@ BP has_part R
 		//if the node is not referenced anywhere else then delete the node
 		Set<OWLNamedIndividual> nodes = go_cam_ont.getIndividualsInSignature();
 		//evidence nodes are speciall as the are only the objects of annotation assertions hence the following will not see them
-		System.out.println("Total nodes "+nodes.size());
+		System.out.println("Starting unconnected node cleanup.  Total nodes "+nodes.size());
 		Set<OWLNamedIndividual> evidence_nodes = getEvidenceNodes();
 		System.out.println("Total evidence nodes "+evidence_nodes.size());
 		nodes.removeAll(evidence_nodes);

@@ -53,6 +53,7 @@ import org.biopax.paxtools.model.level3.Protein;
 import org.biopax.paxtools.model.level3.Provenance;
 import org.biopax.paxtools.model.level3.PublicationXref;
 import org.biopax.paxtools.model.level3.RelationshipXref;
+import org.biopax.paxtools.model.level3.Rna;
 import org.biopax.paxtools.model.level3.SmallMolecule;
 import org.biopax.paxtools.model.level3.TemplateDirectionType;
 import org.biopax.paxtools.model.level3.TemplateReaction;
@@ -186,7 +187,7 @@ public class BioPaxtoGO {
 		}	
 		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
 		//TODO for Kimberly IRE1alpha activates chaperones  - compare to http://noctua.geneontology.org/editor/graph/gomodel:5b528b1100000186 
-		String test_pathway = "Generation of second messenger molecules";//"IRE1alpha activates chaperones";//"Signaling by BMP";//"Glycolysis"; //null;//"RAF-independent MAPK1/3 activation";//"Glycolysis";//"TCF dependent signaling in response to WNT";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
+		String test_pathway = "IRE1alpha activates chaperones";//"Signaling by BMP";//"Generation of second messenger molecules";//"Glycolysis"; //null;//"RAF-independent MAPK1/3 activation";//"Glycolysis";//"TCF dependent signaling in response to WNT";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathway);
 		//		System.out.println("Writing report");
 		//		bp2g.report.writeReport("report/");
@@ -529,18 +530,20 @@ public class BioPaxtoGO {
 					continue;
 				}
 				OWLNamedIndividual child = go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(process.getUri()));
-				go_cam.addRefBackedObjectPropertyAssertion(child, GoCAM.part_of, pathway_e, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, default_namespace_prefix, null);
 				//attach reactions that make up the pathway
 				if(process instanceof Conversion 
 						|| process instanceof TemplateReaction
 						|| process instanceof GeneticInteraction 
 						|| process instanceof MolecularInteraction 
 						|| process instanceof Interaction){
-					defineReactionEntity(go_cam, process, GoCAM.makeGoCamifiedIRI(process.getUri()), false, reactome_id);				
+					defineReactionEntity(go_cam, process, GoCAM.makeGoCamifiedIRI(process.getUri()), false, reactome_id);	
+					go_cam.addRefBackedObjectPropertyAssertion(child, GoCAM.part_of, pathway_e, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, default_namespace_prefix, null);
 					//attach child pathways
 				}
-				else if(process.getModelInterface().equals(Pathway.class)){		
+				else if(process.getModelInterface().equals(Pathway.class)){	
+					System.out.println("not doing child pathways right now");
 					//	definePathwayEntity(go_cam, (Pathway)process, reactome_id, expand_subpathways, false);	
+					//  	go_cam.addRefBackedObjectPropertyAssertion(child, GoCAM.part_of, pathway_e, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, default_namespace_prefix, null);
 				}
 				else {
 					System.out.println("Unknown Process !"+process.getDisplayName());
@@ -710,7 +713,6 @@ public class BioPaxtoGO {
 		go_cam.addLabel(e, entity_name);
 		//attempt to localize the entity (only if Physical Entity because that is how Reactome views existence in space)
 		if(entity instanceof PhysicalEntity) {
-			//go_cam.addTypeAssertion(e, GoCAM.continuant_class); //will be specified further later.  This is here because Reactome sometimes does not make any more specific assertion than 'physical entity' for things like f-actin.  https://reactome.org/content/detail/R-HSA-202986
 			CellularLocationVocabulary loc = ((PhysicalEntity) entity).getCellularLocation();
 
 			if(loc!=null) {			
@@ -812,6 +814,7 @@ public class BioPaxtoGO {
 			//Dna (gene)
 			else if(entity.getModelInterface().equals(Dna.class)) {
 				Dna dna = (Dna)entity;
+				go_cam.addTypeAssertion(e, GoCAM.chebi_dna);	
 				EntityReference entity_ref = dna.getEntityReference();	
 				if(entity_ref!=null) {
 					Set<Xref> p_xrefs = entity_ref.getXref();
@@ -825,16 +828,51 @@ public class BioPaxtoGO {
 							go_cam.addSubclassAssertion(uniprotein_class, GoCAM.chebi_protein, null);
 							go_cam.addTypeAssertion(e, uniprotein_class);
 						}
-						//this was added for something in Reactome, don't know if generally useful..
-						if(xref.getModelInterface().equals(UnificationXref.class)) {
+						//
+						else if(xref.getModelInterface().equals(UnificationXref.class)) {
 							UnificationXref uref = (UnificationXref)xref;	
 							if(uref.getDb().equals("ENSEMBL")) {
-								OWLClass dna_class = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + id)); 
-								go_cam.addSubclassAssertion(dna_class, GoCAM.continuant_class, null);										
-								//name the class with the gene id
-								go_cam.addLabel(dna_class, id);
-								//assert a continuant
-								go_cam.addTypeAssertion(e, dna_class);
+								go_cam.addDatabaseXref(e, "ENSEMBL:"+id);
+//								OWLClass gene_class = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + id)); 
+//								go_cam.addSubclassAssertion(gene_class, GoCAM.chebi_dna, null);										
+//								//name the class with the gene id
+//								go_cam.addLabel(gene_class, id);
+//								//assert a continuant
+//								go_cam.addTypeAssertion(e, gene_class);
+							}
+						}
+					}
+				}
+			}
+			//rna 
+			else if(entity.getModelInterface().equals(Rna.class)) {
+				Rna rna = (Rna)entity;
+				go_cam.addTypeAssertion(e, GoCAM.chebi_rna);	
+				EntityReference entity_ref = rna.getEntityReference();	
+				if(entity_ref!=null) {
+					Set<Xref> p_xrefs = entity_ref.getXref();
+					for(Xref xref : p_xrefs) {
+						//In GO-CAM we almost always want to talk about proteins
+						//if there is a uniprot identifier to use, use that before anything else.
+						String db = xref.getDb().toLowerCase();
+						String id = xref.getId();
+						if(db.contains("uniprot")) {
+							OWLClass uniprotein_class = go_cam.df.getOWLClass(IRI.create(GoCAM.uniprot_iri + id)); 
+							go_cam.addSubclassAssertion(uniprotein_class, GoCAM.chebi_protein, null);
+							go_cam.addTypeAssertion(e, uniprotein_class);
+						}
+						//
+						else if(xref.getModelInterface().equals(UnificationXref.class)) {					
+							UnificationXref uref = (UnificationXref)xref;	
+							if(uref.getDb().equals("ENSEMBL")) {
+								go_cam.addDatabaseXref(e, "ENSEMBL:"+id);
+//TODO if at some point go-cam decides to represent transcripts etc. then we'll update here to use the ensembl etc. ids.  
+//								OWLClass gene_class = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + id)); 
+//								go_cam.addSubclassAssertion(gene_class, GoCAM.chebi_rna, null);										
+//								//name the class with the gene id
+//								go_cam.addLabel(gene_class, id);
+//								//assert a continuant
+//								go_cam.addTypeAssertion(e, gene_class);
 							}
 						}
 					}
@@ -981,7 +1019,11 @@ public class BioPaxtoGO {
 			//make sure all physical things are minimally typed as a continuant
 			Collection<OWLClassExpression> ptypes = EntitySearcher.getTypes(e, go_cam.go_cam_ont);		
 			if(ptypes.isEmpty()) {
-				go_cam.addTypeAssertion(e, GoCAM.continuant_class);
+				if(go_cam.getaLabel(e).contains("unfolded protein")) {
+					go_cam.addTypeAssertion(e, GoCAM.unfolded_protein);
+				}else {
+					go_cam.addTypeAssertion(e, GoCAM.continuant_class);
+				}
 			}
 
 
@@ -1389,9 +1431,12 @@ public class BioPaxtoGO {
 					}
 					//default to mf
 					if(!ecmapped) {
-						if(isBindingReaction(e, go_cam)) {
+						Binder b = isBindingReaction(e, go_cam);
+						if(b.protein_binding) {
 							go_cam.addTypeAssertion(e, GoCAM.protein_binding);	
-						}else {
+						}else if(b.binding){
+							go_cam.addTypeAssertion(e, GoCAM.binding);
+						} else {
 							go_cam.addTypeAssertion(e, GoCAM.molecular_function);	
 						}
 					}
@@ -1442,20 +1487,39 @@ public class BioPaxtoGO {
 		return active_site_ids;
 
 	}
-	private boolean isBindingReaction(OWLNamedIndividual reaction, GoCAM go_cam) {
-		boolean binder = false;
+	
+	class Binder {
+		boolean protein_binding = false;
+		boolean binding = false;
+	}
+	
+	private Binder isBindingReaction(OWLNamedIndividual reaction, GoCAM go_cam) {
+		Binder binder = new Binder();
 		//String r_label = go_cam.getaLabel(reaction);
 		//collect inputs and outputs
 		Collection<OWLIndividual> inputs = EntitySearcher.getObjectPropertyValues(reaction, GoCAM.has_input, go_cam.go_cam_ont);
 		Collection<OWLIndividual> outputs = EntitySearcher.getObjectPropertyValues(reaction, GoCAM.has_output, go_cam.go_cam_ont);
 		//reactome rule is simply to count to see if there are fewer outputs then inputs
 		if(inputs.size()>outputs.size()) {
-			binder = true;
-			//System.out.println(r_label+" is a binder ");
+			binder.binding = true;
+			binder.protein_binding = true;
+			for(OWLIndividual input : inputs) {
+				Collection<OWLClassExpression> types = EntitySearcher.getTypes(input, go_cam.go_cam_ont);
+				boolean is_protein_thing = false;
+				for(OWLClassExpression type : types) {
+					String iri = type.asOWLClass().getIRI().toString();
+					if(iri.contains("uniprot")||iri.contains("CHEBI_36080")||iri.contains("GO_0032991")) {
+						is_protein_thing = true;
+						break;
+					}
+				}
+				if(!is_protein_thing) {
+					binder.protein_binding = false;
+					break;
+				}
+			}
 		}
-		//else {
-		//System.out.println(r_label+" is NOT a binder ");
-		//}
+		System.out.println("binding reaction? "+go_cam.getaLabel(reaction)+" binding "+binder.binding+" protein binding "+binder.protein_binding);
 		return binder;
 	}
 

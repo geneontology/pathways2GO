@@ -77,7 +77,7 @@ public class Helper {
 	
 	public static String getaLabel(OWLEntity e, OWLOntology ont){
 		Set<String> labels = getLabels(e, ont);
-		String label = "";
+		String label = null;
 		if(labels!=null&&labels.size()>0) {
 			for(String l : labels) {
 				label = l;
