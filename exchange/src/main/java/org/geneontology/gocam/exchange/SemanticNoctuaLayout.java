@@ -7,8 +7,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
+import org.geneontology.rules.engine.WorkingMemory;
 import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
@@ -19,36 +21,40 @@ import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.search.EntitySearcher;
 
 /**
  * @author bgood
  *
  */
-public class NoctuaLayout {
+public class SemanticNoctuaLayout {
 
 	/**
 	 * 
 	 */
-	public NoctuaLayout(GoCAM go_cam) {
-		
+	public SemanticNoctuaLayout() {
 	}
 
 	/**
 	 * Given knowledge of semantic structure of a GO-CAM, try to make a basic layout that is useful within the Noctua editor as it stands.
 	 * In this implementation, all function node attributes should be fully 'folded' in the the UI. 
-	 * Attempt to line the function nodes up in some reasonable order..
+	 * Attempt to line the function nodes up in some reasonable order.
+	 * 
+	 * This and the SPARQL queries that underlie it expect a WorkingMemory object containing
+	 * a reasoned set of triples that includes the ontology graphs.  
 	 * @param go_cam
 	 */
-	GoCAM layoutForNoctuaVersion1(GoCAM go_cam) {
-		Iterator<OWLIndividual> pathways = EntitySearcher.getIndividuals(GoCAM.bp_class, go_cam.go_cam_ont).iterator();
+	GoCAM layout(WorkingMemory wm, GoCAM go_cam) {
+		QRunner qr = new QRunner(wm);
+		Map<String, Set<String>> pathway_functions = qr.getPathwayFunctions();
+		Set<String> pathway_uris = pathway_functions.keySet();
 		int x_spacer = 450;
 		int x = 200;
 		//generally only one pathway represented with reactions - others just links off via part of
 		//draw them in a line across the top 
-		while(pathways.hasNext()) {
-			OWLNamedIndividual pathway = (OWLNamedIndividual)pathways.next();
-
+		for(String pathway_uri : pathway_uris){
+			OWLNamedIndividual pathway = go_cam.makeUnannotatedIndividual(IRI.create(pathway_uri));
 			//making Pathway basically just a label for what people are looking at
 			//put it at top left
 			int h = 20; 
@@ -58,23 +64,20 @@ public class NoctuaLayout {
 			go_cam.addLiteralAnnotations2Individual(pathway.getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(k));   			
 
 			//find reactions that are part of this pathway
-			Collection<OWLIndividual> reactions_and_subpathways = EntitySearcher.getObjectPropertyValues(pathway, GoCAM.has_part, go_cam.go_cam_ont);
 			Set<OWLIndividual> reactions = new HashSet<OWLIndividual>();
 
-//			for(OWLIndividual r : reactions_and_subpathways) {
-//				for(OWLClassExpression type :EntitySearcher.getTypes(r, go_cam.go_cam_ont)) {
-//					OWLClass c = type.asOWLClass();
-//					if(c.equals(GoCAM.molecular_function)) {
-//						reactions.add(r);
-//						break;
-//					}
-//				}
-//			}
+			for(Set<String> reaction_uris : pathway_functions.values()) {
+				for(String reaction_uri : reaction_uris) {
+					OWLIndividual reaction = go_cam.makeUnannotatedIndividual(IRI.create(reaction_uri));
+					reactions.add(reaction);
+				}
+			}
 			//classify reactions: root of causal chain, member of chain, island
 			Set<OWLIndividual> islands = new HashSet<OWLIndividual>();
 			Set<OWLIndividual> chain_roots = new HashSet<OWLIndividual>();
 			Set<OWLIndividual> chain_members = new HashSet<OWLIndividual>();
-			for(OWLIndividual r : reactions_and_subpathways) {
+			Set<OWLIndividual> chain_ends = new HashSet<OWLIndividual>();
+			for(OWLIndividual r : reactions) {
 				int incoming = 0;
 				int outgoing = 0;
 				Collection<OWLObjectPropertyAssertionAxiom> axioms = getCausalReferencingOPAxioms((OWLEntity) r, go_cam);
@@ -85,17 +88,21 @@ public class NoctuaLayout {
 						incoming++;
 					}		
 				}
-				if(incoming==0&&outgoing==0) {
-					islands.add(r);
+				if(incoming==0) {
+					if(outgoing==0) {
+						islands.add(r);
+					}
+					else if(outgoing>0) {
+						chain_roots.add(r);
+					}
 				}
-				else if(incoming==0&&outgoing>0) {
-					chain_roots.add(r);
-				}else if(incoming>0) {
+				if(incoming>0) {
 					chain_members.add(r);
+					if(outgoing==0) {
+						chain_ends.add(r);
+					}
 				}
-
 			}
-
 			//if there is a root or roots.. do a sideways horizontal line graph
 			if(chain_roots.size()>0) {
 				layoutChain(250, 20, 350, 500, chain_roots, chain_members, islands, go_cam);	
@@ -108,8 +115,22 @@ public class NoctuaLayout {
 				}
 			}
 			x = x+x_spacer;
+			System.out.println("Pathway "+go_cam.getaLabel(pathway));
+			System.out.println("islands\n"+getLabelsForOWLSet(islands, go_cam));
+			System.out.println("chain_roots\n"+getLabelsForOWLSet(chain_roots, go_cam));
+			System.out.println("chain_members\n"+getLabelsForOWLSet(chain_members, go_cam));
+			System.out.println("chain_ends\n"+getLabelsForOWLSet(chain_ends, go_cam));
 		}
+		
 		return go_cam;
+	}
+
+	String getLabelsForOWLSet(Set<OWLIndividual> things, GoCAM go_cam) {
+		String labels = "";
+		for(OWLIndividual thing : things) {
+			labels = labels+"\n"+go_cam.getaLabel(thing.asOWLNamedIndividual());
+		}
+		return labels;
 	}
 
 	Set<OWLObjectPropertyAssertionAxiom> getCausalReferencingOPAxioms(OWLEntity e, GoCAM go_cam){
@@ -162,7 +183,7 @@ public class NoctuaLayout {
 		if(mapHintPresent((OWLNamedIndividual) node, go_cam)) {		
 			return y;
 		}
-	//	System.out.println("laying out "+go_cam.getaLabel((OWLEntity) node)+" "+node.toString()+x+" "+y+" "+x_spacer+" "+y_spacer);
+		//	System.out.println("laying out "+go_cam.getaLabel((OWLEntity) node)+" "+node.toString()+x+" "+y+" "+x_spacer+" "+y_spacer);
 		//layout the node
 		go_cam.addLiteralAnnotations2Individual(((OWLNamedIndividual) node).getIRI(), GoCAM.x_prop, go_cam.df.getOWLLiteral(x));
 		go_cam.addLiteralAnnotations2Individual(((OWLNamedIndividual) node).getIRI(), GoCAM.y_prop, go_cam.df.getOWLLiteral(y));

@@ -425,8 +425,11 @@ public class BioPaxtoGO {
 		//set up to apply OWL inference to test for consistency and add classifications
 		//go_cam.go_cam_ont is ready and equals the Abox.. go_cam.qrunner also ready
 
+		WorkingMemory wm_with_tbox = null;
+		if(generate_report||strategy == ImportStrategy.NoctuaCuration) {
+			 wm_with_tbox = tbox_qrunner.arachne.createInferredModel(go_cam.go_cam_ont,true, true);	
+		}
 		if(generate_report) {
-			WorkingMemory wm_with_tbox = tbox_qrunner.arachne.createInferredModel(go_cam.go_cam_ont,true, true);	
 			System.out.println("Report after local rules");
 			GoCAMReport gocam_report_after_rules = new GoCAMReport(wm_with_tbox, outfilename, go_cam, goplus.go);
 			ReasonerReport reasoner_report = new ReasonerReport(gocam_report_after_rules);
@@ -435,8 +438,8 @@ public class BioPaxtoGO {
 
 		if(strategy == ImportStrategy.NoctuaCuration) {
 			//adds coordinates to go_cam_ont model 
-			NoctuaLayout layout = new NoctuaLayout(go_cam);
-			go_cam = layout.layoutForNoctuaVersion1(go_cam);	
+			SemanticNoctuaLayout layout = new SemanticNoctuaLayout();
+			go_cam = layout.layout(wm_with_tbox, go_cam);	
 			//add them into the rdf 
 			go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
 		}
@@ -575,10 +578,6 @@ public class BioPaxtoGO {
 					for(PathwayStep step2 : step2s) {
 						Set<Process> nextEvents = step2.getStepProcess();
 						for(Process event : events) {
-							//							if(event.getDisplayName().equals("ROS oxidize thioredoxin and activate MAP3K5")||
-							//									event.getDisplayName().startsWith("RAS signaling and prolonged interferon-beta stimulation promote genera")) {
-							//								System.out.println();
-							//							}
 							for(Process nextEvent : nextEvents) {
 								//	Event directly_provides_input_for NextEvent
 								if((event.getModelInterface().equals(BiochemicalReaction.class))&&

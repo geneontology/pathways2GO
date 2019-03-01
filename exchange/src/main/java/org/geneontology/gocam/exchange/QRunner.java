@@ -127,17 +127,21 @@ public class QRunner {
 	}
 
 	Map<String, Set<String>> getPathways() {
-		return getThingTypeMap("get_pathways.rq","pathway","type");
+		return getThingAttributeMap("get_pathways.rq","pathway","type");
 	}
 	
 	Map<String, Set<String>> getFunctions() {
-		return getThingTypeMap("get_functions.rq","function","type");
+		return getThingAttributeMap("get_functions.rq","function","type");
 	}
 	Map<String, Set<String>> getComplexClasses() {
-		return getThingTypeMap("get_complexes.rq","complex","type");
+		return getThingAttributeMap("get_complexes.rq","complex","type");
 	}
 	Map<String, Set<String>> getXrefs(){
 		return getThingAnnoMap("get_xrefs.rq","thing","xref");
+	}
+	
+	Map<String, Set<String>> getPathwayFunctions() {
+		return getThingAttributeMap("get_pathway_functions.rq","pathway","function");
 	}
 	
 	Map<String, Set<String>> getThingAnnoMap(String query_file, String thingvar, String annovar) {
@@ -164,8 +168,8 @@ public class QRunner {
 		return thing_anno;
 	}
 	
-	Map<String, Set<String>> getThingTypeMap(String query_file, String thingvar, String typevar) {
-		Map<String, Set<String>> thing_type = new HashMap<String, Set<String>>();
+	Map<String, Set<String>> getThingAttributeMap(String query_file, String thingvar, String attvar) {
+		Map<String, Set<String>> thing_att = new HashMap<String, Set<String>>();
 		String q = null;
 		try {
 			q = IOUtils.toString(App.class.getResourceAsStream(query_file), StandardCharsets.UTF_8);
@@ -177,14 +181,14 @@ public class QRunner {
 		while (results.hasNext()) {
 			QuerySolution qs = results.next();
 			Resource thing = qs.getResource(thingvar);
-			Resource type =  qs.getResource(typevar);
-			Set<String> ps = thing_type.get(thing.getURI());
+			Resource att =  qs.getResource(attvar);
+			Set<String> ps = thing_att.get(thing.getURI());
 			if(ps == null) { ps = new HashSet<String>();}
-			ps.add(type.getURI());
-			thing_type.put(thing.getURI(), ps);
+			ps.add(att.getURI());
+			thing_att.put(thing.getURI(), ps);
 		}
 		qe.close();
-		return thing_type;
+		return thing_att;
 	}
 	
 	Map<String, Integer> getRelations() {
