@@ -6,17 +6,16 @@ prefix skos: <http://www.w3.org/2004/02/skos/core#>
 
 
 #get all the locations of entities involved in something
-#(not as output)
 
 select ?pathway ?reaction ?location_instance ?location_type ?entity  
 where {
   	?reaction obo:BFO_0000050 ?pathway . 
   	#reaction with inputs/outputs/enablers/regulators/etc.  
   	{
-  	?reaction (obo:RO_0002233|obo:RO_0002333|obo:RO_0002430|obo:RO_0002429) ?entity . 
+  	?reaction (obo:RO_0002233|obo:RO_0002333|obo:RO_0002430|obo:RO_0002429|obo:RO_0002234) ?entity . 
  	} UNION 
  	{
- 	?reaction (obo:RO_0002233|obo:RO_0002333|obo:RO_0002430|obo:RO_0002429) ?complex .
+ 	?reaction (obo:RO_0002233|obo:RO_0002333|obo:RO_0002430|obo:RO_0002429|obo:RO_0002234) ?complex .
  	?complex obo:BFO_0000051* ?entity .
  	} 	
   	

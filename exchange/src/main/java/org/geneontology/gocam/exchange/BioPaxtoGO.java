@@ -188,7 +188,7 @@ public class BioPaxtoGO {
 		}	
 		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
 		//TODO for Kimberly IRE1alpha activates chaperones  - compare to http://noctua.geneontology.org/editor/graph/gomodel:5b528b1100000186 
-		String test_pathway = "Glycolysis"; //"RAF-independent MAPK1/3 activation"; //"Signaling by BMP"; //"IRE1alpha activates chaperones"; //"Generation of second messenger molecules";//"TCF dependent signaling in response to WNT";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
+		String test_pathway = "TCF dependent signaling in response to WNT";//"RAF-independent MAPK1/3 activation"; //"Glycolysis"; //"Signaling by BMP"; //"IRE1alpha activates chaperones"; //"Generation of second messenger molecules";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathway);
 		//		System.out.println("Writing report");
 		//		bp2g.report.writeReport("report/");
@@ -815,6 +815,8 @@ public class BioPaxtoGO {
 						if(protein_classes.size()>1) {
 							OWLObjectUnionOf union_exp = go_cam.df.getOWLObjectUnionOf(protein_classes);
 							go_cam.addTypeAssertion(e,  union_exp);
+							//placeholder for query later, hard to sparql into the union object above, easier with a type
+							//go_cam.addTypeAssertion(e,  GoCAM.union_set);							
 						}else if(protein_classes.size()==1){
 							OWLClassExpression one_protein = protein_classes.iterator().next();
 							go_cam.addTypeAssertion(e,  one_protein);

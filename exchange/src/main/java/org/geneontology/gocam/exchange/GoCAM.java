@@ -116,7 +116,9 @@ public class GoCAM {
 	catalytic_activity, signal_transducer_activity, transporter_activity,
 	binding, protein_binding, protein_complex_binding, 
 	establishment_of_protein_localization, negative_regulation_of_molecular_function, positive_regulation_of_molecular_function,
-	chebi_mrna, chebi_rna, chebi_dna, unfolded_protein;
+	chebi_mrna, chebi_rna, chebi_dna, unfolded_protein, 
+	transport, protein_transport,
+	union_set;
 	public OWLOntology go_cam_ont;
 	public OWLDataFactory df;
 	public OWLOntologyManager ontman;
@@ -218,7 +220,10 @@ public class GoCAM {
 		positive_regulation_of_molecular_function = df.getOWLClass(IRI.create(obo_iri+"GO_0044093"));		
 		signal_transducer_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0004871"));
 		transporter_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0005215"));
-
+		protein_transport = df.getOWLClass(IRI.create(obo_iri+"GO_0015031"));
+		transport = df.getOWLClass(IRI.create(obo_iri+"GO_0006810"));
+		union_set = df.getOWLClass(IRI.create("http://placeholder/union_set"));
+		addLabel(union_set, "Unordered collection");
 		chemical_role =df.getOWLClass(IRI.create(obo_iri+"CHEBI_50906"));
 		addLabel(chemical_role, "chemical role");
 		//biological process
@@ -868,25 +873,29 @@ final long counterValue = instanceCounter.getAndIncrement();
 		if(transports.size()>0) {
 			transport_count+=transports.size();
 			Set<String> transport_reactions = new HashSet<String>();
-			for(InferredTransport transport : transports) {
-				if(!transport_reactions.add(transport.reaction_uri)){
+			for(InferredTransport transport_reaction : transports) {
+				if(!transport_reactions.add(transport_reaction.reaction_uri)){
 					//should only end up with one per reaction.. make sure
 					continue;
 				}
-				transport_pathways.add(transport.pathway_uri);
-				OWLNamedIndividual reaction = this.makeAnnotatedIndividual(transport.reaction_uri);
+				transport_pathways.add(transport_reaction.pathway_uri);
+				OWLNamedIndividual reaction = this.makeAnnotatedIndividual(transport_reaction.reaction_uri);
 				OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(molecular_function, reaction);
 				ontman.removeAxiom(go_cam_ont, classAssertion);
 				//add transport type
-				addTypeAssertion(reaction, establishment_of_protein_localization);
+				if(transport_reaction.thing_type_uri.contains("uniprot")) {
+					addTypeAssertion(reaction, protein_transport);
+				}else {
+					addTypeAssertion(reaction, transport);
+				}
 				addLiteralAnnotations2Individual(reaction.getIRI(), rdfs_comment, "Inferred to be of type 'establishment of protein localization'"
 						+ " because at least one protein is the same as an input and an output aside from its location.");
 				//record what moved where so the classifier can see it properly
 				OWLNamedIndividual start_loc = makeAnnotatedIndividual(makeRandomIri(model_id));
-				OWLClass start_loc_type = df.getOWLClass(IRI.create(transport.input_loc_class_uri));
+				OWLClass start_loc_type = df.getOWLClass(IRI.create(transport_reaction.input_loc_class_uri));
 				addTypeAssertion(start_loc, start_loc_type);				
 				OWLNamedIndividual end_loc = makeAnnotatedIndividual(makeRandomIri(model_id));
-				OWLClass end_loc_type = df.getOWLClass(IRI.create(transport.output_loc_class_uri));
+				OWLClass end_loc_type = df.getOWLClass(IRI.create(transport_reaction.output_loc_class_uri));
 				addTypeAssertion(end_loc, end_loc_type);				
 				//add relations to enable deeper classification based on OWL axioms in BP branch
 				Set<OWLAnnotation> annos = getDefaultAnnotations();

@@ -8,7 +8,7 @@ prefix skos: <http://www.w3.org/2004/02/skos/core#>
 #If there is no specified GO molecular function term (except root MF GO:0003674), 
 #and the input entities are the same as the output entities
 #and the input entities have different locations from the output entities
-#then tag it as rdf:type 'establishment of protein localization'
+#then tag it as rdf:type 'protein transport' or, if a complex, 'transport'
 ##and add has_target_end_location and has_target_start_location attributes to the reaction node
 ##these will allow deeper automated inference of process type 
 ##e.g. to classes like 'Establishment of protein localization to mitochondrial membrane'
@@ -19,8 +19,6 @@ where {
   	?reaction rdf:type obo:GO_0003674 .
   	#has an output
    	?reaction obo:RO_0002234 ?output .
-   	#that is of a specific type
-   	?output rdf:type ?thing_type . 
    	#with a location
    	?output obo:RO_0001025 ?end_location .
    	#with a class
@@ -28,17 +26,30 @@ where {
 
 	#has an input
 	?reaction obo:RO_0002233 ?input .
-	#that is of the same type (e.g. the same protein class)
-	?input rdf:type ?thing_type . 
    	#with a location
    	?input obo:RO_0001025 ?start_location .
    	#with a class
    	?start_location rdf:type ?start_location_type .   	
 
+	#output that is of a specific type
+   {	?output rdf:type ?thing_type . 
+   	#input that is of the same type (e.g. the same protein class)
+	?input rdf:type ?thing_type . 
+	} UNION  
+	#this works with owl constructs as types
+	{?output rdf:type ?bnode1 .
+	 ?bnode1 rdf:type ?thing_type . 
+   	#input that is of the same type (e.g. the same protein class)
+	?input rdf:type ?bnode2 .
+	?bnode2 rdf:type ?thing_type . 
+	}
+	
+	
 	#and the thing types are not boring
 	filter(?thing_type != <http://www.w3.org/2002/07/owl#NamedIndividual>)
 	#and are not complexes..
-	filter(?thing_type != <http://purl.obolibrary.org/obo/GO_0032991>)
+	#removing this constraint
+	#filter(?thing_type != <http://purl.obolibrary.org/obo/GO_0032991>)
 	
 	#and the locations are different
 	filter(?start_location_type != ?end_location_type) .
