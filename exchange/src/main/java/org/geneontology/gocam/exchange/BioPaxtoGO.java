@@ -992,7 +992,8 @@ public class BioPaxtoGO {
 					//note that complex.getComponent() apparently violates the rules in its documentation which stipulate that it should return
 					//a flat representation of the parts of the complex (e.g. proteins) and not nested complexes (which the reactome biopax does here)
 					Set<String> cnames = new HashSet<String>();
-					Set<OWLNamedIndividual> owl_members = new HashSet<OWLNamedIndividual>();
+				//	Set<OWLNamedIndividual> owl_members = new HashSet<OWLNamedIndividual>();
+					go_cam.addTypeAssertion(e, GoCAM.go_complex);
 					for(PhysicalEntity component : complex_parts) {
 						//hook up parts	
 						if(component.getModelInterface().equals(Complex.class)){
@@ -1006,29 +1007,31 @@ public class BioPaxtoGO {
 							cnames.add(component.getDisplayName());
 							IRI comp_uri = GoCAM.makeRandomIri(model_id);
 							OWLNamedIndividual component_entity = go_cam.df.getOWLNamedIndividual(comp_uri);
-							owl_members.add(component_entity);
+//							owl_members.add(component_entity);
 							defineReactionEntity(go_cam, component, comp_uri, false, model_id);
+							go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_part, component_entity, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+							
 						}
 					}
-					// assert it as an intersection of parts
-					Set<OWLClassExpression> part_classes = new HashSet<OWLClassExpression>();
+//not doing this anymore assert it as an intersection of parts
+				//	Set<OWLClassExpression> part_classes = new HashSet<OWLClassExpression>();
 					//assert it as a complex - needed for correct inference (without loading up the subclass assertion in the above)
 					//go_cam.addTypeAssertion(e, GoCAM.go_complex);
 					//intersection of complex and 
-					part_classes.add(GoCAM.go_complex);
-					for(OWLNamedIndividual member : owl_members) {
-						Collection<OWLClassExpression> types = EntitySearcher.getTypes(member, go_cam.go_cam_ont);
-						for(OWLClassExpression type : types) {
-							if(!type.asOWLClass().getIRI().toString().equals(OWL.NAMED_INDIVIDUAL)) {
-								OWLClassExpression hasPartPclass = go_cam.df.getOWLObjectSomeValuesFrom(GoCAM.has_part, type);
-								part_classes.add(hasPartPclass);
-							}
-						}
-						go_cam.deleteOwlEntityAndAllReferencesToIt(member);
-					}
+				//	part_classes.add(GoCAM.go_complex);
+				//	for(OWLNamedIndividual member : owl_members) {
+				//		Collection<OWLClassExpression> types = EntitySearcher.getTypes(member, go_cam.go_cam_ont);
+				//		for(OWLClassExpression type : types) {
+				//			if(!type.asOWLClass().getIRI().toString().equals(OWL.NAMED_INDIVIDUAL)) {
+				//				OWLClassExpression hasPartPclass = go_cam.df.getOWLObjectSomeValuesFrom(GoCAM.has_part, type);
+				//				part_classes.add(hasPartPclass);
+				//			}
+				//		}
+				//		go_cam.deleteOwlEntityAndAllReferencesToIt(member);
+				//	}
 					//build intersection class 
-					OWLObjectIntersectionOf complex_class = go_cam.df.getOWLObjectIntersectionOf(part_classes);
-					go_cam.addTypeAssertion(e,  complex_class);
+				//	OWLObjectIntersectionOf complex_class = go_cam.df.getOWLObjectIntersectionOf(part_classes);
+				//	go_cam.addTypeAssertion(e,  complex_class);
 				}
 			}
 			//make sure all physical things are minimally typed as a continuant
