@@ -188,7 +188,7 @@ public class BioPaxtoGO {
 		}	
 		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
 		//TODO for Kimberly IRE1alpha activates chaperones  - compare to http://noctua.geneontology.org/editor/graph/gomodel:5b528b1100000186 
-		String test_pathway = "RAF-independent MAPK1/3 activation"; //"Signaling by BMP"; //"IRE1alpha activates chaperones"; //"Generation of second messenger molecules";//"Glycolysis"; //"Glycolysis";//"TCF dependent signaling in response to WNT";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
+		String test_pathway = "Glycolysis"; //"RAF-independent MAPK1/3 activation"; //"Signaling by BMP"; //"IRE1alpha activates chaperones"; //"Generation of second messenger molecules";//"TCF dependent signaling in response to WNT";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathway);
 		//		System.out.println("Writing report");
 		//		bp2g.report.writeReport("report/");
