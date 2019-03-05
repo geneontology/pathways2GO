@@ -1348,17 +1348,23 @@ public class BioPaxtoGO {
 							for(PhysicalEntity member : controller_members) {
 								String local_id = member.getUri();
 								local_id = local_id.substring(local_id.indexOf("#"));
+								String uniprot_id = getUniprotProteinId((Protein)member);
 								if(active_site_local_ids.contains(local_id)) {
 									if(active_units==null) {
 										active_units = new HashSet<OWLNamedIndividual>();
 									}
-									//make a new entity
-									IRI active_iri = GoCAM.makeRandomIri(model_id);
-									defineReactionEntity(go_cam, member, active_iri, false, model_id);
-									OWLNamedIndividual active_unit = go_cam.df.getOWLNamedIndividual(active_iri);	
-									go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.has_part, active_unit, dbids, GoCAM.eco_imported_auto,  default_namespace_prefix, null, model_id);
-									go_cam.addComment(active_unit, "active unit");
-									active_units.add(active_unit);
+									//find active protein in controller set
+									Collection<OWLIndividual> parts = EntitySearcher.getObjectPropertyValues(controller_e, GoCAM.has_part, go_cam.go_cam_ont);
+									for(OWLIndividual part : parts) {
+										Collection<OWLClassExpression> part_types = EntitySearcher.getTypes(part, go_cam.go_cam_ont);
+										for(OWLClassExpression part_type : part_types) {
+											String type = part_type.asOWLClass().getIRI().toString();
+											if(type.contains(uniprot_id)) {
+												go_cam.addComment(part.asOWLNamedIndividual(), "active unit");
+												active_units.add(part.asOWLNamedIndividual());
+											}
+										}
+									}
 								}
 							}		
 						}
@@ -1398,7 +1404,7 @@ public class BioPaxtoGO {
 								//default to regulates
 								if(active_units!=null) {
 									for(OWLNamedIndividual active_unit :active_units) {
-										go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.involved_in_regulation_of,  e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+										go_cam.addRefBackedObjectPropertyAssertion(active_unit, GoCAM.involved_in_regulation_of,  e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 									}
 								}else {
 									go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.involved_in_regulation_of,  e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);

@@ -1116,14 +1116,13 @@ final long counterValue = instanceCounter.getAndIncrement();
 
 	/**
 	 * Rule: entity involved in regulation of function 
-Binding has_input E1
-Binding enabled_by E2
-Binding +-_regulates R
-Binding part_of +-_regulation_of BP
++-_regulation_of_BP has_participant E1
++-_regulation_of_BP +-_regulates R
++-_regulation_of_BP part_of generic_BP
+generic_BP +-_regulates pathway
 ⇐ 	
 E1 +- involved_in_regulation_of R
-R enabled_by E2
-BP has_part R
+pathway has_part R
 	 */
 	private RuleResults convertEntityRegulatorsToRegulatorFunctions(String model_id, RuleResults r) {		 
 		String entity_regulator_rule = "entity_regulator_1";
@@ -1166,54 +1165,59 @@ BP has_part R
 				//make a regulatory BP node
 				OWLNamedIndividual neg_reg_bp_node = null;
 				OWLNamedIndividual pos_reg_bp_node = null;
+				Set<OWLAnnotation> annos1 = getDefaultAnnotations();
+				String comment = "This relation was asserted because a physical entity (see participants) was asserted to regulate a reaction.  This relation is part of the translation of that statement into the GO-CAM model.";
+				annos1.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(comment)));
 				if(reaction_pos_regulator) {
 					pos_reg_bp_node = makeAnnotatedIndividual(makeRandomIri(model_id));
+					addTypeAssertion(pos_reg_bp_node, positive_regulation_of_molecular_function);
 					pos_bp_node = makeAnnotatedIndividual(makeRandomIri(model_id));
 					addTypeAssertion(pos_bp_node, bp_class);
 					addRefBackedObjectPropertyAssertion(pos_reg_bp_node, part_of, pos_bp_node, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", getDefaultAnnotations(), model_id);
+					addRefBackedObjectPropertyAssertion(pos_reg_bp_node, GoCAM.directly_positively_regulates, reaction, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos1, model_id);
+					addRefBackedObjectPropertyAssertion(pos_bp_node, GoCAM.directly_positively_regulates, pathway, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos1, model_id);
+
 				}
 				if(reaction_neg_regulator) {
-					neg_bp_node = makeAnnotatedIndividual(makeRandomIri(model_id));
-					addTypeAssertion(neg_bp_node, bp_class);
 					neg_reg_bp_node = makeAnnotatedIndividual(makeRandomIri(model_id));
+					neg_bp_node = makeAnnotatedIndividual(makeRandomIri(model_id));
+					addTypeAssertion(neg_reg_bp_node, negative_regulation_of_molecular_function);
+					addTypeAssertion(neg_bp_node, bp_class);
 					addRefBackedObjectPropertyAssertion(neg_reg_bp_node, part_of, neg_bp_node, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", getDefaultAnnotations(), model_id);				
+					addRefBackedObjectPropertyAssertion(neg_reg_bp_node, GoCAM.directly_negatively_regulates, reaction, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos1, model_id);
+					addRefBackedObjectPropertyAssertion(neg_bp_node, GoCAM.directly_negatively_regulates, pathway, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos1, model_id);
 				}
 				//now get the actual regulating entities
 				for(InferredRegulator er : reaction_regulators.get(reaction_uri)) {
-					
+					Set<OWLAnnotation> annos = getDefaultAnnotations();
 					OWLObjectProperty prop = GoCAM.directly_negatively_regulates;
 					OWLNamedIndividual original_regulator = makeAnnotatedIndividual(er.entity_uri);
-					OWLNamedIndividual regulator = cloneIndividual(er.entity_uri, model_id);
+					//OWLNamedIndividual regulator = cloneIndividual(er.entity_uri, model_id);
 					
-					Set<OWLAnnotation> annos = getDefaultAnnotations();
-					//add the process regulates relation
 					String regulator_label = getaLabel(original_regulator);
 					String reg = " is involved in negative regulation of ";
+					String explain = "The relation was inferred because "+regulator_label
+							+reg+" the reaction.  See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
+					annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 					OWLObjectProperty prop_for_deletion = GoCAM.involved_in_negative_regulation_of;
 					if(er.prop_uri.equals("http://purl.obolibrary.org/obo/RO_0002429")) {
 						prop = GoCAM.directly_positively_regulates;
 						reg = " is involved in positive regulation of ";
-						String explain = "The relation was inferred because "+regulator_label
+						explain = "The relation was inferred because "+regulator_label
 								+reg+" the reaction.  See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 						annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
-						prop_for_deletion = GoCAM.involved_in_positive_regulation_of;
-						addTypeAssertion(pos_reg_bp_node, positive_regulation_of_molecular_function);
-						addRefBackedObjectPropertyAssertion(pos_reg_bp_node, prop, reaction, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+						prop_for_deletion = GoCAM.involved_in_positive_regulation_of;					
 						//hook the entities up to the regulating process
-						addRefBackedObjectPropertyAssertion(pos_reg_bp_node, has_participant, regulator, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
-						addRefBackedObjectPropertyAssertion(pos_bp_node, prop, pathway, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+						addRefBackedObjectPropertyAssertion(pos_reg_bp_node, has_participant, original_regulator, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
 					}else {
-						addTypeAssertion(neg_reg_bp_node, negative_regulation_of_molecular_function);
-						addRefBackedObjectPropertyAssertion(neg_reg_bp_node, prop, reaction, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
 						//hook the entities up to the regulating process
-						addRefBackedObjectPropertyAssertion(neg_reg_bp_node, has_participant, regulator, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
-						addRefBackedObjectPropertyAssertion(neg_bp_node, prop, pathway, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+						addRefBackedObjectPropertyAssertion(neg_reg_bp_node, has_participant, original_regulator, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
 					}
 					//delete the original entity regulates process relation 
 					//original
 					applyAnnotatedTripleRemover(original_regulator.getIRI(), prop_for_deletion.getIRI(), reaction.getIRI());
 					//cloned
-					applyAnnotatedTripleRemover(regulator.getIRI(), prop_for_deletion.getIRI(), reaction.getIRI());
+					//applyAnnotatedTripleRemover(regulator.getIRI(), prop_for_deletion.getIRI(), reaction.getIRI());
 
 				}
 			}
