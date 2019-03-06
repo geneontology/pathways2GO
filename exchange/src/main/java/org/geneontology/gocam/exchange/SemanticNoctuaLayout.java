@@ -115,11 +115,11 @@ public class SemanticNoctuaLayout {
 				}
 			}
 			x = x+x_spacer;
-			System.out.println("Pathway "+go_cam.getaLabel(pathway));
-			System.out.println("islands\n"+getLabelsForOWLSet(islands, go_cam));
-			System.out.println("chain_roots\n"+getLabelsForOWLSet(chain_roots, go_cam));
-			System.out.println("chain_members\n"+getLabelsForOWLSet(chain_members, go_cam));
-			System.out.println("chain_ends\n"+getLabelsForOWLSet(chain_ends, go_cam));
+			System.out.println("Laid out Pathway "+go_cam.getaLabel(pathway));
+//			System.out.println("islands\n"+getLabelsForOWLSet(islands, go_cam));
+//			System.out.println("chain_roots\n"+getLabelsForOWLSet(chain_roots, go_cam));
+//			System.out.println("chain_members\n"+getLabelsForOWLSet(chain_members, go_cam));
+//			System.out.println("chain_ends\n"+getLabelsForOWLSet(chain_ends, go_cam));
 		}
 		
 		return go_cam;

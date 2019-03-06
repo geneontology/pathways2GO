@@ -110,6 +110,7 @@ public class BioPaxtoGO {
 		NoctuaCuration, //This generates models intended only for curators to improve manually in Noctua, may contain logical oddities.  Strives to get rid of complexes.  
 		DirectImport;   //This generates models that are as close as we can get them to ready for use.  Logic should be sound.  Keeps complexes in and more or less as they are in reactome.  
 	}
+	boolean apply_layout = false;
 	boolean generate_report = false;
 	boolean explain_inconsistant_models = false;
 	String blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";
@@ -187,8 +188,8 @@ public class BioPaxtoGO {
 			tag = "expanded";
 		}	
 		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
-		//TODO for Kimberly IRE1alpha activates chaperones  - compare to http://noctua.geneontology.org/editor/graph/gomodel:5b528b1100000186 
-		String test_pathway = "TCF dependent signaling in response to WNT";//"RAF-independent MAPK1/3 activation"; //"Glycolysis"; //"Signaling by BMP"; //"IRE1alpha activates chaperones"; //"Generation of second messenger molecules";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
+
+		String test_pathway = null;//"Oxidative Stress Induced Senescence"; //"Activation of PUMA and translocation to mitochondria";//"HDR through Single Strand Annealing (SSA)";//"Glycolysis"; //"RAF-independent MAPK1/3 activation";//"TCF dependent signaling in response to WNT"; //"Signaling by BMP"; //"IRE1alpha activates chaperones"; //"Generation of second messenger molecules";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathway);
 		//		System.out.println("Writing report");
 		//		bp2g.report.writeReport("report/");
@@ -379,8 +380,8 @@ public class BioPaxtoGO {
 		}	
 		return id;
 	}
-	
-	
+
+
 	/**
 	 * Only keep it if it has some useful content
 	 * @param pathway
@@ -418,7 +419,7 @@ public class BioPaxtoGO {
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
 		//infer new edges based on sparql matching
 		System.out.println("Before sparql inference -  triples: "+go_cam.qrunner.nTriples());
-		GoCAM.RuleResults rule_results = go_cam.applySparqlRules(strategy, reactome_id);
+		GoCAM.RuleResults rule_results = go_cam.applySparqlRules(reactome_id);
 		System.out.println("After sparql inference -  triples: "+go_cam.qrunner.nTriples());
 		System.out.println("Rule results:\n"+rule_results.toString());
 		//sparql rules make additions to go_cam_ont, add them to the rdf model 
@@ -426,8 +427,8 @@ public class BioPaxtoGO {
 		//go_cam.go_cam_ont is ready and equals the Abox.. go_cam.qrunner also ready
 
 		WorkingMemory wm_with_tbox = null;
-		if(generate_report||strategy == ImportStrategy.NoctuaCuration) {
-			 wm_with_tbox = tbox_qrunner.arachne.createInferredModel(go_cam.go_cam_ont,true, true);	
+		if(generate_report||apply_layout) {
+			wm_with_tbox = tbox_qrunner.arachne.createInferredModel(go_cam.go_cam_ont,true, true);	
 		}
 		if(generate_report) {
 			System.out.println("Report after local rules");
@@ -436,7 +437,7 @@ public class BioPaxtoGO {
 			report.pathway_class_report.put(pathwayname, reasoner_report);
 		}
 
-		if(strategy == ImportStrategy.NoctuaCuration) {
+		if(apply_layout) {
 			//adds coordinates to go_cam_ont model 
 			SemanticNoctuaLayout layout = new SemanticNoctuaLayout();
 			go_cam = layout.layout(wm_with_tbox, go_cam);	
@@ -597,7 +598,8 @@ public class BioPaxtoGO {
 										//e.g. Recruitment of SET1 methyltransferase complex  -> APC promotes disassembly of beta-catenin transactivation complex
 										//are connected yet in different pathways
 										//if its been defined, ought to at least have a label
-										if(go_cam.getaLabel(e2).equals("")){
+										String l = go_cam.getaLabel(e2);
+										if(l!=null&&l.equals("")){
 											defineReactionEntity(go_cam, nextEvent, e2_iri, false, model_id);		
 										}
 									}
@@ -629,7 +631,8 @@ public class BioPaxtoGO {
 										//e.g. Recruitment of SET1 methyltransferase complex  -> APC promotes disassembly of beta-catenin transactivation complex
 										//are connected yet in different pathways
 										//if its been defined, ought to at least have a label
-										if(go_cam.getaLabel(e1).equals("")){
+										String l = go_cam.getaLabel(e1);
+										if(l!=null && l.equals("")){
 											defineReactionEntity(go_cam, prevEvent, prevEvent_iri, false, model_id);		
 										}
 									}
@@ -992,7 +995,7 @@ public class BioPaxtoGO {
 					//note that complex.getComponent() apparently violates the rules in its documentation which stipulate that it should return
 					//a flat representation of the parts of the complex (e.g. proteins) and not nested complexes (which the reactome biopax does here)
 					Set<String> cnames = new HashSet<String>();
-				//	Set<OWLNamedIndividual> owl_members = new HashSet<OWLNamedIndividual>();
+					//	Set<OWLNamedIndividual> owl_members = new HashSet<OWLNamedIndividual>();
 					go_cam.addTypeAssertion(e, GoCAM.go_complex);
 					for(PhysicalEntity component : complex_parts) {
 						//hook up parts	
@@ -1007,31 +1010,31 @@ public class BioPaxtoGO {
 							cnames.add(component.getDisplayName());
 							IRI comp_uri = GoCAM.makeRandomIri(model_id);
 							OWLNamedIndividual component_entity = go_cam.df.getOWLNamedIndividual(comp_uri);
-//							owl_members.add(component_entity);
+							//							owl_members.add(component_entity);
 							defineReactionEntity(go_cam, component, comp_uri, false, model_id);
 							go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_part, component_entity, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
-							
+
 						}
 					}
-//not doing this anymore assert it as an intersection of parts
-				//	Set<OWLClassExpression> part_classes = new HashSet<OWLClassExpression>();
+					//not doing this anymore assert it as an intersection of parts
+					//	Set<OWLClassExpression> part_classes = new HashSet<OWLClassExpression>();
 					//assert it as a complex - needed for correct inference (without loading up the subclass assertion in the above)
 					//go_cam.addTypeAssertion(e, GoCAM.go_complex);
 					//intersection of complex and 
-				//	part_classes.add(GoCAM.go_complex);
-				//	for(OWLNamedIndividual member : owl_members) {
-				//		Collection<OWLClassExpression> types = EntitySearcher.getTypes(member, go_cam.go_cam_ont);
-				//		for(OWLClassExpression type : types) {
-				//			if(!type.asOWLClass().getIRI().toString().equals(OWL.NAMED_INDIVIDUAL)) {
-				//				OWLClassExpression hasPartPclass = go_cam.df.getOWLObjectSomeValuesFrom(GoCAM.has_part, type);
-				//				part_classes.add(hasPartPclass);
-				//			}
-				//		}
-				//		go_cam.deleteOwlEntityAndAllReferencesToIt(member);
-				//	}
+					//	part_classes.add(GoCAM.go_complex);
+					//	for(OWLNamedIndividual member : owl_members) {
+					//		Collection<OWLClassExpression> types = EntitySearcher.getTypes(member, go_cam.go_cam_ont);
+					//		for(OWLClassExpression type : types) {
+					//			if(!type.asOWLClass().getIRI().toString().equals(OWL.NAMED_INDIVIDUAL)) {
+					//				OWLClassExpression hasPartPclass = go_cam.df.getOWLObjectSomeValuesFrom(GoCAM.has_part, type);
+					//				part_classes.add(hasPartPclass);
+					//			}
+					//		}
+					//		go_cam.deleteOwlEntityAndAllReferencesToIt(member);
+					//	}
 					//build intersection class 
-				//	OWLObjectIntersectionOf complex_class = go_cam.df.getOWLObjectIntersectionOf(part_classes);
-				//	go_cam.addTypeAssertion(e,  complex_class);
+					//	OWLObjectIntersectionOf complex_class = go_cam.df.getOWLObjectIntersectionOf(part_classes);
+					//	go_cam.addTypeAssertion(e,  complex_class);
 				}
 			}
 			//make sure all physical things are minimally typed as a continuant
@@ -1347,21 +1350,46 @@ public class BioPaxtoGO {
 							Set<PhysicalEntity> controller_members = flattenNest(controller_member_roots, null);
 							for(PhysicalEntity member : controller_members) {
 								String local_id = member.getUri();
-								local_id = local_id.substring(local_id.indexOf("#"));
-								String uniprot_id = getUniprotProteinId((Protein)member);
-								if(active_site_local_ids.contains(local_id)) {
-									if(active_units==null) {
-										active_units = new HashSet<OWLNamedIndividual>();
-									}
-									//find active protein in controller set
-									Collection<OWLIndividual> parts = EntitySearcher.getObjectPropertyValues(controller_e, GoCAM.has_part, go_cam.go_cam_ont);
-									for(OWLIndividual part : parts) {
-										Collection<OWLClassExpression> part_types = EntitySearcher.getTypes(part, go_cam.go_cam_ont);
-										for(OWLClassExpression part_type : part_types) {
-											String type = part_type.asOWLClass().getIRI().toString();
-											if(type.contains(uniprot_id)) {
-												go_cam.addComment(part.asOWLNamedIndividual(), "active unit");
-												active_units.add(part.asOWLNamedIndividual());
+								local_id = local_id.substring(local_id.indexOf("#"));								
+								if(member instanceof Protein) {
+									String uniprot_id = getUniprotProteinId((Protein)member);
+									if(active_site_local_ids.contains(local_id)) {
+										if(active_units==null) {
+											active_units = new HashSet<OWLNamedIndividual>();
+										}
+										//find active protein in controller set
+										//if its a complex
+										if(controller_entity instanceof Complex) {
+											Collection<OWLIndividual> parts = EntitySearcher.getObjectPropertyValues(controller_e, GoCAM.has_part, go_cam.go_cam_ont);
+											for(OWLIndividual part : parts) {
+												Collection<OWLClassExpression> part_types = EntitySearcher.getTypes(part, go_cam.go_cam_ont);
+												for(OWLClassExpression part_type : part_types) {
+													String type = part_type.asOWLClass().getIRI().toString();
+													if(type.contains(uniprot_id)) {
+														go_cam.addComment(part.asOWLNamedIndividual(), "active unit");
+														active_units.add(part.asOWLNamedIndividual());
+													}
+												}
+											}
+										}
+										//if its a union set
+										else {
+											Collection<OWLClassExpression> types = EntitySearcher.getTypes(controller_e, go_cam.go_cam_ont);
+											for(OWLClassExpression type : types) {
+												if(type.getClassExpressionType().equals(ClassExpressionType.OBJECT_UNION_OF)) {
+													OWLObjectUnionOf union_exp = (OWLObjectUnionOf) type;
+													Set<OWLClass> union_sig = union_exp.getClassesInSignature();
+													for(OWLClass c : union_sig) {
+														String ct = c.getIRI().toString();
+														if(ct.contains(uniprot_id)) {
+															OWLNamedIndividual part = go_cam.makeAnnotatedIndividual(GoCAM.makeRandomIri(model_id));
+															go_cam.addTypeAssertion(part, c);
+															go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.has_part, part, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);																
+															go_cam.addComment(part.asOWLNamedIndividual(), "active unit");
+															active_units.add(part.asOWLNamedIndividual());																		
+														}
+													}
+												}
 											}
 										}
 									}
@@ -1580,7 +1608,7 @@ public class BioPaxtoGO {
 				}
 			}
 		}
-		System.out.println("binding reaction? "+go_cam.getaLabel(reaction)+" binding "+binder.binding+" protein binding "+binder.protein_binding+" protein complex binding "+binder.protein_complex_binding);
+		//System.out.println("binding reaction? "+go_cam.getaLabel(reaction)+" binding "+binder.binding+" protein binding "+binder.protein_binding+" protein complex binding "+binder.protein_complex_binding);
 		return binder;
 	}
 

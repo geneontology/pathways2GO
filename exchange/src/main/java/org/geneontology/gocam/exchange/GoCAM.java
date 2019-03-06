@@ -837,7 +837,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 * assumes it is loaded with everything to start with a la qrunner = new QRunner(go_cam_ont); 
 	 * @throws IOException 
 	 */
-	RuleResults applySparqlRules(BioPaxtoGO.ImportStrategy strategy, String model_id) {
+	RuleResults applySparqlRules(String model_id) {
 
 		RuleResults r = new RuleResults();
 		//NOTE that the order these are run matters.
@@ -1195,21 +1195,21 @@ pathway has_part R
 					//OWLNamedIndividual regulator = cloneIndividual(er.entity_uri, model_id);
 					
 					String regulator_label = getaLabel(original_regulator);
-					String reg = " is involved in negative regulation of ";
-					String explain = "The relation was inferred because "+regulator_label
-							+reg+" the reaction.  See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
-					annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 					OWLObjectProperty prop_for_deletion = GoCAM.involved_in_negative_regulation_of;
 					if(er.prop_uri.equals("http://purl.obolibrary.org/obo/RO_0002429")) {
 						prop = GoCAM.directly_positively_regulates;
-						reg = " is involved in positive regulation of ";
-						explain = "The relation was inferred because "+regulator_label
+						String reg = " is involved in positive regulation of ";
+						String explain = "The relation was inferred because "+regulator_label
 								+reg+" the reaction.  See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 						annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 						prop_for_deletion = GoCAM.involved_in_positive_regulation_of;					
 						//hook the entities up to the regulating process
 						addRefBackedObjectPropertyAssertion(pos_reg_bp_node, has_participant, original_regulator, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
 					}else {
+						String reg = " is involved in negative regulation of ";
+						String explain = "The relation was inferred because "+regulator_label
+								+reg+" the reaction.  See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
+						annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 						//hook the entities up to the regulating process
 						addRefBackedObjectPropertyAssertion(neg_reg_bp_node, has_participant, original_regulator, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
 					}
@@ -1315,6 +1315,7 @@ BP has_part R
 				deleteOwlEntityAndAllReferencesToIt(o);
 			}
 		}			
+		qrunner = new QRunner(go_cam_ont); 
 		System.out.println("Eliminated 'located in' assertions");
 	}
 
