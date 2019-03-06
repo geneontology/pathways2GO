@@ -189,7 +189,7 @@ public class BioPaxtoGO {
 		}	
 		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
 
-		String test_pathway = null;//"Oxidative Stress Induced Senescence"; //"Activation of PUMA and translocation to mitochondria";//"HDR through Single Strand Annealing (SSA)";//"Glycolysis"; //"RAF-independent MAPK1/3 activation";//"TCF dependent signaling in response to WNT"; //"Signaling by BMP"; //"IRE1alpha activates chaperones"; //"Generation of second messenger molecules";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
+		String test_pathway = "RAF-independent MAPK1/3 activation";//"Oxidative Stress Induced Senescence"; //"Activation of PUMA and translocation to mitochondria";//"HDR through Single Strand Annealing (SSA)";//"Glycolysis"; //"TCF dependent signaling in response to WNT"; //"Signaling by BMP"; //"IRE1alpha activates chaperones"; //"Generation of second messenger molecules";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathway);
 		//		System.out.println("Writing report");
 		//		bp2g.report.writeReport("report/");
@@ -786,42 +786,29 @@ public class BioPaxtoGO {
 					go_cam.addTypeAssertion(e,  uniprotein_class);
 				}else { //no entity reference so look for parts
 					PhysicalEntity entity_set = (PhysicalEntity)entity;
-					Set<PhysicalEntity> prot_parts = entity_set.getMemberPhysicalEntity();
+					Set<PhysicalEntity> prot_parts_ = entity_set.getMemberPhysicalEntity();
+					Set<PhysicalEntity> prot_parts = new HashSet<PhysicalEntity>();
+					prot_parts = flattenNest(prot_parts_, prot_parts);
+					Set<OWLClass> prot_classes = new HashSet<OWLClass>();
 					if(prot_parts!=null) {					
 						//if its made of parts and not otherwise typed, call it a Union.	
-						Set<String> cnames = new HashSet<String>();
-						Set<OWLNamedIndividual> owl_members = new HashSet<OWLNamedIndividual>();
 						for(PhysicalEntity prot_part : prot_parts) {
-							cnames.add(prot_part.getDisplayName());
-							//hook up parts into one thing
-							OWLNamedIndividual prot_part_entity = go_cam.df.getOWLNamedIndividual(GoCAM.makeRandomIri(model_id)); 
-							owl_members.add(prot_part_entity);
-							//this would add them as parts of the entity in question (previously called a protein complex)
-							//go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_part, prot_part_entity, dbids, GoCAM.eco_imported_auto, "Reactome", null);		
-							//define them = hopefully get out a name and a class for the sub protein.	
-							defineReactionEntity(go_cam, prot_part, prot_part_entity.getIRI(), false, model_id);					
-						}
-						//these aren't actually complexes, they are loose collections of molecules
-						//go_cam.addTypeAssertion(e, GoCAM.go_complex);
-						//TODO investigate a named upper type for a union entity? 
-						Set<OWLClassExpression> protein_classes = new HashSet<OWLClassExpression>();
-						for(OWLNamedIndividual member : owl_members) {
-							Collection<OWLClassExpression> types = EntitySearcher.getTypes(member, go_cam.go_cam_ont);
-							for(OWLClassExpression type : types) {
-								if(type.isAnonymous()||!type.asOWLClass().getIRI().toString().equals(OWL.NAMED_INDIVIDUAL)) {
-									protein_classes.add(type);
-								}
+							//limit to proteins
+							if(prot_part instanceof Protein) {
+								String uniprot_id = getUniprotProteinId((Protein)prot_part);
+								if(uniprot_id!=null) {
+									OWLClass uniprotein_class = go_cam.df.getOWLClass(IRI.create(GoCAM.uniprot_iri + uniprot_id)); 
+									prot_classes.add(uniprotein_class);
+								}else {
+									System.out.println("what is "+prot_part.getDisplayName());
+								}							
 							}
-							//discard the individual from the ontology.  no need for it.
-							go_cam.deleteOwlEntityAndAllReferencesToIt(member);
 						}
-						if(protein_classes.size()>1) {
-							OWLObjectUnionOf union_exp = go_cam.df.getOWLObjectUnionOf(protein_classes);
-							go_cam.addTypeAssertion(e,  union_exp);
-							//placeholder for query later, hard to sparql into the union object above, easier with a type
-							//go_cam.addTypeAssertion(e,  GoCAM.union_set);							
-						}else if(protein_classes.size()==1){
-							OWLClassExpression one_protein = protein_classes.iterator().next();
+						if(prot_classes.size()>1) {
+							OWLObjectUnionOf union_exp = go_cam.df.getOWLObjectUnionOf(prot_classes);
+							go_cam.addTypeAssertion(e,  union_exp);						
+						}else if(prot_classes.size()==1){
+							OWLClassExpression one_protein = prot_classes.iterator().next();
 							go_cam.addTypeAssertion(e,  one_protein);
 						}
 					}else { //punt..

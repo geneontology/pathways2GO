@@ -524,7 +524,7 @@ public class GoCAM {
 	public void addLabel(OWLEntity entity, String label) {
 		if(label==null) {
 			return;
-		}		
+		}
 		OWLLiteral lbl = df.getOWLLiteral(label);
 		OWLAnnotation label_anno = df.getOWLAnnotation(rdfs_label, lbl);
 		OWLAxiom labelaxiom = df.getOWLAnnotationAssertionAxiom(entity.getIRI(), label_anno);
