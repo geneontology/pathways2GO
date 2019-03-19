@@ -107,8 +107,7 @@ public class BioPaxtoGO {
 	Set<String> tbox_files;
 	ImportStrategy strategy;
 	enum ImportStrategy {
-		NoctuaCuration, //This generates models intended only for curators to improve manually in Noctua, may contain logical oddities.  Strives to get rid of complexes.  
-		DirectImport;   //This generates models that are as close as we can get them to ready for use.  Logic should be sound.  Keeps complexes in and more or less as they are in reactome.  
+		NoctuaCuration, 
 	}
 	boolean apply_layout = false;
 	boolean generate_report = false;
@@ -132,7 +131,7 @@ public class BioPaxtoGO {
 	static String default_namespace_prefix = "Reactome";
 
 	public BioPaxtoGO(){
-		strategy = ImportStrategy.NoctuaCuration; //ImportStrategy.DirectImport;  
+		strategy = ImportStrategy.NoctuaCuration; 
 		report = new GoMappingReport();
 		tbox_files = new HashSet<String>();
 		tbox_files.add(goplus_file);
@@ -189,7 +188,7 @@ public class BioPaxtoGO {
 		}	
 		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
 
-		String test_pathway = "RAF-independent MAPK1/3 activation";//"Oxidative Stress Induced Senescence"; //"Activation of PUMA and translocation to mitochondria";//"HDR through Single Strand Annealing (SSA)";//"Glycolysis"; //"TCF dependent signaling in response to WNT"; //"Signaling by BMP"; //"IRE1alpha activates chaperones"; //"Generation of second messenger molecules";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
+		String test_pathway = "TCF dependent signaling in response to WNT"; //"Signaling by BMP";//"RAF-independent MAPK1/3 activation";//"Oxidative Stress Induced Senescence"; //"Activation of PUMA and translocation to mitochondria";//"HDR through Single Strand Annealing (SSA)";//"Glycolysis";  //"IRE1alpha activates chaperones"; //"Generation of second messenger molecules";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathway);
 		//		System.out.println("Writing report");
 		//		bp2g.report.writeReport("report/");
@@ -451,32 +450,31 @@ public class BioPaxtoGO {
 		//checks for inferred things with rdf:type OWL:Nothing with a sparql query
 		boolean is_logical = go_cam.validateGoCAM();	
 		if(!is_logical) {
-			//System.out.println("Illogical go_cam..  stopping");
-			//System.exit(0);
+			System.out.println("Illogical go_cam..  stopping");
+			System.exit(0);
 			report.inconsistent_models.add(outfilename);
-			//explain
-			//			if(explain_inconsistant_models) {
-			//				scala.collection.Iterator<Triple> triples = wm_with_tbox.facts().toList().iterator();
-			//				while(triples.hasNext()) {				
-			//					Triple triple = triples.next();
-			//					if(wm_with_tbox.asserted().contains(triple)) {
-			//						continue;
-			//					}else { //<http://arachne.geneontology.org/indirect_type>
-			//						if(triple.p().toString().equals("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>")&&
-			//								triple.o().toString().equals("<http://www.w3.org/2002/07/owl#Nothing>")) {
-			//							OWLEntity bad = go_cam.df.getOWLNamedIndividual(IRI.create(triple.s().toString()));
-			//							System.out.println("inferred inconsistent:"+triple.s()+" "+go_cam.getaLabel(bad));
-			//							scala.collection.immutable.Set<Explanation> explanations = wm_with_tbox.explain(triple);
-			//							scala.collection.Iterator<Explanation> e = explanations.iterator();
-			//							while(e.hasNext()) {
-			//								Explanation exp = e.next();
-			//								System.out.println(exp.toString());
-			//								System.out.println();
-			//							}
-			//						}
-			//					}
-			//				}
-			//			}
+			if(explain_inconsistant_models) {
+				scala.collection.Iterator<Triple> triples = wm_with_tbox.facts().toList().iterator();
+				while(triples.hasNext()) {				
+					Triple triple = triples.next();
+					if(wm_with_tbox.asserted().contains(triple)) {
+						continue;
+					}else { //<http://arachne.geneontology.org/indirect_type>
+						if(triple.p().toString().equals("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>")&&
+								triple.o().toString().equals("<http://www.w3.org/2002/07/owl#Nothing>")) {
+							OWLEntity bad = go_cam.df.getOWLNamedIndividual(IRI.create(triple.s().toString()));
+							System.out.println("inferred inconsistent:"+triple.s()+" "+go_cam.getaLabel(bad));
+							scala.collection.immutable.Set<Explanation> explanations = wm_with_tbox.explain(triple);
+							scala.collection.Iterator<Explanation> e = explanations.iterator();
+							while(e.hasNext()) {
+								Explanation exp = e.next();
+								System.out.println(exp.toString());
+								System.out.println();
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -556,9 +554,13 @@ public class BioPaxtoGO {
 					//attach child pathways
 				}
 				else if(process.getModelInterface().equals(Pathway.class)){	
-					System.out.println("not doing child pathways right now");
-					//	definePathwayEntity(go_cam, (Pathway)process, reactome_id, expand_subpathways, false);	
-					//  	go_cam.addRefBackedObjectPropertyAssertion(child, GoCAM.part_of, pathway_e, Collections.singleton(reactome_id), GoCAM.eco_imported_auto, default_namespace_prefix, null);
+					//different pathway - bridging relation.
+					//not going to define the other pathway here - that will happen elsewhere.
+					//definePathwayEntity(go_cam, (Pathway)process, reactome_id, expand_subpathways, false);
+					String child_model_id = this.getEntityReferenceId(process);
+					IRI child_pathway_iri = GoCAM.makeGoCamifiedIRI(child_model_id, child_model_id);
+					OWLNamedIndividual child_pathway = go_cam.makeBridgingIndividual(child_pathway_iri);
+					go_cam.addRefBackedObjectPropertyAssertion(child_pathway, GoCAM.part_of, pathway_e, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 				}
 				else {
 					System.out.println("Unknown Process !"+process.getDisplayName());

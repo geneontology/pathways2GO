@@ -459,6 +459,12 @@ public class GoCAM {
 		return i;
 	}
 
+	public OWLNamedIndividual makeBridgingIndividual(IRI iri) {
+		OWLNamedIndividual i = df.getOWLNamedIndividual(iri);	
+		addLiteralAnnotations2Individual(iri, rdfs_comment, "I live in another model");
+		return i;
+	}
+	
 	OWLNamedIndividual makeUnannotatedIndividual(IRI iri) {
 		OWLNamedIndividual i = df.getOWLNamedIndividual(iri);		
 		return i;
@@ -1515,6 +1521,8 @@ BP has_part R
 		}
 		System.out.println("removed "+n_removed);
 	}
+
+
 
 
 }
