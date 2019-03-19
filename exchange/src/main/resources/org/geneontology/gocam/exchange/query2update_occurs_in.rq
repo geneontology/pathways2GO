@@ -7,22 +7,22 @@ prefix skos: <http://www.w3.org/2004/02/skos/core#>
 
 #get all the locations of entities involved in something
 
-select ?pathway ?reaction ?location_instance ?location_type ?entity  
+select ?pathway ?reaction ?location_instance ?location_type ?entity ?relation  
 where {
   	?reaction obo:BFO_0000050 ?pathway . 
   	#reaction with inputs/outputs/enablers/regulators/etc.  
   	{
-  	?reaction (obo:RO_0002233|obo:RO_0002333|obo:RO_0002430|obo:RO_0002429|obo:RO_0002234) ?entity . 
+  	?reaction ?relation ?entity . 
  	} UNION 
  	{
- 	?reaction (obo:RO_0002233|obo:RO_0002333|obo:RO_0002430|obo:RO_0002429|obo:RO_0002234) ?complex .
+ 	?reaction ?relation ?complex .
  	?complex obo:BFO_0000051* ?entity .
  	} 	
-  	
   	?entity obo:RO_0001025 ?location_instance . 
   	?location_instance rdf:type ?location_type .  
 	filter(?location_type != <http://www.w3.org/2002/07/owl#NamedIndividual>) .
-	filter(?location_type != <http://purl.obolibrary.org/obo/GO_0005575>) .
+	filter(?location_type != <http://purl.obolibrary.org/obo/GO_0005575>) . 
+	VALUES ?relation { obo:RO_0002233 obo:RO_0002333 obo:RO_0002430 obo:RO_0002429 obo:RO_0002234} 
 }
 
 # protein containing complex <http://purl.obolibrary.org/obo/GO_0032991>

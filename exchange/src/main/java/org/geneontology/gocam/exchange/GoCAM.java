@@ -464,7 +464,7 @@ public class GoCAM {
 		addLiteralAnnotations2Individual(iri, rdfs_comment, "I live in another model");
 		return i;
 	}
-	
+
 	OWLNamedIndividual makeUnannotatedIndividual(IRI iri) {
 		OWLNamedIndividual i = df.getOWLNamedIndividual(iri);		
 		return i;
@@ -925,13 +925,11 @@ final long counterValue = instanceCounter.getAndIncrement();
 	}
 
 	/**
-	 * Rule 1: infer occurs_in relations
-	 * If all participants in a reaction are located_in the same place,
-	 * Then assert that the reaction occurs_in that place and remove the located_in assertions
-	 * OR, if the strategy is targeted towards curator review, take all of the locations used for INPUTs and add them as occurs_in
-	 * Run after transport inference as this will remove locations
-	 * See 'Signaling by BMP' https://reactome.org/content/detail/R-HSA-201451 
-	 * (7 inferences)
+	 * Rule: infer occurs_in relations
+	 * 
+For reactions with multiple entity locations, that are enabled by something, the reaction occurs_in the location of the enabler. Other location information is dropped.
+For reactions where all entities are in one location, the reaction occurs_in that location
+For reactions with multiple entity locations and no enabler, do not assign any occurs_in relation.
 	 */
 	private RuleResults inferOccursInFromEntityLocations(String model_id, RuleResults r) {
 		String i_o_rule = "occurs_in";
@@ -944,16 +942,28 @@ final long counterValue = instanceCounter.getAndIncrement();
 			i_o_count+=inferred_occurs.size();			
 			for(InferredOccursIn o : inferred_occurs) {
 				i_o_pathways.add(o.pathway_uri);
-				OWLNamedIndividual reaction = this.makeAnnotatedIndividual(o.reaction_uri);
+				OWLNamedIndividual reaction = this.makeUnannotatedIndividual(IRI.create(o.reaction_uri));
+				//location of enabler trumps other conditions
+				//if all the same, then keep
+				boolean keep_occurs = false;
+				String reason = "";
+				if(o.relation_uri.equals(enabled_by.getIRI().toURI().toString())) {
+					keep_occurs = true;
+					reason = "This relation was asserted based on the location of the enabling molecule. ";
+				}else if(o.location_type_uris.size()==1) {	
+					keep_occurs = true;
+					reason = "This relation was asserted because all entities involved in the reaction are in the same location. ";
+				}
 				//make the occurs in assertion
-				for(String location_type_uri : o.location_type_uris) {
-					OWLClass location_class = df.getOWLClass(IRI.create(location_type_uri));
-					Set<OWLAnnotation> annos = getDefaultAnnotations();
-					String explain1 = "This relation was inferred because an input, enabler, or regulator of this reaction was said to be located in "+getaLabel(location_class);
-					annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain1)));		
-					OWLNamedIndividual placeInstance = df.getOWLNamedIndividual(GoCAM.makeRandomIri(model_id));
-					addTypeAssertion(placeInstance, location_class);
-					addRefBackedObjectPropertyAssertion(reaction, GoCAM.occurs_in, placeInstance, Collections.singleton(model_id), GoCAM.eco_imported_auto, "Reactome", annos, model_id);
+				if(keep_occurs) {
+					for(String location_type_uri : o.location_type_uris) {
+						OWLClass location_class = df.getOWLClass(IRI.create(location_type_uri));
+						Set<OWLAnnotation> annos = getDefaultAnnotations();
+						annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(reason)));		
+						OWLNamedIndividual placeInstance = df.getOWLNamedIndividual(GoCAM.makeRandomIri(model_id));
+						addTypeAssertion(placeInstance, location_class);
+						addRefBackedObjectPropertyAssertion(reaction, GoCAM.occurs_in, placeInstance, Collections.singleton(model_id), GoCAM.eco_imported_auto, "Reactome", annos, model_id);
+					}
 				}
 			}
 		}
@@ -1199,7 +1209,7 @@ pathway has_part R
 					OWLObjectProperty prop = GoCAM.directly_negatively_regulates;
 					OWLNamedIndividual original_regulator = makeAnnotatedIndividual(er.entity_uri);
 					//OWLNamedIndividual regulator = cloneIndividual(er.entity_uri, model_id);
-					
+
 					String regulator_label = getaLabel(original_regulator);
 					OWLObjectProperty prop_for_deletion = GoCAM.involved_in_negative_regulation_of;
 					if(er.prop_uri.equals("http://purl.obolibrary.org/obo/RO_0002429")) {

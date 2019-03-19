@@ -598,6 +598,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 	public class InferredOccursIn {
 		String pathway_uri;
 		String reaction_uri;
+		String relation_uri;
 		Set<String> location_type_uris = new HashSet<String>();
 		Map<String, String> entity_location_instances = new HashMap<String, String>();
 	}
@@ -620,8 +621,8 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			String pathway_uri = pathway.getURI();
 			Resource reaction = qs.getResource("reaction");
 			String reaction_uri = reaction.getURI();
-			//Resource reaction_type = qs.getResource("reaction_type"); 
-			//Resource prop = qs.getResource("prop"); 
+			Resource relation = qs.getResource("relation");
+			String relation_uri = relation.getURI();
 			Resource location_instance = qs.getResource("location_instance"); 
 			String location_instance_uri = location_instance.getURI();
 			Resource location_type = qs.getResource("location_type"); 
@@ -637,8 +638,8 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 				o = new InferredOccursIn();
 				o.reaction_uri = reaction_uri;
 				o.pathway_uri = pathway_uri;
-			}
-			
+				o.relation_uri = relation_uri;
+			}			
 			o.location_type_uris.add(location_type_uri);
 			o.entity_location_instances.put(entity_uri, location_instance_uri);
 			reaction_locinfo.put(reaction_uri, o);
