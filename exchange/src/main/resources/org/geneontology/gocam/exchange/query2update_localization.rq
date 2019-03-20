@@ -8,12 +8,9 @@ prefix skos: <http://www.w3.org/2004/02/skos/core#>
 #If there is no specified GO molecular function term (except root MF GO:0003674), 
 #and the input entities are the same as the output entities
 #and the input entities have different locations from the output entities
-#then tag it as rdf:type 'protein transport' or, if a complex, 'transport'
-##and add has_target_end_location and has_target_start_location attributes to the reaction node
-##these will allow deeper automated inference of process type 
-##e.g. to classes like 'Establishment of protein localization to mitochondrial membrane'
+#then there may be some transport happening - (but for GO, only when there is something that enables the transport to happen)
 
-select ?reaction  ?start_location_type ?end_location_type ?start_location ?end_location ?thing_type ?pathway 
+select ?reaction  ?start_location_type ?end_location_type ?start_location ?end_location ?thing_type ?pathway ?enabler   
 where {
   	#reaction annotated to root (check for reasoning..)
   	?reaction rdf:type obo:GO_0003674 .
@@ -59,7 +56,9 @@ where {
 	filter(?end_location_type != <http://purl.obolibrary.org/obo/GO_0005575>) . 
 	filter(?start_location_type != <http://purl.obolibrary.org/obo/GO_0005575>) . 
 	
-	OPTIONAL{?reaction obo:BFO_0000050 ?pathway }
+	?reaction obo:BFO_0000050 ?pathway . 
+	OPTIONAL{?reaction obo:RO_0002333 ?enabler} 
+	
 }
 
 # protein containing complex <http://purl.obolibrary.org/obo/GO_0032991>

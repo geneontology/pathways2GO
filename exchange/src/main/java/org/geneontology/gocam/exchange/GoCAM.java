@@ -860,13 +860,16 @@ final long counterValue = instanceCounter.getAndIncrement();
 	}
 
 	/**
-	 * Infer Protein Transport reactions
+	 * Infer Transport reactions
 	 * If a reaction has not been provided with an rdf:type 
 	 * and the input entities are the same as the output entities
 	 * and the input entities have different locations from the output entities
-	 * and the entities are not complexes (limited to individual proteins) 
-	 * then tag it as rdf:type 'establishment of protein localization' (notably a BP not an MF)
-	 * and add has_target_end_location and has_target_start_location attributes to the reaction node
+	 * then add has_target_end_location and has_target_start_location attributes to the reaction node
+	 * 
+	 * if the reaction is enabled by something
+	 * and the entities are proteins
+	 * then tag it as rdf:type 'protein transport'
+	 * else tag it as 'transport' 
 	 * See: 'TCF dependent signaling in response to WNT' https://reactome.org/PathwayBrowser/#/R-HSA-201681&SEL=R-HSA-201669&PATH=R-HSA-162582,R-HSA-195721
 	 * (1 inference for reaction 'Beta-catenin translocates to the nucleus'
 	 *  Downstream dependency alert: do this before enabler inference step below since we don't want that rule to fire on transport reactions
@@ -889,13 +892,20 @@ final long counterValue = instanceCounter.getAndIncrement();
 				OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(molecular_function, reaction);
 				ontman.removeAxiom(go_cam_ont, classAssertion);
 				//add transport type
-				if(transport_reaction.thing_type_uri.contains("uniprot")) {
-					addTypeAssertion(reaction, protein_transport);
+				//but only if there is an enabler
+				String explain = "No type is assigned because the reaction did not have one assigned.  This is likely some kind of transport function but without something to enable it, the GO will not make a claim about what it might be.";
+				if(transport_reaction.enabler_uri!=null) {
+					if(transport_reaction.thing_type_uri.contains("uniprot")) {
+						addTypeAssertion(reaction, protein_transport);
+						explain = "This reaction represents the process of transporting a protein from one location to another, hence the GO-CAM conversion automatically assigned the type 'protein transport'";
+					}else {
+						addTypeAssertion(reaction, transport);
+						explain = "This reaction represents the process of transporting something aside from a protein (e.g. a complex) from one location to another, hence the GO-CAM conversion automatically assigned the type 'protein transport'";
+					}
 				}else {
-					addTypeAssertion(reaction, transport);
+					System.out.println("No enabler for transport reaction "+getaLabel(reaction));
 				}
-				addLiteralAnnotations2Individual(reaction.getIRI(), rdfs_comment, "Inferred to be of type 'establishment of protein localization'"
-						+ " because at least one protein is the same as an input and an output aside from its location.");
+				addLiteralAnnotations2Individual(reaction.getIRI(), rdfs_comment, explain);
 				//record what moved where so the classifier can see it properly
 				OWLNamedIndividual start_loc = makeAnnotatedIndividual(makeRandomIri(model_id));
 				OWLClass start_loc_type = df.getOWLClass(IRI.create(transport_reaction.input_loc_class_uri));
@@ -905,11 +915,11 @@ final long counterValue = instanceCounter.getAndIncrement();
 				addTypeAssertion(end_loc, end_loc_type);				
 				//add relations to enable deeper classification based on OWL axioms in BP branch
 				Set<OWLAnnotation> annos = getDefaultAnnotations();
-				String explain1 = "This relation was inferred because a protein that was an input to the reaction started out in the target location "+getaLabel(end_loc_type)
+				String explain1 = "This relation was inferred because something that was an input to the reaction started out in the target location "+getaLabel(end_loc_type)
 				+ " and then, as a consequence of the reaction/process was transported to another location.";
 				annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain1)));				
 				addRefBackedObjectPropertyAssertion(reaction, has_target_start_location, start_loc, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
-				String explain2 = "This relation was inferred because a protein that was an input to the reaction started one location "
+				String explain2 = "This relation was inferred because something that was an input to the reaction started one location "
 						+ " and then, as a consequence of the reaction/process was transported to the target end location "+getaLabel(end_loc_type);
 				Set<OWLAnnotation> annos2 = getDefaultAnnotations();
 				annos2.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain2)));

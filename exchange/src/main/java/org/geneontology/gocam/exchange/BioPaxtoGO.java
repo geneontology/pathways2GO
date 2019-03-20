@@ -189,7 +189,7 @@ public class BioPaxtoGO {
 		}	
 		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
 
-		String test_pathway = "Signaling by BMP"; //"TCF dependent signaling in response to WNT"; //"RAF-independent MAPK1/3 activation";//"Oxidative Stress Induced Senescence"; //"Activation of PUMA and translocation to mitochondria";//"HDR through Single Strand Annealing (SSA)";//"Glycolysis";  //"IRE1alpha activates chaperones"; //"Generation of second messenger molecules";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
+		String test_pathway = "Glycolysis"; //"Signaling by BMP"; //"TCF dependent signaling in response to WNT"; //"RAF-independent MAPK1/3 activation";//"Oxidative Stress Induced Senescence"; //"Activation of PUMA and translocation to mitochondria";//"HDR through Single Strand Annealing (SSA)";  //"IRE1alpha activates chaperones"; //"Generation of second messenger molecules";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathway);
 		//		System.out.println("Writing report");
 		//		bp2g.report.writeReport("report/");
@@ -287,7 +287,7 @@ public class BioPaxtoGO {
 			if(!keepPathway(currentPathway, base_provider)){ //Pathway Commons contains a lot of content free stubs when viewed this way
 				continue;
 			}
-			if(test_pathway_name!=null&&!test_pathway_name.equals(go_cam.name)) {
+			if(test_pathway_name!=null&&!test_pathway_name.equals(go_cam.name)&&!go_cam.name.equals("Signaling by BMP")) {
 				continue;
 			}
 			String model_id = null;
@@ -554,13 +554,15 @@ public class BioPaxtoGO {
 					go_cam.addRefBackedObjectPropertyAssertion(child, GoCAM.part_of, pathway_e, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 					//attach child pathways
 				}
-				else if(process.getModelInterface().equals(Pathway.class)
-						&&add_subpathway_bridges){	
+				else if(process.getModelInterface().equals(Pathway.class)){
 					//different pathway - bridging relation.
-					String child_model_id = this.getEntityReferenceId(process);
-					IRI child_pathway_iri = GoCAM.makeGoCamifiedIRI(child_model_id, child_model_id);
-					OWLNamedIndividual child_pathway = go_cam.makeBridgingIndividual(child_pathway_iri);
-					go_cam.addRefBackedObjectPropertyAssertion(child_pathway, GoCAM.part_of, pathway_e, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+					if(add_subpathway_bridges){
+						String child_model_id = this.getEntityReferenceId(process);
+						IRI child_pathway_iri = GoCAM.makeGoCamifiedIRI(child_model_id, child_model_id);
+						OWLNamedIndividual child_pathway = go_cam.makeBridgingIndividual(child_pathway_iri);
+						go_cam.addRefBackedObjectPropertyAssertion(child_pathway, GoCAM.part_of, pathway_e, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+					}
+					//leave them out unless bridging implemented.  
 				}
 				else {
 					System.out.println("Unknown Process !"+process.getDisplayName());

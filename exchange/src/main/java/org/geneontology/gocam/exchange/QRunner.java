@@ -557,6 +557,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		String output_loc_class_uri;
 		String thing_type_uri;
 		String pathway_uri;
+		String enabler_uri = null;
 	}
 	
 	Set<InferredTransport> findTransportReactions() {
@@ -581,6 +582,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			Resource start_loc_instance = qs.getResource("start_location"); 
 			Resource end_loc_instance = qs.getResource("end_location"); 
 			Resource thing_type = qs.getResource("thing_type"); 
+			Resource enabler = qs.getResource("enabler");
 			InferredTransport t = new InferredTransport();
 			t.reaction_uri = reaction.getURI();
 			t.input_loc_class_uri = start.getURI();
@@ -589,6 +591,9 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			t.input_loc_uri = start_loc_instance.getURI();
 			t.output_loc_uri = end_loc_instance.getURI();
 			t.pathway_uri = pathway_uri;
+			if(enabler!=null) {
+				t.enabler_uri = enabler.getURI();
+			}
 			transports.add(t);
 		}
 		qe.close();
