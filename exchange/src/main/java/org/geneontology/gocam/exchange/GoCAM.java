@@ -947,23 +947,29 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 				//if all the same, then keep
 				boolean keep_occurs = false;
 				String reason = "";
-				if(o.relation_uri.equals(enabled_by.getIRI().toURI().toString())) {
-					keep_occurs = true;
-					reason = "This relation was asserted based on the location of the enabling molecule. ";
-				}else if(o.location_type_uris.size()==1) {	
+				String enabled_by_uri = obo_iri + "RO_0002333";
+				String occurs_location_uri = null;
+				for(String relation_uri : o.relation_location.keySet()) {
+					if(relation_uri.equals(enabled_by_uri)) {
+						keep_occurs = true;
+						occurs_location_uri = o.relation_location.get(relation_uri);
+						reason = "This relation was asserted based on the location of the enabling molecule. ";
+						break;
+					}
+				}
+				if((!keep_occurs)&&o.location_type_uris.size()==1) {	
 					keep_occurs = true;
 					reason = "This relation was asserted because all entities involved in the reaction are in the same location. ";
+					occurs_location_uri = o.location_type_uris.iterator().next();
 				}
 				//make the occurs in assertion
 				if(keep_occurs) {
-					for(String location_type_uri : o.location_type_uris) {
-						OWLClass location_class = df.getOWLClass(IRI.create(location_type_uri));
-						Set<OWLAnnotation> annos = getDefaultAnnotations();
-						annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(reason)));		
-						OWLNamedIndividual placeInstance = df.getOWLNamedIndividual(GoCAM.makeRandomIri(model_id));
-						addTypeAssertion(placeInstance, location_class);
-						addRefBackedObjectPropertyAssertion(reaction, GoCAM.occurs_in, placeInstance, Collections.singleton(model_id), GoCAM.eco_imported_auto, "Reactome", annos, model_id);
-					}
+					OWLClass location_class = df.getOWLClass(IRI.create(occurs_location_uri));
+					Set<OWLAnnotation> annos = getDefaultAnnotations();
+					annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(reason)));		
+					OWLNamedIndividual placeInstance = df.getOWLNamedIndividual(GoCAM.makeRandomIri(model_id));
+					addTypeAssertion(placeInstance, location_class);
+					addRefBackedObjectPropertyAssertion(reaction, GoCAM.occurs_in, placeInstance, Collections.singleton(model_id), GoCAM.eco_imported_auto, "Reactome", annos, model_id);
 				}
 			}
 		}

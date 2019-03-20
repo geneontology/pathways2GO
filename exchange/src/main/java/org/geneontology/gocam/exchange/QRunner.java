@@ -598,7 +598,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 	public class InferredOccursIn {
 		String pathway_uri;
 		String reaction_uri;
-		String relation_uri;
+		Map<String, String> relation_location = new HashMap<String, String>();
 		Set<String> location_type_uris = new HashSet<String>();
 		Map<String, String> entity_location_instances = new HashMap<String, String>();
 	}
@@ -638,8 +638,8 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 				o = new InferredOccursIn();
 				o.reaction_uri = reaction_uri;
 				o.pathway_uri = pathway_uri;
-				o.relation_uri = relation_uri;
 			}			
+			o.relation_location.put(relation_uri, location_type_uri);
 			o.location_type_uris.add(location_type_uri);
 			o.entity_location_instances.put(entity_uri, location_instance_uri);
 			reaction_locinfo.put(reaction_uri, o);
@@ -648,10 +648,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		
 		for(String reaction : reaction_locinfo.keySet()) {
 			InferredOccursIn o = reaction_locinfo.get(reaction);
-			//check for the ones that are the all the same
-			//if(o.location_type_uris.size()==1) {
-				occurs.add(o);
-			//}
+			occurs.add(o);
 		}
 		
 		return occurs;
