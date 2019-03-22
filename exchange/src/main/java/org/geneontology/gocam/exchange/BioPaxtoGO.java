@@ -118,7 +118,7 @@ public class BioPaxtoGO {
 	Model biopax_model;
 	Map<String, String> gocamid_sourceid = new HashMap<String, String>();
 	//ReactomeExtras reactome_extras;
-	//
+	static boolean ignore_diseases = true;
 	static boolean add_lego_import = false; //unless you never want to open the output in Protege always leave false..(or learn how to use a catalogue file)
 	static boolean save_inferences = false;  //adds inferences to blazegraph journal
 	static boolean expand_subpathways = false;  //this is a bad idea for high level nodes like 'Signaling Pathways'
@@ -130,7 +130,7 @@ public class BioPaxtoGO {
 	static boolean add_upstream_controller_events_from_other_pathways = false;
 	static boolean add_subpathway_bridges = false;
 	static String default_namespace_prefix = "Reactome";
-
+	
 	public BioPaxtoGO(){
 		strategy = ImportStrategy.NoctuaCuration; 
 		report = new GoMappingReport();
@@ -189,16 +189,26 @@ public class BioPaxtoGO {
 		}	
 		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
 
-		String test_pathway = "Glycolysis"; //"Signaling by BMP"; //"TCF dependent signaling in response to WNT"; //"RAF-independent MAPK1/3 activation";//"Oxidative Stress Induced Senescence"; //"Activation of PUMA and translocation to mitochondria";//"HDR through Single Strand Annealing (SSA)";  //"IRE1alpha activates chaperones"; //"Generation of second messenger molecules";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
-		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathway);
+		//"Glycolysis"; //"Signaling by BMP"; //"TCF dependent signaling in response to WNT"; //"RAF-independent MAPK1/3 activation";//"Oxidative Stress Induced Senescence"; //"Activation of PUMA and translocation to mitochondria";//"HDR through Single Strand Annealing (SSA)";  //"IRE1alpha activates chaperones"; //"Generation of second messenger molecules";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
+		Set<String> test_pathways = new HashSet<String>();
+		test_pathways.add("Signaling by Ligand-Responsive EGFR Variants in Cancer");
+		test_pathways.add("Disease");
+		test_pathways.add("Defective SLC26A2 causes chondrodysplasias");
+		test_pathways.add("Defective Base Excision Repair Associated with MUTYH");
+		test_pathways.add("RAF-independent MAPK1/3 activation");
+		test_pathways.add("TCF dependent signaling in response to WNT");
+		test_pathways.add("Glycolysis");
+		test_pathways.add("Signaling by BMP");
+		
+		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathways);
 		//		System.out.println("Writing report");
 		//		bp2g.report.writeReport("report/");
 		//		System.out.println("All done");
 	} 
 
 	private void convertReactomeFile(String input_file, 
-			String output, boolean split_by_pathway, String base_title, String base_contributor, String base_provider, String tag, String test_pathway) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
-		convert(input_file, output, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathway);
+			String output, boolean split_by_pathway, String base_title, String base_contributor, String base_provider, String tag, Set<String> test_pathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
+		convert(input_file, output, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathways);
 	}
 
 	private void convertReactomeFolder(String input_folder, String output_folder, boolean save_inferences, boolean expand_subpathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
@@ -241,7 +251,7 @@ public class BioPaxtoGO {
 	private void convert(
 			String input_biopax, String converted, 
 			boolean split_out_by_pathway, 
-			String base_title, String base_contributor, String base_provider, String tag, String test_pathway_name) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException  {
+			String base_title, String base_contributor, String base_provider, String tag, Set<String> test_pathway_names) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException  {
 		//set for writing metadata
 		String datasource = "";
 		if(base_provider.equals("https://reactome.org")) {
@@ -284,10 +294,11 @@ public class BioPaxtoGO {
 			//			}
 
 			go_cam.name = currentPathway.getDisplayName();
-			if(!keepPathway(currentPathway, base_provider)){ //Pathway Commons contains a lot of content free stubs when viewed this way
+			if(test_pathway_names!=null&&!test_pathway_names.contains(go_cam.name)) {
 				continue;
 			}
-			if(test_pathway_name!=null&&!test_pathway_name.equals(go_cam.name)&&!go_cam.name.equals("Signaling by BMP")) {
+			if(!keepPathway(currentPathway, base_provider)){ //Pathway Commons contains a lot of content free stubs when viewed this way
+				System.out.println("Skipping pathway: "+currentPathway.getDisplayName());
 				continue;
 			}
 			String model_id = null;
@@ -390,7 +401,16 @@ public class BioPaxtoGO {
 	boolean keepPathway(Pathway pathway, String base_provider) {
 		boolean keep = false;
 		if(base_provider.equals("https://reactome.org")) {
+			//default to keeping all reactome content
 			keep = true;
+			//but ignore disease pathways
+			Set<Pathway> parents = getPathwayParents(pathway, null);
+			for(Pathway parent : parents) {
+				if(parent.getDisplayName().equals("Disease")) {
+					keep = false;
+					break;
+				}
+			}
 		}else {
 			Set<Process> processes = pathway.getPathwayComponent();
 			if(processes!=null&&processes.size()>1) {
@@ -400,6 +420,18 @@ public class BioPaxtoGO {
 		return keep;
 	}
 
+	Set<Pathway> getPathwayParents(Pathway pathway, Set<Pathway> parents){
+		if(parents==null) {
+			parents = new HashSet<Pathway>();
+			parents.add(pathway);
+		}
+		for(Pathway parent_pathway : pathway.getPathwayComponentOf()) {
+			parents.add(parent_pathway);
+			parents.addAll(getPathwayParents(parent_pathway, parents));
+		}
+		return parents;
+	}
+	
 	/**
 	 * Once all the Paxtools parsing and initial go_cam OWL ontology creation is done, apply more inference rules and export the files
 	 * @param outfilename
