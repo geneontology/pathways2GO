@@ -469,6 +469,10 @@ public class GoCAM {
 		OWLNamedIndividual i = df.getOWLNamedIndividual(iri);		
 		return i;
 	}
+	private OWLNamedIndividual makeUnannotatedIndividual(String iri) {
+		OWLNamedIndividual i = df.getOWLNamedIndividual(IRI.create(iri));		
+		return i;
+	}
 
 	void addBasicAnnotations2Individual(IRI individual_iri, String contributor_uri, String date, String provider_uri) {
 		addLiteralAnnotations2Individual(individual_iri, contributor_prop, contributor_uri);
@@ -853,7 +857,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		r = inferNegativeRegulationByBinding(model_id, r);
 		r = inferRegulatesViaOutputEnables(model_id, r);
 		r = inferProvidesInput(model_id, r);
-		r = convertEntityRegulatorsToRegulatorFunctions(model_id, r);
+		r = convertEntityRegulatorsToBindingFunctions(model_id, r);
 		deleteLocations();
 		cleanOutUnconnectedNodes();
 		return r;
@@ -1156,7 +1160,7 @@ generic_BP +-_regulates pathway
 E1 +- involved_in_regulation_of R
 pathway has_part R
 	 */
-	private RuleResults convertEntityRegulatorsToRegulatorFunctions(String model_id, RuleResults r) {		 
+	private RuleResults convertEntityRegulatorsToRegulatorFunctionsDeprecated(String model_id, RuleResults r) {		 
 		String entity_regulator_rule = "entity_regulator_1";
 		Integer entity_regulator_count = r.checkInitCount(entity_regulator_rule, r);
 		Set<String> entity_regulator_pathways = r.checkInitPathways(entity_regulator_rule, r);
@@ -1259,7 +1263,7 @@ pathway has_part R
 		qrunner = new QRunner(go_cam_ont); 
 		return r;
 	}
-
+	
 	/**
 	 * Rule: entity involved in regulation of function 
 Binding has_input E1
@@ -1270,65 +1274,87 @@ Binding part_of +-_regulation_of BP
 E1 +- involved_in_regulation_of R
 R enabled_by E2
 BP has_part R
+	 * @return 
 	 */
-	private void convertEntityRegulatorsToBindingFunctionsDeprecated(String model_id, RuleResults r) {		 
+	private RuleResults convertEntityRegulatorsToBindingFunctions(String model_id, RuleResults r) {		 
 		String entity_regulator_rule = "entity_regulator_1";
 		Integer entity_regulator_count = r.checkInitCount(entity_regulator_rule, r);
 		Set<String> entity_regulator_pathways = r.checkInitPathways(entity_regulator_rule, r);
 		Set<InferredRegulator> ers = qrunner.getInferredAnonymousRegulators();
-		entity_regulator_count+=ers.size();
+
+		Map<String, Set<InferredRegulator>> reaction_regulators = new HashMap<String, Set<InferredRegulator>>();
 		for(InferredRegulator er : ers) {
-			entity_regulator_pathways.add(er.pathway_uri);
-			OWLNamedIndividual reaction = makeAnnotatedIndividual(er.reaction1_uri);
-			OWLObjectProperty prop = GoCAM.directly_negatively_regulates;
-			OWLNamedIndividual original_regulator = makeAnnotatedIndividual(er.entity_uri);
-			OWLNamedIndividual regulator = cloneIndividual(er.entity_uri, model_id);
-			OWLNamedIndividual pathway = makeAnnotatedIndividual(er.pathway_uri);
-			String reg = " is involved in negative regulation of ";
-			OWLObjectProperty prop_for_deletion = GoCAM.involved_in_negative_regulation_of;
-			if(er.prop_uri.equals("http://purl.obolibrary.org/obo/RO_0002429")) {
-				prop = GoCAM.directly_positively_regulates;
-				reg = " is involved in positive regulation of ";
-				prop_for_deletion = GoCAM.involved_in_positive_regulation_of;
+			Set<InferredRegulator> reg = reaction_regulators.get(er.reaction1_uri);
+			if(reg == null) {
+				reg = new HashSet<InferredRegulator>();
 			}
-			Set<OWLAnnotation> annos = getDefaultAnnotations();
-			//add the process regulates relation
-			String regulator_label = getaLabel(original_regulator);
-			String explain = "The relation was inferred because "+regulator_label
-					+reg+" the reaction.  See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
-			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
+			reg.add(er);
+			reaction_regulators.put(er.reaction1_uri, reg);
+		}
 
-			//make the MF node
-			OWLNamedIndividual binding_node = makeAnnotatedIndividual(makeRandomIri(model_id));
-			addTypeAssertion(binding_node, binding);
-			addRefBackedObjectPropertyAssertion(binding_node, has_input, regulator, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
-			addRefBackedObjectPropertyAssertion(binding_node, prop, reaction, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+		entity_regulator_count+=ers.size();
+		for(String reaction_uri : reaction_regulators.keySet()) {
+			OWLNamedIndividual reaction = makeUnannotatedIndividual(reaction_uri);
+			//just do this once per reaction, most is redundant because of flat response structure
+			Set<InferredRegulator> regs = reaction_regulators.get(reaction_uri);
+			if(!regs.isEmpty()) {
+				InferredRegulator base = regs.iterator().next();
+				entity_regulator_pathways.add(base.pathway_uri);
+				OWLNamedIndividual pathway = makeUnannotatedIndividual(base.pathway_uri);
+				//now get the actual regulating entities
+				Set<String> regulating_entities = new HashSet<String>();
+				for(InferredRegulator er : reaction_regulators.get(reaction_uri)) {
+					//catch cases where there may be more than one of the same entity
+					//avoid making multiple redundant binding functions for the same entity
+					if(!regulating_entities.add(er.entity_uri)) {
+						continue;
+					}
+					Set<OWLAnnotation> annos = getDefaultAnnotations();
+					OWLNamedIndividual regulator = makeUnannotatedIndividual(er.entity_uri);
+					String regulator_label = getaLabel(regulator);
+					OWLObjectProperty prop_for_deletion = GoCAM.involved_in_negative_regulation_of;
+					OWLObjectProperty regulator_prop = GoCAM.directly_negatively_regulates;
+					if(er.prop_uri.equals("http://purl.obolibrary.org/obo/RO_0002429")) {
+						String reg = " is involved in positive regulation of ";
+						String explain = "The relation was inferred because "+regulator_label
+								+reg+" the reaction.  See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
+						annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
+						prop_for_deletion = GoCAM.involved_in_positive_regulation_of;	
+						regulator_prop = GoCAM.directly_positively_regulates;
+					}else {
+						String reg = " is involved in negative regulation of ";
+						String explain = "The relation was inferred because "+regulator_label
+								+reg+" the reaction.  See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
+						annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
+					}
+					//make the MF node
+					OWLNamedIndividual binding_node = makeAnnotatedIndividual(makeRandomIri(model_id));
+					addTypeAssertion(binding_node, binding);
+					addRefBackedObjectPropertyAssertion(binding_node, has_input, regulator, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+					addRefBackedObjectPropertyAssertion(binding_node, regulator_prop, reaction, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
 
-			if(er.enabler_uri!=null) {
-				OWLNamedIndividual enabler = cloneIndividual(er.enabler_uri, model_id);
-				addRefBackedObjectPropertyAssertion(binding_node, enabled_by, enabler, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
-				//delete the cloned enable relation
-				applyAnnotatedTripleRemover(reaction.getIRI(), enabled_by.getIRI(), enabler.getIRI());
+					if(er.enabler_uri!=null) {
+						OWLNamedIndividual enabler = cloneIndividual(er.enabler_uri, model_id, true, true, false);
+						addRefBackedObjectPropertyAssertion(binding_node, enabled_by, enabler, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+						//delete the cloned enable relation
+						applyAnnotatedTripleRemover(reaction.getIRI(), enabled_by.getIRI(), enabler.getIRI());
+					}
+					//make a BP node
+					OWLNamedIndividual bp_node = makeAnnotatedIndividual(makeRandomIri(model_id));
+					addTypeAssertion(bp_node, bp_class);
+					addRefBackedObjectPropertyAssertion(binding_node, part_of, bp_node, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+					addRefBackedObjectPropertyAssertion(bp_node, regulator_prop, pathway, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);					
+					//delete the original entity regulates process relation 
+					applyAnnotatedTripleRemover(regulator.getIRI(), prop_for_deletion.getIRI(), reaction.getIRI());
+				}
 			}
-			//make a BP node
-			OWLNamedIndividual bp_node = makeAnnotatedIndividual(makeRandomIri(model_id));
-			addTypeAssertion(bp_node, bp_class);
-			addRefBackedObjectPropertyAssertion(binding_node, part_of, bp_node, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
-			addRefBackedObjectPropertyAssertion(bp_node, prop, pathway, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
-
-			//delete the entity regulates process relation 
-			//original
-			applyAnnotatedTripleRemover(original_regulator.getIRI(), prop_for_deletion.getIRI(), reaction.getIRI());
-			//cloned
-			applyAnnotatedTripleRemover(regulator.getIRI(), prop_for_deletion.getIRI(), reaction.getIRI());
-
-
 		}
 		r.rule_hitcount.put(entity_regulator_rule, entity_regulator_count);
 		r.rule_pathways.put(entity_regulator_rule, entity_regulator_pathways);
 		qrunner = new QRunner(go_cam_ont); 
-
+		return r;
 	}
+	
 	private void deleteLocations() {
 		System.out.println("Starting delete locations");
 		/**
@@ -1352,42 +1378,52 @@ BP has_part R
 	}
 
 
-	private OWLNamedIndividual cloneIndividual(String entity_uri, String model_id) {
-		OWLNamedIndividual source = makeAnnotatedIndividual(entity_uri);
-		return cloneIndividual(source, model_id);
+	private OWLNamedIndividual cloneIndividual(String entity_uri, String model_id, boolean clone_annotations, boolean clone_outgoing, boolean clone_incoming) {
+		OWLNamedIndividual source = makeUnannotatedIndividual(entity_uri);
+		return cloneIndividual(source, model_id, clone_annotations, clone_outgoing, clone_incoming);
 	}
 
-	/**
-	 * Given the uri of an individual in an ontology
-	 * Return a new Individual with a different URI and the same axioms (limited to types, objectproperty assertions, annotations)
-	 * @param entity_uri
-	 * @return
-	 */
-	private OWLNamedIndividual cloneIndividual(OWLNamedIndividual source, String model_id) {
-		OWLNamedIndividual clone = makeAnnotatedIndividual(makeRandomIri(model_id));
-		Collection<OWLAnnotationAssertionAxiom> annotation_axioms = EntitySearcher.getAnnotationAssertionAxioms(source, go_cam_ont);
-		Iterator<OWLAnnotationAssertionAxiom> ai = annotation_axioms.iterator();
-		while(ai.hasNext()) {
-			OWLAnnotationAssertionAxiom ax = ai.next();
-			OWLAnnotationAssertionAxiom aprop = (OWLAnnotationAssertionAxiom)ax;
-			OWLAnnotationAssertionAxiom a_ax = df.getOWLAnnotationAssertionAxiom((OWLAnnotationSubject) clone.getIRI(), aprop.getAnnotation());
-			AddAxiom addAxiom = new AddAxiom(go_cam_ont, a_ax);
-			ontman.applyChange(addAxiom);
-		}	
+
+	private OWLNamedIndividual cloneIndividual(OWLNamedIndividual source, String model_id, boolean clone_annotations, boolean clone_outgoing, boolean clone_incoming) {
+		OWLNamedIndividual clone = makeUnannotatedIndividual(makeRandomIri(model_id));
+		//always want the types
+		Collection<OWLClassExpression> types = EntitySearcher.getTypes(source, go_cam_ont);
+		Iterator<OWLClassExpression> typesi = types.iterator();
+		while(typesi.hasNext()) {
+			addTypeAssertion(clone, typesi.next());
+		}
+		//annotations sometimes
+		if(clone_annotations) {
+			Collection<OWLAnnotationAssertionAxiom> annotation_axioms = EntitySearcher.getAnnotationAssertionAxioms(source, go_cam_ont);
+			Iterator<OWLAnnotationAssertionAxiom> ai = annotation_axioms.iterator();
+			while(ai.hasNext()) {
+				OWLAnnotationAssertionAxiom ax = ai.next();
+				OWLAnnotationAssertionAxiom aprop = (OWLAnnotationAssertionAxiom)ax;
+				OWLAnnotationAssertionAxiom a_ax = df.getOWLAnnotationAssertionAxiom((OWLAnnotationSubject) clone.getIRI(), aprop.getAnnotation());
+				AddAxiom addAxiom = new AddAxiom(go_cam_ont, a_ax);
+				ontman.applyChange(addAxiom);
+			}	
+		}
+		//object property axioms sometimes
+		if(!clone_outgoing && ! clone_incoming) {
+			return clone;
+		}
 		Collection<OWLAxiom> axioms = EntitySearcher.getReferencingAxioms(source, go_cam_ont);
 		Iterator<OWLAxiom> i = axioms.iterator();
 		while(i.hasNext()) {
 			OWLAxiom ax = i.next();
 			if(ax.isOfType(AxiomType.OBJECT_PROPERTY_ASSERTION)){
-				OWLObjectPropertyAssertionAxiom oprop = (OWLObjectPropertyAssertionAxiom)ax;
+				OWLObjectPropertyAssertionAxiom oprop_axiom = (OWLObjectPropertyAssertionAxiom)ax;
 				OWLObjectPropertyAssertionAxiom add_prop_axiom = null;
 				//need to do similar clone for annotations
-				Set<OWLAnnotation> source_annos = oprop.getAnnotations();
-				Set<OWLAnnotation> cloned_annos = cloneAnnotations(source_annos, model_id);
-				if(source.equals(oprop.getSubject())) {
-					add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(oprop.getProperty(), clone, oprop.getObject(), cloned_annos);
-				}else if (source.equals(oprop.getObject())) {
-					add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(oprop.getProperty(), oprop.getSubject(), clone, cloned_annos);
+				Set<OWLAnnotation> source_annos = oprop_axiom.getAnnotations();
+				if(clone_outgoing&&source.equals(oprop_axiom.getSubject())) {
+					OWLNamedIndividual object_clone = cloneIndividual(oprop_axiom.getObject().asOWLNamedIndividual(), model_id, clone_annotations, false, false);//don't recurse
+					add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(oprop_axiom.getProperty(), clone, object_clone, cloneAnnotations(source_annos, model_id));
+				}
+				else if (clone_incoming&&source.equals(oprop_axiom.getObject())) {
+					OWLNamedIndividual subject_clone = cloneIndividual(oprop_axiom.getSubject().asOWLNamedIndividual(), model_id, clone_annotations, false, false);
+					add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(oprop_axiom.getProperty(), subject_clone, clone, cloneAnnotations(source_annos, model_id));
 				}
 				if(add_prop_axiom !=null) {
 					AddAxiom addAxiom = new AddAxiom(go_cam_ont, add_prop_axiom);
@@ -1395,12 +1431,6 @@ BP has_part R
 				}
 			} 
 		}
-		Collection<OWLClassExpression> types = EntitySearcher.getTypes(source, go_cam_ont);
-		Iterator<OWLClassExpression> typesi = types.iterator();
-		while(typesi.hasNext()) {
-			addTypeAssertion(clone, typesi.next());
-		}
-
 		return clone;
 	}
 
@@ -1417,16 +1447,10 @@ BP has_part R
 				//its just literal value, duplicate
 				OWLAnnotation cloned_anno = df.getOWLAnnotation(anno_prop, anno_value);
 				cloned.add(cloned_anno);
+				//looking at an evidence node
 			}else if(anno_value.asIRI().isPresent()) {
-				/**
-			IRI anno_iri = IRI.create(GoCAM.base_iri+"_evidence_"+source.toStringID()+"_"+prop.toStringID()+"_"+target.toStringID()+"_"+evidence_class.toStringID());//makeEntityHashIri("evidence"+source.hashCode()+"_"+prop.hashCode()+"_"+target.hashCode()+"_"+evidence_class.hashCode());
-			OWLNamedIndividual evidence = makeAnnotatedIndividual(anno_iri);					
-			addTypeAssertion(evidence, evidence_class);
-			OWLAnnotation anno = df.getOWLAnnotation(GoCAM.evidence_prop, anno_iri);
-			annos.add(anno);
-				 */
 				OWLNamedIndividual evidence = df.getOWLNamedIndividual(anno_value.asIRI().get());
-				OWLNamedIndividual cloned_evidence = cloneIndividual(evidence, model_id);
+				OWLNamedIndividual cloned_evidence = cloneIndividual(evidence, model_id, true, false, false);
 				OWLAnnotation cloned_anno = df.getOWLAnnotation(anno_prop, cloned_evidence.getIRI());
 				cloned.add(cloned_anno);
 			}
