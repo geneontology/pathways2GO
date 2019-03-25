@@ -111,7 +111,7 @@ public class BioPaxtoGO {
 	}
 	boolean apply_layout = false;
 	boolean generate_report = false;
-	boolean explain_inconsistant_models = false;
+	boolean explain_inconsistant_models = true;
 	String blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";
 	GoMappingReport report;
 	GOPlus goplus;
@@ -172,7 +172,7 @@ public class BioPaxtoGO {
 				//"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
 				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Dec2018.owl";
 				//"/Users/bgood/Desktop/test/biopax/RAF-independent_MAPK1_3_activation.owl";
-				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Jan2019.owl";
+				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_march25_2019.owl";
 		//"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
 		//		"/Users/bgood/Desktop/test/biopax/Wnt_test_oct8_2018.owl";
 		//"/Users/bgood/Desktop/test/biopax/SignalingByWNTcomplete.owl";
@@ -199,7 +199,10 @@ public class BioPaxtoGO {
 		test_pathways.add("TCF dependent signaling in response to WNT");
 		test_pathways.add("Glycolysis");
 		test_pathways.add("Signaling by BMP");
-		
+		//check this one when its done..
+		test_pathways.add("Class B/2 (Secretin family receptors)");
+		//set to null to do full run
+		test_pathways = null;
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathways);
 		//		System.out.println("Writing report");
 		//		bp2g.report.writeReport("report/");
@@ -483,8 +486,6 @@ public class BioPaxtoGO {
 		//checks for inferred things with rdf:type OWL:Nothing with a sparql query
 		boolean is_logical = go_cam.validateGoCAM();	
 		if(!is_logical) {
-			System.out.println("Illogical go_cam..  stopping");
-			System.exit(0);
 			report.inconsistent_models.add(outfilename);
 			if(explain_inconsistant_models) {
 				scala.collection.Iterator<Triple> triples = wm_with_tbox.facts().toList().iterator();
@@ -508,6 +509,8 @@ public class BioPaxtoGO {
 					}
 				}
 			}
+			System.out.println("Illogical go_cam..  stopping");
+			System.exit(0);
 		}
 	}
 
