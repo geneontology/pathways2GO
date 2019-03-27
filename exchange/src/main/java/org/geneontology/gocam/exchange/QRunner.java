@@ -104,14 +104,14 @@ public class QRunner {
 //		jena = makeJenaModel(wm);
 //	}
 	
-	Model makeJenaModel(WorkingMemory wm) {
+	public Model makeJenaModel(WorkingMemory wm) {
 		Model model = ModelFactory.createDefaultModel();
 		model.add(JavaConverters.setAsJavaSetConverter(wm.facts()).asJava().stream()
 				.map(t -> model.asStatement(Bridge.jenaFromTriple(t))).collect(Collectors.toList()));
 		return model;
 	}
 
-	Model makeJenaModel(OWLOntology abox, OWLOntology tbox) {
+	public Model makeJenaModel(OWLOntology abox, OWLOntology tbox) {
 		Model model = ModelFactory.createDefaultModel();
 		Set<Statement> a_statements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(abox)).asJava();		
 		for(Statement s : a_statements) {

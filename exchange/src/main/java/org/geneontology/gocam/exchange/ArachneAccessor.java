@@ -122,7 +122,6 @@ public class ArachneAccessor {
 				mark = System.currentTimeMillis();
 			}
 			if(add_class_definitions) {
-				//just adding class definitions, not property defs.. 
 				for(OWLOntology tbox_ontology : this.tbox_ontologies) {
 					OWLOntology tboxOntology = OWLManager.createOWLOntologyManager().createOntology(tbox_ontology.getTBoxAxioms(Imports.EXCLUDED));
 					Set<Statement> tboxStatements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(tboxOntology)).asJava();

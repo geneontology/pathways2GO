@@ -38,6 +38,8 @@ import org.geneontology.rules.engine.RuleEngine;
 import org.geneontology.rules.engine.Triple;
 import org.geneontology.rules.engine.WorkingMemory;
 import org.geneontology.rules.util.Bridge;
+import org.obolibrary.robot.CatalogXmlIRIMapper;
+import org.obolibrary.robot.IOHelper;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
@@ -86,6 +88,7 @@ import org.semanticweb.owlapi.util.OWLOntologyWalker;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 
 import scala.collection.JavaConverters;
 
@@ -145,6 +148,16 @@ public class GoCAM {
 		initializeClassesAndRelations();
 	}
 
+	public GoCAM(File ontology_file, String catalog) throws OWLOntologyCreationException, IOException {
+		ontman = OWLManager.createOWLOntologyManager();				
+		//IOHelper helper = new IOHelper();
+		//go_cam_ont = helper.loadOntology(filename, catalog);
+		ontman.setIRIMappers(Sets.newHashSet(new CatalogXmlIRIMapper(catalog)));
+		go_cam_ont = ontman.loadOntologyFromOntologyDocument(ontology_file);
+		df = OWLManager.getOWLDataFactory();
+		initializeClassesAndRelations();
+	}
+	
 	/**
 	 * @throws OWLOntologyCreationException 
 	 * 
