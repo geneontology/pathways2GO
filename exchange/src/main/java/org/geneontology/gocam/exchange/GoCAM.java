@@ -988,10 +988,14 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 				Set<String> occurs_location_uris = new HashSet<String>();
 				for(String relation_uri : o.relation_locations.keySet()) {
 					if(relation_uri.equals(enabled_by_uri)) {
-						keep_occurs = true;
 						occurs_location_uris.addAll(o.relation_locations.get(relation_uri));
-						reason = "This relation was asserted based on the location of the enabling molecule. ";
-						//break;
+						//if the enabling complex occurs in multiple locations, do not assign an occurs_in relation
+						if(occurs_location_uris.size()==1) {
+							keep_occurs = true;
+							reason = "This relation was asserted based on the location of the enabling molecule. ";
+						}else {
+							System.out.println(o.reaction_uri+" has an enabler with multiple location annotations.  Maybe let the data source know this is weird.  Ignoring these for go-cam.");
+						}
 					}
 				}
 				if((!keep_occurs)&&o.location_type_uris.size()==1) {	
