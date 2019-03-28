@@ -89,7 +89,7 @@ public class Helper {
 	
 	public static String getaLabel(String uri, OWLOntology ont){
 		Set<String> labels = getLabels(uri, ont);
-		String label = "";
+		String label = null;
 		if(labels!=null&&labels.size()>0) {
 			for(String l : labels) {
 				label = l;

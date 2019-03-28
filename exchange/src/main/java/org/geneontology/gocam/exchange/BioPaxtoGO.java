@@ -522,13 +522,13 @@ reactome-homosapiens-SHC-mediated_cascade:FGFR3.ttl
 						}else { //<http://arachne.geneontology.org/indirect_type>
 							if(triple.p().toString().equals("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>")&&
 									triple.o().toString().equals("<http://www.w3.org/2002/07/owl#Nothing>")) {
-								OWLEntity bad = go_cam.df.getOWLNamedIndividual(IRI.create(triple.s().toString()));
-								System.out.println("inferred inconsistent:"+triple.s()+" "+go_cam.getaLabel(bad));
+								String bad_uri = triple.s().toString().replaceAll(">", "").replaceAll("<", "");
+								System.out.println("inferred inconsistent:"+triple.s()+" "+Helper.getaLabel(bad_uri, go_cam.go_cam_ont));
 								scala.collection.immutable.Set<Explanation> explanations = wm_with_tbox.explain(triple);
 								scala.collection.Iterator<Explanation> e = explanations.iterator();
 								while(e.hasNext()) {
 									Explanation exp = e.next();
-									String exp_string = renderExplanation(exp);
+									String exp_string = renderExplanation(exp, go_cam);
 									System.out.println(exp_string);
 									System.out.println();
 								}
@@ -542,23 +542,72 @@ reactome-homosapiens-SHC-mediated_cascade:FGFR3.ttl
 		}
 	}
 
-	public String renderExplanation(Explanation exp) {
-		String exp_string = "";
+	public String renderExplanation(Explanation exp, GoCAM go_cam) {
+		String exp_string = "Explanation:\n";
 		scala.collection.Iterator<Rule> rule_it = exp.rules().iterator();
 		while(rule_it.hasNext()) {
 			Rule r = rule_it.next();
 			scala.collection.Iterator<TriplePattern> rule_body_it = r.body().iterator();
+			exp_string = exp_string+"IF\n";
 			while(rule_body_it.hasNext()) {
 				TriplePattern tp = rule_body_it.next();
 				Node subject = tp.s();
 				Node predicate = tp.p();
 				Node object = tp.o();
-				System.out.println(subject.toString());
+				exp_string = exp_string+labelifyTripleNode(subject, go_cam)+"\t"+labelifyTripleNode(predicate, go_cam)+"\t"+labelifyTripleNode(object, go_cam)+"\n";
+			}
+			exp_string = exp_string+"THEN\n";
+			scala.collection.Iterator<TriplePattern> rule_head_it = r.head().iterator();
+			while(rule_head_it.hasNext()) {
+				TriplePattern tp = rule_head_it.next();
+				Node subject = tp.s();
+				Node predicate = tp.p();
+				Node object = tp.o();
+				exp_string = exp_string+"\t"+labelifyTripleNode(subject, go_cam)+"\t"+labelifyTripleNode(predicate, go_cam)+"\t"+labelifyTripleNode(object, go_cam)+"\n";
+			}
+		}	
+		scala.collection.Iterator<Triple> fact_it = exp.facts().iterator();
+		exp_string = exp_string+"FACTS\n";
+		while(fact_it.hasNext()) {
+			Triple tp = fact_it.next();
+			Node subject = tp.s();
+			Node predicate = tp.p();
+			Node object = tp.o();
+			exp_string = exp_string+"\t"+labelifyTripleNode(subject, go_cam)+"\t"+labelifyTripleNode(predicate, go_cam)+"\t"+labelifyTripleNode(object, go_cam)+"\n";
+		}
+		return exp_string;
+	}
+	
+	public String labelifyTripleNode(Node node, GoCAM go_cam) {
+		String n = node.toString(); //will either be a uri or a variable like ?x
+		n = n.replace("<", "");
+		n = n.replace(">", "");
+		if(!n.startsWith("?")) {
+			//<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+			if(n.contains("#")) {
+				n = n.substring(n.indexOf("#"));
+			//http://model.geneontology.org/R-HSA-3214847/R-HSA-3301345	
+			}else if(n.startsWith(GoCAM.base_iri)) {
+				String label = Helper.getaLabel(n, go_cam.go_cam_ont);
+				if(label!=null) {
+					n = label;
+				}
+			//<http://purl.obolibrary.org/obo/BFO_0000066>
+			}else if(n.startsWith("http://purl.obolibrary.org/obo/")) {
+				String label = Helper.getaLabel(n, go_cam.go_cam_ont);
+				if(label!=null) {
+					n = label;
+				}else {
+					label = Helper.getaLabel(n, goplus.go);
+					if(label!=null) {
+						n = label;
+					}else {
+						n = n.substring(31);//trim off obo
+					}
+				}
 			}
 		}
-		
-		
-		return exp_string;
+		return n;
 	}
 	
 	private OWLNamedIndividual definePathwayEntity(GoCAM go_cam, Pathway pathway, String model_id, boolean expand_subpathways, boolean add_components) throws IOException {
