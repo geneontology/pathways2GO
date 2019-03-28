@@ -62,7 +62,10 @@ import org.biopax.paxtools.model.level3.XReferrable;
 import org.biopax.paxtools.model.level3.Xref;
 import org.geneontology.gocam.exchange.idmapping.IdMapper;
 import org.geneontology.rules.engine.Explanation;
+import org.geneontology.rules.engine.Node;
+import org.geneontology.rules.engine.Rule;
 import org.geneontology.rules.engine.Triple;
+import org.geneontology.rules.engine.TriplePattern;
 import org.geneontology.rules.engine.WorkingMemory;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
@@ -117,7 +120,7 @@ public class BioPaxtoGO {
 	GOPlus goplus;
 	Model biopax_model;
 	Map<String, String> gocamid_sourceid = new HashMap<String, String>();
-	//ReactomeExtras reactome_extras;
+	static boolean check_consistency = true;
 	static boolean ignore_diseases = true;
 	static boolean add_lego_import = false; //unless you never want to open the output in Protege always leave false..(or learn how to use a catalogue file)
 	static boolean save_inferences = false;  //adds inferences to blazegraph journal
@@ -130,7 +133,7 @@ public class BioPaxtoGO {
 	static boolean add_upstream_controller_events_from_other_pathways = false;
 	static boolean add_subpathway_bridges = false;
 	static String default_namespace_prefix = "Reactome";
-	
+
 	public BioPaxtoGO(){
 		strategy = ImportStrategy.NoctuaCuration; 
 		report = new GoMappingReport();
@@ -191,18 +194,36 @@ public class BioPaxtoGO {
 
 		//"Glycolysis"; //"Signaling by BMP"; //"TCF dependent signaling in response to WNT"; //"RAF-independent MAPK1/3 activation";//"Oxidative Stress Induced Senescence"; //"Activation of PUMA and translocation to mitochondria";//"HDR through Single Strand Annealing (SSA)";  //"IRE1alpha activates chaperones"; //"Generation of second messenger molecules";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
 		Set<String> test_pathways = new HashSet<String>();
-		test_pathways.add("Signaling by Ligand-Responsive EGFR Variants in Cancer");
-		test_pathways.add("Disease");
-		test_pathways.add("Defective SLC26A2 causes chondrodysplasias");
-		test_pathways.add("Defective Base Excision Repair Associated with MUTYH");
-		test_pathways.add("RAF-independent MAPK1/3 activation");
-		test_pathways.add("TCF dependent signaling in response to WNT");
-		test_pathways.add("Glycolysis");
-		test_pathways.add("Signaling by BMP");
-		//check this one when its done..
-		test_pathways.add("Class B/2 (Secretin family receptors)");
+		//		test_pathways.add("Signaling by Ligand-Responsive EGFR Variants in Cancer");
+		//		test_pathways.add("Disease");
+		//		test_pathways.add("Defective SLC26A2 causes chondrodysplasias");
+		//		test_pathways.add("Defective Base Excision Repair Associated with MUTYH");
+		//		test_pathways.add("RAF-independent MAPK1/3 activation");
+		//		test_pathways.add("TCF dependent signaling in response to WNT");
+		//		test_pathways.add("Glycolysis");
+		//		test_pathways.add("Signaling by BMP");
+		test_pathways.add("HATs acetylate histones");
+
+		/*
+		 * these are inconsistent
+reactome-homosapiens-Neurotransmitter_receptors_and_postsynaptic_signal_transmission.ttl
+reactome-homosapiens-HATs_acetylate_histones.ttl
+reactome-homosapiens-GRB2_events_in_ERBB2_signaling.ttl
+reactome-homosapiens-MET_activates_RAS_signaling.ttl
+reactome-homosapiens-G_alpha_(i)_signalling_events.ttl
+reactome-homosapiens-FRS-mediated_FGFR4_signaling.ttl
+reactome-homosapiens-FRS-mediated_FGFR3_signaling.ttl
+reactome-homosapiens-tRNA_modification_in_the_nucleus_and_cytosol.ttl
+reactome-homosapiens-SHC1_events_in_ERBB4_signaling.ttl
+reactome-homosapiens-FRS-mediated_FGFR2_signaling.ttl
+reactome-homosapiens-MET_activates_RAP1_and_RAC1.ttl
+reactome-homosapiens-Activation_of_G_protein_gated_Potassium_channels.ttl
+reactome-homosapiens-Regulation_of_actin_dynamics_for_phagocytic_cup_formation.ttl
+reactome-homosapiens-SHC-mediated_cascade:FGFR2.ttl
+reactome-homosapiens-SHC-mediated_cascade:FGFR3.ttl		
+		 */
 		//set to null to do full run
-		test_pathways = null;
+		//test_pathways = null;
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathways);
 		//		System.out.println("Writing report");
 		//		bp2g.report.writeReport("report/");
@@ -434,7 +455,7 @@ public class BioPaxtoGO {
 		}
 		return parents;
 	}
-	
+
 	/**
 	 * Once all the Paxtools parsing and initial go_cam OWL ontology creation is done, apply more inference rules and export the files
 	 * @param outfilename
@@ -484,36 +505,62 @@ public class BioPaxtoGO {
 		go_cam.writeGoCAM_jena(outfilename, save2blazegraph);
 		System.out.println("done writing...");
 		//checks for inferred things with rdf:type OWL:Nothing with a sparql query
-		boolean is_logical = go_cam.validateGoCAM();	
-		if(!is_logical) {
-			report.inconsistent_models.add(outfilename);
-			if(explain_inconsistant_models) {
-				scala.collection.Iterator<Triple> triples = wm_with_tbox.facts().toList().iterator();
-				while(triples.hasNext()) {				
-					Triple triple = triples.next();
-					if(wm_with_tbox.asserted().contains(triple)) {
-						continue;
-					}else { //<http://arachne.geneontology.org/indirect_type>
-						if(triple.p().toString().equals("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>")&&
-								triple.o().toString().equals("<http://www.w3.org/2002/07/owl#Nothing>")) {
-							OWLEntity bad = go_cam.df.getOWLNamedIndividual(IRI.create(triple.s().toString()));
-							System.out.println("inferred inconsistent:"+triple.s()+" "+go_cam.getaLabel(bad));
-							scala.collection.immutable.Set<Explanation> explanations = wm_with_tbox.explain(triple);
-							scala.collection.Iterator<Explanation> e = explanations.iterator();
-							while(e.hasNext()) {
-								Explanation exp = e.next();
-								System.out.println(exp.toString());
-								System.out.println();
+		if(check_consistency) {
+			if(wm_with_tbox==null) {
+				wm_with_tbox = tbox_qrunner.arachne.createInferredModel(go_cam.go_cam_ont,false,false);
+				go_cam.qrunner.jena = go_cam.qrunner.makeJenaModel(wm_with_tbox);
+			}
+			boolean is_logical = go_cam.validateGoCAM();	
+			if(!is_logical) {
+				report.inconsistent_models.add(outfilename);
+				if(explain_inconsistant_models) {
+					scala.collection.Iterator<Triple> triples = wm_with_tbox.facts().toList().iterator();
+					while(triples.hasNext()) {				
+						Triple triple = triples.next();
+						if(wm_with_tbox.asserted().contains(triple)) {
+							continue;
+						}else { //<http://arachne.geneontology.org/indirect_type>
+							if(triple.p().toString().equals("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>")&&
+									triple.o().toString().equals("<http://www.w3.org/2002/07/owl#Nothing>")) {
+								OWLEntity bad = go_cam.df.getOWLNamedIndividual(IRI.create(triple.s().toString()));
+								System.out.println("inferred inconsistent:"+triple.s()+" "+go_cam.getaLabel(bad));
+								scala.collection.immutable.Set<Explanation> explanations = wm_with_tbox.explain(triple);
+								scala.collection.Iterator<Explanation> e = explanations.iterator();
+								while(e.hasNext()) {
+									Explanation exp = e.next();
+									String exp_string = renderExplanation(exp);
+									System.out.println(exp_string);
+									System.out.println();
+								}
 							}
 						}
 					}
 				}
+				System.out.println("Illogical go_cam..  stopping");
+				System.exit(0);
 			}
-			System.out.println("Illogical go_cam..  stopping");
-			System.exit(0);
 		}
 	}
 
+	public String renderExplanation(Explanation exp) {
+		String exp_string = "";
+		scala.collection.Iterator<Rule> rule_it = exp.rules().iterator();
+		while(rule_it.hasNext()) {
+			Rule r = rule_it.next();
+			scala.collection.Iterator<TriplePattern> rule_body_it = r.body().iterator();
+			while(rule_body_it.hasNext()) {
+				TriplePattern tp = rule_body_it.next();
+				Node subject = tp.s();
+				Node predicate = tp.p();
+				Node object = tp.o();
+				System.out.println(subject.toString());
+			}
+		}
+		
+		
+		return exp_string;
+	}
+	
 	private OWLNamedIndividual definePathwayEntity(GoCAM go_cam, Pathway pathway, String model_id, boolean expand_subpathways, boolean add_components) throws IOException {
 		IRI pathway_iri = GoCAM.makeGoCamifiedIRI(model_id, model_id);
 		System.out.println("defining pathway "+pathway.getDisplayName()+" "+expand_subpathways+" "+add_components+" "+model_id);

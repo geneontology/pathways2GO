@@ -148,6 +148,13 @@ public class GoCAM {
 		initializeClassesAndRelations();
 	}
 
+	/**
+	 * This is the one to use if trying to read in a GO-CAM model that imports lego (which imports the universe).  Use the catalogue file to control what gets imported - your probably don't need anything.
+	 * @param ontology_file
+	 * @param catalog
+	 * @throws OWLOntologyCreationException
+	 * @throws IOException
+	 */
 	public GoCAM(File ontology_file, String catalog) throws OWLOntologyCreationException, IOException {
 		ontman = OWLManager.createOWLOntologyManager();				
 		//IOHelper helper = new IOHelper();

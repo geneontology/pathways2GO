@@ -56,8 +56,8 @@ public class Validator {
 		
 		Validator validator = new Validator();
 		String go_cam_folder = "/Users/bgood/Documents/GitHub/noctua-models/models/";
-		String out = "/Users/bgood/Desktop/test/go_cams/arachne_validator_WBGene_march25.txt";
-		String filename_must_contain = "WBGene";
+		String out = "/Users/bgood/Desktop/test/go_cams/arachne_validator_reactome_march25.txt";
+		String filename_must_contain = "reactome";
 		String catalog_file = "/Users/bgood/gocam_ontology/catalog-no-import.xml";
 		validator.testConsistencyForFolder(go_cam_folder, out, filename_must_contain, catalog_file);
 //		GoCAM go_cam = new GoCAM(new File("/Users/bgood/Documents/GitHub/noctua-models/models/MGI_MGI_1923628.ttl"), catalog_file);
