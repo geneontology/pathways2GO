@@ -164,7 +164,7 @@ public class GoCAM {
 		df = OWLManager.getOWLDataFactory();
 		initializeClassesAndRelations();
 	}
-	
+
 	/**
 	 * @throws OWLOntologyCreationException 
 	 * 
@@ -975,6 +975,9 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 		}else {
 			i_o_count+=inferred_occurs.size();			
 			for(InferredOccursIn o : inferred_occurs) {
+				if(o.reaction_uri.equals(base_iri+"R-HSA-3214847/R-HSA-3301345")) {
+					System.out.println("debug");
+				}
 				i_o_pathways.add(o.pathway_uri);
 				OWLNamedIndividual reaction = this.makeUnannotatedIndividual(IRI.create(o.reaction_uri));
 				//location of enabler trumps other conditions
@@ -982,28 +985,30 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 				boolean keep_occurs = false;
 				String reason = "";
 				String enabled_by_uri = obo_iri + "RO_0002333";
-				String occurs_location_uri = null;
-				for(String relation_uri : o.relation_location.keySet()) {
+				Set<String> occurs_location_uris = new HashSet<String>();
+				for(String relation_uri : o.relation_locations.keySet()) {
 					if(relation_uri.equals(enabled_by_uri)) {
 						keep_occurs = true;
-						occurs_location_uri = o.relation_location.get(relation_uri);
+						occurs_location_uris.addAll(o.relation_locations.get(relation_uri));
 						reason = "This relation was asserted based on the location of the enabling molecule. ";
-						break;
+						//break;
 					}
 				}
 				if((!keep_occurs)&&o.location_type_uris.size()==1) {	
 					keep_occurs = true;
 					reason = "This relation was asserted because all entities involved in the reaction are in the same location. ";
-					occurs_location_uri = o.location_type_uris.iterator().next();
+					occurs_location_uris.add(o.location_type_uris.iterator().next());
 				}
 				//make the occurs in assertion
 				if(keep_occurs) {
-					OWLClass location_class = df.getOWLClass(IRI.create(occurs_location_uri));
-					Set<OWLAnnotation> annos = getDefaultAnnotations();
-					annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(reason)));		
-					OWLNamedIndividual placeInstance = df.getOWLNamedIndividual(GoCAM.makeRandomIri(model_id));
-					addTypeAssertion(placeInstance, location_class);
-					addRefBackedObjectPropertyAssertion(reaction, GoCAM.occurs_in, placeInstance, Collections.singleton(model_id), GoCAM.eco_imported_auto, "Reactome", annos, model_id);
+					for(String occurs_location_uri : occurs_location_uris) {
+						OWLClass location_class = df.getOWLClass(IRI.create(occurs_location_uri));
+						Set<OWLAnnotation> annos = getDefaultAnnotations();
+						annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(reason)));		
+						OWLNamedIndividual placeInstance = df.getOWLNamedIndividual(GoCAM.makeRandomIri(model_id));
+						addTypeAssertion(placeInstance, location_class);
+						addRefBackedObjectPropertyAssertion(reaction, GoCAM.occurs_in, placeInstance, Collections.singleton(model_id), GoCAM.eco_imported_auto, "Reactome", annos, model_id);
+					}
 				}
 			}
 		}
@@ -1283,7 +1288,7 @@ pathway has_part R
 		qrunner = new QRunner(go_cam_ont); 
 		return r;
 	}
-	
+
 	/**
 	 * Rule: entity involved in regulation of function 
 Binding has_input E1
@@ -1374,7 +1379,7 @@ BP has_part R
 		qrunner = new QRunner(go_cam_ont); 
 		return r;
 	}
-	
+
 	private void deleteLocations() {
 		System.out.println("Starting delete locations");
 		/**
