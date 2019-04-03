@@ -211,8 +211,8 @@ public class BioPaxtoGO {
 //		 test_pathways.add("SHC-mediated cascade:FGFR3");
 		//		test_pathways.add("RAF-independent MAPK1/3 activation");
 		//		test_pathways.add("TCF dependent signaling in response to WNT");
-		//		test_pathways.add("Glycolysis");
-		//		test_pathways.add("Signaling by BMP");
+		test_pathways.add("Glycolysis");
+
 		
 
 		/*

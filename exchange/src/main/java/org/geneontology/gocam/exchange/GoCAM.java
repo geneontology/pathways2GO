@@ -109,6 +109,7 @@ public class GoCAM {
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in,
 	directly_positively_regulated_by, directly_negatively_regulated_by, involved_in_regulation_of, involved_in_negative_regulation_of, involved_in_positive_regulation_of,
 	directly_negatively_regulates, directly_positively_regulates, has_role, causally_upstream_of, causally_upstream_of_negative_effect, causally_upstream_of_positive_effect,
+	negatively_regulates, positively_regulates, 
 	has_target_end_location, has_target_start_location, interacts_with, has_participant, functionally_related_to,
 	contributes_to;
 
@@ -345,6 +346,11 @@ public class GoCAM {
 		directly_negatively_regulates = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002630"));
 		addLabel(directly_negatively_regulates, "directly negatively regulates");
 
+		negatively_regulates = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002212"));
+		addLabel(negatively_regulates, "negatively regulates");
+		positively_regulates = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002213"));
+		addLabel(positively_regulates, "positively regulateds");
+		
 		directly_positively_regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002024"));
 		addLabel(directly_positively_regulated_by, "directly positively regulated by");
 
@@ -1342,14 +1348,14 @@ BP has_part R
 					OWLNamedIndividual regulator = makeUnannotatedIndividual(er.entity_uri);
 					String regulator_label = getaLabel(regulator);
 					OWLObjectProperty prop_for_deletion = GoCAM.involved_in_negative_regulation_of;
-					OWLObjectProperty regulator_prop = GoCAM.directly_negatively_regulates;
+					OWLObjectProperty regulator_prop = GoCAM.negatively_regulates;
 					if(er.prop_uri.equals("http://purl.obolibrary.org/obo/RO_0002429")) {
 						String reg = " is involved in positive regulation of ";
 						String explain = "The relation was inferred because "+regulator_label
 								+reg+" the reaction.  See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 						annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 						prop_for_deletion = GoCAM.involved_in_positive_regulation_of;	
-						regulator_prop = GoCAM.directly_positively_regulates;
+						regulator_prop = GoCAM.positively_regulates;
 					}else {
 						String reg = " is involved in negative regulation of ";
 						String explain = "The relation was inferred because "+regulator_label
