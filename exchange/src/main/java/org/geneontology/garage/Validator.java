@@ -55,8 +55,9 @@ public class Validator {
 	public static void main(String[] args) throws OWLOntologyCreationException, IOException {
 		
 		Validator validator = new Validator();
-		String go_cam_folder = "/Users/bgood/Documents/GitHub/noctua-models/models/";
-		String out = "/Users/bgood/Desktop/test/go_cams/arachne_validator_reactome_march25.txt";
+		String go_cam_folder = "/Users/bgood/Desktop/test/go_cams/reactome/";
+		//"/Users/bgood/Documents/GitHub/noctua-models/models/";
+		String out = "/Users/bgood/Desktop/test/go_cams/arachne_validator_reactome_march28.txt";
 		String filename_must_contain = "reactome";
 		String catalog_file = "/Users/bgood/gocam_ontology/catalog-no-import.xml";
 		validator.testConsistencyForFolder(go_cam_folder, out, filename_must_contain, catalog_file);
