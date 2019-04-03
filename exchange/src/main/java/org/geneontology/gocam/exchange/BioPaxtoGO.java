@@ -120,7 +120,7 @@ public class BioPaxtoGO {
 	GOPlus goplus;
 	Model biopax_model;
 	Map<String, String> gocamid_sourceid = new HashMap<String, String>();
-	static boolean check_consistency = true;
+	static boolean check_consistency = false;
 	static boolean ignore_diseases = true;
 	static boolean add_lego_import = false; //unless you never want to open the output in Protege always leave false..(or learn how to use a catalogue file)
 	static boolean save_inferences = false;  //adds inferences to blazegraph journal
@@ -194,20 +194,30 @@ public class BioPaxtoGO {
 
 		//"Glycolysis"; //"Signaling by BMP"; //"TCF dependent signaling in response to WNT"; //"RAF-independent MAPK1/3 activation";//"Oxidative Stress Induced Senescence"; //"Activation of PUMA and translocation to mitochondria";//"HDR through Single Strand Annealing (SSA)";  //"IRE1alpha activates chaperones"; //"Generation of second messenger molecules";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
 		Set<String> test_pathways = new HashSet<String>();
-		//		test_pathways.add("Signaling by Ligand-Responsive EGFR Variants in Cancer");
-		//		test_pathways.add("Disease");
-		//		test_pathways.add("Defective SLC26A2 causes chondrodysplasias");
-		//		test_pathways.add("Defective Base Excision Repair Associated with MUTYH");
+		test_pathways.add("SCF(Skp2)-mediated degradation of p27/p21");
+		test_pathways.add("Signaling by BMP");
+		
+//inconsistent, but not sure how to fix		
+//test_pathways.add("tRNA modification in the nucleus and cytosol");
+
+//these are all okay.		
+//		
+//		test_pathways.add("SHC1 events in ERBB4 signaling");
+//		 test_pathways.add("FRS-mediated FGFR3 signaling");
+//		 test_pathways.add("FRS-mediated FGFR4 signaling");
+//		 test_pathways.add("Activation of G protein gated Potassium channels");
+//		 test_pathways.add("Regulation of actin dynamics for phagocytic cup formation");
+//		 test_pathways.add("SHC-mediated cascade:FGFR2");
+//		 test_pathways.add("SHC-mediated cascade:FGFR3");
 		//		test_pathways.add("RAF-independent MAPK1/3 activation");
 		//		test_pathways.add("TCF dependent signaling in response to WNT");
 		//		test_pathways.add("Glycolysis");
 		//		test_pathways.add("Signaling by BMP");
-		test_pathways.add("HATs acetylate histones");
+		
 
 		/*
-		 * these are inconsistent
+		 * these were inconsistent
 reactome-homosapiens-Neurotransmitter_receptors_and_postsynaptic_signal_transmission.ttl
-reactome-homosapiens-HATs_acetylate_histones.ttl
 reactome-homosapiens-GRB2_events_in_ERBB2_signaling.ttl
 reactome-homosapiens-MET_activates_RAS_signaling.ttl
 reactome-homosapiens-G_alpha_(i)_signalling_events.ttl
@@ -1715,12 +1725,9 @@ reactome-homosapiens-SHC-mediated_cascade:FGFR3.ttl
 					Collection<OWLClassExpression> types = EntitySearcher.getTypes(input, go_cam.go_cam_ont);
 					boolean is_complex_thing = false;
 					for(OWLClassExpression type : types) {
-						if(type.getClassExpressionType().equals(ClassExpressionType.OBJECT_INTERSECTION_OF)) {
-							OWLObjectIntersectionOf complex = (OWLObjectIntersectionOf)type;
-							if(complex.containsEntityInSignature(GoCAM.go_complex)) {
-								is_complex_thing = true;
-								break;
-							}
+						if(type.equals(GoCAM.go_complex)) {
+							is_complex_thing = true;
+							break;
 						}
 					}
 					if(is_complex_thing) {
