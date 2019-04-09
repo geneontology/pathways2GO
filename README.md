@@ -3,6 +3,7 @@ Code for converting between biological pathways (e.g. Reactome, Wikipathways) ex
 
 ## Additional documentation
 - GO-wiki, http://wiki.geneontology.org/index.php/Biological_Pathways_as_GO-CAMs
+- [Slides describing rules for converting Reactome pathways (via BioPAX) to GO-CAMs.](https://docs.google.com/presentation/d/1_UAQN09WPCA5win5mbMs1ORMALNwiRwMBgZDPuyJEW8/edit#slide=id.g562cc2b479_0_0)
 
 ## Related Code Repositories 
 - Web editor for GO-CAMs: https://github.com/geneontology/noctua
