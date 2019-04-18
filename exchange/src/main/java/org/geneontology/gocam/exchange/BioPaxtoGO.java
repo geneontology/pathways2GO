@@ -168,17 +168,8 @@ public class BioPaxtoGO {
 	public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		BioPaxtoGO bp2g = new BioPaxtoGO();
 		String input_biopax = 
-				//"/Users/bgood/Desktop/test/biopax/pathway_commons/WP_ACE_Inhibitor_Pathway.owl";
-				//"/Users/bgood/Desktop/test/biopax/pathway_commons/kegg_Biotin_metabolism.owl";
-				//"/Users/bgood/Desktop/test/biopax/pathway_commons/PathwayCommons10.wp.BIOPAX.owl";
-				//"/Users/bgood/Desktop/test/biopax/BMP_signaling.owl";
-				//"/Users/bgood/Desktop/test/biopax/Disassembly_test.owl";
-				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_Dec2018.owl";
-				//"/Users/bgood/Desktop/test/biopax/RAF-independent_MAPK1_3_activation.owl";
-				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_march25_2019.owl";
-		//"/Users/bgood/Desktop/test/biopax/Wnt_full_tcf_signaling_may2018.owl";
-		//		"/Users/bgood/Desktop/test/biopax/Wnt_test_oct8_2018.owl";
-		//"/Users/bgood/Desktop/test/biopax/SignalingByWNTcomplete.owl";
+				 "/Users/bgood/Desktop/test/biopax/Homo_sapiens_march25_2019.owl";
+				//"/Users/bgood/Downloads/450294.owl";
 		String converted = 
 				//"/Users/bgood/Desktop/test/go_cams/Wnt_complete_2018-";
 				"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
@@ -192,16 +183,24 @@ public class BioPaxtoGO {
 		}	
 		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
 
-		//"Glycolysis"; //"Signaling by BMP"; //"TCF dependent signaling in response to WNT"; //"RAF-independent MAPK1/3 activation";//"Oxidative Stress Induced Senescence"; //"Activation of PUMA and translocation to mitochondria";//"HDR through Single Strand Annealing (SSA)";  //"IRE1alpha activates chaperones"; //"Generation of second messenger molecules";//null;//"activated TAK1 mediates p38 MAPK activation";//"Clathrin-mediated endocytosis";
+		//"Glycolysis"; //"Signaling by BMP"; //"TCF dependent signaling in response to WNT"; //"RAF-independent MAPK1/3 activation";//"Oxidative Stress Induced Senescence"; //"Activation of PUMA and translocation to mitochondria";//"HDR through Single Strand Annealing (SSA)";  //"IRE1alpha activates chaperones"; //"Generation of second messenger molecules";//null;//"Clathrin-mediated endocytosis";
+		//next tests: 
+		//for continuant problem: Import of palmitoyl-CoA into the mitochondrial matrix 
+		//error in rule rule:reg3 NTRK2 activates RAC1
+		//
+		//(rule:reg3) The relation 'DOCK3 binds FYN associated with NTRK2' 'directly positively regulates' 'DOCK3 activates RAC1' was inferred because: reaction1 has an output that is the enabler of reaction 2.
+		//
 		Set<String> test_pathways = new HashSet<String>();
+		test_pathways.add("NTRK2 activates RAC1");
+		test_pathways.add("Unwinding of DNA");
+		test_pathways.add("Regulation of TNFR1 signaling");
 		test_pathways.add("SCF(Skp2)-mediated degradation of p27/p21");
 		test_pathways.add("Signaling by BMP");
 		
 //inconsistent, but not sure how to fix		
 //test_pathways.add("tRNA modification in the nucleus and cytosol");
 
-//these are all okay.		
-//		
+
 //		test_pathways.add("SHC1 events in ERBB4 signaling");
 //		 test_pathways.add("FRS-mediated FGFR3 signaling");
 //		 test_pathways.add("FRS-mediated FGFR4 signaling");
@@ -211,7 +210,8 @@ public class BioPaxtoGO {
 //		 test_pathways.add("SHC-mediated cascade:FGFR3");
 		//		test_pathways.add("RAF-independent MAPK1/3 activation");
 		//		test_pathways.add("TCF dependent signaling in response to WNT");
-		test_pathways.add("Glycolysis");
+		//test_pathways.add("Glycolysis");
+		//test_pathways.add("activated TAK1 mediates p38 MAPK activation");
 
 		
 
@@ -1482,7 +1482,7 @@ reactome-homosapiens-SHC-mediated_cascade:FGFR3.ttl
 							Set<PhysicalEntity> controller_members = flattenNest(controller_member_roots, null);
 							for(PhysicalEntity member : controller_members) {
 								String local_id = member.getUri();
-								local_id = local_id.substring(local_id.indexOf("#"));								
+								local_id = local_id.substring(local_id.indexOf("#"));			
 								if(member instanceof Protein) {
 									String uniprot_id = getUniprotProteinId((Protein)member);
 									if(active_site_local_ids.contains(local_id)) {
@@ -1498,8 +1498,16 @@ reactome-homosapiens-SHC-mediated_cascade:FGFR3.ttl
 												for(OWLClassExpression part_type : part_types) {
 													String type = part_type.asOWLClass().getIRI().toString();
 													if(type.contains(uniprot_id)) {
-														go_cam.addComment(part.asOWLNamedIndividual(), "active unit");
-														active_units.add(part.asOWLNamedIndividual());
+														//its rare, though possible that more than one entity in the complex has the same uniprot id
+														//check that we only add the right one here.  
+														Set<String> exact_matches = getExactMatches(part, go_cam.go_cam_ont);
+														for(String orig_id : exact_matches) {
+															orig_id = orig_id.substring(orig_id.indexOf("#"));
+															if(orig_id.equals(local_id)) {
+																go_cam.addComment(part.asOWLNamedIndividual(), "active unit");
+																active_units.add(part.asOWLNamedIndividual());
+															}
+														}
 													}
 												}
 											}
@@ -1647,6 +1655,18 @@ reactome-homosapiens-SHC-mediated_cascade:FGFR3.ttl
 		return;
 	}
 
+	private Set<String> getExactMatches(OWLIndividual part, OWLOntology ont) {
+		Set<String> matches = new HashSet<String>();
+		Collection<OWLAnnotation> orig_ids = EntitySearcher.getAnnotationObjects((OWLEntity) part, ont, GoCAM.skos_exact_match);
+		Iterator<OWLAnnotation> it = orig_ids.iterator();
+		String orig_id = "";
+		while(it.hasNext()) {
+			OWLAnnotation anno = it.next();
+			orig_id = anno.getValue().asIRI().get().toString();
+			matches.add(orig_id);
+		}
+		return matches;
+	}
 	private Set<String> getActiveSites(Set<Control> controlled_by_complex) {
 		Set<String> active_site_ids = new HashSet<String>();
 		for(Control controller : controlled_by_complex) {

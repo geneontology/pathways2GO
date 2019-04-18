@@ -5,12 +5,15 @@ prefix obo: <http://purl.obolibrary.org/obo/>
 prefix biopax: <http://www.biopax.org/release/biopax-level3.owl#>
 prefix skos: <http://www.w3.org/2004/02/skos/core#>
 
-select distinct ?reaction2 ?reaction1 ?reaction2enablerLabel ?reaction2Label ?reaction1Label ?pathway 
+# ?pathway (COUNT(?reaction1) AS ?ELEMENTCOUNT) 
+#
+select ?reaction2 ?reaction1 ?reaction2enablerLabel ?reaction2Label ?reaction1Label 
 where { 
   # limit to relationships in the same Pathway
   # promiscuous molecules make this important to avoid explosions
   ?reaction1 obo:BFO_0000050 ?pathway .
   ?reaction2 obo:BFO_0000050 ?pathway . 
+ # VALUES ?pathway {<http://model.geneontology.org/R-HSA-3899300/R-HSA-3899300>} .# R-HSA-9032759/R-HSA-9032759>} . 
   ?reaction2 obo:RO_0002333 ?reaction2enabler . #enabled by                      
   ?reaction1 obo:RO_0002233 ?inputA . #has input
   ?reaction1 obo:RO_0002233 ?inputB . #has input 
@@ -30,17 +33,14 @@ where {
    ?r1output skos:exactMatch ?C .
    }
   FILTER (!BOUND(?reaction3)) . 
- } 
-
-#TEST with Reactome:Signaling by BMP 
-#https://reactome.org/content/detail/R-HSA-201451 
-
-# RO_0002024  directly positively regulated by 
-# RO_0002023  directly negatively regulated by 
-# RO_0002334 regulated by
-# obo:RO_0002233 has input 
-# obo:RO_0002333 enabled by
-# RO_0002234 has output
-# obo:BFO_0000051 has part
-# obo:RO_0002413 provides direct input for
-
+  #remove the active unit situation as shown in NTRK2 activates RAC1
+  optional {
+    ?active_complex obo:BFO_0000051 ?reaction2enabler .
+    ?active_complex obo:RO_0002326 ?reaction2 .
+    ?active_complex skos:exactMatch ?C 
+    }
+  FILTER NOT EXISTS {?active_complex obo:RO_0002326 ?reaction2 } 
+ # below removes examples where there is already a direct positive regulates assertion linking the reactions
+ # FILTER NOT EXISTS { ?reaction1 obo:RO_0002629 ?reaction2}
+}
+#group by ?pathway 

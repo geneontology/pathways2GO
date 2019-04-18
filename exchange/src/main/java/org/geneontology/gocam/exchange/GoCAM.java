@@ -1087,11 +1087,11 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 	 */
 	private RuleResults inferNegativeRegulationByBinding(String model_id, RuleResults r) {
 
-		String regulator_rule_2 = "regulator_2";
+		String regulator_rule_2 = "regulation_by_sequestration";
 		Integer regulator_count_2 = r.checkInitCount(regulator_rule_2, r);
 		Set<String> regulator_pathways_2 = r.checkInitPathways(regulator_rule_2, r);
 
-		Set<InferredRegulator> ir2_neg = qrunner.getInferredRegulatorsQ2();
+		Set<InferredRegulator> ir2_neg = qrunner.getInferredRegulationBySequestration();
 		regulator_count_2+=ir2_neg.size();
 		for(InferredRegulator ir : ir2_neg) {
 			regulator_pathways_2.add(ir.pathway_uri);
@@ -1103,6 +1103,7 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 			String r2_label = "'"+this.getaLabel(r2)+"'";
 			String o_label = "'"+this.getaLabel(o)+"'";
 			Set<OWLAnnotation> annos = getDefaultAnnotations();
+			//directly negatively regulates RO_0002630 
 			String explain = "The relation "+r1_label+" "+o_label+" "+r2_label+" was inferred because:\n "+
 					r2_label+" has inputs A and B, "+r2_label+" has output A/B complex, and " + 
 					r1_label+" is enabled by B. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
