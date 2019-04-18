@@ -66,8 +66,8 @@ public class XrefUpdater {
 	public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException, IOException {
 		XrefUpdater u = new XrefUpdater();
 		//u.updateRheaXrefs();
-		u.updateReactomeXrefs();
-		//u.dropReactomeXrefs();
+		//u.updateReactomeXrefs();
+		u.dropReactomeXrefs();
 	}
 
 	public void updateRheaXrefs() throws IOException, OWLOntologyCreationException, OWLOntologyStorageException {
@@ -444,6 +444,7 @@ public class XrefUpdater {
 	}
 
 	public void dropReactomeXrefs() throws OWLOntologyCreationException, IOException, OWLOntologyStorageException {
+		String id_pattern_to_delete = "reactome";//"REACT_";
 		Set<MappingResult> results = new HashSet<MappingResult>();
 		List<String> ascii_problems = new ArrayList<String>();
 		String output_ontology_file = "/Users/bgood/Desktop/test/tmp/test-go-edit.obo";
@@ -476,7 +477,7 @@ public class XrefUpdater {
 						xref_id = xref_id.substring(0, xref_id.indexOf("."));
 					}
 					Collection<OWLAnnotation> anno_annos = a.getAnnotations(rdfslabel);
-					if(xref_id.contains("REACT_")) {
+					if(xref_id.toLowerCase().contains(id_pattern_to_delete)) {
 						//delete all previous Reactome xrefs
 						delete_axioms.add(a);
 						String xref_label = null;
@@ -508,7 +509,7 @@ public class XrefUpdater {
 					Set<OWLAnnotation> annos_to_add = new HashSet<OWLAnnotation>();
 					for(OWLAnnotation anno_anno : anno_annos) {
 						String v = anno_anno.getValue().asLiteral().get().getLiteral();
-						if(v.contains("REACT_")) {
+						if(v.contains(id_pattern_to_delete)) {
 							update  = true;
 							//as above, all old reactome ids get removed.  
 							//if there are mappings, they are replaced
@@ -555,7 +556,7 @@ public class XrefUpdater {
 		//deleting 28831 anno axioms and adding 2956
 		//deleting 28837 anno axioms and adding 2962
 		//deleting 28837 anno axioms and adding 2972
-
+		System.out.println("deleted "+delete_axioms.size()+" anno axioms and adding "+new_id_axioms.size());
 		System.out.println("Ascii problems "+ascii_problems.size());
 		for(String a : ascii_problems) {
 			System.out.println(a);

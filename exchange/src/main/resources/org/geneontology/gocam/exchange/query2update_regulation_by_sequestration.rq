@@ -1,0 +1,46 @@
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+prefix obo: <http://purl.obolibrary.org/obo/>
+prefix biopax: <http://www.biopax.org/release/biopax-level3.owl#>
+prefix skos: <http://www.w3.org/2004/02/skos/core#>
+
+# ?pathway (COUNT(?reaction1) AS ?ELEMENTCOUNT) 
+#
+select ?reaction2 ?reaction1 ?reaction2enablerLabel ?reaction2Label ?reaction1Label 
+where { 
+  # limit to relationships in the same Pathway
+  # promiscuous molecules make this important to avoid explosions
+  ?reaction1 obo:BFO_0000050 ?pathway .
+  ?reaction2 obo:BFO_0000050 ?pathway . 
+ # VALUES ?pathway {<http://model.geneontology.org/R-HSA-3899300/R-HSA-3899300>} .# R-HSA-9032759/R-HSA-9032759>} . 
+  ?reaction2 obo:RO_0002333 ?reaction2enabler . #enabled by                      
+  ?reaction1 obo:RO_0002233 ?inputA . #has input
+  ?reaction1 obo:RO_0002233 ?inputB . #has input 
+  ?reaction1 obo:RO_0002234 ?r1output . #has output (some complex made from a and b)   
+  ?inputA skos:exactMatch ?A . 
+  ?reaction2enabler skos:exactMatch ?A .
+  filter(?inputA != ?inputB) . 
+  filter(?reaction1 != ?reaction2) .
+  #don't match when the output of reaction1 (the putative negative regulator) 
+  #"does anything" = "is the input or enabler for another reaction"
+  optional { 
+   ?reaction2enabler rdfs:label ?reaction2enablerLabel .
+   ?reaction2 rdfs:label ?reaction2Label .
+   ?reaction1 rdfs:label ?reaction1Label .
+   ?reaction3 obo:RO_0002233|obo:RO_0002333 ?r3_input .
+   ?r3_input skos:exactMatch ?C .
+   ?r1output skos:exactMatch ?C .
+   }
+  FILTER (!BOUND(?reaction3)) . 
+  #remove the active unit situation as shown in NTRK2 activates RAC1
+  optional {
+    ?active_complex obo:BFO_0000051 ?reaction2enabler .
+    ?active_complex obo:RO_0002326 ?reaction2 .
+    ?active_complex skos:exactMatch ?C 
+    }
+  FILTER NOT EXISTS {?active_complex obo:RO_0002326 ?reaction2 } 
+ # below removes examples where there is already a direct positive regulates assertion linking the reactions
+ # FILTER NOT EXISTS { ?reaction1 obo:RO_0002629 ?reaction2}
+}
+#group by ?pathway 
