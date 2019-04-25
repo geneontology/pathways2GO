@@ -664,6 +664,40 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		return occurs;
 	}
 	
+	public Map<String, String> findEntityLocationsForAmbiguousReactions() {		
+		Map<String, String> entity_location = new HashMap<String, String>();
+		String query = null;
+		try {		
+			query = IOUtils.toString(App.class.getResourceAsStream("query2update_entity_locations.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL update from jar \n"+e);
+		}
+		QueryExecution qe = QueryExecutionFactory.create(query, jena);
+		ResultSet results = qe.execSelect();
+	//	?reaction ?related_entity ?entity_part ?entity_location_instance ?entity_part_location_instance
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Resource pathway = qs.getResource("pathway");
+			String pathway_uri = pathway.getURI();
+			Resource reaction = qs.getResource("reaction");
+			String reaction_uri = reaction.getURI();
+			Resource related_entity = qs.getResource("related_entity");
+			String related_entity_uri = related_entity.getURI();
+			Resource entity_location_instance = qs.getResource("entity_location_instance");
+			String entity_location_instance_uri = entity_location_instance.getURI();
+			entity_location.put(related_entity_uri, entity_location_instance_uri);
+			Resource entity_part = qs.getResource("entity_part");
+			if(entity_part!=null) {
+				String entity_part_uri = entity_part.getURI();
+				Resource entity_part_location_instance = qs.getResource("entity_part_location_instance");
+				String entity_part_location_instance_uri = entity_part_location_instance.getURI();
+				entity_location.put(entity_part_uri, entity_part_location_instance_uri);
+			}
+		}
+		return entity_location;
+	}
+	
+	
 	public class ComplexInput {
 		String pathway_uri;
 		String reaction_uri;

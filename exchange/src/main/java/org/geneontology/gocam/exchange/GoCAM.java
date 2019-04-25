@@ -879,6 +879,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		//NOTE that the order these are run matters.
 		r = inferTransportProcess(model_id, r);	//must be run before occurs_in and before deleteLocations	 
 		r = inferOccursInFromEntityLocations(model_id, r);
+		r = addEntityLocationsForAmbiguousReactions(model_id, r); //must run after occurs_in and before deleteLocations
 		r = inferRegulatesViaOutputRegulates(model_id, r);
 		r = inferNegativeRegulationByBinding(model_id, r);
 		r = inferRegulatesViaOutputEnables(model_id, r);
@@ -967,7 +968,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 	/**
 	 * Rule: infer occurs_in relations
 	 * 
-For reactions with multiple entity locations, that are enabled by something, the reaction occurs_in the location of the enabler. Other location information is dropped.
+For reactions with multiple entity locations, that are enabled by something, the reaction occurs_in the location of the enabler. 
+Other location information is dropped.
 For reactions where all entities are in one location, the reaction occurs_in that location
 For reactions with multiple entity locations and no enabler, do not assign any occurs_in relation.
 	 */
@@ -1024,9 +1026,44 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 		}
 		r.rule_hitcount.put(i_o_rule, i_o_count);
 		r.rule_pathways.put(i_o_rule, i_o_pathways);	
+		qrunner = new QRunner(go_cam_ont); 
 		return r;
 	}
 
+	
+	
+	private RuleResults addEntityLocationsForAmbiguousReactions(String model_id, RuleResults r) {	
+	String part_of_rule = "add_entity_part_of_locations";
+	Integer part_of_count = r.checkInitCount(part_of_rule, r);
+	//TODO not using this at the moment for anything so leaving it out of this rule for now
+	//Set<String> part_of_pathways = r.checkInitPathways(part_of_rule, r);
+	Map<String, String> entity_location = qrunner.findEntityLocationsForAmbiguousReactions();
+	if(entity_location.isEmpty()) {
+		System.out.println("No ambiguously located reactions");
+	}else {
+		part_of_count+=entity_location.size();			
+		for(String entity_uri : entity_location.keySet()) {
+			String location_uri = entity_location.get(entity_uri);			
+			OWLNamedIndividual entity = this.makeUnannotatedIndividual(IRI.create(entity_uri));
+			OWLNamedIndividual location = this.makeUnannotatedIndividual(IRI.create(location_uri));
+			//make the part_of assertion
+			Set<OWLAnnotation> annos = getDefaultAnnotations();
+			String reason = "Physical entities are directly assigned part of cellular location information when "
+					+ "the reaction they participate in makes use of entities in multiple locations.";
+			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(reason)));		
+			OWLNamedIndividual new_location = makeAnnotatedIndividual(makeRandomIri(model_id));
+			for(OWLClassExpression t : EntitySearcher.getTypes(location, go_cam_ont)) {
+				addTypeAssertion(new_location, t);
+			}			
+			addRefBackedObjectPropertyAssertion(entity, GoCAM.part_of, new_location, Collections.singleton(model_id), GoCAM.eco_imported_auto, "Reactome", annos, model_id);
+		}
+	}
+	r.rule_hitcount.put(part_of_rule, part_of_count);	
+	qrunner = new QRunner(go_cam_ont); 
+	return r;
+}
+	
+	
 	/**
 	 * Rule 5: Regulator 1: direct assertion 
 	 * If an entity is involved_in_regulation_of reaction1 

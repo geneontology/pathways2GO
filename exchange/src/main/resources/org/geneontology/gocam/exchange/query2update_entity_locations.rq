@@ -1,0 +1,27 @@
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+prefix obo: <http://purl.obolibrary.org/obo/>
+prefix biopax: <http://www.biopax.org/release/biopax-level3.owl#>
+prefix skos: <http://www.w3.org/2004/02/skos/core#>
+
+#find reactions with uncertain location so we can add location to the physical entities
+#VALUES ?pathway {<http://model.geneontology.org/R-HSA-3214847/R-HSA-3214847>} . 
+
+select distinct ?pathway ?reaction ?related_entity ?entity_part ?entity_location_instance ?entity_part_location_instance ?reaction_location 
+where { 
+  ?reaction obo:BFO_0000050 ?pathway . 
+  #find reactions that have no occurs_in information 
+  optional { 
+     ?reaction obo:BFO_0000066 ?reaction_location .    
+   }
+  FILTER (!BOUND(?reaction_location)) .  
+  # get location information for the physical entities 
+  ?reaction obo:RO_0002333 ?related_entity . #enabled by|output|input   |obo:RO_0002234:obo:RO_0002233  
+  ?related_entity obo:RO_0001025 ?entity_location_instance . 
+  #if a complex 
+  optional { 
+    ?related_entity obo:BFO_0000051 ?entity_part . 
+    ?entity_part obo:RO_0001025 ?entity_part_location_instance . 
+  }
+}
