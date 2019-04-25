@@ -112,6 +112,7 @@ public class BioPaxtoGO {
 	enum ImportStrategy {
 		NoctuaCuration, 
 	}
+	boolean preserve_sets_in_complexes = true;
 	boolean apply_layout = false;
 	boolean generate_report = false;
 	boolean explain_inconsistant_models = true;
@@ -168,8 +169,8 @@ public class BioPaxtoGO {
 	public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		BioPaxtoGO bp2g = new BioPaxtoGO();
 		String input_biopax = 
-				 "/Users/bgood/Desktop/test/biopax/Homo_sapiens_march25_2019.owl";
-				//"/Users/bgood/Downloads/450294.owl";
+				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_march25_2019.owl";
+		//"/Users/bgood/Downloads/450294.owl";
 		String converted = 
 				//"/Users/bgood/Desktop/test/go_cams/Wnt_complete_2018-";
 				"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
@@ -191,47 +192,28 @@ public class BioPaxtoGO {
 		//(rule:reg3) The relation 'DOCK3 binds FYN associated with NTRK2' 'directly positively regulates' 'DOCK3 activates RAC1' was inferred because: reaction1 has an output that is the enabler of reaction 2.
 		//
 		Set<String> test_pathways = new HashSet<String>();
-		test_pathways.add("NTRK2 activates RAC1");
-		test_pathways.add("Unwinding of DNA");
-		test_pathways.add("Regulation of TNFR1 signaling");
-		test_pathways.add("SCF(Skp2)-mediated degradation of p27/p21");
-		test_pathways.add("Signaling by BMP");
-		
-//inconsistent, but not sure how to fix		
-//test_pathways.add("tRNA modification in the nucleus and cytosol");
+		test_pathways.add("Interleukin-6 signaling");
 
+		//		test_pathways.add("NTRK2 activates RAC1");
+		//		test_pathways.add("Unwinding of DNA");
+		//		test_pathways.add("Regulation of TNFR1 signaling");
+		//		test_pathways.add("SCF(Skp2)-mediated degradation of p27/p21");
+		//		test_pathways.add("Signaling by BMP");
 
-//		test_pathways.add("SHC1 events in ERBB4 signaling");
-//		 test_pathways.add("FRS-mediated FGFR3 signaling");
-//		 test_pathways.add("FRS-mediated FGFR4 signaling");
-//		 test_pathways.add("Activation of G protein gated Potassium channels");
-//		 test_pathways.add("Regulation of actin dynamics for phagocytic cup formation");
-//		 test_pathways.add("SHC-mediated cascade:FGFR2");
-//		 test_pathways.add("SHC-mediated cascade:FGFR3");
+		//inconsistent, but not sure how to fix		
+		//test_pathways.add("tRNA modification in the nucleus and cytosol");
+
+		//		test_pathways.add("SHC1 events in ERBB4 signaling");
+		//		 test_pathways.add("FRS-mediated FGFR3 signaling");
+		//		 test_pathways.add("FRS-mediated FGFR4 signaling");
+		//		 test_pathways.add("Activation of G protein gated Potassium channels");
+		//		 test_pathways.add("Regulation of actin dynamics for phagocytic cup formation");
+		//		 test_pathways.add("SHC-mediated cascade:FGFR2");
+		//		 test_pathways.add("SHC-mediated cascade:FGFR3");
 		//		test_pathways.add("RAF-independent MAPK1/3 activation");
 		//		test_pathways.add("TCF dependent signaling in response to WNT");
 		//test_pathways.add("Glycolysis");
 		//test_pathways.add("activated TAK1 mediates p38 MAPK activation");
-
-		
-
-		/*
-		 * these were inconsistent
-reactome-homosapiens-Neurotransmitter_receptors_and_postsynaptic_signal_transmission.ttl
-reactome-homosapiens-GRB2_events_in_ERBB2_signaling.ttl
-reactome-homosapiens-MET_activates_RAS_signaling.ttl
-reactome-homosapiens-G_alpha_(i)_signalling_events.ttl
-reactome-homosapiens-FRS-mediated_FGFR4_signaling.ttl
-reactome-homosapiens-FRS-mediated_FGFR3_signaling.ttl
-reactome-homosapiens-tRNA_modification_in_the_nucleus_and_cytosol.ttl
-reactome-homosapiens-SHC1_events_in_ERBB4_signaling.ttl
-reactome-homosapiens-FRS-mediated_FGFR2_signaling.ttl
-reactome-homosapiens-MET_activates_RAP1_and_RAC1.ttl
-reactome-homosapiens-Activation_of_G_protein_gated_Potassium_channels.ttl
-reactome-homosapiens-Regulation_of_actin_dynamics_for_phagocytic_cup_formation.ttl
-reactome-homosapiens-SHC-mediated_cascade:FGFR2.ttl
-reactome-homosapiens-SHC-mediated_cascade:FGFR3.ttl		
-		 */
 		//set to null to do full run
 		//test_pathways = null;
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathways);
@@ -587,7 +569,7 @@ reactome-homosapiens-SHC-mediated_cascade:FGFR3.ttl
 		}
 		return exp_string;
 	}
-	
+
 	public String labelifyTripleNode(Node node, GoCAM go_cam) {
 		String n = node.toString(); //will either be a uri or a variable like ?x
 		n = n.replace("<", "");
@@ -596,13 +578,13 @@ reactome-homosapiens-SHC-mediated_cascade:FGFR3.ttl
 			//<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 			if(n.contains("#")) {
 				n = n.substring(n.indexOf("#"));
-			//http://model.geneontology.org/R-HSA-3214847/R-HSA-3301345	
+				//http://model.geneontology.org/R-HSA-3214847/R-HSA-3301345	
 			}else if(n.startsWith(GoCAM.base_iri)) {
 				String label = Helper.getaLabel(n, go_cam.go_cam_ont);
 				if(label!=null) {
 					n = label;
 				}
-			//<http://purl.obolibrary.org/obo/BFO_0000066>
+				//<http://purl.obolibrary.org/obo/BFO_0000066>
 			}else if(n.startsWith("http://purl.obolibrary.org/obo/")) {
 				String label = Helper.getaLabel(n, go_cam.go_cam_ont);
 				if(label!=null) {
@@ -619,7 +601,7 @@ reactome-homosapiens-SHC-mediated_cascade:FGFR3.ttl
 		}
 		return n;
 	}
-	
+
 	private OWLNamedIndividual definePathwayEntity(GoCAM go_cam, Pathway pathway, String model_id, boolean expand_subpathways, boolean add_components) throws IOException {
 		IRI pathway_iri = GoCAM.makeGoCamifiedIRI(model_id, model_id);
 		System.out.println("defining pathway "+pathway.getDisplayName()+" "+expand_subpathways+" "+add_components+" "+model_id);
@@ -933,7 +915,7 @@ reactome-homosapiens-SHC-mediated_cascade:FGFR3.ttl
 					PhysicalEntity entity_set = (PhysicalEntity)entity;
 					Set<PhysicalEntity> prot_parts_ = entity_set.getMemberPhysicalEntity();
 					Set<PhysicalEntity> prot_parts = new HashSet<PhysicalEntity>();
-					prot_parts = flattenNest(prot_parts_, prot_parts);
+					prot_parts = flattenNest(prot_parts_, prot_parts, preserve_sets_in_complexes);
 					Set<OWLClass> prot_classes = new HashSet<OWLClass>();
 					if(prot_parts!=null) {					
 						//if its made of parts and not otherwise typed, call it a Union.	
@@ -1102,7 +1084,7 @@ reactome-homosapiens-SHC-mediated_cascade:FGFR3.ttl
 				//recursively get all parts
 				Set<PhysicalEntity> level1 = complex.getComponent();
 				level1.addAll(complex.getMemberPhysicalEntity());
-				Set<PhysicalEntity> complex_parts = flattenNest(level1, null);
+				Set<PhysicalEntity> complex_parts = flattenNest(level1, null, preserve_sets_in_complexes);
 
 				Set<String> prots = new HashSet<String>();
 				String id = null;
@@ -1135,17 +1117,15 @@ reactome-homosapiens-SHC-mediated_cascade:FGFR3.ttl
 							System.out.println("No nested complexes please");
 							System.exit(0);
 						}else {
+							//its a set
 							if(component.getMemberPhysicalEntity().size()>0) {
-								System.out.println("No nested complexes please.. failing on "+e);
-								System.exit(0);
+								System.out.println("Looks like a set: "+e);
 							}
 							cnames.add(component.getDisplayName());
 							IRI comp_uri = GoCAM.makeRandomIri(model_id);
 							OWLNamedIndividual component_entity = go_cam.df.getOWLNamedIndividual(comp_uri);
-							//							owl_members.add(component_entity);
 							defineReactionEntity(go_cam, component, comp_uri, false, model_id);
 							go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_part, component_entity, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
-
 						}
 					}
 					//not doing this anymore assert it as an intersection of parts
@@ -1479,62 +1459,91 @@ reactome-homosapiens-SHC-mediated_cascade:FGFR3.ttl
 							//iterate through parts till the right one is found						
 							Set<PhysicalEntity> controller_member_roots = new HashSet<PhysicalEntity>();
 							controller_member_roots.add(controller_set);
-							Set<PhysicalEntity> controller_members = flattenNest(controller_member_roots, null);
+							Set<PhysicalEntity> controller_members = flattenNest(controller_member_roots, null, preserve_sets_in_complexes);
 							for(PhysicalEntity member : controller_members) {
 								String local_id = member.getUri();
 								local_id = local_id.substring(local_id.indexOf("#"));			
+								
 								if(member instanceof Protein) {
-									String uniprot_id = getUniprotProteinId((Protein)member);
-									if(active_site_local_ids.contains(local_id)) {
-										if(active_units==null) {
-											active_units = new HashSet<OWLNamedIndividual>();
-										}
-										//find active protein in controller set
-										//if its a complex
-										if(controller_entity instanceof Complex) {
+									Set<PhysicalEntity> set_members = member.getMemberPhysicalEntity();
+									if(set_members.size()>0) {
+										//its a set object 
+										//check if it is an active unit
+										if(active_site_local_ids.contains(local_id)) {
+											if(active_units==null) {
+												active_units = new HashSet<OWLNamedIndividual>();
+											}
+											//get to the OWL node
 											Collection<OWLIndividual> parts = EntitySearcher.getObjectPropertyValues(controller_e, GoCAM.has_part, go_cam.go_cam_ont);
 											for(OWLIndividual part : parts) {
-												Collection<OWLClassExpression> part_types = EntitySearcher.getTypes(part, go_cam.go_cam_ont);
-												for(OWLClassExpression part_type : part_types) {
-													String type = part_type.asOWLClass().getIRI().toString();
-													if(type.contains(uniprot_id)) {
-														//its rare, though possible that more than one entity in the complex has the same uniprot id
-														//check that we only add the right one here.  
-														Set<String> exact_matches = getExactMatches(part, go_cam.go_cam_ont);
-														for(String orig_id : exact_matches) {
-															orig_id = orig_id.substring(orig_id.indexOf("#"));
-															if(orig_id.equals(local_id)) {
-																go_cam.addComment(part.asOWLNamedIndividual(), "active unit");
-																active_units.add(part.asOWLNamedIndividual());
+												//if id matches 
+												Set<String> exact_matches = getExactMatches(part, go_cam.go_cam_ont);
+												for(String orig_id : exact_matches) {
+													orig_id = orig_id.substring(orig_id.indexOf("#"));
+													if(orig_id.equals(local_id)) {
+														go_cam.addComment(part.asOWLNamedIndividual(), "a Set as the active unit in the complex");
+														active_units.add(part.asOWLNamedIndividual());
+													}
+												}
+											}
+										}
+									}
+									//not a set, process as a protein 
+									else {
+										String uniprot_id = getUniprotProteinId((Protein)member);
+										if(active_site_local_ids.contains(local_id)) {
+											if(active_units==null) {
+												active_units = new HashSet<OWLNamedIndividual>();
+											}
+											//find active protein in controller set
+											//if the controller is a complex
+											if(controller_entity instanceof Complex) {
+												Collection<OWLIndividual> parts = EntitySearcher.getObjectPropertyValues(controller_e, GoCAM.has_part, go_cam.go_cam_ont);
+												for(OWLIndividual part : parts) {
+													Collection<OWLClassExpression> part_types = EntitySearcher.getTypes(part, go_cam.go_cam_ont);
+													for(OWLClassExpression part_type : part_types) {
+														if(part_type.getClassExpressionType().equals(ClassExpressionType.OWL_CLASS)) {											
+															String type = part_type.asOWLClass().getIRI().toString();
+															if(type.contains(uniprot_id)) {
+																//its rare, though possible that more than one entity in the complex has the same uniprot id
+																//check that we only add the right one here.  
+																Set<String> exact_matches = getExactMatches(part, go_cam.go_cam_ont);
+																for(String orig_id : exact_matches) {
+																	orig_id = orig_id.substring(orig_id.indexOf("#"));
+																	if(orig_id.equals(local_id)) {
+																		go_cam.addComment(part.asOWLNamedIndividual(), "active unit in the complex");
+																		active_units.add(part.asOWLNamedIndividual());
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+											//if the controller is a set
+											else {
+												Collection<OWLClassExpression> types = EntitySearcher.getTypes(controller_e, go_cam.go_cam_ont);
+												for(OWLClassExpression type : types) {
+													if(type.getClassExpressionType().equals(ClassExpressionType.OBJECT_UNION_OF)) {
+														OWLObjectUnionOf union_exp = (OWLObjectUnionOf) type;
+														Set<OWLClass> union_sig = union_exp.getClassesInSignature();
+														for(OWLClass c : union_sig) {
+															String ct = c.getIRI().toString();
+															if(ct.contains(uniprot_id)) {
+																OWLNamedIndividual part = go_cam.makeAnnotatedIndividual(GoCAM.makeRandomIri(model_id));
+																go_cam.addTypeAssertion(part, c);
+																go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.has_part, part, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);																
+																go_cam.addComment(part.asOWLNamedIndividual(), "active unit in the set");
+																active_units.add(part.asOWLNamedIndividual());																		
 															}
 														}
 													}
 												}
 											}
 										}
-										//if its a union set
-										else {
-											Collection<OWLClassExpression> types = EntitySearcher.getTypes(controller_e, go_cam.go_cam_ont);
-											for(OWLClassExpression type : types) {
-												if(type.getClassExpressionType().equals(ClassExpressionType.OBJECT_UNION_OF)) {
-													OWLObjectUnionOf union_exp = (OWLObjectUnionOf) type;
-													Set<OWLClass> union_sig = union_exp.getClassesInSignature();
-													for(OWLClass c : union_sig) {
-														String ct = c.getIRI().toString();
-														if(ct.contains(uniprot_id)) {
-															OWLNamedIndividual part = go_cam.makeAnnotatedIndividual(GoCAM.makeRandomIri(model_id));
-															go_cam.addTypeAssertion(part, c);
-															go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.has_part, part, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);																
-															go_cam.addComment(part.asOWLNamedIndividual(), "active unit");
-															active_units.add(part.asOWLNamedIndividual());																		
-														}
-													}
-												}
-											}
-										}
 									}
-								}
-							}		
+								}		
+							}
 						}
 						//define relationship between controller entity and reaction
 						//if catalysis then always enabled by
@@ -1850,19 +1859,26 @@ reactome-homosapiens-SHC-mediated_cascade:FGFR3.ttl
 	 * @param output_parts
 	 * @return
 	 */
-	private Set<PhysicalEntity> flattenNest(Set<PhysicalEntity> input_parts, Set<PhysicalEntity> output_parts){
+	private Set<PhysicalEntity> flattenNest(Set<PhysicalEntity> input_parts, Set<PhysicalEntity> output_parts, boolean preserve_sets){
 		Set<PhysicalEntity> all_parts = new HashSet<PhysicalEntity>();
 		if(output_parts!=null) {
 			all_parts.addAll(output_parts);
 		}
 		for(PhysicalEntity e : input_parts) {
+			//complexes
 			if(e.getModelInterface().equals(Complex.class)) { 
 				Complex complex = (Complex)e;
 				Set<PhysicalEntity> members = complex.getMemberPhysicalEntity();
 				members.addAll(complex.getComponent());				
-				all_parts = flattenNest(members, all_parts);			
-			}else if(e.getMemberPhysicalEntity().size()>0) { //for weird case where a protein has other proteins as pieces.. but isn't called a complex..
-				all_parts = flattenNest(e.getMemberPhysicalEntity(), all_parts);	
+				all_parts = flattenNest(members, all_parts, preserve_sets);			
+				//sets 	
+			}else if(e.getMemberPhysicalEntity().size()>0) { 
+				if(preserve_sets) {
+					//just add the set object in - will need to handle it externally
+					all_parts.add(e);
+				}else {
+					all_parts = flattenNest(e.getMemberPhysicalEntity(), all_parts, preserve_sets);	
+				}
 			} else {
 				all_parts.add(e);
 			}
