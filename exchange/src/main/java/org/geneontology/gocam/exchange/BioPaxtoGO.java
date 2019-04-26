@@ -121,7 +121,7 @@ public class BioPaxtoGO {
 	GOPlus goplus;
 	Model biopax_model;
 	Map<String, String> gocamid_sourceid = new HashMap<String, String>();
-	static boolean check_consistency = false;
+	static boolean check_consistency = true;
 	static boolean ignore_diseases = true;
 	static boolean add_lego_import = false; //unless you never want to open the output in Protege always leave false..(or learn how to use a catalogue file)
 	static boolean save_inferences = false;  //adds inferences to blazegraph journal
@@ -192,7 +192,7 @@ public class BioPaxtoGO {
 		//(rule:reg3) The relation 'DOCK3 binds FYN associated with NTRK2' 'directly positively regulates' 'DOCK3 activates RAC1' was inferred because: reaction1 has an output that is the enabler of reaction 2.
 		//
 		Set<String> test_pathways = new HashSet<String>();
-		test_pathways.add("Interleukin-6 signaling");
+		test_pathways.add("SCF(Skp2)-mediated degradation of p27/p21");
 
 		//		test_pathways.add("NTRK2 activates RAC1");
 		//		test_pathways.add("Unwinding of DNA");
@@ -215,11 +215,8 @@ public class BioPaxtoGO {
 		//test_pathways.add("Glycolysis");
 		//test_pathways.add("activated TAK1 mediates p38 MAPK activation");
 		//set to null to do full run
-		//test_pathways = null;
+	//	test_pathways = null;
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathways);
-		//		System.out.println("Writing report");
-		//		bp2g.report.writeReport("report/");
-		//		System.out.println("All done");
 	} 
 
 	private void convertReactomeFile(String input_file, 
@@ -309,6 +306,11 @@ public class BioPaxtoGO {
 			//				break;
 			//			}
 
+//			if(currentPathway.getDisplayName().equals("tRNA modification in the nucleus and cytosol")) {
+//				System.out.println("Skipping pathway: "+currentPathway.getDisplayName());
+//				continue;
+//			}
+			
 			go_cam.name = currentPathway.getDisplayName();
 			if(test_pathway_names!=null&&!test_pathway_names.contains(go_cam.name)) {
 				continue;
@@ -928,6 +930,7 @@ public class BioPaxtoGO {
 									prot_classes.add(uniprotein_class);
 								}else {
 									System.out.println("what is "+prot_part.getDisplayName());
+									System.exit(0);
 								}							
 							}
 						}
@@ -956,6 +959,7 @@ public class BioPaxtoGO {
 						String db = xref.getDb().toLowerCase();
 						String id = xref.getId();
 						if(db.contains("uniprot")) {
+							System.out.println("debug "+id);
 							OWLClass uniprotein_class = go_cam.df.getOWLClass(IRI.create(GoCAM.uniprot_iri + id)); 
 							go_cam.addSubclassAssertion(uniprotein_class, GoCAM.chebi_protein, null);
 							go_cam.addTypeAssertion(e, uniprotein_class);
@@ -989,6 +993,7 @@ public class BioPaxtoGO {
 						String db = xref.getDb().toLowerCase();
 						String id = xref.getId();
 						if(db.contains("uniprot")) {
+							System.out.println("debug "+id);
 							OWLClass uniprotein_class = go_cam.df.getOWLClass(IRI.create(GoCAM.uniprot_iri + id)); 
 							go_cam.addSubclassAssertion(uniprotein_class, GoCAM.chebi_protein, null);
 							go_cam.addTypeAssertion(e, uniprotein_class);
@@ -1099,8 +1104,9 @@ public class BioPaxtoGO {
 				//Now decide if, in GO-CAM, it should be a complex or not
 				//If the complex has only 1 protein or only forms of the same protein, then just call it a protein
 				//Otherwise go ahead and make the complex
-				if(prots.size()==1) {
+				if(prots.size()==1&&prots.size()==complex_parts.size()&&id!=null) {
 					//assert it as one protein 
+					System.out.println("debug 1109 "+id);
 					OWLClass uniprotein_class = go_cam.df.getOWLClass(IRI.create(GoCAM.uniprot_iri + id)); 
 					go_cam.addSubclassAssertion(uniprotein_class, GoCAM.chebi_protein, null);										
 					//until something is imported that understands the uniprot entities, assert that they are proteins
@@ -1445,6 +1451,9 @@ public class BioPaxtoGO {
 						String controller_entity_id = getEntityReferenceId(controller_entity);
 						//iri = GoCAM.makeGoCamifiedIRI(controller_entity.getUri()+entity.getUri()+"controller");
 						iri = GoCAM.makeGoCamifiedIRI(model_id, controller_entity_id+"_"+entity_id+"_controller");
+						if(controller_entity_id.equals("R-HSA-187516")) {
+							System.out.println("Debug trouble R-HSA-187516 ...");
+						}
 						defineReactionEntity(go_cam, controller_entity, iri, true, model_id);
 						//the protein or complex
 						OWLNamedIndividual controller_e = go_cam.df.getOWLNamedIndividual(iri);
@@ -1487,6 +1496,7 @@ public class BioPaxtoGO {
 												}
 											}
 										}
+										
 									}
 									//not a set, process as a protein 
 									else {
@@ -1865,17 +1875,21 @@ public class BioPaxtoGO {
 			all_parts.addAll(output_parts);
 		}
 		for(PhysicalEntity e : input_parts) {
+			if(e.getDisplayName().equals("Cyclin E/A:p-T160-CDK2:CDKN1A,CDKN1B")||
+					e.getDisplayName().equals("CDKN1A,CDKN1B")) {
+				System.out.println("hello trouble "+e.getDisplayName()+"\n"+e.getModelInterface()+"\n"+e.getMemberPhysicalEntity());
+			}
 			//complexes
 			if(e.getModelInterface().equals(Complex.class)) { 
 				Complex complex = (Complex)e;
-				Set<PhysicalEntity> members = complex.getMemberPhysicalEntity();
+				Set<PhysicalEntity> members = complex.getMemberPhysicalEntity();				
 				members.addAll(complex.getComponent());				
 				all_parts = flattenNest(members, all_parts, preserve_sets);			
-				//sets 	
+				//if nits not a complex but has parts, than assume we are looking at an entity set
 			}else if(e.getMemberPhysicalEntity().size()>0) { 
 				if(preserve_sets) {
-					//just add the set object in - will need to handle it externally
-					all_parts.add(e);
+					//save the set object into the physical entity list
+					all_parts.add(e); 
 				}else {
 					all_parts = flattenNest(e.getMemberPhysicalEntity(), all_parts, preserve_sets);	
 				}
