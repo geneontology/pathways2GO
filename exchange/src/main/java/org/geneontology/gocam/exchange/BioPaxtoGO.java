@@ -1452,7 +1452,7 @@ public class BioPaxtoGO {
 						//iri = GoCAM.makeGoCamifiedIRI(controller_entity.getUri()+entity.getUri()+"controller");
 						iri = GoCAM.makeGoCamifiedIRI(model_id, controller_entity_id+"_"+entity_id+"_controller");
 						if(controller_entity_id.equals("R-HSA-187516")) {
-							System.out.println("Debug trouble R-HSA-187516 ...");
+							System.out.println("Debug trouble R-HSA-187516 Cyclin E/A:p-T160-CDK2:CDKN1A,CDKN1B...");
 						}
 						defineReactionEntity(go_cam, controller_entity, iri, true, model_id);
 						//the protein or complex
@@ -1468,7 +1468,7 @@ public class BioPaxtoGO {
 							//iterate through parts till the right one is found						
 							Set<PhysicalEntity> controller_member_roots = new HashSet<PhysicalEntity>();
 							controller_member_roots.add(controller_set);
-							Set<PhysicalEntity> controller_members = flattenNest(controller_member_roots, null, preserve_sets_in_complexes);
+							Set<PhysicalEntity> controller_members = flattenNest(controller_member_roots, null, true);
 							for(PhysicalEntity member : controller_members) {
 								String local_id = member.getUri();
 								local_id = local_id.substring(local_id.indexOf("#"));			
