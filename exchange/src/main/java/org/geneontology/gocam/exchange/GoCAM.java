@@ -879,7 +879,10 @@ final long counterValue = instanceCounter.getAndIncrement();
 		//NOTE that the order these are run matters.
 		r = inferTransportProcess(model_id, r);	//must be run before occurs_in and before deleteLocations	 
 		r = inferOccursInFromEntityLocations(model_id, r);
-		r = addEntityLocationsForAmbiguousReactions(model_id, r); //must run after occurs_in and before deleteLocations
+		//This is turned off based on discussions May 8, 2018
+		//we will now only be capturing location information in the form of occurs_in statements on reactions.
+		//Where reaction location is ambiguous, e.g. entities are found at multiple sites and no active unit is known, no locations will be recording in the go-cam
+		//r = addEntityLocationsForAmbiguousReactions(model_id, r); //must run after occurs_in and before deleteLocations
 		r = inferRegulatesViaOutputRegulates(model_id, r);
 		r = inferNegativeRegulationByBinding(model_id, r);
 		r = inferRegulatesViaOutputEnables(model_id, r);
@@ -968,7 +971,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 	/**
 	 * Rule: infer occurs_in relations
 	 * 
-For reactions with multiple entity locations, that are enabled by something, the reaction occurs_in the location of the enabler. 
+For reactions with multiple entity locations, that are enabled by something, 
+  the reaction occurs_in the location of the enabler. 
 Other location information is dropped.
 For reactions where all entities are in one location, the reaction occurs_in that location
 For reactions with multiple entity locations and no enabler, do not assign any occurs_in relation.
@@ -983,9 +987,6 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 		}else {
 			i_o_count+=inferred_occurs.size();			
 			for(InferredOccursIn o : inferred_occurs) {
-				if(o.reaction_uri.equals(base_iri+"R-HSA-3214847/R-HSA-3301345")) {
-					System.out.println("debug");
-				}
 				i_o_pathways.add(o.pathway_uri);
 				OWLNamedIndividual reaction = this.makeUnannotatedIndividual(IRI.create(o.reaction_uri));
 				//location of enabler trumps other conditions

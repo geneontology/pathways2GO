@@ -193,6 +193,8 @@ public class BioPaxtoGO {
 		//
 		Set<String> test_pathways = new HashSet<String>();
 		test_pathways.add("SCF(Skp2)-mediated degradation of p27/p21");
+		test_pathways.add("GRB2 events in ERBB2 signaling");
+		test_pathways.add("Elongator complex acetylates replicative histone H3, H4");
 
 		//		test_pathways.add("NTRK2 activates RAC1");
 		//		test_pathways.add("Unwinding of DNA");
@@ -918,7 +920,7 @@ public class BioPaxtoGO {
 					Set<PhysicalEntity> prot_parts_ = entity_set.getMemberPhysicalEntity();
 					Set<PhysicalEntity> prot_parts = new HashSet<PhysicalEntity>();
 					prot_parts = flattenNest(prot_parts_, prot_parts, preserve_sets_in_complexes);
-					Set<OWLClass> prot_classes = new HashSet<OWLClass>();
+					Set<OWLClassExpression> prot_classes = new HashSet<OWLClassExpression>();
 					if(prot_parts!=null) {					
 						//if its made of parts and not otherwise typed, call it a Union.	
 						for(PhysicalEntity prot_part : prot_parts) {
@@ -929,8 +931,20 @@ public class BioPaxtoGO {
 									OWLClass uniprotein_class = go_cam.df.getOWLClass(IRI.create(GoCAM.uniprot_iri + uniprot_id)); 
 									prot_classes.add(uniprotein_class);
 								}else {
-									System.out.println("what is "+prot_part.getDisplayName());
-									System.exit(0);
+									//then its probably an embedded set 
+									if(prot_part.getMemberPhysicalEntity().size()>1) {
+										Set<OWLClass> set_classes = new HashSet<OWLClass>();
+										for(PhysicalEntity member : prot_part.getMemberPhysicalEntity()) {
+											String member_uniprot_id = getUniprotProteinId((Protein)member);											
+											if(member_uniprot_id!=null) {
+												OWLClass uniprotein_class = go_cam.df.getOWLClass(IRI.create(GoCAM.uniprot_iri + member_uniprot_id)); 
+												set_classes.add(uniprotein_class);
+											}
+										}
+										OWLObjectUnionOf union_exp = go_cam.df.getOWLObjectUnionOf(set_classes);
+										go_cam.addTypeAssertion(e,  union_exp);	
+										prot_classes.add(union_exp);
+									}
 								}							
 							}
 						}
@@ -1451,9 +1465,9 @@ public class BioPaxtoGO {
 						String controller_entity_id = getEntityReferenceId(controller_entity);
 						//iri = GoCAM.makeGoCamifiedIRI(controller_entity.getUri()+entity.getUri()+"controller");
 						iri = GoCAM.makeGoCamifiedIRI(model_id, controller_entity_id+"_"+entity_id+"_controller");
-						if(controller_entity_id.equals("R-HSA-187516")) {
-							System.out.println("Debug trouble R-HSA-187516 Cyclin E/A:p-T160-CDK2:CDKN1A,CDKN1B...");
-						}
+//						if(controller_entity_id.equals("R-HSA-187516")) {
+//							System.out.println("Debug trouble R-HSA-187516 Cyclin E/A:p-T160-CDK2:CDKN1A,CDKN1B...");
+//						}
 						defineReactionEntity(go_cam, controller_entity, iri, true, model_id);
 						//the protein or complex
 						OWLNamedIndividual controller_e = go_cam.df.getOWLNamedIndividual(iri);
@@ -1885,7 +1899,7 @@ public class BioPaxtoGO {
 				Set<PhysicalEntity> members = complex.getMemberPhysicalEntity();				
 				members.addAll(complex.getComponent());				
 				all_parts = flattenNest(members, all_parts, preserve_sets);			
-				//if nits not a complex but has parts, than assume we are looking at an entity set
+				//if its not a complex but has parts, than assume we are looking at an entity set
 			}else if(e.getMemberPhysicalEntity().size()>0) { 
 				if(preserve_sets) {
 					//save the set object into the physical entity list
