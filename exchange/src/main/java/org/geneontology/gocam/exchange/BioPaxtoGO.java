@@ -195,7 +195,8 @@ public class BioPaxtoGO {
 		test_pathways.add("SCF(Skp2)-mediated degradation of p27/p21");
 		test_pathways.add("GRB2 events in ERBB2 signaling");
 		test_pathways.add("Elongator complex acetylates replicative histone H3, H4");
-
+		test_pathways.add("Attenuation phase");
+		test_pathways.add("Apoptosis induced DNA fragmentation");
 		//		test_pathways.add("NTRK2 activates RAC1");
 		//		test_pathways.add("Unwinding of DNA");
 		//		test_pathways.add("Regulation of TNFR1 signaling");
@@ -217,7 +218,7 @@ public class BioPaxtoGO {
 		//test_pathways.add("Glycolysis");
 		//test_pathways.add("activated TAK1 mediates p38 MAPK activation");
 		//set to null to do full run
-	//	test_pathways = null;
+		//test_pathways = null;
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathways);
 	} 
 
@@ -395,7 +396,7 @@ public class BioPaxtoGO {
 		System.out.println("done with file "+input_biopax);
 	}
 
-	String getEntityReferenceId(Entity bp_entity) {
+	public static String getEntityReferenceId(Entity bp_entity) {
 		String id = null;
 		Set<Xref> xrefs = bp_entity.getXref();
 		for(Xref xref : xrefs) {
@@ -859,7 +860,7 @@ public class BioPaxtoGO {
 		//	Set<String> pubids = getPubmedIds(entity);		
 		String entity_name = entity.getDisplayName();
 		go_cam.addLabel(e, entity_name);
-		//attempt to localize the entity (only if Physical Entity because that is how Reactome views existence in space)
+		//attempt to localize the entity (only if Physical Entity because that is how BioPAX views existence in space)
 		if(entity instanceof PhysicalEntity) {
 			CellularLocationVocabulary loc = ((PhysicalEntity) entity).getCellularLocation();
 
@@ -1889,10 +1890,10 @@ public class BioPaxtoGO {
 			all_parts.addAll(output_parts);
 		}
 		for(PhysicalEntity e : input_parts) {
-			if(e.getDisplayName().equals("Cyclin E/A:p-T160-CDK2:CDKN1A,CDKN1B")||
-					e.getDisplayName().equals("CDKN1A,CDKN1B")) {
-				System.out.println("hello trouble "+e.getDisplayName()+"\n"+e.getModelInterface()+"\n"+e.getMemberPhysicalEntity());
-			}
+//			if(e.getDisplayName().equals("Cyclin E/A:p-T160-CDK2:CDKN1A,CDKN1B")||
+//					e.getDisplayName().equals("CDKN1A,CDKN1B")) {
+//				System.out.println("hello trouble "+e.getDisplayName()+"\n"+e.getModelInterface()+"\n"+e.getMemberPhysicalEntity());
+//			}
 			//complexes
 			if(e.getModelInterface().equals(Complex.class)) { 
 				Complex complex = (Complex)e;

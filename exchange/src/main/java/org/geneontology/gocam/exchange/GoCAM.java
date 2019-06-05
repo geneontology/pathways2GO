@@ -545,7 +545,7 @@ public class GoCAM {
 		return anno;
 	}
 
-	public void addDatabaseXref(OWLNamedIndividual e, String xref_id) {
+	public void addDatabaseXref(OWLEntity e, String xref_id) {
 		if(xref_id==null) {
 			return;
 		}		
@@ -706,7 +706,11 @@ final long counterValue = instanceCounter.getAndIncrement();
 		return ;
 	}
 
-	void addSubclassAssertion(OWLClass child, OWLClass parent, Set<OWLAnnotation> annotations) {
+	void addSubClassAssertion(OWLClass child, OWLClassExpression parent) {
+		addSubclassAssertion(child, parent, null);
+	}
+	
+	void addSubclassAssertion(OWLClass child, OWLClassExpression parent, Set<OWLAnnotation> annotations) {
 		OWLSubClassOfAxiom tmp = null;
 		if(annotations!=null&&annotations.size()>0) {
 			tmp = df.getOWLSubClassOfAxiom(child, parent, annotations);
@@ -1142,7 +1146,7 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 			String o_label = "'"+this.getaLabel(o)+"'";
 			Set<OWLAnnotation> annos = getDefaultAnnotations();
 			//directly negatively regulates RO_0002630 
-			String explain = "The relation "+r1_label+" "+o_label+" "+r2_label+" was inferred because:\n "+
+			String explain = "The relation "+r2_label+" "+o_label+" "+r1_label+" was inferred because:\n "+
 					r2_label+" has inputs A and B, "+r2_label+" has output A/B complex, and " + 
 					r1_label+" is enabled by B. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));

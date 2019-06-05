@@ -84,25 +84,14 @@ public class App {
 	//	String maximal_lego = "src/main/resources/org/geneontology/gocam/exchange/go-lego-full.owl";	
 
 	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
-
-		String abox_file = "/Users/bgood/blazegraph-runner-1.2.5/bin/reactome-homosapiens-Clathrin-mediated_endocytosis.ttl";
-		String tbox_file = "/Users/bgood/gocam_input/go-plus-sept-2018.owl";
 		
-		BioPaxtoGO bptg = new BioPaxtoGO();
-		QRunner qrunner = testInference(abox_file, bptg.tbox_files);
-		String outfilename = "/Users/bgood/blazegraph/test_combined_more.ttl";
-		String journal = "/Users/bgood/blazegraph/blazegraph.jnl";
-		makeBlazeGraphJournal(qrunner, outfilename, journal);
-		System.out.println("all done");
-		
-		//		String ontf = "/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-A_tetrasaccharide_linker_sequence_is_required_for_GAG_synthesis.ttl";
-		//		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
-		//		OWLOntology ont = man.loadOntologyFromOntologyDocument(new File(ontf));		
-		//		ClassificationReport cr = new ClassificationReport(ont);
-		//		System.out.println("bp "+cr.bp_count+" "+cr.bp_unclassified);
-		//		System.out.println("mf "+cr.mf_count+" "+cr.mf_unclassified);
-		//		System.out.println("cc "+cr.cc_count+" "+cr.cc_unclassified);
-		//		System.out.println("complex "+cr.complex_count+" "+cr.complex_unclassified);
+		String input_folder = "/Users/bgood/Desktop/test/go_cams/tmp_unreasoned";
+		String output_folder = "/Users/bgood/Desktop/test/go_cams/tmp_reasoned";
+		String tbox_file1 = "/Users/bgood/gocam_ontology/go-plus.owl";
+		String tbox_file2 = "/Users/bgood/gocam_ontology/neo_full.owl";
+		Set<String> tbox = new HashSet<String>();
+		tbox.add(tbox_file1); tbox.add(tbox_file2);
+		buildReasonedGraph(input_folder, output_folder, tbox);
 	}
 
 
@@ -291,14 +280,28 @@ public class App {
 		String input_folder = "/Users/bgood/reactome-go-cam-models/humantest/";
 		String output_folder = "/Users/bgood/reactome-go-cam-models/humantest_reasoned/";
 		String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
+		buildReasonedGraph(input_folder, output_folder, tbox_file);
+	}
+	
+	public static void buildReasonedGraph(String input_folder, String output_folder, String tbox_file) throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException{
+		Set<String> t = new HashSet<String>();
+		t.add(tbox_file);
+		buildReasonedGraph(input_folder, output_folder, t);
+	}
+
+	public static void buildReasonedGraph(String input_folder, String output_folder, Set<String> tbox_files) throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException{
 		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
-		OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
-		ArachneAccessor a = new ArachneAccessor(Collections.singleton(tbox));
+		Set<OWLOntology> tboxes = new HashSet<OWLOntology>();
+		for(String tbox_file : tbox_files) {
+			OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
+			tboxes.add(tbox);
+		}
+		ArachneAccessor a = new ArachneAccessor(tboxes);
 		boolean add_property_definitions = false;
 		boolean add_class_definitions = false;
 		a.reasonAllInFolder(input_folder, output_folder, add_property_definitions, add_class_definitions);
 	}
-
+	
 	public static void queryCollection() throws OWLOntologyCreationException, OWLOntologyStorageException, IOException {
 		String input_folder = "/Users/bgood/reactome-go-cam-models/humantest/";
 		OWLOntology abox = ArachneAccessor.makeOneOntologyFromDirectory(input_folder);
