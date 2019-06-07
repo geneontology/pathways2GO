@@ -82,15 +82,15 @@ public class PhysicalEntityOntologyBuilder {
 	public static void main(String[] args) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
 
 		String input_biopax = 
-				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_march25_2019.owl";
-		//SignalingByERBB2
+				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_march25_2019.owl";
+				"/Users/bgood/Desktop/test/biopax/SignalingByERBB2.owl";
 		String converted = 
 				//"/Users/bgood/Desktop/test/go_cams/Wnt_complete_2018-";
 				"/Users/bgood/Desktop/test/go_cams/";
-		String base_ont_title = "Reactome_Physical_Entities";
+		String base_ont_title = "SignalingByERBB2_Physical_Entities";
 		String base_extra_info = "https://reactome.org/content/detail/";
 		String base_short_namespace = "Reactome";
-		String outfilename = converted+base_ont_title+".ttl";
+		String outfilename = converted+base_ont_title;
 		
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileInputStream f = new FileInputStream(input_biopax);
@@ -116,7 +116,14 @@ public class PhysicalEntityOntologyBuilder {
 			converter.definePhysicalEntity(go_cam, entity, null, model_id);
 		}
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
-		go_cam.writeGoCAM_jena(outfilename, false);
+		String outputformat = "RDFXML";//"TURTLE";
+		if(outputformat.equals("RDFXML")) {
+			outfilename = outfilename+".owl";
+		}else if(outputformat.equals("TURTLE")) {
+			outfilename = outfilename+".ttl";
+		} 
+			
+		go_cam.writeGoCAM_jena(outfilename, false, outputformat);
 		
 		int n_objects = 0;
 		for(String id : converter.id_class_map.keySet()) {

@@ -1574,6 +1574,21 @@ BP has_part R
 			blazegraphdb.importModelToDatabase(outfilefile);
 		}
 	}
+	
+	void writeGoCAM_jena(String outfilename, boolean save2blazegraph, String outputformat) throws OWLOntologyStorageException, OWLOntologyCreationException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
+		File outfilefile = new File(outfilename);	
+		//use jena export
+		System.out.println("writing n triples: "+qrunner.nTriples());
+		qrunner.dumpModel(outfilefile, outputformat);
+		//reads in file created above and converts to journal
+		//could optimize speed by going direct at some point if it matters
+		if(save2blazegraph) {
+			if(blazegraphdb==null) {
+				initializeBlazeGraph(path2bgjournal);
+			}
+			blazegraphdb.importModelToDatabase(outfilefile);
+		}
+	}
 
 	void readGoCAM(String infilename) throws OWLOntologyCreationException {
 		go_cam_ont = ontman.loadOntologyFromOntologyDocument(new File(infilename));		
