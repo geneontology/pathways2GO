@@ -102,8 +102,8 @@ public class GoCAM {
 	public static final IRI obo_iri = IRI.create("http://purl.obolibrary.org/obo/");
 	public static final IRI uniprot_iri = IRI.create("http://identifiers.org/uniprot/");
 	public static IRI base_ont_iri;
-	public static OWLAnnotationProperty title_prop, contributor_prop, date_prop, skos_exact_match,  
-	state_prop, evidence_prop, provided_by_prop, x_prop, y_prop, rdfs_label, rdfs_comment, source_prop, 
+	public static OWLAnnotationProperty title_prop, contributor_prop, date_prop, skos_exact_match, skos_altlabel,  
+	state_prop, evidence_prop, provided_by_prop, x_prop, y_prop, rdfs_label, rdfs_comment, rdfs_seealso, source_prop, 
 	definition, database_cross_reference;
 	public static OWLObjectProperty part_of, has_part, has_input, has_output, 
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in,
@@ -223,7 +223,9 @@ public class GoCAM {
 		y_prop = df.getOWLAnnotationProperty(IRI.create("http://geneontology.org/lego/hint/layout/y"));
 		rdfs_label = df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI());
 		rdfs_comment = df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_COMMENT.getIRI());
+		rdfs_seealso = df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_SEE_ALSO.getIRI());
 		skos_exact_match = df.getOWLAnnotationProperty(IRI.create("http://www.w3.org/2004/02/skos/core#exactMatch"));
+		skos_altlabel = df.getOWLAnnotationProperty(IRI.create("http://www.w3.org/2004/02/skos/core#altLabel"));
 		definition = df.getOWLAnnotationProperty(IRI.create("http://purl.obolibrary.org/obo/IAO_0000115"));	
 		database_cross_reference = df.getOWLAnnotationProperty(IRI.create("http://www.geneontology.org/formats/oboInOwl#hasDbXref"));	
 
@@ -557,6 +559,28 @@ public class GoCAM {
 
 	}
 
+	public void addAltLabel(OWLEntity entity, String label) {
+		if(label==null) {
+			return;
+		}
+		OWLLiteral lbl = df.getOWLLiteral(label);
+		OWLAnnotation label_anno = df.getOWLAnnotation(skos_altlabel, lbl);
+		OWLAxiom labelaxiom = df.getOWLAnnotationAssertionAxiom(entity.getIRI(), label_anno);
+		ontman.addAxiom(go_cam_ont, labelaxiom);
+		return;
+	}
+	
+	public void addSeeAlso(OWLEntity entity, String related) {
+		if(related==null) {
+			return;
+		}
+		OWLLiteral lbl = df.getOWLLiteral(related);
+		OWLAnnotation label_anno = df.getOWLAnnotation(rdfs_seealso, lbl);
+		OWLAxiom labelaxiom = df.getOWLAnnotationAssertionAxiom(entity.getIRI(), label_anno);
+		ontman.addAxiom(go_cam_ont, labelaxiom);
+		return;
+	}
+	
 	public void addLabel(OWLEntity entity, String label) {
 		if(label==null) {
 			return;
