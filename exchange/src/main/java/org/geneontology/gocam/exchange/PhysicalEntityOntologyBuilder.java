@@ -83,11 +83,13 @@ public class PhysicalEntityOntologyBuilder {
 
 		String input_biopax = 
 				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_march25_2019.owl";
-				"/Users/bgood/Desktop/test/biopax/SignalingByERBB2.owl";
+				//"/Users/bgood/Desktop/test/biopax/SignalingByERBB2.owl";
+				"/Users/bgood/Desktop/test/biopax/SCF.owl";
 		String converted = 
 				//"/Users/bgood/Desktop/test/go_cams/Wnt_complete_2018-";
-				"/Users/bgood/Desktop/test/go_cams/";
-		String base_ont_title = "SignalingByERBB2_Physical_Entities";
+				//"/Users/bgood/Desktop/test/go_cams/";
+				"/Users/bgood/gocam_ontology/";
+		String base_ont_title = "SCF_reactome_physical_entities";//"SignalingByERBB2_Physical_Entities";
 		String base_extra_info = "https://reactome.org/content/detail/";
 		String base_short_namespace = "Reactome";
 		String outfilename = converted+base_ont_title;

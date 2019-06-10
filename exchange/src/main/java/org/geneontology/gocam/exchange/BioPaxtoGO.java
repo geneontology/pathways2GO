@@ -106,8 +106,8 @@ public class BioPaxtoGO {
 	public static final String legorel_file = "/Users/bgood/gocam_ontology/legorel.owl"; 
 	public static final String go_bfo_bridge_file = "/Users/bgood/gocam_ontology/go-bfo-bridge.owl"; 
 	public static final String eco_base_file = "/Users/bgood/gocam_ontology/eco-base.owl"; 
-	public static final String reactome_physical_entities_file = "/Users/bgood/Desktop/test/go_cams/SignalingByERBB2_Physical_Entities.owl";
-			//Reactome_Physical_Entities.ttl";
+	public static final String reactome_physical_entities_file = "/Users/bgood/gocam_ontology/SCF_reactome_physical_entities.owl";
+	//Reactome_Physical_Entities.ttl";
 
 	Set<String> tbox_files;
 	ImportStrategy strategy;
@@ -166,8 +166,8 @@ public class BioPaxtoGO {
 	public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		BioPaxtoGO bp2g = new BioPaxtoGO();
 		String input_biopax = 
-				"/Users/bgood/Desktop/test/biopax/SignalingByERBB2.owl";
-		//"Homo_sapiens_march25_2019.owl";
+				//"/Users/bgood/Desktop/test/biopax/SignalingByERBB2.owl";
+				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_march25_2019.owl";
 		String converted = 
 				//"/Users/bgood/Desktop/test/go_cams/Wnt_complete_2018-";
 				"/Users/bgood/Desktop/test/go_cams/reactome_v2/reactome-homosapiens-";
@@ -189,11 +189,13 @@ public class BioPaxtoGO {
 		//(rule:reg3) The relation 'DOCK3 binds FYN associated with NTRK2' 'directly positively regulates' 'DOCK3 activates RAC1' was inferred because: reaction1 has an output that is the enabler of reaction 2.
 		//
 		Set<String> test_pathways = new HashSet<String>();
+		//test for active site recognition
 		test_pathways.add("SCF(Skp2)-mediated degradation of p27/p21");
-		test_pathways.add("GRB2 events in ERBB2 signaling");
-		test_pathways.add("Elongator complex acetylates replicative histone H3, H4");
-		test_pathways.add("Attenuation phase");
-		test_pathways.add("Apoptosis induced DNA fragmentation");
+		//unions
+		//		test_pathways.add("GRB2 events in ERBB2 signaling");
+		//		test_pathways.add("Elongator complex acetylates replicative histone H3, H4");
+		//		test_pathways.add("Attenuation phase");
+		//		test_pathways.add("Apoptosis induced DNA fragmentation");
 		//		test_pathways.add("NTRK2 activates RAC1");
 		//		test_pathways.add("Unwinding of DNA");
 		//		test_pathways.add("Regulation of TNFR1 signaling");
@@ -215,7 +217,7 @@ public class BioPaxtoGO {
 		//test_pathways.add("Glycolysis");
 		//test_pathways.add("activated TAK1 mediates p38 MAPK activation");
 		//set to null to do full run
-		test_pathways = null;
+		//		test_pathways = null;
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathways);
 	} 
 
@@ -306,11 +308,11 @@ public class BioPaxtoGO {
 			//				break;
 			//			}
 
-//			if(currentPathway.getDisplayName().equals("tRNA modification in the nucleus and cytosol")) {
-//				System.out.println("Skipping pathway: "+currentPathway.getDisplayName());
-//				continue;
-//			}
-			
+			//			if(currentPathway.getDisplayName().equals("tRNA modification in the nucleus and cytosol")) {
+			//				System.out.println("Skipping pathway: "+currentPathway.getDisplayName());
+			//				continue;
+			//			}
+
 			go_cam.name = currentPathway.getDisplayName();
 			if(test_pathway_names!=null&&!test_pathway_names.contains(go_cam.name)) {
 				continue;
@@ -856,7 +858,7 @@ public class BioPaxtoGO {
 			IRI entity_class_iri = IRI.create(GoCAM.base_iri+entity_id);
 			OWLClass entity_class = go_cam.df.getOWLClass(entity_class_iri); 
 			go_cam.addTypeAssertion(e,  entity_class);
-			
+
 			//attempt to localize the entity (only if Physical Entity because that is how BioPAX views existence in space)
 			CellularLocationVocabulary loc = ((PhysicalEntity) entity).getCellularLocation();
 			if(loc!=null) {			
@@ -1088,8 +1090,9 @@ public class BioPaxtoGO {
 
 				//find controllers 
 				Set<Control> controllers = ((Process) entity).getControlledOf();
-				Set<String> active_site_local_ids = getActiveSites(controllers);
 				for(Control controller : controllers) {
+					//check if there are active sites annotated on the controller.
+					Set<String> active_site_stable_ids = getActiveSites(controller);
 					ControlType ctype = controller.getControlType();	
 					boolean is_catalysis = false;
 					if(controller.getModelInterface().equals(Catalysis.class)) {
@@ -1179,9 +1182,9 @@ public class BioPaxtoGO {
 						String controller_entity_id = getEntityReferenceId(controller_entity);
 						//iri = GoCAM.makeGoCamifiedIRI(controller_entity.getUri()+entity.getUri()+"controller");
 						iri = GoCAM.makeGoCamifiedIRI(model_id, controller_entity_id+"_"+entity_id+"_controller");
-//						if(controller_entity_id.equals("R-HSA-187516")) {
-//							System.out.println("Debug trouble R-HSA-187516 Cyclin E/A:p-T160-CDK2:CDKN1A,CDKN1B...");
-//						}
+						if(controller_entity_id.equals("R-HSA-187516")) {
+							System.out.println("Debug trouble R-HSA-187516 Cyclin E/A:p-T160-CDK2:CDKN1A,CDKN1B...");
+						}
 						defineReactionEntity(go_cam, controller_entity, iri, true, model_id);
 						//the protein or complex
 						OWLNamedIndividual controller_e = go_cam.df.getOWLNamedIndividual(iri);
@@ -1189,98 +1192,21 @@ public class BioPaxtoGO {
 						//check if there is an activeUnit annotation (reactome only)
 						//active site 
 						Set<OWLNamedIndividual> active_units = null;
-						if(active_site_local_ids.size()>0) {		
-							//find the sub-entity of the controller that is the activeUnit
-							//get the controller entity as a physical entity
-							PhysicalEntity controller_set = (PhysicalEntity)controller_entity;
-							//iterate through parts till the right one is found						
-							Set<PhysicalEntity> controller_member_roots = new HashSet<PhysicalEntity>();
-							controller_member_roots.add(controller_set);
-							Set<PhysicalEntity> controller_members = flattenNest(controller_member_roots, null, true);
-							for(PhysicalEntity member : controller_members) {
-								String local_id = member.getUri();
-								local_id = local_id.substring(local_id.indexOf("#"));			
-								
-								if(member instanceof Protein) {
-									Set<PhysicalEntity> set_members = member.getMemberPhysicalEntity();
-									if(set_members.size()>0) {
-										//its a set object 
-										//check if it is an active unit
-										if(active_site_local_ids.contains(local_id)) {
-											if(active_units==null) {
-												active_units = new HashSet<OWLNamedIndividual>();
-											}
-											//get to the OWL node
-											Collection<OWLIndividual> parts = EntitySearcher.getObjectPropertyValues(controller_e, GoCAM.has_part, go_cam.go_cam_ont);
-											for(OWLIndividual part : parts) {
-												//if id matches 
-												Set<String> exact_matches = getExactMatches(part, go_cam.go_cam_ont);
-												for(String orig_id : exact_matches) {
-													orig_id = orig_id.substring(orig_id.indexOf("#"));
-													if(orig_id.equals(local_id)) {
-														go_cam.addComment(part.asOWLNamedIndividual(), "a Set as the active unit in the complex");
-														active_units.add(part.asOWLNamedIndividual());
-													}
-												}
-											}
-										}
-										
-									}
-									//not a set, process as a protein 
-									else {
-										String uniprot_id = getUniprotProteinId((Protein)member);
-										if(active_site_local_ids.contains(local_id)) {
-											if(active_units==null) {
-												active_units = new HashSet<OWLNamedIndividual>();
-											}
-											//find active protein in controller set
-											//if the controller is a complex
-											if(controller_entity instanceof Complex) {
-												Collection<OWLIndividual> parts = EntitySearcher.getObjectPropertyValues(controller_e, GoCAM.has_part, go_cam.go_cam_ont);
-												for(OWLIndividual part : parts) {
-													Collection<OWLClassExpression> part_types = EntitySearcher.getTypes(part, go_cam.go_cam_ont);
-													for(OWLClassExpression part_type : part_types) {
-														if(part_type.getClassExpressionType().equals(ClassExpressionType.OWL_CLASS)) {											
-															String type = part_type.asOWLClass().getIRI().toString();
-															if(type.contains(uniprot_id)) {
-																//its rare, though possible that more than one entity in the complex has the same uniprot id
-																//check that we only add the right one here.  
-																Set<String> exact_matches = getExactMatches(part, go_cam.go_cam_ont);
-																for(String orig_id : exact_matches) {
-																	orig_id = orig_id.substring(orig_id.indexOf("#"));
-																	if(orig_id.equals(local_id)) {
-																		go_cam.addComment(part.asOWLNamedIndividual(), "active unit in the complex");
-																		active_units.add(part.asOWLNamedIndividual());
-																	}
-																}
-															}
-														}
-													}
-												}
-											}
-											//if the controller is a set
-											else {
-												Collection<OWLClassExpression> types = EntitySearcher.getTypes(controller_e, go_cam.go_cam_ont);
-												for(OWLClassExpression type : types) {
-													if(type.getClassExpressionType().equals(ClassExpressionType.OBJECT_UNION_OF)) {
-														OWLObjectUnionOf union_exp = (OWLObjectUnionOf) type;
-														Set<OWLClass> union_sig = union_exp.getClassesInSignature();
-														for(OWLClass c : union_sig) {
-															String ct = c.getIRI().toString();
-															if(ct.contains(uniprot_id)) {
-																OWLNamedIndividual part = go_cam.makeAnnotatedIndividual(GoCAM.makeRandomIri(model_id));
-																go_cam.addTypeAssertion(part, c);
-																go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.has_part, part, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);																
-																go_cam.addComment(part.asOWLNamedIndividual(), "active unit in the set");
-																active_units.add(part.asOWLNamedIndividual());																		
-															}
-														}
-													}
-												}
-											}
-										}
-									}
-								}		
+						if(active_site_stable_ids.size()>0) {	
+							active_units = new HashSet<OWLNamedIndividual>();
+							//create the active unit nodes. 
+							for(String active_site_stable_id : active_site_stable_ids) {
+								//get the class for the entity
+								//if it is a physical entity, then we should already have created a class to describe it based on the unique id.  
+								//TODO this needs some generalizing, but focusing on getting Reactome done right now.
+								IRI entity_class_iri = IRI.create(GoCAM.base_iri+active_site_stable_id);
+								OWLClass entity_class = go_cam.df.getOWLClass(entity_class_iri); 
+								//make a new individual - hmm.. check for conflict
+								OWLNamedIndividual active_i = go_cam.makeAnnotatedIndividual(GoCAM.makeRandomIri(model_id));
+								go_cam.addTypeAssertion(active_i,  entity_class);
+								go_cam.addComment(active_i, "Active unit in "+controller_entity_id);
+								go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.has_part, active_i, dbids,  GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+								active_units.add(active_i);
 							}
 						}
 						//define relationship between controller entity and reaction
@@ -1414,38 +1340,20 @@ public class BioPaxtoGO {
 		}
 		return matches;
 	}
-	private Set<String> getActiveSites(Set<Control> controlled_by_complex) {
+	private Set<String> getActiveSites(Control controlled_by_complex) {
 		Set<String> active_site_ids = new HashSet<String>();
-		for(Control controller : controlled_by_complex) {
-			for(String comment : controller.getComment()) {
-				if(comment.startsWith("activeUnit:")) {
-					String[] c = comment.split(" ");
-					String local_protein_id = c[1];
-					//looks like #Protein3
-					active_site_ids.add(local_protein_id);
-				}
+		for(String comment : controlled_by_complex.getComment()) {
+			if(comment.startsWith("activeUnit:")) {
+				String[] c = comment.split(" ");
+				String local_protein_id = c[1];
+				//looks like #Protein3
+				//active_site_ids.add(local_protein_id);
+				//full id in biopax model
+				String full_id = biopax_model.getXmlBase()+local_protein_id.substring(1);
+				BioPAXElement bp_entity = biopax_model.getByID(full_id);
+				String stable_id = getEntityReferenceId((Entity) bp_entity);
+				active_site_ids.add(stable_id);
 			}
-
-			// the following assumes we are getting active site information out of another source and caching it
-			// (typically the reactome graph db)
-			// since January 2019, reactome has agreed to put this information in a comment on the control event
-			// e.g. activeUnit: #Protein3
-			//			for(Xref xref : controller.getXref()) {
-			//				if(xref.getModelInterface().equals(RelationshipXref.class)) {
-			//					RelationshipXref ref = (RelationshipXref)xref;	    			
-			//					//here we add the referenced GO class as a type. 
-			//					//#BioPAX4
-			//					String db = ref.getDb().toLowerCase();
-			//					if(db.startsWith("reactome database id")&&reactome_extras!=null){
-			//						String controller_event_id = ref.getId();
-			//						ReactomeExtras.ActiveSite active_site = reactome_extras.controller_active.get(controller_event_id);
-			//						if(active_site!=null) {
-			//							active_site_ids.add(active_site.active_unit_id);
-			//looks like e.g. R-HSA-5693527 
-			//						}
-			//					}
-			//				}
-			//			}
 		}
 		return active_site_ids;
 
@@ -1603,10 +1511,10 @@ public class BioPaxtoGO {
 			all_parts.addAll(output_parts);
 		}
 		for(PhysicalEntity e : input_parts) {
-//			if(e.getDisplayName().equals("Cyclin E/A:p-T160-CDK2:CDKN1A,CDKN1B")||
-//					e.getDisplayName().equals("CDKN1A,CDKN1B")) {
-//				System.out.println("hello trouble "+e.getDisplayName()+"\n"+e.getModelInterface()+"\n"+e.getMemberPhysicalEntity());
-//			}
+			//			if(e.getDisplayName().equals("Cyclin E/A:p-T160-CDK2:CDKN1A,CDKN1B")||
+			//					e.getDisplayName().equals("CDKN1A,CDKN1B")) {
+			//				System.out.println("hello trouble "+e.getDisplayName()+"\n"+e.getModelInterface()+"\n"+e.getMemberPhysicalEntity());
+			//			}
 			//complexes
 			if(e.getModelInterface().equals(Complex.class)) { 
 				Complex complex = (Complex)e;

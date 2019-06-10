@@ -912,7 +912,10 @@ final long counterValue = instanceCounter.getAndIncrement();
 		//Where reaction location is ambiguous, e.g. entities are found at multiple sites and no active unit is known, no locations will be recording in the go-cam
 		//r = addEntityLocationsForAmbiguousReactions(model_id, r); //must run after occurs_in and before deleteLocations
 		r = inferRegulatesViaOutputRegulates(model_id, r);
-		r = inferNegativeRegulationByBinding(model_id, r);
+		//This is turned off because it produces too many false positives for a direct conversion.  
+		//it is worth keeping around as it does succeed enough times to be useful feedback for Reactome
+		//see https://github.com/geneontology/pathways2GO/issues/62  
+		//r = inferNegativeRegulationByBinding(model_id, r);
 		r = inferRegulatesViaOutputEnables(model_id, r);
 		r = inferProvidesInput(model_id, r);
 		r = convertEntityRegulatorsToBindingFunctions(model_id, r);
