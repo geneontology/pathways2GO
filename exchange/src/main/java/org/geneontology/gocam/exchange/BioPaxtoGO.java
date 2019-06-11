@@ -106,15 +106,14 @@ public class BioPaxtoGO {
 	public static final String legorel_file = "/Users/bgood/gocam_ontology/legorel.owl"; 
 	public static final String go_bfo_bridge_file = "/Users/bgood/gocam_ontology/go-bfo-bridge.owl"; 
 	public static final String eco_base_file = "/Users/bgood/gocam_ontology/eco-base.owl"; 
-	public static final String reactome_physical_entities_file = "/Users/bgood/gocam_ontology/SCF_reactome_physical_entities.owl";
-	//Reactome_Physical_Entities.ttl";
+	public static final String reactome_physical_entities_file = "/Users/bgood/gocam_ontology/Reactome_physical_entities.owl";
 
 	Set<String> tbox_files;
 	ImportStrategy strategy;
 	enum ImportStrategy {
 		NoctuaCuration, 
 	}
-	boolean preserve_sets_in_complexes = true;
+
 	boolean apply_layout = false;
 	boolean generate_report = false;
 	boolean explain_inconsistant_models = true;
@@ -123,7 +122,7 @@ public class BioPaxtoGO {
 	GOPlus goplus;
 	Model biopax_model;
 	Map<String, String> gocamid_sourceid = new HashMap<String, String>();
-	static boolean check_consistency = true;
+	static boolean check_consistency = false;
 	static boolean ignore_diseases = true;
 	static boolean add_lego_import = false; //unless you never want to open the output in Protege always leave false..(or learn how to use a catalogue file)
 	static boolean save_inferences = false;  //adds inferences to blazegraph journal
@@ -190,12 +189,12 @@ public class BioPaxtoGO {
 		//
 		Set<String> test_pathways = new HashSet<String>();
 		//test for active site recognition
-		test_pathways.add("SCF(Skp2)-mediated degradation of p27/p21");
+	//	test_pathways.add("SCF(Skp2)-mediated degradation of p27/p21");
 		//unions
-		//		test_pathways.add("GRB2 events in ERBB2 signaling");
-		//		test_pathways.add("Elongator complex acetylates replicative histone H3, H4");
-		//		test_pathways.add("Attenuation phase");
-		//		test_pathways.add("Apoptosis induced DNA fragmentation");
+	//			test_pathways.add("GRB2 events in ERBB2 signaling");
+	//			test_pathways.add("Elongator complex acetylates replicative histone H3, H4");
+				//looks good
+			//	test_pathways.add("Attenuation phase");
 		//		test_pathways.add("NTRK2 activates RAC1");
 		//		test_pathways.add("Unwinding of DNA");
 		//		test_pathways.add("Regulation of TNFR1 signaling");
@@ -204,20 +203,28 @@ public class BioPaxtoGO {
 
 		//inconsistent, but not sure how to fix		
 		//test_pathways.add("tRNA modification in the nucleus and cytosol");
-
+		//inconsistent
+		//test_pathways.add("Apoptosis induced DNA fragmentation");
+		
 		//		test_pathways.add("SHC1 events in ERBB4 signaling");
-		//		 test_pathways.add("FRS-mediated FGFR3 signaling");
-		//		 test_pathways.add("FRS-mediated FGFR4 signaling");
+			//looks good.  example of converting binding function to regulatory process template
+			//	 test_pathways.add("FRS-mediated FGFR3 signaling");
+			//	 test_pathways.add("FRS-mediated FGFR4 signaling");
+			//looks good, nice inference for demo	 
 		//		 test_pathways.add("Activation of G protein gated Potassium channels");
 		//		 test_pathways.add("Regulation of actin dynamics for phagocytic cup formation");
 		//		 test_pathways.add("SHC-mediated cascade:FGFR2");
 		//		 test_pathways.add("SHC-mediated cascade:FGFR3");
-		//		test_pathways.add("RAF-independent MAPK1/3 activation");
+			//check this one for annotations on regulates edges
+				test_pathways.add("RAF-independent MAPK1/3 activation");
+			//great example of why we are not getting a complete data set without inter model linking.  
 		//		test_pathways.add("TCF dependent signaling in response to WNT");
-		//test_pathways.add("Glycolysis");
-		//test_pathways.add("activated TAK1 mediates p38 MAPK activation");
+				//looks great..
+	//	test_pathways.add("Glycolysis");
+		//looks good 
+	//	test_pathways.add("activated TAK1 mediates p38 MAPK activation");
 		//set to null to do full run
-		//		test_pathways = null;
+		test_pathways = null;
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathways);
 	} 
 

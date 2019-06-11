@@ -352,7 +352,7 @@ public class GoCAM {
 		addLabel(negatively_regulates, "negatively regulates");
 		positively_regulates = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002213"));
 		addLabel(positively_regulates, "positively regulateds");
-		
+
 		directly_positively_regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002024"));
 		addLabel(directly_positively_regulated_by, "directly positively regulated by");
 
@@ -569,7 +569,7 @@ public class GoCAM {
 		ontman.addAxiom(go_cam_ont, labelaxiom);
 		return;
 	}
-	
+
 	public void addSeeAlso(OWLEntity entity, String related) {
 		if(related==null) {
 			return;
@@ -580,7 +580,7 @@ public class GoCAM {
 		ontman.addAxiom(go_cam_ont, labelaxiom);
 		return;
 	}
-	
+
 	public void addLabel(OWLEntity entity, String label) {
 		if(label==null) {
 			return;
@@ -733,7 +733,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 	void addSubClassAssertion(OWLClass child, OWLClassExpression parent) {
 		addSubclassAssertion(child, parent, null);
 	}
-	
+
 	void addSubclassAssertion(OWLClass child, OWLClassExpression parent, Set<OWLAnnotation> annotations) {
 		OWLSubClassOfAxiom tmp = null;
 		if(annotations!=null&&annotations.size()>0) {
@@ -1062,40 +1062,40 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 		return r;
 	}
 
-	
-	
+
+
 	private RuleResults addEntityLocationsForAmbiguousReactions(String model_id, RuleResults r) {	
-	String part_of_rule = "add_entity_part_of_locations";
-	Integer part_of_count = r.checkInitCount(part_of_rule, r);
-	//TODO not using this at the moment for anything so leaving it out of this rule for now
-	//Set<String> part_of_pathways = r.checkInitPathways(part_of_rule, r);
-	Map<String, String> entity_location = qrunner.findEntityLocationsForAmbiguousReactions();
-	if(entity_location.isEmpty()) {
-		System.out.println("No ambiguously located reactions");
-	}else {
-		part_of_count+=entity_location.size();			
-		for(String entity_uri : entity_location.keySet()) {
-			String location_uri = entity_location.get(entity_uri);			
-			OWLNamedIndividual entity = this.makeUnannotatedIndividual(IRI.create(entity_uri));
-			OWLNamedIndividual location = this.makeUnannotatedIndividual(IRI.create(location_uri));
-			//make the part_of assertion
-			Set<OWLAnnotation> annos = getDefaultAnnotations();
-			String reason = "Physical entities are directly assigned part of cellular location information when "
-					+ "the reaction they participate in makes use of entities in multiple locations.";
-			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(reason)));		
-			OWLNamedIndividual new_location = makeAnnotatedIndividual(makeRandomIri(model_id));
-			for(OWLClassExpression t : EntitySearcher.getTypes(location, go_cam_ont)) {
-				addTypeAssertion(new_location, t);
-			}			
-			addRefBackedObjectPropertyAssertion(entity, GoCAM.part_of, new_location, Collections.singleton(model_id), GoCAM.eco_imported_auto, "Reactome", annos, model_id);
+		String part_of_rule = "add_entity_part_of_locations";
+		Integer part_of_count = r.checkInitCount(part_of_rule, r);
+		//TODO not using this at the moment for anything so leaving it out of this rule for now
+		//Set<String> part_of_pathways = r.checkInitPathways(part_of_rule, r);
+		Map<String, String> entity_location = qrunner.findEntityLocationsForAmbiguousReactions();
+		if(entity_location.isEmpty()) {
+			System.out.println("No ambiguously located reactions");
+		}else {
+			part_of_count+=entity_location.size();			
+			for(String entity_uri : entity_location.keySet()) {
+				String location_uri = entity_location.get(entity_uri);			
+				OWLNamedIndividual entity = this.makeUnannotatedIndividual(IRI.create(entity_uri));
+				OWLNamedIndividual location = this.makeUnannotatedIndividual(IRI.create(location_uri));
+				//make the part_of assertion
+				Set<OWLAnnotation> annos = getDefaultAnnotations();
+				String reason = "Physical entities are directly assigned part of cellular location information when "
+						+ "the reaction they participate in makes use of entities in multiple locations.";
+				annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(reason)));		
+				OWLNamedIndividual new_location = makeAnnotatedIndividual(makeRandomIri(model_id));
+				for(OWLClassExpression t : EntitySearcher.getTypes(location, go_cam_ont)) {
+					addTypeAssertion(new_location, t);
+				}			
+				addRefBackedObjectPropertyAssertion(entity, GoCAM.part_of, new_location, Collections.singleton(model_id), GoCAM.eco_imported_auto, "Reactome", annos, model_id);
+			}
 		}
+		r.rule_hitcount.put(part_of_rule, part_of_count);	
+		qrunner = new QRunner(go_cam_ont); 
+		return r;
 	}
-	r.rule_hitcount.put(part_of_rule, part_of_count);	
-	qrunner = new QRunner(go_cam_ont); 
-	return r;
-}
-	
-	
+
+
 	/**
 	 * Rule 5: Regulator 1: direct assertion 
 	 * If an entity is involved_in_regulation_of reaction1 
@@ -1416,20 +1416,17 @@ BP has_part R
 					}
 					Set<OWLAnnotation> annos = getDefaultAnnotations();
 					OWLNamedIndividual regulator = makeUnannotatedIndividual(er.entity_uri);
-					String regulator_label = getaLabel(regulator);
+		
 					OWLObjectProperty prop_for_deletion = GoCAM.involved_in_negative_regulation_of;
 					OWLObjectProperty regulator_prop = GoCAM.negatively_regulates;
+					String explain = "The relation was added to account for an assertion about an entity regulating (not 'enabling') the target reaction .  See and comment on mapping rules at https://tinyurl.com/y8jctxxv . See entity_regulator_1";
 					if(er.prop_uri.equals("http://purl.obolibrary.org/obo/RO_0002429")) {
-						String reg = " is involved in positive regulation of ";
-						String explain = "The relation was inferred because "+regulator_label
-								+reg+" the reaction.  See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
+						//String reg = " is involved in positive regulation of ";
 						annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 						prop_for_deletion = GoCAM.involved_in_positive_regulation_of;	
 						regulator_prop = GoCAM.positively_regulates;
 					}else {
-						String reg = " is involved in negative regulation of ";
-						String explain = "The relation was inferred because "+regulator_label
-								+reg+" the reaction.  See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
+						//String reg = " is involved in negative regulation of ";
 						annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 					}
 					//make the MF node
@@ -1577,7 +1574,7 @@ BP has_part R
 			blazegraphdb.importModelToDatabase(outfilefile);
 		}
 	}
-	
+
 	void writeGoCAM_jena(String outfilename, boolean save2blazegraph, String outputformat) throws OWLOntologyStorageException, OWLOntologyCreationException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		File outfilefile = new File(outfilename);	
 		//use jena export

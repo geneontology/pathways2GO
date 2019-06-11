@@ -43,6 +43,7 @@ public class Validator {
 		tbox_files.add(BioPaxtoGO.legorel_file);
 		tbox_files.add(BioPaxtoGO.go_bfo_bridge_file);
 		tbox_files.add(BioPaxtoGO.eco_base_file);
+		tbox_files.add(BioPaxtoGO.reactome_physical_entities_file);
 		go_cam = new GoCAM();
 		tbox_qrunner = go_cam.initializeQRunnerForTboxInference(tbox_files);
 	}
@@ -55,9 +56,9 @@ public class Validator {
 	public static void main(String[] args) throws OWLOntologyCreationException, IOException {
 		
 		Validator validator = new Validator();
-		String go_cam_folder = "/Users/bgood/Desktop/test/go_cams/reactome/";
+		String go_cam_folder = "/Users/bgood/Desktop/test/go_cams/reactome_v2/";
 		//"/Users/bgood/Documents/GitHub/noctua-models/models/";
-		String out = "/Users/bgood/Desktop/test/go_cams/arachne_validator_reactome_april4.txt";
+		String out = "/Users/bgood/Desktop/test/go_cams/arachne_validator_reactome_june11.txt";
 		String filename_must_contain = "reactome";
 		String catalog_file = "/Users/bgood/gocam_ontology/catalog-no-import.xml";
 		validator.testConsistencyForFolder(go_cam_folder, out, filename_must_contain, catalog_file);
@@ -67,6 +68,7 @@ public class Validator {
 
 	void testConsistencyForFolder(String input_folder, String output_file, String filename_must_contain, String catalog_file) throws OWLOntologyCreationException, IOException {
 		FileWriter output = new FileWriter(output_file);
+		output.write("file\tconsistent\n");
 		File dir = new File(input_folder);
 		File[] directoryListing = dir.listFiles();
 		int total = 0;
