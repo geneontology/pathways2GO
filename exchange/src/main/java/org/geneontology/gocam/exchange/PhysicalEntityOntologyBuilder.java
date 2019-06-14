@@ -98,14 +98,14 @@ public class PhysicalEntityOntologyBuilder {
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
 		String input_biopax = 
-				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_march25_2019.owl";
-				"/Users/bgood/Desktop/test/biopax/SignalingByERBB2.owl";
+				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_march25_2019.owl";
+				//"/Users/bgood/Desktop/test/biopax/SignalingByERBB2.owl";
 				//"/Users/bgood/Desktop/test/biopax/SCF.owl";
 		String converted = 
 				//"/Users/bgood/Desktop/test/go_cams/Wnt_complete_2018-";
 				//"/Users/bgood/Desktop/test/go_cams/";
 				"/Users/bgood/gocam_ontology/";
-		String base_ont_title = "SignalingByERBB2_Physical_Entities"; //"Reactome_physical_entities";
+		String base_ont_title = "Reactome_physical_entities";//"SignalingByERBB2_Physical_Entities"; //"Reactome_physical_entities";
 		String base_extra_info = "https://reactome.org/content/detail/";
 		String base_short_namespace = "Reactome";
 		String outfilename = converted+base_ont_title;
@@ -119,8 +119,11 @@ public class PhysicalEntityOntologyBuilder {
 		String base_provider = "https://reactome.org";
 		boolean add_lego_import = false;
 		int n = 0;
-		String iri = "http://model.geneontology.org/"+base_ont_title;
-		IRI ont_iri = IRI.create(iri);
+		//String iri = "http://model.geneontology.org/"+base_ont_title;
+		//making it resolvable.. where it currently lives
+		//TODO better URIs
+		String ont_uri = "https://github.com/geneontology/pathways2GO/raw/master/exchange/generated/Reactome_physical_entities.owl";
+		IRI ont_iri = IRI.create(ont_uri);
 		GoCAM go_cam = new GoCAM(ont_iri, base_ont_title, base_contributor, null, base_provider, add_lego_import);
 		//Annotate the ontology
 		OWLAnnotation source_anno = go_cam.df.getOWLAnnotation(GoCAM.rdfs_comment, go_cam.df.getOWLLiteral("Generated from biopax build: "+biopax_build_id));
