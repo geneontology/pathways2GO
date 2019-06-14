@@ -152,6 +152,8 @@ public class PhysicalEntityOntologyBuilder {
 			go_cam.addSeeAlso(e, reactome_url);
 			go_cam.addComment(e, "BioPAX type: "+entity.getModelInterface());
 		}
+		//tag the class with a basic upper level type
+		go_cam.addSubClassAssertion(e, GoCAM.chebi_molecular_entity);
 		//this allows linkage between different entities in the GO-CAM sense that correspond to the same thing in the BioPax sense
 		go_cam.addUriAnnotations2Individual(e.getIRI(),GoCAM.skos_exact_match, IRI.create(entity.getUri()));		
 		String entity_name = entity.getDisplayName();

@@ -30,6 +30,7 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
+import org.geneontology.garage.App;
 import org.geneontology.jena.SesameJena;
 import org.geneontology.rules.engine.Explanation;
 import org.geneontology.rules.engine.Triple;
@@ -238,7 +239,7 @@ public class QRunner {
 		return things;
 	}
 	
-	int nTriples() {
+	public int nTriples() {
 		int n = 0;
 		String q = null;
 		try {
@@ -257,7 +258,7 @@ public class QRunner {
 		return n;
 	}
 
-	boolean isConsistent() {
+	public boolean isConsistent() {
 		boolean consistent = true;
 		String q = null;
 		try {
@@ -280,7 +281,7 @@ public class QRunner {
 		return consistent;
 	}
 
-	Set<String> getUnreasonableEntities() {
+	public Set<String> getUnreasonableEntities() {
 		Set<String> unreasonable = new HashSet<String>();
 		String q = null;
 		try {
@@ -820,12 +821,12 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 	 * @param format
 	 * @throws IOException 
 	 */
-	void dumpModel(String filename, String format) throws IOException {
+	public void dumpModel(String filename, String format) throws IOException {
 		FileOutputStream o = new FileOutputStream(filename);
 		jena.write(o, format);
 		o.close();
 	}
-	void dumpModel(File file, String format) throws IOException {
+	public void dumpModel(File file, String format) throws IOException {
 		FileOutputStream o = new FileOutputStream(file);
 		jena.write(o, format);
 		o.close();

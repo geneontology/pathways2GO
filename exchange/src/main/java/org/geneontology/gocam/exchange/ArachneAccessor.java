@@ -27,7 +27,14 @@ import org.geneontology.rules.engine.WorkingMemory;
 import org.geneontology.rules.util.Bridge;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotation;
+import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
@@ -46,14 +53,37 @@ public class ArachneAccessor {
 	Collection<OWLOntology> tbox_ontologies;
 	RuleEngine ruleEngine;
 	Set<org.apache.jena.reasoner.rulesys.Rule> jena_rules;
-
+	public final Set<String> upper;
+	public final OWLAnnotationProperty biolink_category;
 	/**
 	 * Arachne needs a tbox (defined classes from ontology) to get started.
 	 */
 	public ArachneAccessor(Collection<OWLOntology> tbox) {
 		tbox_ontologies = tbox;
 		ruleEngine = initializeRuleEngine(tbox_ontologies);
-		
+		/**
+		 * BioLink
+		 *standardize on https://w3id.org/biolink/vocab/category 
+			https://w3id.org/biolink/vocab/MolecularActivity
+			https://w3id.org/biolink/vocab/BiologicalProcess
+			https://w3id.org/biolink/vocab/CellularComponent
+		 */
+		OWLDataFactory df = OWLManager.getOWLDataFactory();
+		biolink_category = df.getOWLAnnotationProperty(IRI.create("https://w3id.org/biolink/vocab/category"));
+		upper = new HashSet<String>();
+		String obo = "http://purl.obolibrary.org/obo/";
+		upper.add(obo+"GO_0003674"); //MF
+		upper.add(obo+"GO_0008150"); //BP
+		upper.add(obo+"GO_0005575"); //CC
+		upper.add(obo+"CL_0000000"); //Cell
+		upper.add(obo+"UBERON_0001062"); //anatomical entity
+		upper.add(obo+"GO_0032991"); //protein-containing complex
+		upper.add(obo+"CHEBI_23367"); //molecular entity
+		//CHEBI_23367 subsumes all 'gene products' in neo as all as all chemical entities
+		upper.add(obo+"CHEBI_33695"); //gene 
+		upper.add(obo+"CHEBI_36080"); //protein
+		upper.add(obo+"CHEBI_24431"); //chemical
+		upper.add(obo+"ECO_0000000"); //evidence
 	}
 
 
@@ -208,7 +238,7 @@ public class ArachneAccessor {
 	 * @throws OWLOntologyCreationException
 	 * @throws FileNotFoundException
 	 */
-	void reasonAllInFolder(String input_folder, String output_folder, boolean add_property_definitions, boolean add_class_definitions) throws OWLOntologyCreationException, FileNotFoundException {
+	public void reasonAllInFolder(String input_folder, String output_folder, boolean add_property_definitions, boolean add_class_definitions) throws OWLOntologyCreationException, FileNotFoundException {
 		OWLOntologyManager aman = OWLManager.createOWLOntologyManager();
 		File dir = new File(input_folder);
 		File[] directoryListing = dir.listFiles();
@@ -234,6 +264,66 @@ public class ArachneAccessor {
 		return;
 	}
 
+	public void categorizeInstanceNodesInFolder(String input_folder, String output_folder) throws OWLOntologyCreationException, FileNotFoundException, OWLOntologyStorageException {
+		OWLOntologyManager aman = OWLManager.createOWLOntologyManager();
+		
+		File dir = new File(input_folder);
+		File[] directoryListing = dir.listFiles();
+		if (directoryListing != null) {
+			int n = 0;
+			for (File abox_file : directoryListing) {
+				if(abox_file.getName().endsWith(".ttl")) {
+					n++;
+					System.out.println("Adding Types for "+abox_file.getName()+" "+n+" of "+directoryListing.length);
+					OWLOntology abox = aman.loadOntologyFromOntologyDocument(abox_file);	
+					abox = addCategoryTags(abox, aman);
+					String filename = output_folder+"/typed_"+abox_file.getName();
+					Helper.writeOntology(filename, abox);
+				}else {
+					System.out.println("Skipping: "+abox_file.getName());
+				}
+			}
+		}
+		return;
+	}
+	
+	public OWLOntology addCategoryTags(OWLOntology abox, OWLOntologyManager ontman) throws OWLOntologyCreationException {			
+		OWLDataFactory df = OWLManager.getOWLDataFactory();
+		boolean add_property_definitions = false; boolean add_class_definitions = false;
+		WorkingMemory wm = createInferredModel(abox, add_property_definitions, add_class_definitions);
+		scala.collection.Iterator<Triple> triples = wm.facts().toList().iterator();
+		while(triples.hasNext()) {				
+			Triple triple = triples.next();
+			 //<http://arachne.geneontology.org/indirect_type>
+			if(triple.p().toString().equals("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>")) {
+				String type = deArrow(triple.o().toString());
+				if(upper.contains(type)) {
+					String subject_uri = deArrow(triple.s().toString());
+					IRI subject_iri = IRI.create(subject_uri);
+					IRI type_iri = IRI.create(type);
+					//if we went normal standards route
+					//OWLNamedIndividual subject = df.getOWLNamedIndividual(subject_iri);
+					//OWLClass type_class = df.getOWLClass(type_iri);
+					//OWLClassAssertionAxiom isa = df.getOWLClassAssertionAxiom(type_class, subject);
+					//ontman.addAxiom(abox, isa);
+					//biolink 
+					OWLAnnotation cat_anno = df.getOWLAnnotation(biolink_category, type_iri);
+					OWLAnnotationAssertionAxiom cat = df.getOWLAnnotationAssertionAxiom(subject_iri, cat_anno);
+					ontman.addAxiom(abox, cat);
+				}
+			}
+		}
+		return abox;
+	}
+	
+	public String deArrow(String s) {
+		return s.replaceAll("<", "").replaceAll(">", "");
+	}
+	public String addArrow(String s) {
+		return "<"+s+">";
+	}
+
+	
 	Model makeJenaModel(WorkingMemory wm) {
 		Model model = ModelFactory.createDefaultModel();
 		model.add(JavaConverters.setAsJavaSetConverter(wm.facts()).asJava().stream()

@@ -116,6 +116,7 @@ public class GoCAM {
 	public static OWLClass 
 	bp_class, continuant_class, process_class, go_complex, cc_class, molecular_function, 
 	eco_imported, eco_imported_auto, eco_inferred_auto, 
+	chebi_molecular_entity, 
 	chebi_protein, chebi_gene, chemical_entity, chemical_role, 
 	catalytic_activity, signal_transducer_activity, transporter_activity,
 	binding, protein_binding, protein_complex_binding, 
@@ -274,6 +275,8 @@ public class GoCAM {
 		eco_imported = df.getOWLClass(IRI.create(obo_iri + "ECO_0000311")); 
 		//ECO_0000363 "A type of evidence based on computational logical inference that is used in automatic assertion."
 		eco_inferred_auto = df.getOWLClass(IRI.create(obo_iri + "ECO_0000363")); 		
+		chebi_molecular_entity = df.getOWLClass(IRI.create(obo_iri + "CHEBI_23367"));
+		addLabel(chebi_molecular_entity, "molecular entity");
 		//proteins and genes as they are in neo
 		chebi_protein = df.getOWLClass(IRI.create(obo_iri + "CHEBI_36080"));
 		addLabel(chebi_protein, "chebi protein");
@@ -481,7 +484,7 @@ public class GoCAM {
 		return i;
 	}
 
-	OWLNamedIndividual makeAnnotatedIndividual(IRI iri) {
+	public OWLNamedIndividual makeAnnotatedIndividual(IRI iri) {
 		OWLNamedIndividual i = df.getOWLNamedIndividual(iri);		
 		addBasicAnnotations2Individual(iri, this.base_contributor, this.base_date, this.base_provider);
 		return i;
@@ -718,7 +721,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 
 
 
-	void addObjectPropertyAssertion(OWLIndividual source, OWLObjectProperty prop, OWLIndividual target, Set<OWLAnnotation> annotations) {
+	public void addObjectPropertyAssertion(OWLIndividual source, OWLObjectProperty prop, OWLIndividual target, Set<OWLAnnotation> annotations) {
 		OWLObjectPropertyAssertionAxiom add_prop_axiom = null;
 		if(annotations!=null&&annotations.size()>0) {
 			add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(prop, source, target, annotations);
@@ -734,7 +737,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		addSubclassAssertion(child, parent, null);
 	}
 
-	void addSubclassAssertion(OWLClass child, OWLClassExpression parent, Set<OWLAnnotation> annotations) {
+	public void addSubclassAssertion(OWLClass child, OWLClassExpression parent, Set<OWLAnnotation> annotations) {
 		OWLSubClassOfAxiom tmp = null;
 		if(annotations!=null&&annotations.size()>0) {
 			tmp = df.getOWLSubClassOfAxiom(child, parent, annotations);
@@ -750,7 +753,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 * @param individual
 	 * @param type
 	 */
-	void addTypeAssertion(OWLNamedIndividual individual, OWLClassExpression type) {
+	public void addTypeAssertion(OWLNamedIndividual individual, OWLClassExpression type) {
 		OWLClassAssertionAxiom isa_xrefedbp = df.getOWLClassAssertionAxiom(type, individual);
 		ontman.addAxiom(go_cam_ont, isa_xrefedbp);
 		//ontman.applyChanges();		

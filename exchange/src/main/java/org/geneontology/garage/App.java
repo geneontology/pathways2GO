@@ -1,4 +1,4 @@
-package org.geneontology.gocam.exchange;
+package org.geneontology.garage;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -25,6 +25,12 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.RDFS;
+import org.geneontology.gocam.exchange.ArachneAccessor;
+import org.geneontology.gocam.exchange.Blazer;
+import org.geneontology.gocam.exchange.GoCAM;
+import org.geneontology.gocam.exchange.Helper;
+import org.geneontology.gocam.exchange.QRunner;
+import org.geneontology.gocam.exchange.UpdateAnnotationsVisitor;
 import org.geneontology.rules.engine.Explanation;
 import org.geneontology.rules.engine.Triple;
 import org.openrdf.repository.RepositoryException;
@@ -85,13 +91,14 @@ public class App {
 
 	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		
-		String input_folder = "/Users/bgood/Desktop/test/go_cams/tmp_unreasoned";
-		String output_folder = "/Users/bgood/Desktop/test/go_cams/tmp_reasoned";
+		String input_folder = "/Users/bgood/Desktop/test/go_cams/reactome_v2";
+		String output_folder = "/Users/bgood/Desktop/test/go_cams/tmp_typed";
 		String tbox_file1 = "/Users/bgood/gocam_ontology/go-plus.owl";
 		String tbox_file2 = "/Users/bgood/gocam_ontology/neo_full.owl";
 		Set<String> tbox = new HashSet<String>();
 		tbox.add(tbox_file1); tbox.add(tbox_file2);
-		buildReasonedGraph(input_folder, output_folder, tbox);
+		//buildReasonedGraph(input_folder, output_folder, tbox);
+		typeGraph(input_folder, output_folder, tbox);
 	}
 
 
@@ -300,6 +307,17 @@ public class App {
 		boolean add_property_definitions = false;
 		boolean add_class_definitions = false;
 		a.reasonAllInFolder(input_folder, output_folder, add_property_definitions, add_class_definitions);
+	}
+	
+	public static void typeGraph(String input_folder, String output_folder, Set<String> tbox_files) throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException{
+		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
+		Set<OWLOntology> tboxes = new HashSet<OWLOntology>();
+		for(String tbox_file : tbox_files) {
+			OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
+			tboxes.add(tbox);
+		}
+		ArachneAccessor a = new ArachneAccessor(tboxes);
+		a.categorizeInstanceNodesInFolder(input_folder, output_folder);
 	}
 	
 	public static void queryCollection() throws OWLOntologyCreationException, OWLOntologyStorageException, IOException {

@@ -22,7 +22,7 @@ import org.biopax.paxtools.model.BioPAXFactory;
 import org.biopax.paxtools.model.BioPAXLevel;
 //import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.BiochemicalReaction;
-import org.geneontology.gocam.exchange.App;
+import org.geneontology.garage.App;
 import org.apache.commons.io.IOUtils;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;

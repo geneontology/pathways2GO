@@ -24,7 +24,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.vocabulary.OWL;
 import org.biopax.paxtools.model.level3.BiochemicalReaction;
-import org.geneontology.gocam.exchange.App;
+import org.geneontology.garage.App;
 import org.geneontology.gocam.exchange.ArachneAccessor;
 import org.geneontology.gocam.exchange.GoCAMReport;
 import org.geneontology.gocam.exchange.GoCAM;
