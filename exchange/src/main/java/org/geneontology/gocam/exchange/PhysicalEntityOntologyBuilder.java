@@ -6,9 +6,11 @@ package org.geneontology.gocam.exchange;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,6 +38,8 @@ import org.geneontology.gocam.exchange.idmapping.IdMapper;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
+import org.semanticweb.HermiT.ReasonerFactory;
+import org.semanticweb.elk.owlapi.ElkReasonerFactory;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -44,9 +48,17 @@ import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
 import org.semanticweb.owlapi.model.OWLObjectUnionOf;
+import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
+import org.semanticweb.owlapi.reasoner.InferenceType;
+import org.semanticweb.owlapi.reasoner.OWLReasoner;
+import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.search.EntitySearcher;
+import org.semanticweb.owlapi.util.InferredAxiomGenerator;
+import org.semanticweb.owlapi.util.InferredEquivalentClassAxiomGenerator;
+import org.semanticweb.owlapi.util.InferredOntologyGenerator;
+import org.semanticweb.owlapi.util.InferredSubClassAxiomGenerator;
 
 /**
  * Handle the conversion of physical entities proteins, protein complexes, sets, etc. from BioPAX files
@@ -60,14 +72,19 @@ public class PhysicalEntityOntologyBuilder {
 	String default_namespace_prefix;
 	String base_extra_info;
 	Map<String, OWLClassExpression> id_class_map;
+	ReasonerImplementation reasoner;
+	enum ReasonerImplementation {
+		Elk, Hermit, none 
+	}
 	/**
 	 * 
 	 */
-	public PhysicalEntityOntologyBuilder(GOPlus go_plus, String default_namespace_prefix_, String base_extra_info_) {
+	public PhysicalEntityOntologyBuilder(GOPlus go_plus, String default_namespace_prefix_, String base_extra_info_, ReasonerImplementation reasoner_) {
 		goplus = go_plus;
 		default_namespace_prefix = default_namespace_prefix_;
 		base_extra_info = base_extra_info_;
 		id_class_map = new HashMap<String, OWLClassExpression>();
+		reasoner = reasoner_;
 	}
 
 	/**
@@ -80,19 +97,19 @@ public class PhysicalEntityOntologyBuilder {
 	 * @throws OWLOntologyStorageException 
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
-
 		String input_biopax = 
 				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_march25_2019.owl";
-				//"/Users/bgood/Desktop/test/biopax/SignalingByERBB2.owl";
-				"/Users/bgood/Desktop/test/biopax/SCF.owl";
+				"/Users/bgood/Desktop/test/biopax/SignalingByERBB2.owl";
+				//"/Users/bgood/Desktop/test/biopax/SCF.owl";
 		String converted = 
 				//"/Users/bgood/Desktop/test/go_cams/Wnt_complete_2018-";
 				//"/Users/bgood/Desktop/test/go_cams/";
 				"/Users/bgood/gocam_ontology/";
-		String base_ont_title = "SCF_reactome_physical_entities";//"SignalingByERBB2_Physical_Entities";
+		String base_ont_title = "SignalingByERBB2_Physical_Entities"; //"Reactome_physical_entities";
 		String base_extra_info = "https://reactome.org/content/detail/";
 		String base_short_namespace = "Reactome";
 		String outfilename = converted+base_ont_title;
+		ReasonerImplementation r = ReasonerImplementation.Hermit;
 		
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileInputStream f = new FileInputStream(input_biopax);
@@ -110,13 +127,36 @@ public class PhysicalEntityOntologyBuilder {
 		OWLAxiom annoaxiom = go_cam.df.getOWLAnnotationAssertionAxiom(ont_iri, source_anno);
 		go_cam.ontman.addAxiom(go_cam.go_cam_ont, annoaxiom);
 		//build it all!  
-		PhysicalEntityOntologyBuilder converter = new PhysicalEntityOntologyBuilder(new GOPlus(), base_short_namespace, base_extra_info);
+		PhysicalEntityOntologyBuilder converter = new PhysicalEntityOntologyBuilder(new GOPlus(), base_short_namespace, base_extra_info, r);
 		for (PhysicalEntity entity : biopax_model.getObjects(PhysicalEntity.class)){
 			String model_id = entity.hashCode()+"";
 			n++;
 			System.out.println(n+" defining "+base_ont_title+" "+entity.getModelInterface());
 			converter.definePhysicalEntity(go_cam, entity, null, model_id);
 		}
+		if(!converter.reasoner.equals(ReasonerImplementation.none)) {
+			OWLReasonerFactory reasonerFactory = null;
+			if(converter.reasoner.equals(ReasonerImplementation.Hermit)) {
+				reasonerFactory = new ReasonerFactory();
+			}else if(converter.reasoner.equals(ReasonerImplementation.Elk)) {
+				reasonerFactory = new ElkReasonerFactory();
+			}			
+			OWLReasoner reasoner = reasonerFactory.createReasoner(go_cam.go_cam_ont);
+			// Classify the ontology.
+			reasoner.precomputeInferences(InferenceType.CLASS_HIERARCHY);
+			// inferred axiom generators
+			List<InferredAxiomGenerator<? extends OWLAxiom>> gens = 
+					new ArrayList<InferredAxiomGenerator<? extends OWLAxiom>>();
+			gens.add(new InferredSubClassAxiomGenerator());
+			gens.add(new InferredEquivalentClassAxiomGenerator());
+			InferredOntologyGenerator iog = new InferredOntologyGenerator(reasoner, gens);
+			// Put the inferred axioms into a fresh empty ontology.
+			//OWLOntology infOnt = go_cam.ontman.createOntology();
+			//here just adding them to the original
+			iog.fillOntology(go_cam.ontman.getOWLDataFactory(), go_cam.go_cam_ont);
+			reasoner.dispose();
+		}
+		
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
 		String outputformat = "RDFXML";//"TURTLE";
 		if(outputformat.equals("RDFXML")) {

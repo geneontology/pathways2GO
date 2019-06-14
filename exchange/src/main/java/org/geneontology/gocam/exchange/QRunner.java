@@ -149,7 +149,7 @@ public class QRunner {
 		Map<String, Set<String>> thing_anno = new HashMap<String, Set<String>>();
 		String q = null;
 		try {
-			q = IOUtils.toString(App.class.getResourceAsStream(query_file), StandardCharsets.UTF_8);
+			q = IOUtils.toString(QRunner.class.getResourceAsStream(query_file), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL query from jar \n"+e);
 		}
@@ -173,7 +173,7 @@ public class QRunner {
 		Map<String, Set<String>> thing_att = new HashMap<String, Set<String>>();
 		String q = null;
 		try {
-			q = IOUtils.toString(App.class.getResourceAsStream(query_file), StandardCharsets.UTF_8);
+			q = IOUtils.toString(QRunner.class.getResourceAsStream(query_file), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL query from jar \n"+e);
 		}
@@ -219,7 +219,7 @@ public class QRunner {
 		Map<String, Integer> things = new HashMap<String, Integer>();
 		String q = null; 
 		try {
-			q = IOUtils.toString(App.class.getResourceAsStream(query_file), StandardCharsets.UTF_8);
+			q = IOUtils.toString(QRunner.class.getResourceAsStream(query_file), StandardCharsets.UTF_8);
 
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL query from jar \n"+e);
@@ -243,7 +243,7 @@ public class QRunner {
 		int n = 0;
 		String q = null;
 		try {
-			q = IOUtils.toString(App.class.getResourceAsStream("triple_count.rq"), StandardCharsets.UTF_8);
+			q = IOUtils.toString(QRunner.class.getResourceAsStream("triple_count.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL query from jar \n"+e);
 		}
@@ -262,7 +262,7 @@ public class QRunner {
 		boolean consistent = true;
 		String q = null;
 		try {
-			q = IOUtils.toString(App.class.getResourceAsStream("consistency_check.rq"), StandardCharsets.UTF_8);
+			q = IOUtils.toString(QRunner.class.getResourceAsStream("consistency_check.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL query from jar \n"+e);
 		}
@@ -285,7 +285,7 @@ public class QRunner {
 		Set<String> unreasonable = new HashSet<String>();
 		String q = null;
 		try {
-			q = IOUtils.toString(App.class.getResourceAsStream("unreasonable_query.rq"), StandardCharsets.UTF_8);
+			q = IOUtils.toString(QRunner.class.getResourceAsStream("unreasonable_query.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL query from jar \n"+e);
 		}
@@ -351,7 +351,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		Set<InferredEnabler> ie = new HashSet<InferredEnabler>();
 		String query = null;
 		try {
-			query = IOUtils.toString(App.class.getResourceAsStream("query2update_enabled_by.rq"), StandardCharsets.UTF_8);
+			query = IOUtils.toString(QRunner.class.getResourceAsStream("query2update_enabled_by.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL update from jar \n"+e);
 		}
@@ -389,7 +389,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		Set<InferredRegulator> ir = new HashSet<InferredRegulator>();
 		String query = null;
 		try {		
-			query = IOUtils.toString(App.class.getResourceAsStream("query2update_regulation_1.rq"), StandardCharsets.UTF_8);
+			query = IOUtils.toString(QRunner.class.getResourceAsStream("query2update_regulation_1.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL update from jar \n"+e);
 		}
@@ -418,7 +418,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		String query = null;
 		try {		
 			//TODO revisit this query post May 2018 meeting...  weakened it as Noctua1.0 version of this took out complex has_part relations
-			query = IOUtils.toString(App.class.getResourceAsStream("query2update_regulation_by_sequestration.rq"), StandardCharsets.UTF_8);
+			query = IOUtils.toString(QRunner.class.getResourceAsStream("query2update_regulation_by_sequestration.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL update from jar \n"+e);
 		}
@@ -446,7 +446,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		Set<InferredRegulator> ir = new HashSet<InferredRegulator>();
 		String query = null;
 		try {		
-			query = IOUtils.toString(App.class.getResourceAsStream("query2update_regulation_3.rq"), StandardCharsets.UTF_8);
+			query = IOUtils.toString(QRunner.class.getResourceAsStream("query2update_regulation_3.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL update from jar \n"+e);
 		}
@@ -474,7 +474,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		Set<InferredRegulator> irs = new HashSet<InferredRegulator>();
 		String query = null;
 		try {		
-			query = IOUtils.toString(App.class.getResourceAsStream("query2update_entity_regulation1.rq"), StandardCharsets.UTF_8);
+			query = IOUtils.toString(QRunner.class.getResourceAsStream("query2update_entity_regulation1.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL update from jar \n"+e);
 		}
@@ -509,7 +509,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		Set<InferredRegulator> ir = new HashSet<InferredRegulator>();
 		String query = null;
 		try {		
-			query = IOUtils.toString(App.class.getResourceAsStream("query2update_provides_input_for.rq"), StandardCharsets.UTF_8);
+			query = IOUtils.toString(QRunner.class.getResourceAsStream("query2update_provides_input_for.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL update from jar \n"+e);
 		}
@@ -535,7 +535,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		Set<String> binders = new HashSet<String>();
 		String query = null;
 		try {		
-			query = IOUtils.toString(App.class.getResourceAsStream("query2update_binding.rq"), StandardCharsets.UTF_8);
+			query = IOUtils.toString(QRunner.class.getResourceAsStream("query2update_binding.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL update from jar \n"+e);
 		}
@@ -565,7 +565,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		Set<InferredTransport> transports = new HashSet<InferredTransport>();
 		String query = null;
 		try {		
-			query = IOUtils.toString(App.class.getResourceAsStream("query2update_localization.rq"), StandardCharsets.UTF_8);
+			query = IOUtils.toString(QRunner.class.getResourceAsStream("query2update_localization.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL update from jar \n"+e);
 		}
@@ -613,7 +613,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		Set<InferredOccursIn> occurs = new HashSet<InferredOccursIn>();
 		String query = null;
 		try {		
-			query = IOUtils.toString(App.class.getResourceAsStream("query2update_occurs_in.rq"), StandardCharsets.UTF_8);
+			query = IOUtils.toString(QRunner.class.getResourceAsStream("query2update_occurs_in.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL update from jar \n"+e);
 		}
@@ -669,7 +669,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		Map<String, String> entity_location = new HashMap<String, String>();
 		String query = null;
 		try {		
-			query = IOUtils.toString(App.class.getResourceAsStream("query2update_entity_locations.rq"), StandardCharsets.UTF_8);
+			query = IOUtils.toString(QRunner.class.getResourceAsStream("query2update_entity_locations.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL update from jar \n"+e);
 		}
@@ -710,7 +710,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		Set<ComplexInput> complexes = new HashSet<ComplexInput>();
 		String query = null;
 		try {		
-			query = IOUtils.toString(App.class.getResourceAsStream("query2update_find_complex_inputs.rq"), StandardCharsets.UTF_8);
+			query = IOUtils.toString(QRunner.class.getResourceAsStream("query2update_find_complex_inputs.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL update from jar \n"+e);
 		}
@@ -761,8 +761,8 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		String update = null;
 		String count = null;
 		try {
-			update = IOUtils.toString(App.class.getResourceAsStream("delete_entity_locations.rq"), StandardCharsets.UTF_8);
-			count = IOUtils.toString(App.class.getResourceAsStream("count_located_in.rq"), StandardCharsets.UTF_8);
+			update = IOUtils.toString(QRunner.class.getResourceAsStream("delete_entity_locations.rq"), StandardCharsets.UTF_8);
+			count = IOUtils.toString(QRunner.class.getResourceAsStream("count_located_in.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL update from jar \n"+e);
 		}
@@ -778,7 +778,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		int n = nTriples();
 		String update = null;
 		try {
-			update = IOUtils.toString(App.class.getResourceAsStream("delete_type_super_cc.rq"), StandardCharsets.UTF_8);
+			update = IOUtils.toString(QRunner.class.getResourceAsStream("delete_type_super_cc.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL update from jar \n"+e);
 		}
@@ -792,8 +792,8 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		String update1 = null;
 		String update2 = null;
 		try {
-			update1 = IOUtils.toString(App.class.getResourceAsStream("delete_process_has_part_evidence.rq"), StandardCharsets.UTF_8);
-			update2 = IOUtils.toString(App.class.getResourceAsStream("delete_process_has_part_relations.rq"), StandardCharsets.UTF_8);
+			update1 = IOUtils.toString(QRunner.class.getResourceAsStream("delete_process_has_part_evidence.rq"), StandardCharsets.UTF_8);
+			update2 = IOUtils.toString(QRunner.class.getResourceAsStream("delete_process_has_part_relations.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL update from jar \n"+e);
 		}
