@@ -98,7 +98,7 @@ public class PhysicalEntityOntologyBuilder {
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
 		String input_biopax = 
-				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_march25_2019.owl";
+				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_may27_2019.owl";
 				//"/Users/bgood/Desktop/test/biopax/SignalingByERBB2.owl";
 				//"/Users/bgood/Desktop/test/biopax/SCF.owl";
 		String converted = 

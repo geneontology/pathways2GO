@@ -26,6 +26,7 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.RDFS;
 import org.geneontology.gocam.exchange.ArachneAccessor;
+import org.geneontology.gocam.exchange.BioPaxtoGO;
 import org.geneontology.gocam.exchange.Blazer;
 import org.geneontology.gocam.exchange.GoCAM;
 import org.geneontology.gocam.exchange.Helper;
@@ -93,10 +94,11 @@ public class App {
 		
 		String input_folder = "/Users/bgood/Desktop/test/go_cams/reactome_v2";
 		String output_folder = "/Users/bgood/Desktop/test/go_cams/tmp_typed";
-		String tbox_file1 = "/Users/bgood/gocam_ontology/go-plus.owl";
-		String tbox_file2 = "/Users/bgood/gocam_ontology/neo_full.owl";
 		Set<String> tbox = new HashSet<String>();
-		tbox.add(tbox_file1); tbox.add(tbox_file2);
+		tbox.add("/Users/bgood/gocam_ontology/neo_full.owl");
+		tbox.add(BioPaxtoGO.eco_base_file);
+		tbox.add(BioPaxtoGO.goplus_file);
+		tbox.add(BioPaxtoGO.reactome_physical_entities_file);
 		//buildReasonedGraph(input_folder, output_folder, tbox);
 		typeGraph(input_folder, output_folder, tbox);
 	}
