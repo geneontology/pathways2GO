@@ -163,6 +163,9 @@ public class BioPaxtoGO {
 	 * @throws RepositoryException 
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
+		//need to put in a check to make sure the entity ontology is based on the same version as the one being processed
+		//dig from xml:base="http://www.reactome.org/biopax/69/48887#" and check 
+		
 		BioPaxtoGO bp2g = new BioPaxtoGO();
 		String input_biopax = 
 				//"/Users/bgood/Desktop/test/biopax/SignalingByERBB2.owl";
@@ -223,8 +226,10 @@ public class BioPaxtoGO {
 	//	test_pathways.add("Glycolysis");
 		//looks good 
 	//	test_pathways.add("activated TAK1 mediates p38 MAPK activation");
+				//check for relations between events that might not be biopax typed chemical reactions - e.g. degradation
+				test_pathways.add("HDL clearance");
 		//set to null to do full run
-		test_pathways = null;
+		//test_pathways = null;
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathways);
 	} 
 
@@ -718,15 +723,15 @@ public class BioPaxtoGO {
 						Set<Process> nextEvents = step2.getStepProcess();
 						for(Process event : events) {
 							for(Process nextEvent : nextEvents) {
-								//	Event directly_provides_input_for NextEvent
-								if((event.getModelInterface().equals(BiochemicalReaction.class))&&
-										(nextEvent.getModelInterface().equals(BiochemicalReaction.class))) {
-									String event_id = this.getEntityReferenceId(event);
+								//limit to relations between conversions - was biochemical reactions but see no reason 
+								//not to extend this to include e.g. degradation
+								if((event instanceof Conversion)&&(nextEvent instanceof Conversion)) {
+									String event_id = getEntityReferenceId(event);
 									Set<Pathway> event_pathways = event.getPathwayComponentOf();
 									Set<Pathway> next_event_pathways = nextEvent.getPathwayComponentOf();
 									if((event_pathways.contains(pathway)&&next_event_pathways.contains(pathway))||
 											add_neighboring_events_from_other_pathways) {
-										String next_event_id = this.getEntityReferenceId(nextEvent);
+										String next_event_id = getEntityReferenceId(nextEvent);
 										IRI e1_iri = GoCAM.makeGoCamifiedIRI(model_id, event_id);
 										IRI e2_iri = GoCAM.makeGoCamifiedIRI(model_id, next_event_id);
 										OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(e1_iri);
@@ -749,17 +754,16 @@ public class BioPaxtoGO {
 					for(PathwayStep prevStep : previousSteps) {
 						Set<Process> prevEvents = prevStep.getStepProcess();
 						for(Process event : events) {
-							String event_id = this.getEntityReferenceId(event);
+							String event_id = getEntityReferenceId(event);
 							for(Process prevEvent : prevEvents) {
-								//	prevEvent upstream of Event
-								if((event.getModelInterface().equals(BiochemicalReaction.class))&&
-										(prevEvent.getModelInterface().equals(BiochemicalReaction.class))) {
-
+								//limit to relations between conversions - was biochemical reactions but see no reason 
+								//not to extend this to include e.g. degradation
+								if((event instanceof Conversion)&&(prevEvent instanceof Conversion)) {
 									Set<Pathway> event_pathways = event.getPathwayComponentOf();
 									Set<Pathway> prev_event_pathways = prevEvent.getPathwayComponentOf();
 									if((event_pathways.contains(pathway)&&prev_event_pathways.contains(pathway))||
 											add_neighboring_events_from_other_pathways) {							
-										String prev_event_id = this.getEntityReferenceId(prevEvent);
+										String prev_event_id = getEntityReferenceId(prevEvent);
 										IRI event_iri = GoCAM.makeGoCamifiedIRI(model_id, event_id);
 										IRI prevEvent_iri = GoCAM.makeGoCamifiedIRI(model_id, prev_event_id);
 										OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(prevEvent_iri);
