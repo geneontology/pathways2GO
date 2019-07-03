@@ -239,6 +239,22 @@ public class QRunner {
 		return things;
 	}
 	
+	public void testTextSearch() {
+		String q = "select ?title "
+				+ "WHERE { " + 
+				"  GRAPH ?cam {  \n" + 
+			    " ?cam <http://purl.org/dc/elements/1.1/title> ?title . "
+				+ "?title <http://www.bigdata.com/rdf/search#search> \"mouse\"}}";
+		QueryExecution qe = QueryExecutionFactory.create(q, jena);
+		ResultSet results = qe.execSelect();
+		if (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Literal s = qs.getLiteral("title");
+			System.out.println("worked ");
+		}
+		qe.close();
+	}
+	
 	public int nTriples() {
 		int n = 0;
 		String q = null;

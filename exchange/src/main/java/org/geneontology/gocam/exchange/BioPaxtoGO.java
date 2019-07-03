@@ -229,7 +229,7 @@ public class BioPaxtoGO {
 				//check for relations between events that might not be biopax typed chemical reactions - e.g. degradation
 				test_pathways.add("HDL clearance");
 		//set to null to do full run
-		//test_pathways = null;
+		test_pathways = null;
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathways);
 	} 
 
