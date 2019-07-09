@@ -276,7 +276,10 @@ public class ArachneAccessor {
 					n++;
 					System.out.println("Adding Types for "+abox_file.getName()+" "+n+" of "+directoryListing.length);
 					OWLOntology abox = aman.loadOntologyFromOntologyDocument(abox_file);	
+					long t0 = System.currentTimeMillis();
 					abox = addCategoryTags(abox, aman);
+					long t2 = System.currentTimeMillis();
+					System.out.println("took "+(t2-t0)/1000+" seconds to type a model with "+abox.getAxiomCount()+" axioms");
 					String filename = output_folder+"/typed_"+abox_file.getName();
 					Helper.writeOntology(filename, abox);
 				}else {
@@ -290,7 +293,12 @@ public class ArachneAccessor {
 	public OWLOntology addCategoryTags(OWLOntology abox, OWLOntologyManager ontman) throws OWLOntologyCreationException {			
 		OWLDataFactory df = OWLManager.getOWLDataFactory();
 		boolean add_property_definitions = false; boolean add_class_definitions = false;
+		int a = abox.getAxiomCount();
+		long t0 = System.currentTimeMillis();
 		WorkingMemory wm = createInferredModel(abox, add_property_definitions, add_class_definitions);
+		long t2 = System.currentTimeMillis();
+		System.out.println("took "+(t2-t0)/1000+" seconds to build inferred abox model with "+a+" axioms");
+		t0 = System.currentTimeMillis();
 		scala.collection.Iterator<Triple> triples = wm.facts().toList().iterator();
 		while(triples.hasNext()) {				
 			Triple triple = triples.next();
@@ -313,6 +321,9 @@ public class ArachneAccessor {
 				}
 			}
 		}
+		t2 = System.currentTimeMillis();
+		System.out.println("took "+(t2-t0)/1000+" seconds to add annotations to mode with "+a+" axioms");
+	
 		return abox;
 	}
 	

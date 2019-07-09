@@ -536,7 +536,7 @@ public class BioPaxtoGO {
 								scala.collection.Iterator<Explanation> e = explanations.iterator();
 								while(e.hasNext()) {
 									Explanation exp = e.next();
-									String exp_string = renderExplanation(exp, go_cam);
+									String exp_string = renderExplanation(exp, go_cam, goplus.go);
 									System.out.println(exp_string);
 									System.out.println();
 								}
@@ -550,8 +550,8 @@ public class BioPaxtoGO {
 		}
 	}
 
-	public String renderExplanation(Explanation exp, GoCAM go_cam) {
-		String exp_string = "Explanation:\n";
+	public static String renderExplanation(Explanation exp, GoCAM go_cam, OWLOntology tbox) {
+		String exp_string = "Explanation!:\n";
 		scala.collection.Iterator<Rule> rule_it = exp.rules().iterator();
 		while(rule_it.hasNext()) {
 			Rule r = rule_it.next();
@@ -562,7 +562,7 @@ public class BioPaxtoGO {
 				Node subject = tp.s();
 				Node predicate = tp.p();
 				Node object = tp.o();
-				exp_string = exp_string+labelifyTripleNode(subject, go_cam)+"\t"+labelifyTripleNode(predicate, go_cam)+"\t"+labelifyTripleNode(object, go_cam)+"\n";
+				exp_string = exp_string+labelifyTripleNode(subject, go_cam, tbox)+"\t"+labelifyTripleNode(predicate, go_cam, tbox)+"\t"+labelifyTripleNode(object, go_cam, tbox)+"\n";
 			}
 			exp_string = exp_string+"THEN\n";
 			scala.collection.Iterator<TriplePattern> rule_head_it = r.head().iterator();
@@ -571,7 +571,7 @@ public class BioPaxtoGO {
 				Node subject = tp.s();
 				Node predicate = tp.p();
 				Node object = tp.o();
-				exp_string = exp_string+"\t"+labelifyTripleNode(subject, go_cam)+"\t"+labelifyTripleNode(predicate, go_cam)+"\t"+labelifyTripleNode(object, go_cam)+"\n";
+				exp_string = exp_string+"\t"+labelifyTripleNode(subject, go_cam, tbox)+"\t"+labelifyTripleNode(predicate, go_cam, tbox)+"\t"+labelifyTripleNode(object, go_cam, tbox)+"\n";
 			}
 		}	
 		scala.collection.Iterator<Triple> fact_it = exp.facts().iterator();
@@ -581,12 +581,12 @@ public class BioPaxtoGO {
 			Node subject = tp.s();
 			Node predicate = tp.p();
 			Node object = tp.o();
-			exp_string = exp_string+"\t"+labelifyTripleNode(subject, go_cam)+"\t"+labelifyTripleNode(predicate, go_cam)+"\t"+labelifyTripleNode(object, go_cam)+"\n";
+			exp_string = exp_string+"\t"+labelifyTripleNode(subject, go_cam, tbox)+"\t"+labelifyTripleNode(predicate, go_cam, tbox)+"\t"+labelifyTripleNode(object, go_cam, tbox)+"\n";
 		}
 		return exp_string;
 	}
 
-	public String labelifyTripleNode(Node node, GoCAM go_cam) {
+	public static String labelifyTripleNode(Node node, GoCAM go_cam, OWLOntology tbox) {
 		String n = node.toString(); //will either be a uri or a variable like ?x
 		n = n.replace("<", "");
 		n = n.replace(">", "");
@@ -595,24 +595,29 @@ public class BioPaxtoGO {
 			if(n.contains("#")) {
 				n = n.substring(n.indexOf("#"));
 				//http://model.geneontology.org/R-HSA-3214847/R-HSA-3301345	
-			}else if(n.startsWith(GoCAM.base_iri)) {
-				String label = Helper.getaLabel(n, go_cam.go_cam_ont);
-				if(label!=null) {
-					n = label;
-				}
-				//<http://purl.obolibrary.org/obo/BFO_0000066>
 			}else if(n.startsWith("http://purl.obolibrary.org/obo/")) {
-				String label = Helper.getaLabel(n, go_cam.go_cam_ont);
+				String label = Helper.getaLabel(n, tbox);
 				if(label!=null) {
 					n = label;
 				}else {
-					label = Helper.getaLabel(n, goplus.go);
+					label = Helper.getaLabel(n, tbox);
 					if(label!=null) {
 						n = label;
 					}else {
 						n = n.substring(31);//trim off obo
 					}
 				}
+			}else if(n.startsWith(GoCAM.base_iri)) {
+				String label = Helper.getaLabel(n, go_cam.go_cam_ont);
+				if(label!=null) {
+					n = label;
+				}else {
+					label = Helper.getaLabel(n, tbox);
+					if(label!=null) {
+						n = label;
+					}
+				}
+				//<http://purl.obolibrary.org/obo/BFO_0000066>
 			}
 		}
 		return n;

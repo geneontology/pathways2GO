@@ -94,21 +94,14 @@ public class App {
 
 	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		
-//		String t = IOUtils.toString(QRunner.class.getResourceAsStream("/GetAllModels.rq"), StandardCharsets.UTF_8);
-		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
-		OWLOntology ont = man.loadOntologyFromOntologyDocument(new File("/Users/bgood/Desktop/test/go_cams/tmp_tagged/typed_reactome-homosapiens-Lagging_Strand_Synthesis.ttl"));	
-		QRunner q = new QRunner(ont);
-		q.testTextSearch();
-		
-//		System.out.println(t);
-//		String input_folder = "/Users/bgood/Desktop/test/go_cams/reactome";
-//		String output_folder = "/Users/bgood/Desktop/test/go_cams/tmp_tagged";
-//		Set<String> tbox = new HashSet<String>();
-//		tbox.add("/Users/bgood/gocam_ontology/neo_full.owl");
-//		tbox.add(BioPaxtoGO.eco_base_file);
-//		tbox.add(BioPaxtoGO.goplus_file);
-//		tbox.add(BioPaxtoGO.reactome_physical_entities_file);
-//		typeGraph(input_folder, output_folder, tbox);
+		String input_folder = "/Users/bgood/Desktop/test/go_cams/reactome";
+		String output_folder = "/Users/bgood/Desktop/test/go_cams/tmp_tagged";
+		Set<String> tbox = new HashSet<String>();
+		tbox.add("/Users/bgood/gocam_ontology/neo_full.owl");
+		tbox.add(BioPaxtoGO.eco_base_file);
+		tbox.add(BioPaxtoGO.goplus_file);
+		tbox.add(BioPaxtoGO.reactome_physical_entities_file);
+		typeGraph(input_folder, output_folder, tbox);
 	}
 
 

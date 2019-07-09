@@ -7,45 +7,78 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.geneontology.gocam.exchange.BioPaxtoGO;
 import org.geneontology.gocam.exchange.GoCAM;
+import org.geneontology.gocam.exchange.Helper;
 import org.geneontology.gocam.exchange.QRunner;
 import org.geneontology.rules.engine.Explanation;
 import org.geneontology.rules.engine.Triple;
 import org.geneontology.rules.engine.WorkingMemory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLAnnotationAxiom;
+import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.search.EntitySearcher;
 
 /**
  * @author bgood
  *
  */
-public class Validator {
+public class ArachneValidator {
 
 	QRunner tbox_qrunner;
 	GoCAM go_cam;
+	OWLOntology merged_annotations;
 	/**
 	 * @throws OWLOntologyCreationException 
 	 * 
 	 */
-	public Validator() throws OWLOntologyCreationException {
-		Set<String> tbox_files = new HashSet<String>();
-		tbox_files.add(BioPaxtoGO.goplus_file);
-		tbox_files.add(BioPaxtoGO.ro_file);
-		tbox_files.add(BioPaxtoGO.legorel_file);
-		tbox_files.add(BioPaxtoGO.go_bfo_bridge_file);
-		tbox_files.add(BioPaxtoGO.eco_base_file);
-		tbox_files.add(BioPaxtoGO.reactome_physical_entities_file);
+	public ArachneValidator() throws OWLOntologyCreationException {		
+		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
+		Map<String,OWLOntology> tboxes = new HashMap<String,OWLOntology>();	
+		tboxes.put("goplus",tman.loadOntologyFromOntologyDocument(new File(BioPaxtoGO.goplus_file)));
+		tboxes.put("ro",tman.loadOntologyFromOntologyDocument(new File(BioPaxtoGO.ro_file)));
+		tboxes.put("legorel",tman.loadOntologyFromOntologyDocument(new File(BioPaxtoGO.legorel_file)));
+		tboxes.put("go_bfo_bridge",tman.loadOntologyFromOntologyDocument(new File(BioPaxtoGO.go_bfo_bridge_file)));
+		tboxes.put("eco_base",tman.loadOntologyFromOntologyDocument(new File(BioPaxtoGO.eco_base_file)));
+		tboxes.put("reactome",tman.loadOntologyFromOntologyDocument(new File(BioPaxtoGO.reactome_physical_entities_file)));
+		
+		merged_annotations = tman.createOntology();
+		for(OWLAxiom a : tboxes.get("goplus").getAxioms()){
+			if(a.isAnnotationAxiom()) {
+				tman.addAxiom(merged_annotations, a);
+			}
+		}
+		for(OWLAxiom a : tboxes.get("reactome").getAxioms()){
+			if(a.isAnnotationAxiom()) {
+				tman.addAxiom(merged_annotations, a);
+			}
+		}
+		for(OWLAxiom a : tboxes.get("ro").getAxioms()){
+			if(a.isAnnotationAxiom()) {
+				tman.addAxiom(merged_annotations, a);
+			}
+		}
+		
 		go_cam = new GoCAM();
-		tbox_qrunner = go_cam.initializeQRunnerForTboxInference(tbox_files);
+		boolean add_inferences = true;
+		boolean add_property_definitions = false; boolean add_class_definitions = false;
+		tbox_qrunner = QRunner.MakeQRunner(tboxes, go_cam.go_cam_ont, add_inferences, add_property_definitions, add_class_definitions);
+		go_cam.qrunner = tbox_qrunner;
 	}
 
 	/**
@@ -55,7 +88,7 @@ public class Validator {
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, IOException {
 
-		Validator validator = new Validator();
+		ArachneValidator validator = new ArachneValidator();
 		String go_cam_folder = "/Users/bgood/Desktop/test/go_cams/reactome/";
 		//"/Users/bgood/Documents/GitHub/noctua-models/models/";
 		String out = "/Users/bgood/Desktop/test/go_cams/arachne_validator_reactome_june11.txt";
@@ -126,12 +159,12 @@ public class Validator {
 		go_cam.qrunner.jena = go_cam.qrunner.makeJenaModel(wm_with_tbox);
 		boolean is_logical = go_cam.validateGoCAM();	
 		if(print_explanations) {
-			writeExplanation(wm_with_tbox, explain_file, ont_name);
+			writeExplanation(wm_with_tbox, explain_file, ont_name, go_cam);
 		}
 		return is_logical;
 	}
 
-	void writeExplanation(WorkingMemory wm_with_tbox, String output_file, String ont_name) throws IOException {
+	void writeExplanation(WorkingMemory wm_with_tbox, String output_file, String ont_name, GoCAM go_cam) throws IOException {
 		FileWriter writer = new FileWriter(output_file, true);
 		writer.write("explanations for "+ont_name+"\n");
 		scala.collection.Iterator<Triple> triples = wm_with_tbox.facts().toList().iterator();
@@ -142,13 +175,27 @@ public class Validator {
 			}else { //<http://arachne.geneontology.org/indirect_type>
 				if(triple.p().toString().equals("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>")&&
 						triple.o().toString().equals("<http://www.w3.org/2002/07/owl#Nothing>")) {
-					OWLEntity bad = go_cam.df.getOWLNamedIndividual(IRI.create(triple.s().toString()));
-					writer.write("inferred inconsistent:"+triple.s()+" "+go_cam.getaLabel(bad)+"\n");
+					OWLEntity bad = go_cam.df.getOWLNamedIndividual(IRI.create(triple.s().toString().replaceAll("<", "").replaceAll(">", "")));
+					Collection<OWLClassExpression> ts = EntitySearcher.getTypes((OWLIndividual) bad, go_cam.go_cam_ont);
+					String problem_node_label = go_cam.getaLabel(bad);
+					if(problem_node_label==null) {
+						for(OWLClassExpression t : ts) {
+							problem_node_label = Helper.getaLabel((OWLEntity) t, merged_annotations);
+							if(problem_node_label!=null) {
+								break;
+							}
+						}					
+					}
+					if(problem_node_label==null) {
+						problem_node_label = "no label";
+					}
+					writer.write("inferred inconsistent:"+triple.s()+" "+problem_node_label+"\n");
 					scala.collection.immutable.Set<Explanation> explanations = wm_with_tbox.explain(triple);
 					scala.collection.Iterator<Explanation> e = explanations.iterator();
 					while(e.hasNext()) {
 						Explanation exp = e.next();
-						writer.write(exp.toString()+"\n\n");
+						String exp_string = BioPaxtoGO.renderExplanation(exp, go_cam, merged_annotations);
+						writer.write(exp_string+"\n\n");
 					}
 				}
 			}

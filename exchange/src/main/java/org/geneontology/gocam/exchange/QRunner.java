@@ -55,17 +55,26 @@ public class QRunner {
 	public Model jena;
 	public ArachneAccessor arachne;
 	public WorkingMemory wm;
+	public Map<String, OWLOntology> ontology_map;
+	
+	public static QRunner MakeQRunner(Map<String, OWLOntology> name_ont, OWLOntology abox, boolean add_inferences, boolean add_property_definitions, boolean add_class_definitions) throws OWLOntologyCreationException {		
+		QRunner q = new QRunner(name_ont.values(), abox, add_inferences, add_property_definitions, add_class_definitions);
+		q.ontology_map = name_ont;
+		return q;
+	}
+	
+	
 	/**
 	 * @throws OWLOntologyCreationException 
 	 * 
 	 */
-	public QRunner(Collection<OWLOntology> tboxes, OWLOntology abox, boolean add_inferences, boolean add_property_definitions, boolean add_class_definitions) throws OWLOntologyCreationException {
+	public QRunner(Collection<OWLOntology> tboxes, OWLOntology abox, boolean add_inferences, boolean add_property_definitions, boolean add_class_definitions) throws OWLOntologyCreationException {		
 		if(add_inferences) {
 			System.out.println("Setting up Arachne reasoner for Qrunner, extracting rules from tbox");
 			if(abox!=null) {
 				//pull out any rules from abox.. and add to tbox
 				Set<OWLAxiom> littlet = abox.getTBoxAxioms(null);
-				if(littlet!=null) {
+				if(littlet!=null&&littlet.size()>0) {
 					OWLOntologyManager man = OWLManager.createOWLOntologyManager();
 					OWLOntology t = man.createOntology();
 					for(OWLAxiom a : littlet) {
