@@ -168,11 +168,11 @@ public class BioPaxtoGO {
 		
 		BioPaxtoGO bp2g = new BioPaxtoGO();
 		String input_biopax = 
-				//"/Users/bgood/Desktop/test/biopax/SignalingByERBB2.owl";
-				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_may27_2019.owl";
+				"/Users/bgood/Desktop/test/biopax/888590.owl";
+				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_may27_2019.owl";
 		String converted = 
-				//"/Users/bgood/Desktop/test/go_cams/Wnt_complete_2018-";
-				"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
+				"/Users/bgood/Desktop/test/go_cams/888590-";
+				//"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
 
 		String base_title = "title here";//"Will be replaced if a title can be found for the pathway in its annotations
 		String base_contributor = "https://orcid.org/0000-0002-7334-7852"; //Ben Good
