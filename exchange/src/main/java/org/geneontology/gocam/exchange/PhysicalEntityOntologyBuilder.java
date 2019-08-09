@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.jena.vocabulary.RDFS;
 import org.biopax.paxtools.io.BioPAXIOHandler;
 import org.biopax.paxtools.io.SimpleIOHandler;
@@ -98,13 +99,14 @@ public class PhysicalEntityOntologyBuilder {
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
 		String input_biopax = 
-				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_may27_2019.owl";
+				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_may27_2019.owl";
 				//"/Users/bgood/Desktop/test/biopax/SignalingByERBB2.owl";
 				//"/Users/bgood/Desktop/test/biopax/SCF.owl";
+				"/Users/bgood/Desktop/test/biopax/Pink_5205647.owl";
 		String converted = 
 				//"/Users/bgood/Desktop/test/go_cams/Wnt_complete_2018-";
-				//"/Users/bgood/Desktop/test/go_cams/";
-				"/Users/bgood/gocam_ontology/";
+				"/Users/bgood/Desktop/test/Pink_";
+				//"/Users/bgood/gocam_ontology/";
 		String base_ont_title = "Reactome_physical_entities";//"SignalingByERBB2_Physical_Entities"; //"Reactome_physical_entities";
 		String base_extra_info = "https://reactome.org/content/detail/";
 		String base_short_namespace = "Reactome";
@@ -231,7 +233,6 @@ public class PhysicalEntityOntologyBuilder {
 							//occurs_in_exp =	go_cam.df.getOWLObjectSomeValuesFrom(GoCAM.located_in, go_loc_class);
 							//go_cam.addSubclassAssertion(e, occurs_in_exp, null);
 							go_cam.addLiteralAnnotations2Individual(e.getIRI(), GoCAM.rdfs_comment, "located_in "+location_term);
-							entity_name = entity_name+" ("+location_term+")";
 						}
 					}
 				}
