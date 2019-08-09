@@ -99,14 +99,14 @@ public class PhysicalEntityOntologyBuilder {
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
 		String input_biopax = 
-				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_may27_2019.owl";
+				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_may27_2019.owl";
 				//"/Users/bgood/Desktop/test/biopax/SignalingByERBB2.owl";
 				//"/Users/bgood/Desktop/test/biopax/SCF.owl";
-				"/Users/bgood/Desktop/test/biopax/Pink_5205647.owl";
+				//"/Users/bgood/Desktop/test/biopax/Pink_5205647.owl";
 		String converted = 
 				//"/Users/bgood/Desktop/test/go_cams/Wnt_complete_2018-";
-				"/Users/bgood/Desktop/test/Pink_";
-				//"/Users/bgood/gocam_ontology/";
+				//"/Users/bgood/Desktop/test/Pink_";
+				"/Users/bgood/gocam_ontology/";
 		String base_ont_title = "Reactome_physical_entities";//"SignalingByERBB2_Physical_Entities"; //"Reactome_physical_entities";
 		String base_extra_info = "https://reactome.org/content/detail/";
 		String base_short_namespace = "Reactome";
