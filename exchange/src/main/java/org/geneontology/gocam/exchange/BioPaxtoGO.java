@@ -168,11 +168,9 @@ public class BioPaxtoGO {
 		
 		BioPaxtoGO bp2g = new BioPaxtoGO();
 		String input_biopax = 
-				"/Users/bgood/Desktop/test/biopax/888590.owl";
-				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_may27_2019.owl";
+				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_may27_2019.owl";
 		String converted = 
-				"/Users/bgood/Desktop/test/go_cams/888590-";
-				//"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
+				"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
 
 		String base_title = "title here";//"Will be replaced if a title can be found for the pathway in its annotations
 		String base_contributor = "https://orcid.org/0000-0002-7334-7852"; //Ben Good
@@ -202,7 +200,7 @@ public class BioPaxtoGO {
 		//		test_pathways.add("Unwinding of DNA");
 		//		test_pathways.add("Regulation of TNFR1 signaling");
 		//		test_pathways.add("SCF(Skp2)-mediated degradation of p27/p21");
-		//		test_pathways.add("Signaling by BMP");
+				test_pathways.add("Signaling by BMP");
 
 		//inconsistent, but not sure how to fix		
 		//test_pathways.add("tRNA modification in the nucleus and cytosol");
@@ -219,7 +217,7 @@ public class BioPaxtoGO {
 		//		 test_pathways.add("SHC-mediated cascade:FGFR2");
 		//		 test_pathways.add("SHC-mediated cascade:FGFR3");
 			//check this one for annotations on regulates edges
-				test_pathways.add("RAF-independent MAPK1/3 activation");
+		//		test_pathways.add("RAF-independent MAPK1/3 activation");
 			//great example of why we are not getting a complete data set without inter model linking.  
 		//		test_pathways.add("TCF dependent signaling in response to WNT");
 				//looks great..
@@ -228,8 +226,8 @@ public class BioPaxtoGO {
 	//	test_pathways.add("activated TAK1 mediates p38 MAPK activation");
 				//check for relations between events that might not be biopax typed chemical reactions - e.g. degradation
 				test_pathways.add("HDL clearance");
-		//set to null to do full run
-		test_pathways = null;
+	//	//set to null to do full run
+	//	test_pathways = null;
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathways);
 	} 
 
@@ -694,8 +692,8 @@ public class BioPaxtoGO {
 						|| process instanceof GeneticInteraction 
 						|| process instanceof MolecularInteraction 
 						|| process instanceof Interaction){
-					defineReactionEntity(go_cam, process, process_iri, false, model_id);	
 					go_cam.addRefBackedObjectPropertyAssertion(child, GoCAM.part_of, pathway_e, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+					defineReactionEntity(go_cam, process, process_iri, false, model_id, pathway_iri.toString());	
 					//attach child pathways
 				}
 				else if(process.getModelInterface().equals(Pathway.class)){
@@ -748,7 +746,7 @@ public class BioPaxtoGO {
 										//if its been defined, ought to at least have a label
 										String l = go_cam.getaLabel(e2);
 										if(l!=null&&l.equals("")){
-											defineReactionEntity(go_cam, nextEvent, e2_iri, false, model_id);		
+											defineReactionEntity(go_cam, nextEvent, e2_iri, false, model_id, pathway_iri.toString());		
 										}
 									}
 								}
@@ -780,7 +778,7 @@ public class BioPaxtoGO {
 										//if its been defined, ought to at least have a label
 										String l = go_cam.getaLabel(e1);
 										if(l!=null && l.equals("")){
-											defineReactionEntity(go_cam, prevEvent, prevEvent_iri, false, model_id);		
+											defineReactionEntity(go_cam, prevEvent, prevEvent_iri, false, model_id, pathway_iri.toString());		
 										}
 									}
 								}
@@ -838,7 +836,7 @@ public class BioPaxtoGO {
 	 * @return
 	 * @throws IOException 
 	 */
-	private void defineReactionEntity(GoCAM go_cam, Entity entity, IRI this_iri, boolean follow_controllers, String model_id) throws IOException {
+	private void defineReactionEntity(GoCAM go_cam, Entity entity, IRI this_iri, boolean follow_controllers, String model_id, String root_pathway_iri) throws IOException {
 		String entity_id = getEntityReferenceId(entity);
 		if(this_iri==null) {			
 			this_iri = GoCAM.makeGoCamifiedIRI(model_id, entity_id);
@@ -943,7 +941,7 @@ public class BioPaxtoGO {
 									//are connected yet in different pathways
 									//if its been defined, ought to at least have a label
 									if(go_cam.getaLabel(e2).equals("")){
-										defineReactionEntity(go_cam, nextEvent, e2_iri, true, model_id);		
+										defineReactionEntity(go_cam, nextEvent, e2_iri, true, model_id, root_pathway_iri);		
 									}
 								}
 							}
@@ -965,7 +963,7 @@ public class BioPaxtoGO {
 										OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(event_iri);
 										go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.causally_upstream_of, e2, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 										if(go_cam.getaLabel(e1).equals("")){
-											defineReactionEntity(go_cam, prevEvent, prevEvent_iri, true, model_id);		
+											defineReactionEntity(go_cam, prevEvent, prevEvent_iri, true, model_id, root_pathway_iri);		
 										}
 									}
 								}
@@ -985,13 +983,13 @@ public class BioPaxtoGO {
 					if(interactor instanceof PhysicalEntity) {
 						IRI i_iri = GoCAM.makeRandomIri(model_id);
 						OWLNamedIndividual i_entity = go_cam.df.getOWLNamedIndividual(i_iri);
-						defineReactionEntity(go_cam, interactor, i_iri, true, model_id);		
+						defineReactionEntity(go_cam, interactor, i_iri, true, model_id, root_pathway_iri);		
 						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_participant, i_entity, dbids, GoCAM.eco_imported_auto,  default_namespace_prefix,go_cam.getDefaultAnnotations(), model_id);
 						physical_participants.add(i_entity);
 					}else {
 						String interactor_id = getEntityReferenceId(interactor);
 						OWLNamedIndividual part_mf = go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(model_id, interactor_id));
-						defineReactionEntity(go_cam, interactor, part_mf.getIRI(), true, model_id);
+						defineReactionEntity(go_cam, interactor, part_mf.getIRI(), true, model_id, root_pathway_iri);
 						go_cam.addRefBackedObjectPropertyAssertion(part_mf, GoCAM.part_of, e, dbids, GoCAM.eco_imported_auto,  default_namespace_prefix, go_cam.getDefaultAnnotations(), model_id);
 						process_participants.add(part_mf);
 					}					
@@ -1024,7 +1022,7 @@ public class BioPaxtoGO {
 					String output_id = getEntityReferenceId(output);
 					IRI o_iri = GoCAM.makeGoCamifiedIRI(model_id, output_id+"_"+entity_id);
 					OWLNamedIndividual output_entity = go_cam.df.getOWLNamedIndividual(o_iri);
-					defineReactionEntity(go_cam, output, o_iri, true, model_id);
+					defineReactionEntity(go_cam, output, o_iri, true, model_id, root_pathway_iri);
 					go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_output, output_entity, dbids, GoCAM.eco_imported_auto,  default_namespace_prefix, go_cam.getDefaultAnnotations(), model_id);
 				}
 				//not used ?
@@ -1074,7 +1072,7 @@ public class BioPaxtoGO {
 						String input_id = getEntityReferenceId(input);
 						i_iri = GoCAM.makeGoCamifiedIRI(model_id, input_id+"_"+entity_id);
 						OWLNamedIndividual input_entity = go_cam.df.getOWLNamedIndividual(i_iri);
-						defineReactionEntity(go_cam, input, i_iri, true, model_id);
+						defineReactionEntity(go_cam, input, i_iri, true, model_id, root_pathway_iri);
 						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_input, input_entity,dbids, GoCAM.eco_imported_auto,  default_namespace_prefix, go_cam.getDefaultAnnotations(), model_id);
 					}}
 				if(outputs!=null) {
@@ -1083,7 +1081,7 @@ public class BioPaxtoGO {
 						String output_id = getEntityReferenceId(output);
 						o_iri = GoCAM.makeGoCamifiedIRI(model_id, output_id+"_"+entity_id);
 						OWLNamedIndividual output_entity = go_cam.df.getOWLNamedIndividual(o_iri);
-						defineReactionEntity(go_cam, output, o_iri, true, model_id);
+						defineReactionEntity(go_cam, output, o_iri, true, model_id, root_pathway_iri);
 						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_output, output_entity, dbids, GoCAM.eco_imported_auto,  default_namespace_prefix, go_cam.getDefaultAnnotations(), model_id);
 					}}
 			}
@@ -1188,7 +1186,7 @@ public class BioPaxtoGO {
 									//limit to reactions as mostly we are interested in upstream processes
 									//that generate the inputs that control the current reaction
 									if(event instanceof BiochemicalReaction && follow_controllers) {
-										defineReactionEntity(go_cam, event, event_iri, false, model_id);
+										defineReactionEntity(go_cam, event, event_iri, false, model_id, root_pathway_iri);
 									}
 								}
 							}
@@ -1201,7 +1199,7 @@ public class BioPaxtoGO {
 						if(controller_entity_id.equals("R-HSA-187516")) {
 							System.out.println("Debug trouble R-HSA-187516 Cyclin E/A:p-T160-CDK2:CDKN1A,CDKN1B...");
 						}
-						defineReactionEntity(go_cam, controller_entity, iri, true, model_id);
+						defineReactionEntity(go_cam, controller_entity, iri, true, model_id, root_pathway_iri);
 						//the protein or complex
 						OWLNamedIndividual controller_e = go_cam.df.getOWLNamedIndividual(iri);
 						//the controlling physical entity enables that function/reaction
@@ -1272,8 +1270,6 @@ public class BioPaxtoGO {
 				}
 				//If a reaction is xreffed directly to the GO it is mapping to a biological process
 				//this indicates the reaction is a part_of that process
-				//TODO this is funky as the reaction is already part of a pathway which itself may be mapped directly to a process
-				//seems that mapping ought to go on pathway, instead of both places
 				for(Xref xref : entity.getXref()) {
 					if(xref.getModelInterface().equals(RelationshipXref.class)) {
 						RelationshipXref ref = (RelationshipXref)xref;	    			
@@ -1300,6 +1296,9 @@ public class BioPaxtoGO {
 							if(reactome_entity_id!=null) {
 								go_cam.addDatabaseXref(bp_i, reactome_entity_id);
 							}
+							//Per https://github.com/geneontology/pathways2GO/issues/66
+							//remove the default part_of pathway relationship when one of these is added. 
+							go_cam.applyAnnotatedTripleRemover(e.getIRI(), GoCAM.part_of.getIRI(), IRI.create(root_pathway_iri));
 						}
 					}
 				}	
