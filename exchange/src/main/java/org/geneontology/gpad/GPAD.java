@@ -12,7 +12,7 @@ import java.util.Set;
 
 /**
  * @author bgood
- *
+DB	objectid	qualifier	goid	dbreferences	evidence codes	withorfrom	interactingtaxonid	date	assignedby	annotationextension	annotationproperties
  */
 public class GPAD {
 	String gpa_version;
@@ -93,17 +93,6 @@ public class GPAD {
 			f.write(a.AnnotationProperties+"\n");
 		}
 		f.close();
-	}
-	
-	/**
-	 * @param args
-	 * @throws IOException 
-	 */
-	public static void main(String[] args) throws IOException {
-		GPAD g = new GPAD();
-		Set<Annotation> annos = g.parseFile("/Users/bgood/Desktop/test/gpad/glycolysis_go_cam.gpad");
-		g.writeFile(annos, "/Users/bgood/Desktop/test/gpad/glycolysis-test.gpad");
-
 	}
 
 }
