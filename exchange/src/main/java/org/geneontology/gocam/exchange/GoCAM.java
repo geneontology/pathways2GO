@@ -1375,7 +1375,7 @@ pathway has_part R
 	/**
 	 * Rule: entity involved in regulation of function 
 Binding has_input E1
-Binding enabled_by E2
+Binding has_input E2
 Binding +-_regulates R
 Binding part_of +-_regulation_of BP
 ⇐ 	
@@ -1440,7 +1440,7 @@ BP has_part R
 
 					if(er.enabler_uri!=null) {
 						OWLNamedIndividual enabler = cloneIndividual(er.enabler_uri, model_id, true, true, false);
-						addRefBackedObjectPropertyAssertion(binding_node, enabled_by, enabler, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+						addRefBackedObjectPropertyAssertion(binding_node, has_input, enabler, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
 						//delete the cloned enable relation
 						applyAnnotatedTripleRemover(reaction.getIRI(), enabled_by.getIRI(), enabler.getIRI());
 					}

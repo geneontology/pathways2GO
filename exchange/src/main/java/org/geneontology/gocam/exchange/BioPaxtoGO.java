@@ -221,11 +221,11 @@ public class BioPaxtoGO {
 			//great example of why we are not getting a complete data set without inter model linking.  
 		//		test_pathways.add("TCF dependent signaling in response to WNT");
 				//looks great..
-	//	test_pathways.add("Glycolysis");
+		test_pathways.add("Glycolysis");
 		//looks good 
 	//	test_pathways.add("activated TAK1 mediates p38 MAPK activation");
 				//check for relations between events that might not be biopax typed chemical reactions - e.g. degradation
-				test_pathways.add("HDL clearance");
+	//			test_pathways.add("HDL clearance");
 	//	//set to null to do full run
 	//	test_pathways = null;
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathways);
