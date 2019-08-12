@@ -265,7 +265,7 @@ public class ArachneAccessor {
 	}
 
 	public void categorizeInstanceNodesInFolder(String input_folder, String output_folder) throws OWLOntologyCreationException, FileNotFoundException, OWLOntologyStorageException {
-		OWLOntologyManager aman = OWLManager.createOWLOntologyManager();
+		
 		
 		File dir = new File(input_folder);
 		File[] directoryListing = dir.listFiles();
@@ -275,6 +275,7 @@ public class ArachneAccessor {
 				if(abox_file.getName().endsWith(".ttl")) {
 					n++;
 					System.out.println("Adding Types for "+abox_file.getName()+" "+n+" of "+directoryListing.length);
+					OWLOntologyManager aman = OWLManager.createOWLOntologyManager();
 					OWLOntology abox = aman.loadOntologyFromOntologyDocument(abox_file);	
 					long t0 = System.currentTimeMillis();
 					abox = addCategoryTags(abox, aman);

@@ -1,0 +1,21 @@
+PREFIX owl: <http://www.w3.org/2002/07/owl#> 
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX metago: <http://model.geneontology.org/>
+PREFIX lego: <http://geneontology.org/lego/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
+SELECT  ?cam ?id ?date ?title ?state (GROUP_CONCAT(?contributor;separator=";") AS ?contributors) 
+WHERE {
+  GRAPH ?cam {      
+      ?cam dc:title ?title ;
+           dc:date ?date ;
+           lego:modelstate ?state ; 
+           dc:contributor ?contributor .
+    	   optional { ?cam <http://www.geneontology.org/formats/oboInOwl#id> ?id }       	
+              	#lpalbou: Baby Proofing the query since oboInOwl#id is not always there
+	  			BIND(IF(bound(?id), ?id, concat("gomodel:", substr(str(?cam), 31))) as ?id) .
+            } 
+        }   
+  GROUP BY ?id ?date ?title ?cam ?state
+  ORDER BY DESC(?date)
+  LIMIT 10

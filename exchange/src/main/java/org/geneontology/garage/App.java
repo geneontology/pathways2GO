@@ -94,8 +94,8 @@ public class App {
 
 	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		
-		String input_folder = "/Users/bgood/Documents/GitHub/GO_Shapes/test_ttl/go_cams/should_fail/";
-		String output_folder = "/Users/bgood/Documents/GitHub/GO_Shapes/test_ttl/go_cams/should_fail/tagged-";
+		String input_folder = "/Users/bgood/Documents/GitHub/GO_Shapes/test_ttl/go_cams/should_pass/";
+		String output_folder = "/Users/bgood/Documents/GitHub/GO_Shapes/test_ttl/go_cams/should_pass/tagged/";
 		Set<String> tbox = new HashSet<String>();
 		tbox.add("/Users/bgood/gocam_ontology/neo_full.owl");
 		tbox.add(BioPaxtoGO.eco_base_file);
