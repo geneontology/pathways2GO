@@ -29,6 +29,40 @@ public class GPAD {
 		String AssignedBy = "";
 		String AnnotationExtension = "";
 		String AnnotationProperties = "";
+		
+		public String getString() {
+			String s = "";
+			s+=DB+"\t";
+			s+=DBObjectID+"\t";
+			s+=Qualifier+"\t";
+			s+=GOID+"\t";
+			s+=DBReferences+"\t";
+			s+=EvidenceCode+"\t";
+			s+=WithorFrom+"\t";
+			s+=InteractingTaxonID+"\t";
+			s+=Date+"\t";
+			s+=AssignedBy+"\t";
+			s+=AnnotationExtension+"\t";
+			s+=AnnotationProperties+"\n";
+			return s;
+		}
+		
+		public Annotation clone(Annotation a) {
+			Annotation b = new Annotation();
+			b.DB = a.DB;
+			b.DBObjectID = a.DBObjectID;
+			b.Qualifier = a.Qualifier;
+			b.GOID = a.GOID;
+			b.DBReferences = a.DBReferences;
+			b.EvidenceCode = a.EvidenceCode;
+			b.WithorFrom = a.WithorFrom;
+			b.InteractingTaxonID = a.InteractingTaxonID;
+			b.Date = a.Date;
+			b.AssignedBy = a.AssignedBy;
+			b.AnnotationExtension = a.AnnotationExtension;
+			b.AnnotationProperties = a.AnnotationProperties;
+			return b;
+		}
 	}
 	/**
 	 * 
@@ -79,18 +113,7 @@ public class GPAD {
 			f.write("!gpa-version: 1.1\n");
 		}
 		for(Annotation a : annos) {
-			f.write(a.DB+"\t");
-			f.write(a.DBObjectID+"\t");
-			f.write(a.Qualifier+"\t");
-			f.write(a.GOID+"\t");
-			f.write(a.DBReferences+"\t");
-			f.write(a.EvidenceCode+"\t");
-			f.write(a.WithorFrom+"\t");
-			f.write(a.InteractingTaxonID+"\t");
-			f.write(a.Date+"\t");
-			f.write(a.AssignedBy+"\t");
-			f.write(a.AnnotationExtension+"\t");
-			f.write(a.AnnotationProperties+"\n");
+			f.write(a.getString());
 		}
 		f.close();
 	}
