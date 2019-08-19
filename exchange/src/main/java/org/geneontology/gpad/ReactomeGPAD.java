@@ -109,16 +109,9 @@ public class ReactomeGPAD {
 		return b;
 	}
 
-	/**
-	 * @param args
-	 * @throws IOException 
-	 * @throws OWLOntologyCreationException 
-	 */
-	public static void main(String[] args) throws IOException, OWLOntologyCreationException{
-		String entity_ontology_file = "/Users/bgood/gocam_ontology/Reactome_physical_entities.owl";
-		ReactomeGPAD rgp = new ReactomeGPAD(entity_ontology_file);
+	public Set<Annotation> convertReactomeToUniprotEntities(String reactome_gpad_file, String uniprot_gpad_file) throws IOException {
 		GPAD g = new GPAD();
-		Set<Annotation> annos = g.parseFile("/Users/bgood/Desktop/test/gpad/bmp.gpad");
+		Set<Annotation> annos = g.parseFile(reactome_gpad_file);
 		Set<Annotation> filtered_annos = new HashSet<Annotation>();
 		for(Annotation a : annos) {
 			System.out.println("source "+a.getString());
@@ -126,7 +119,7 @@ public class ReactomeGPAD {
 			if(a.DB.equalsIgnoreCase("UniProtKB")) {
 				react_id = "http://identifiers.org/uniprot/"+a.DBObjectID;
 			}			
-			ProteinBag bag = rgp.getProteins(react_id, null);
+			ProteinBag bag = getProteins(react_id, null);
 			if(bag.uniprot_ids.size()==0) {
 				System.out.println("no map for "+a.DBObjectID);
 			}else {
@@ -156,44 +149,63 @@ public class ReactomeGPAD {
 					}
 				}
 			}
-
-			//				String uniprot = rgp.reactid_uniprotid.get(react_id);
-			//				Set<String> setids = rgp.setid_uniprotids.get(react_id);
-			//				Set<String> complexids = rgp.complexid_uniprotids.get(react_id);
-			//				//direct annotation on a protein, map id and pass through
-			//				if(uniprot!=null) {
-			//					a.DBObjectID = uniprot.replace("http://identifiers.org/uniprot/", "");
-			//					a.DB = "UniProtKB";
-			//					filtered_annos.add(a);
-			//				}else if(setids!=null&&setids.size()>0) {
-			//					//annotation on a set
-			//					//each member of the set should get the annotation
-			//					Annotation b = a;
-			//					for(String id : setids) {
-			//						b.DBObjectID = id.replace("http://identifiers.org/uniprot/", "SET ");
-			//						b.DB = "UniProtKB";
-			//						filtered_annos.add(b);
-			//					}
-			//				}else if(complexids!=null&&complexids.size()>0) {
-			//					Annotation b = a;
-			//					if(b.Qualifier.equals("enables")) {
-			//						b.Qualifier = "contributes_to";
-			//					}
-			//					for(String id : complexids) {
-			//						b.DBObjectID = id.replace("http://identifiers.org/uniprot/", "COMPLEX ");
-			//						b.DB = "UniProtKB";
-			//						filtered_annos.add(b);
-			//					}
-			//				}
-
-			//annotation on a complex
-			//complex enables function
-			//each complex member 'contributes_to' function
-			//complex involved_in/part_of process/location
-			//each complex member involved_in/part_of process/location
-
 		}
-		g.writeFile(filtered_annos, "/Users/bgood/Desktop/test/gpad/bmp-mapped.gpad");
+		g.writeFile(filtered_annos, uniprot_gpad_file);
+		return filtered_annos;
+	}
+	
+	public void compareAnnotations(Set<GPAD.Annotation> source, Set<GPAD.Annotation> target) {
+		int source_count = source.size(); int target_count = target.size();
+		System.out.println("Reactome provides: ");
+		for(GPAD.Annotation a : source) {
+			System.out.println(a.getString());
+		}
+		Set<GPAD.Annotation> overlap = new HashSet<GPAD.Annotation>(source);
+		overlap.retainAll(target);
+		int overlap_count = overlap.size();
+		System.out.println(source_count+"\t"+overlap_count+"\t"+target_count);
+		System.out.println("These are in the reactome output: ");
+		for(GPAD.Annotation a : overlap) {
+			System.out.println(a.getString());
+		}
+		System.out.println("These are missing from the reactome output: ");
+		source.removeAll(overlap);
+		int n_id_present = 0; int n_id_missing = 0;
+		for(GPAD.Annotation a : source) {
+			Set<String> q_g = new HashSet<String>();
+			for(GPAD.Annotation r : target) {
+				if(a.DBObjectID.equals(r.DBObjectID)) {
+					q_g.add(r.Qualifier+"_"+r.GOID);
+				}
+			}
+			System.out.println(q_g+"\t"+a.getString());
+			if(q_g.size()>0) {
+				n_id_present++;
+			}else{
+				n_id_missing++;
+			}
+		}
+		System.out.println("Of "+source.size()+" missing "+n_id_present+" "
+				+ "have an annotation with a matching gene id in the target set and"
+				+ " "+n_id_missing+" have no target annotations for the gene id");
+	}
+	
+	/**
+	 * @param args
+	 * @throws IOException 
+	 * @throws OWLOntologyCreationException 
+	 */
+	public static void main(String[] args) throws IOException, OWLOntologyCreationException{
+		GPAD g = new GPAD();
+		String entity_ontology_file = "/Users/bgood/gocam_ontology/Reactome_physical_entities.owl";
+		ReactomeGPAD rgp = new ReactomeGPAD(entity_ontology_file);
+		String reactome_gpad_file = "/Users/bgood/Desktop/test/gpad/bmp.gpad";
+		String uniprot_gpad_file = "/Users/bgood/Desktop/test/gpad/bmp-mapped.gpad.txt";
+		//rgp.convertReactomeToUniprotEntities(reactome_gpad_file, uniprot_gpad_file);	
+		String provided_gpad_file = "/Users/bgood/Desktop/test/gpad/bmp-provided.gpad.txt";
+		Set<GPAD.Annotation> source_annos = g.parseFile(provided_gpad_file);
+		Set<GPAD.Annotation> target_annos = g.parseFile(uniprot_gpad_file);
+		rgp.compareAnnotations(source_annos, target_annos);
 	}
 
 }
