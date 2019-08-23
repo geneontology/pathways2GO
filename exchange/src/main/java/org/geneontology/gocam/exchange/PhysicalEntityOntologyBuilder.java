@@ -99,14 +99,14 @@ public class PhysicalEntityOntologyBuilder {
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
 		String input_biopax = 
-				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_may27_2019.owl";
+				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_may27_2019.owl";
 				//"/Users/bgood/Desktop/test/biopax/SignalingByERBB2.owl";
 				//"/Users/bgood/Desktop/test/biopax/SCF.owl";
-				"/Users/bgood/Desktop/test/biopax/bmp.owl";
+				//"/Users/bgood/Desktop/test/biopax/bmp.owl";
 		String converted = 
 				//"/Users/bgood/Desktop/test/go_cams/Wnt_complete_2018-";
-				"/Users/bgood/Desktop/test/bmp_";
-				//"/Users/bgood/gocam_ontology/";
+				//"/Users/bgood/Desktop/test/bmp_";
+				"/Users/bgood/gocam_ontology/";
 		String base_ont_title = "Reactome_physical_entities";//"SignalingByERBB2_Physical_Entities"; //"Reactome_physical_entities";
 		String base_extra_info = "https://reactome.org/content/detail/";
 		String base_short_namespace = "Reactome";
@@ -131,6 +131,8 @@ public class PhysicalEntityOntologyBuilder {
 		OWLAnnotation source_anno = go_cam.df.getOWLAnnotation(GoCAM.rdfs_comment, go_cam.df.getOWLLiteral("Generated from biopax build: "+biopax_build_id));
 		OWLAxiom annoaxiom = go_cam.df.getOWLAnnotationAssertionAxiom(ont_iri, source_anno);
 		go_cam.ontman.addAxiom(go_cam.go_cam_ont, annoaxiom);
+		//add this in so shex validator works without needing to import all of chebi..
+		go_cam.addSubClassAssertion(GoCAM.chebi_molecular_entity, GoCAM.chemical_entity);
 		//build it all!  
 		PhysicalEntityOntologyBuilder converter = new PhysicalEntityOntologyBuilder(new GOPlus(), base_short_namespace, base_extra_info, r);
 		for (PhysicalEntity entity : biopax_model.getObjects(PhysicalEntity.class)){
@@ -163,7 +165,7 @@ public class PhysicalEntityOntologyBuilder {
 		}
 		
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
-		String outputformat = "RDFXML";//"TURTLE";
+		String outputformat = "RDFXML";//"TURTLE";//
 		if(outputformat.equals("RDFXML")) {
 			outfilename = outfilename+".owl";
 		}else if(outputformat.equals("TURTLE")) {
