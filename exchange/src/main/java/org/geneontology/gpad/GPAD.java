@@ -17,7 +17,7 @@ DB	objectid	qualifier	goid	dbreferences	evidence codes	withorfrom	interactingtax
  */
 public class GPAD {
 	String gpa_version;
-	public class Annotation implements Comparable<Object>{
+	public static class Annotation implements Comparable<Object>{
 		String DB = "";
 		String DBObjectID = "";
 		String Qualifier = "";
@@ -48,7 +48,7 @@ public class GPAD {
 			return s;
 		}
 
-		public Annotation clone(Annotation a) {
+		public static Annotation clone(Annotation a) {
 			Annotation b = new Annotation();
 			b.DB = a.DB;
 			b.DBObjectID = a.DBObjectID;
@@ -145,7 +145,7 @@ public void writeFile(Set<Annotation> annos, String outfile) throws IOException 
 		f.write("!gpa-version: 1.1\n");
 	}
 	for(Annotation a : annos) {
-		f.write(a.getString());
+		f.write(a.getString()+"\n");
 	}
 	f.close();
 }

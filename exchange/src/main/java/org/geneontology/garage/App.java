@@ -1,11 +1,15 @@
 package org.geneontology.garage;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -23,6 +27,8 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
@@ -57,6 +63,7 @@ import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDocumentFormat;
+import org.semanticweb.owlapi.model.OWLDocumentFormatFactory;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLIndividual;
@@ -68,20 +75,26 @@ import org.semanticweb.owlapi.model.OWLObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyID;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.model.RemoveAxiom;
+import org.semanticweb.owlapi.model.SetOntologyID;
+import org.semanticweb.owlapi.model.parameters.ChangeApplied;
 import org.semanticweb.owlapi.reasoner.NodeSet;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 import org.semanticweb.owlapi.search.EntitySearcher;
+import org.semanticweb.owlapi.util.OWLDocumentFormatFactoryImpl;
 import org.semanticweb.owlapi.util.OWLEntityRemover;
 import org.semanticweb.owlapi.util.OWLOntologyWalker;
 import org.semanticweb.owlapi.util.OWLOntologyWalkerVisitor;
 import org.semanticweb.owlapi.util.OWLOntologyWalkerVisitorEx;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
+
+import com.google.common.base.Optional;
 
 /**
  * I live to test
@@ -95,16 +108,58 @@ public class App {
 	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		
 		String input_folder = "/Users/bgood/Documents/GitHub/GO_Shapes/test_ttl/go_cams/should_pass/";
-		String output_folder = "/Users/bgood/Documents/GitHub/GO_Shapes/test_ttl/go_cams/should_pass/tagged/";
-		Set<String> tbox = new HashSet<String>();
-		tbox.add("/Users/bgood/gocam_ontology/neo_full.owl");
-		tbox.add(BioPaxtoGO.eco_base_file);
-		tbox.add(BioPaxtoGO.goplus_file);
-		tbox.add(BioPaxtoGO.reactome_physical_entities_file);
-		typeGraph(input_folder, output_folder, tbox);
+
+		final OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();				
+		final OWLOntology ont = ontman.loadOntologyFromOntologyDocument(new File("/Users/bgood/WebstormProjects/minerva/minerva-core/src/test/resources/go-mgi-signaling-test.obo"));
+		System.out.println("Ont axioms: "+ont.getAxiomCount());
+	
+		OWLOntologyID ontologyID = new OWLOntologyID(Optional.of(IRI.create("http://testmodel.geneontology.org/5d64551f00000003/5d64551f00000005")), Optional.of(IRI.create("http://testmodel.geneontology.org/5d64551f00000003/5d64551f000000052")));
+		ChangeApplied c = ontman.applyChange(new SetOntologyID(ont, ontologyID));
+		
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		ontman.saveOntology(ont, new TurtleDocumentFormat(), outputStream);
+		String modelString = outputStream.toString();
+		System.out.println(modelString);
+//		Model rdf = getModel(ont);
+//		System.out.println("Model triples: "+rdf.size());
+//		FileOutputStream o = new FileOutputStream("/Users/bgood/Desktop/entities_rdfq.owl");
+//		rdf.write(o, "TURTLE");
+//		o.close();
+		/**
+		 * Ont axioms: 759448
+			Model triples: 983131
+		 */
 	}
 
 
+	/**
+	 * From https://stackoverflow.com/questions/46866783/conversion-from-owlontology-to-jena-model-in-java
+	 * Converts an OWL API ontology into a JENA API model.
+	 * @param ontology the OWL API ontology
+	 * @return the JENA API model
+	 */
+	public static Model getModel(final OWLOntology ontology) {
+	    Model model = ModelFactory.createDefaultModel();
+
+	    try (PipedInputStream is = new PipedInputStream(); PipedOutputStream os = new PipedOutputStream(is)) {
+	        new Thread(new Runnable() {
+	            @Override
+	            public void run() {
+	                try {
+	                    ontology.getOWLOntologyManager().saveOntology(ontology, new TurtleDocumentFormat(), os);
+	                    os.close();
+	                } catch (OWLOntologyStorageException | IOException e) {
+	                    e.printStackTrace();
+	                }
+	            }
+	        }).start();
+	        model.read(is, null, "TURTLE");
+	        return model;
+	    } catch (Exception e) {
+	        throw new RuntimeException("Could not convert OWL API ontology to JENA API model.", e);
+	    }
+	}
+	
 	static void makeBlazeGraphJournal(QRunner qrunner, String outfilename, String journal) throws OWLOntologyStorageException, OWLOntologyCreationException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		File outfilefile = new File(outfilename);	
 		//use jena export

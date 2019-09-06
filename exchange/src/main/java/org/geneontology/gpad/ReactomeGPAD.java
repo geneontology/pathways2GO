@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.geneontology.gocam.exchange.GoCAM;
+import org.geneontology.gocam.exchange.Helper;
 import org.geneontology.gpad.GPAD.Annotation;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.ClassExpressionType;
@@ -26,7 +27,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
  */
 public class ReactomeGPAD {
 	GoCAM init = new GoCAM();
-	OWLOntology ont;
+	OWLOntology entity_ontology;
 	OWLOntologyManager man;
 	/**
 	 * @throws OWLOntologyCreationException 
@@ -34,7 +35,7 @@ public class ReactomeGPAD {
 	 */
 	public ReactomeGPAD(String entity_ontology_file) throws OWLOntologyCreationException {
 		man = OWLManager.createOWLOntologyManager();
-		ont = man.loadOntologyFromOntologyDocument(new File(entity_ontology_file));
+		entity_ontology = man.loadOntologyFromOntologyDocument(new File(entity_ontology_file));
 	}
 
 	public Set<OWLClass> decomposeComplexOrSet(OWLClassExpression exp, Set<OWLClass> members){
@@ -74,8 +75,8 @@ public class ReactomeGPAD {
 			return b;
 		}
 		//its equivalent to a protein
-		OWLClass entity = ont.getOWLOntologyManager().getOWLDataFactory().getOWLClass(IRI.create(id));
-		Set<OWLEquivalentClassesAxiom> eq = ont.getEquivalentClassesAxioms(entity);
+		OWLClass entity = entity_ontology.getOWLOntologyManager().getOWLDataFactory().getOWLClass(IRI.create(id));
+		Set<OWLEquivalentClassesAxiom> eq = entity_ontology.getEquivalentClassesAxioms(entity);
 		for(OWLEquivalentClassesAxiom e : eq) {
 			Set<OWLClassExpression> eq2exps = e.getClassExpressions();
 			for(OWLClassExpression eq2 : eq2exps) {
@@ -190,6 +191,25 @@ public class ReactomeGPAD {
 				+ " "+n_id_missing+" have no target annotations for the gene id");
 	}
 	
+	public static Set<GPAD.Annotation> addLabelsForExport(Set<GPAD.Annotation> annotations_in, OWLOntology eo, OWLOntology go) {
+		Set<GPAD.Annotation> annotations_out = new HashSet<GPAD.Annotation>();
+		for(GPAD.Annotation old_anno : annotations_in) {
+			GPAD.Annotation new_anno = GPAD.Annotation.clone(old_anno);
+			//e.g. http://identifiers.org/uniprot/P12643
+			String objectid = old_anno.DBObjectID;
+			String object_uri = "http://identifiers.org/uniprot/"+objectid;
+			String object_label = Helper.getaLabel(object_uri, eo);
+			
+			new_anno.DBObjectID = object_label + "\t"+objectid;
+			//e.g. http://purl.obolibrary.org/obo/GO_0000056
+			String go_label = Helper.getaLabel("http://purl.obolibrary.org/obo/"+old_anno.GOID.replace(":", "_"), go);
+			new_anno.GOID = go_label +"\t"+old_anno.GOID;
+			annotations_out.add(new_anno);
+		}
+		return annotations_out;
+	}
+	
+	
 	/**
 	 * @param args
 	 * @throws IOException 
@@ -199,13 +219,21 @@ public class ReactomeGPAD {
 		GPAD g = new GPAD();
 		String entity_ontology_file = "/Users/bgood/gocam_ontology/Reactome_physical_entities.owl";
 		ReactomeGPAD rgp = new ReactomeGPAD(entity_ontology_file);
-		String reactome_gpad_file = "/Users/bgood/Desktop/test/gpad/bmp.gpad";
+		String reactome_gpad_file = "/Users/bgood/Desktop/test/gpad/bmp.gpad.txt";
 		String uniprot_gpad_file = "/Users/bgood/Desktop/test/gpad/bmp-mapped.gpad.txt";
-		//rgp.convertReactomeToUniprotEntities(reactome_gpad_file, uniprot_gpad_file);	
+		rgp.convertReactomeToUniprotEntities(reactome_gpad_file, uniprot_gpad_file);	
 		String provided_gpad_file = "/Users/bgood/Desktop/test/gpad/bmp-provided.gpad.txt";
 		Set<GPAD.Annotation> source_annos = g.parseFile(provided_gpad_file);
 		Set<GPAD.Annotation> target_annos = g.parseFile(uniprot_gpad_file);
-		rgp.compareAnnotations(source_annos, target_annos);
+					
+		OWLOntology go = rgp.man.loadOntologyFromOntologyDocument(new File("/Users/bgood/gocam_ontology/go-plus.owl"));
+		OWLOntology neo = rgp.man.loadOntologyFromOntologyDocument(new File("/Users/bgood/gocam_ontology/neo_full.owl"));
+		target_annos = addLabelsForExport(target_annos, neo, go);
+		g.writeFile(target_annos, "/Users/bgood/Desktop/test/gpad/bmp-mapped-labeled.gpad.txt");
+		//rgp.compareAnnotations(source_annos, target_annos);
 	}
+	
+	
+	
 
 }

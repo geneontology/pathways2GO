@@ -106,7 +106,7 @@ public class PhysicalEntityOntologyBuilder {
 		String converted = 
 				//"/Users/bgood/Desktop/test/go_cams/Wnt_complete_2018-";
 				//"/Users/bgood/Desktop/test/bmp_";
-				"/Users/bgood/gocam_ontology/";
+				"/Users/bgood/gocam_ontology/tmp/";
 		String base_ont_title = "Reactome_physical_entities";//"SignalingByERBB2_Physical_Entities"; //"Reactome_physical_entities";
 		String base_extra_info = "https://reactome.org/content/detail/";
 		String base_short_namespace = "Reactome";
@@ -138,18 +138,21 @@ public class PhysicalEntityOntologyBuilder {
 		for (PhysicalEntity entity : biopax_model.getObjects(PhysicalEntity.class)){
 			String model_id = entity.hashCode()+"";
 			n++;
-			System.out.println(n+" defining "+base_ont_title+" "+entity.getModelInterface());
+			System.out.println(n+" defining "+entity.getDisplayName()+" "+entity.getModelInterface()+" "+entity.getUri());
 			converter.definePhysicalEntity(go_cam, entity, null, model_id);
 		}
+		System.out.println(" running reasoner ");
 		if(!converter.reasoner.equals(ReasonerImplementation.none)) {
 			OWLReasonerFactory reasonerFactory = null;
 			if(converter.reasoner.equals(ReasonerImplementation.Hermit)) {
 				reasonerFactory = new ReasonerFactory();
 			}else if(converter.reasoner.equals(ReasonerImplementation.Elk)) {
 				reasonerFactory = new ElkReasonerFactory();
-			}			
+			}		
+			System.out.println(" creating reasoner ");
 			OWLReasoner reasoner = reasonerFactory.createReasoner(go_cam.go_cam_ont);
 			// Classify the ontology.
+			System.out.println(" computing inferences ");
 			reasoner.precomputeInferences(InferenceType.CLASS_HIERARCHY);
 			// inferred axiom generators
 			List<InferredAxiomGenerator<? extends OWLAxiom>> gens = 
@@ -160,12 +163,14 @@ public class PhysicalEntityOntologyBuilder {
 			// Put the inferred axioms into a fresh empty ontology.
 			//OWLOntology infOnt = go_cam.ontman.createOntology();
 			//here just adding them to the original
+			System.out.println(" adding inferences to ontology ");
 			iog.fillOntology(go_cam.ontman.getOWLDataFactory(), go_cam.go_cam_ont);
+			System.out.println(" disposing of reasoner ");
 			reasoner.dispose();
 		}
-		
+		System.out.println(" exporting ");
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
-		String outputformat = "RDFXML";//"TURTLE";//
+		String outputformat = "TURTLE";//"RDFXML";//
 		if(outputformat.equals("RDFXML")) {
 			outfilename = outfilename+".owl";
 		}else if(outputformat.equals("TURTLE")) {
@@ -200,7 +205,8 @@ public class PhysicalEntityOntologyBuilder {
 			go_cam.addComment(e, "BioPAX type: "+entity.getModelInterface());
 		}
 		//tag the class with a basic upper level type
-		go_cam.addSubClassAssertion(e, GoCAM.chebi_molecular_entity);
+		//according to recent shape validation work, everything is a chemical entity...
+		go_cam.addSubClassAssertion(e, GoCAM.chemical_entity);
 		//this allows linkage between different entities in the GO-CAM sense that correspond to the same thing in the BioPax sense
 		go_cam.addUriAnnotations2Individual(e.getIRI(),GoCAM.skos_exact_match, IRI.create(entity.getUri()));		
 		String entity_name = entity.getDisplayName();
