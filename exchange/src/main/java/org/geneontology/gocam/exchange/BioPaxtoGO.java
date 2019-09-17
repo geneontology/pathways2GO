@@ -106,7 +106,7 @@ public class BioPaxtoGO {
 	public static final String legorel_file = "/Users/bgood/gocam_ontology/legorel.owl"; 
 	public static final String go_bfo_bridge_file = "/Users/bgood/gocam_ontology/go-bfo-bridge.owl"; 
 	public static final String eco_base_file = "/Users/bgood/gocam_ontology/eco-base.owl"; 
-	public static final String reactome_physical_entities_file = "/Users/bgood/gocam_ontology/Reactome_physical_entities.owl";
+	public static final String reactome_physical_entities_file = "/Users/bgood/gocam_ontology/REO.owl";
 
 	Set<String> tbox_files;
 	ImportStrategy strategy;

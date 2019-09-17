@@ -105,13 +105,13 @@ public class GoCAM {
 	public static OWLAnnotationProperty title_prop, contributor_prop, date_prop, skos_exact_match, skos_altlabel,  
 	state_prop, evidence_prop, provided_by_prop, x_prop, y_prop, rdfs_label, rdfs_comment, rdfs_seealso, source_prop, 
 	definition, database_cross_reference;
-	public static OWLObjectProperty part_of, has_part, has_input, has_output, 
+	public static OWLObjectProperty part_of, has_part, has_input, has_output, has_component, 
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in,
 	directly_positively_regulated_by, directly_negatively_regulated_by, involved_in_regulation_of, involved_in_negative_regulation_of, involved_in_positive_regulation_of,
 	directly_negatively_regulates, directly_positively_regulates, has_role, causally_upstream_of, causally_upstream_of_negative_effect, causally_upstream_of_positive_effect,
 	negatively_regulates, positively_regulates, 
 	has_target_end_location, has_target_start_location, interacts_with, has_participant, functionally_related_to,
-	contributes_to;
+	contributes_to, only_in_taxon;
 
 	public static OWLClass 
 	bp_class, continuant_class, process_class, go_complex, cc_class, molecular_function, 
@@ -122,8 +122,10 @@ public class GoCAM {
 	binding, protein_binding, protein_complex_binding, 
 	establishment_of_protein_localization, negative_regulation_of_molecular_function, positive_regulation_of_molecular_function,
 	chebi_mrna, chebi_rna, chebi_dna, unfolded_protein, 
-	transport, protein_transport,
+	transport, protein_transport, human, 
 	union_set;
+	public static OWLClassExpression taxon_human;
+	
 	public OWLOntology go_cam_ont;
 	public OWLDataFactory df;
 	public OWLOntologyManager ontman;
@@ -234,7 +236,7 @@ public class GoCAM {
 		//Will add classes and relations as we need them now. 
 		//TODO add something to validate that ids are correct..  
 		//classes	
-
+		human = df.getOWLClass(IRI.create(obo_iri+"NCBITaxon_9606"));
 		catalytic_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0003824"));
 		binding = df.getOWLClass(IRI.create(obo_iri+"GO_0005488"));
 		protein_binding = df.getOWLClass(IRI.create(obo_iri+"GO_0005515"));
@@ -295,6 +297,12 @@ public class GoCAM {
 		//has part
 		has_part = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000051"));
 		addLabel(has_part, "has part");
+		//has_component - use when you want to specify an exact cardinality - e.g. 5 and only 5 fingers.
+		has_component = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002180"));
+		addLabel(has_component, "has component");
+		//http://purl.obolibrary.org/obo/RO_0002160
+		only_in_taxon = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002160"));
+		addLabel(only_in_taxon, "only in taxon");
 		//has input 
 		has_input = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002233"));
 		addLabel(has_input, "has input");
@@ -379,6 +387,9 @@ public class GoCAM {
 		has_target_end_location = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002339"));
 		has_target_start_location = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002338"));
 		contributes_to = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002326"));
+		
+		//re-usable restrictions
+		taxon_human = df.getOWLObjectSomeValuesFrom(only_in_taxon, human);
 	}
 
 	//	public GoCAMReport getGoCAMReport(){
@@ -828,6 +839,9 @@ final long counterValue = instanceCounter.getAndIncrement();
 		}
 	}
 
+	//TODO explore whether something like this is faster
+	//https://stackoverflow.com/questions/46860119/deleting-specific-class-and-axioms-in-owlapi
+	//OWLEntityRemover remover = new OWLEntityRemover(Collections.singleton(ontology)); currentClass.accept(remover); manager.applyChanges(remover.getChanges()); 
 	void deleteOwlEntityAndAllReferencesToIt(OWLEntity e) {	
 		Collection<OWLAnnotationAssertionAxiom> node_annotations = EntitySearcher.getAnnotationAssertionAxioms(e.getIRI(), this.go_cam_ont);
 		if(node_annotations!=null) {
