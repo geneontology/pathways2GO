@@ -3,6 +3,7 @@
  */
 package org.geneontology.gocam.exchange;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -45,22 +46,27 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.semanticweb.HermiT.ReasonerFactory;
 import org.semanticweb.elk.owlapi.ElkReasonerFactory;
+import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.AddImport;
+import org.semanticweb.owlapi.model.ClassExpressionType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
 import org.semanticweb.owlapi.model.OWLObjectUnionOf;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.reasoner.InferenceType;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
+import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 import org.semanticweb.owlapi.search.EntitySearcher;
 import org.semanticweb.owlapi.util.InferredAxiomGenerator;
 import org.semanticweb.owlapi.util.InferredEquivalentClassAxiomGenerator;
@@ -104,6 +110,104 @@ public class PhysicalEntityOntologyBuilder {
 	}
 
 	/**
+	 * Given an entity ontology, presumably produced by this class, generate a mapping of the protein entities
+	 * to uniprot identifiers wherever possible
+	 * @param EO
+	 * @return
+	 * @throws OWLOntologyCreationException 
+	 */
+	public static Map<String, Set<String>> makeUniProtMap(String entity_ontology_file) throws OWLOntologyCreationException {
+		GoCAM gc = new GoCAM();
+		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();				
+		OWLOntology eo = ontman.loadOntologyFromOntologyDocument(new File(entity_ontology_file));		
+		Map<String, Set<String>> e_uniprots = new HashMap<String, Set<String>>();
+		//get all the proteins
+		OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
+		OWLReasoner reasoner = reasonerFactory.createReasoner(eo);
+		reasoner.isConsistent();
+		OWLClass root_protein = ontman.getOWLDataFactory().getOWLClass(GoCAM.chebi_protein.getIRI());
+		Set<OWLClass> protein_roots = reasoner.getSubClasses(root_protein, true).getFlattened();
+		for(OWLClass protein_root : protein_roots) {
+			String root_iri = protein_root.toString();
+			//typical case
+			if(root_iri.contains("uniprot")) {
+				Set<OWLClass> uniprot_children = reasoner.getSubClasses(protein_root, false).getFlattened();
+				for(OWLClass child : uniprot_children) {
+					String child_iri = child.toString();
+					if(child_iri.contains("uniprot")) {
+						System.out.println("uniprot hierarchy?");
+						System.exit(0);
+					}else {
+						if(!child_iri.contains("Nothing")) {
+							Set<String> uniprots = e_uniprots.get(child_iri);
+							if(uniprots==null) {
+								uniprots = new HashSet<String>();
+							}
+							uniprots.add(root_iri);
+							e_uniprots.put(child_iri, uniprots);
+						}
+					}
+				}
+			}
+			//set entity
+			else {
+				Set<OWLEquivalentClassesAxiom> eq_axioms = eo.getEquivalentClassesAxioms(protein_root);
+				Set<String> uniprots_for_set = new HashSet<String>();
+				if(eq_axioms!=null) {
+					for(OWLEquivalentClassesAxiom eq_axiom : eq_axioms) {
+						for(OWLClassExpression eq2 : eq_axiom.getClassExpressions()) {
+							if(eq2.equals(protein_root)) {
+								continue;
+							}
+							Map<String, Set<String>> set_uniprots = getUniProtMapForOWLExpression(eo, reasoner, eq2, null);
+							e_uniprots.putAll(set_uniprots);
+							for(Set<String> s : set_uniprots.values()) {
+								uniprots_for_set.addAll(s);
+							}
+						}
+					}
+				}
+				e_uniprots.put(protein_root.toString(), uniprots_for_set);
+			}
+		}
+		return e_uniprots;
+	}
+
+	public static Map<String, Set<String>> getUniProtMapForOWLExpression(OWLOntology eo, OWLReasoner reasoner, OWLClassExpression exp, Map<String, Set<String>> e_uniprots){
+		if(e_uniprots==null) {
+			e_uniprots = new HashMap<String, Set<String>>();
+		}
+		if(exp.getClassExpressionType().equals(ClassExpressionType.OBJECT_UNION_OF)) {
+			OWLObjectUnionOf union = (OWLObjectUnionOf)exp;
+			for(OWLClassExpression member : union.getOperands()) {
+				//is it an embedded set?
+				Set<OWLEquivalentClassesAxiom> eq_axioms = eo.getEquivalentClassesAxioms((OWLClass) member);
+				if(eq_axioms!=null&&eq_axioms.size()>0) {
+					for(OWLEquivalentClassesAxiom eq_axiom : eq_axioms) {
+						for(OWLClassExpression eq2 : eq_axiom.getClassExpressions()) {
+							e_uniprots.putAll(getUniProtMapForOWLExpression(eo, reasoner, eq2, e_uniprots));
+						}
+					}
+				}				
+				else {
+					Set<OWLClass> uniprot_parents = reasoner.getSuperClasses(member, true).getFlattened();
+					for(OWLClass parent : uniprot_parents) {
+						if(parent.toString().contains("uniprot")) {
+							Set<String> uniprots = e_uniprots.get(member.toString());
+							if(uniprots==null) {
+								uniprots = new HashSet<String>();
+							}
+							uniprots.add(parent.toString());
+							e_uniprots.put(member.toString(), uniprots);
+						}
+					}
+				}
+			}
+		}
+
+		return e_uniprots;
+	}
+	/**
 	 * @param args
 	 * @throws OWLOntologyCreationException 
 	 * @throws IOException 
@@ -113,15 +217,22 @@ public class PhysicalEntityOntologyBuilder {
 	 * @throws OWLOntologyStorageException 
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
+		Map<String, Set<String>> map = makeUniProtMap("/Users/bgood/Desktop/test/RAF_MAP_Reactome_physical_entities.ttl");
+		System.out.println("reactome\tuniprot");
+		for(String reactome : map.keySet()) {
+			System.out.println(reactome+"\t"+map.get(reactome));
+		}
+
+
 		String pro_mapping = "/Users/bgood/Desktop/test/REO/promapping.txt";
 		String input_biopax = 
 				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_may27_2019.owl";
-				//"/Users/bgood/Desktop/test/biopax/RAF_MAP.owl";
+		//"/Users/bgood/Desktop/test/biopax/RAF_MAP.owl";
 		String outputformat = "RDFXML";
 		String outfilename = "/Users/bgood/gocam_ontology/REO";
-				//"/Users/bgood/Desktop/test/go_cams/Wnt_complete_2018-";
-				//"/Users/bgood/Desktop/test/RAF_MAP_";
-		
+		//"/Users/bgood/Desktop/test/go_cams/Wnt_complete_2018-";
+		//"/Users/bgood/Desktop/test/RAF_MAP_";
+
 		String base_ont_title = "Reactome Entity Ontology (REO)";//"SignalingByERBB2_Physical_Entities"; //"Reactome_physical_entities";
 		String base_extra_info = "https://reactome.org/content/detail/";
 		String base_short_namespace = "Reactome";
@@ -233,6 +344,7 @@ public class PhysicalEntityOntologyBuilder {
 			System.out.println(id+" "+(n_objects++)+" "+converter.id_class_map.get(id));
 		}
 	}
+
 
 	private OWLClassExpression definePhysicalEntity(GoCAM go_cam, PhysicalEntity entity, IRI this_iri, String model_id) throws IOException {
 		String entity_id = BioPaxtoGO.getEntityReferenceId(entity);
