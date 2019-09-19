@@ -110,72 +110,110 @@ public class PhysicalEntityOntologyBuilder {
 	}
 
 	/**
-	 * Given an entity ontology, presumably produced by this class, generate a mapping of the protein entities
-	 * to uniprot identifiers wherever possible
+	 * Given an entity ontology, presumably produced by this class, generate a mapping of the physical entities
+	 * to neo identifiers wherever possible (neo may be assumed to contain uniprot and chebi and more)
 	 * @param EO
 	 * @return
 	 * @throws OWLOntologyCreationException 
 	 */
-	public static Map<String, Set<String>> makeUniProtMap(String entity_ontology_file) throws OWLOntologyCreationException {
+	public static Map<String, Set<String>> makeNeoMap(String entity_ontology_file) throws OWLOntologyCreationException {		
 		GoCAM gc = new GoCAM();
 		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();				
 		OWLOntology eo = ontman.loadOntologyFromOntologyDocument(new File(entity_ontology_file));		
-		Map<String, Set<String>> e_uniprots = new HashMap<String, Set<String>>();
-		//get all the proteins
-		OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
+		Map<String, Set<String>> e_neos = new HashMap<String, Set<String>>();
+		OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
 		OWLReasoner reasoner = reasonerFactory.createReasoner(eo);
-		reasoner.isConsistent();
-		OWLClass root_protein = ontman.getOWLDataFactory().getOWLClass(GoCAM.chebi_protein.getIRI());
-		Set<OWLClass> protein_roots = reasoner.getSubClasses(root_protein, true).getFlattened();
-		for(OWLClass protein_root : protein_roots) {
-			String root_iri = protein_root.toString();
-			//typical case
-			if(root_iri.contains("uniprot")) {
-				Set<OWLClass> uniprot_children = reasoner.getSubClasses(protein_root, false).getFlattened();
-				for(OWLClass child : uniprot_children) {
+		//Since we have no GO IDS for complexes just make them map to root complex
+		Set<OWLClass> complexes = reasoner.getSubClasses(GoCAM.go_complex, false).getFlattened();
+		Set<String> complex_string = new HashSet<String>();
+		complex_string.add(GoCAM.go_complex.toString());
+		for(OWLClass c : complexes) {
+			if(c.toString().contains("model.geneontology.org")) {
+				e_neos.put(c.toString(), complex_string);
+			}
+		}
+		//get all the proteins and chemicals
+		Set<OWLClass> entity_roots = reasoner.getSubClasses(GoCAM.chebi_protein, false).getFlattened();
+		entity_roots.addAll(reasoner.getSubClasses(GoCAM.chemical_entity, false).getFlattened());
+		for(OWLClass entity_root : entity_roots) {
+			String root_iri = entity_root.toString();
+			if(root_iri.contains("http://model.geneontology.org/R-HSA-1233225")){
+				System.out.println("why hello");
+			}
+			//simple case, no hierarchy
+			if((root_iri.contains("uniprot")||root_iri.contains("CHEBI"))) {
+				Set<OWLClass> children = reasoner.getSubClasses(entity_root, false).getFlattened();
+				for(OWLClass child : children) {
 					String child_iri = child.toString();
-					if(child_iri.contains("uniprot")) {
-						System.out.println("uniprot hierarchy?");
+					if(child_iri.contains("uniprot")||child_iri.contains("CHEBI")) {
+						System.out.println("uniprot/chebi hierarchy?");
 						System.exit(0);
 					}else {
 						if(!child_iri.contains("Nothing")) {
-							Set<String> uniprots = e_uniprots.get(child_iri);
-							if(uniprots==null) {
-								uniprots = new HashSet<String>();
+							Set<String> neos = e_neos.get(child_iri);
+							if(neos==null) {
+								neos = new HashSet<String>();
 							}
-							uniprots.add(root_iri);
-							e_uniprots.put(child_iri, uniprots);
+							neos.add(root_iri);
+							e_neos.put(child_iri, neos);
 						}
 					}
 				}
 			}
 			//set entity
 			else {
-				Set<OWLEquivalentClassesAxiom> eq_axioms = eo.getEquivalentClassesAxioms(protein_root);
-				Set<String> uniprots_for_set = new HashSet<String>();
-				if(eq_axioms!=null) {
+				Set<OWLEquivalentClassesAxiom> eq_axioms = eo.getEquivalentClassesAxioms(entity_root);
+				Set<String> neos_for_set = new HashSet<String>();
+				if(eq_axioms!=null&&eq_axioms.size()>0) {
 					for(OWLEquivalentClassesAxiom eq_axiom : eq_axioms) {
 						for(OWLClassExpression eq2 : eq_axiom.getClassExpressions()) {
-							if(eq2.equals(protein_root)) {
+							if(eq2.equals(entity_root)) {
 								continue;
 							}
-							Map<String, Set<String>> set_uniprots = getUniProtMapForOWLExpression(eo, reasoner, eq2, null);
-							e_uniprots.putAll(set_uniprots);
-							for(Set<String> s : set_uniprots.values()) {
-								uniprots_for_set.addAll(s);
+							Map<String, Set<String>> set_neos = getNeoMapForOWLExpression(eo, reasoner, eq2, null);
+							e_neos.putAll(set_neos);
+							for(Set<String> s : set_neos.values()) {
+								neos_for_set.addAll(s);
 							}
 						}
 					}
+					e_neos.put(entity_root.toString(), neos_for_set);
+				}else { //if its simply not further defined, map it to the root
+					Set<String> neos = e_neos.get(root_iri);
+					if(neos==null) {
+						neos = new HashSet<String>();
+					}
+					Set<OWLClass> supers = reasoner.getSuperClasses(entity_root, true).getFlattened();
+					for(OWLClass s : supers) {
+						if(s.equals(GoCAM.go_complex)) {
+							neos.add(s.toString());
+						}else if(s.toString().contains("CHEBI")) {
+							neos.add(s.toString());
+						}
+					}
+					e_neos.put(entity_root.toString(), neos);
 				}
-				e_uniprots.put(protein_root.toString(), uniprots_for_set);
+				
 			}
 		}
-		return e_uniprots;
+		for(String entity : e_neos.keySet()) {
+			Set<String> neos = e_neos.get(entity);
+			if(neos.size()>1) {
+				neos.remove("<http://purl.obolibrary.org/obo/CHEBI_24431>");//remove chemical entity if others present
+				if(neos.size()>1) {
+					//remove 'protein' if others present
+					neos.remove("<http://purl.obolibrary.org/obo/CHEBI_36080>");
+				}
+			}
+			e_neos.put(entity, neos);
+		}
+		
+		return e_neos;
 	}
 
-	public static Map<String, Set<String>> getUniProtMapForOWLExpression(OWLOntology eo, OWLReasoner reasoner, OWLClassExpression exp, Map<String, Set<String>> e_uniprots){
-		if(e_uniprots==null) {
-			e_uniprots = new HashMap<String, Set<String>>();
+	public static Map<String, Set<String>> getNeoMapForOWLExpression(OWLOntology eo, OWLReasoner reasoner, OWLClassExpression exp, Map<String, Set<String>> e_neos){
+		if(e_neos==null) {
+			e_neos = new HashMap<String, Set<String>>();
 		}
 		if(exp.getClassExpressionType().equals(ClassExpressionType.OBJECT_UNION_OF)) {
 			OWLObjectUnionOf union = (OWLObjectUnionOf)exp;
@@ -185,27 +223,27 @@ public class PhysicalEntityOntologyBuilder {
 				if(eq_axioms!=null&&eq_axioms.size()>0) {
 					for(OWLEquivalentClassesAxiom eq_axiom : eq_axioms) {
 						for(OWLClassExpression eq2 : eq_axiom.getClassExpressions()) {
-							e_uniprots.putAll(getUniProtMapForOWLExpression(eo, reasoner, eq2, e_uniprots));
+							e_neos.putAll(getNeoMapForOWLExpression(eo, reasoner, eq2, e_neos));
 						}
 					}
 				}				
 				else {
-					Set<OWLClass> uniprot_parents = reasoner.getSuperClasses(member, true).getFlattened();
-					for(OWLClass parent : uniprot_parents) {
-						if(parent.toString().contains("uniprot")) {
-							Set<String> uniprots = e_uniprots.get(member.toString());
-							if(uniprots==null) {
-								uniprots = new HashSet<String>();
+					Set<OWLClass> parents = reasoner.getSuperClasses(member, false).getFlattened();
+					for(OWLClass parent : parents) {
+						if((parent.toString().contains("uniprot")||parent.toString().contains("CHEBI"))) {
+							Set<String> neos = e_neos.get(member.toString());
+							if(neos==null) {
+								neos = new HashSet<String>();
 							}
-							uniprots.add(parent.toString());
-							e_uniprots.put(member.toString(), uniprots);
+							neos.add(parent.toString());
+							e_neos.put(member.toString(), neos);
 						}
 					}
 				}
 			}
 		}
 
-		return e_uniprots;
+		return e_neos;
 	}
 	/**
 	 * @param args
@@ -217,13 +255,35 @@ public class PhysicalEntityOntologyBuilder {
 	 * @throws OWLOntologyStorageException 
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
-		Map<String, Set<String>> map = makeUniProtMap("/Users/bgood/Desktop/test/RAF_MAP_Reactome_physical_entities.ttl");
-		System.out.println("reactome\tuniprot");
+		Map<String, Set<String>> map = makeNeoMap("/Users/bgood/Desktop/test/RAF_MAP_Reactome_physical_entities.ttl");
+		System.out.println("reactome\tneo");
 		for(String reactome : map.keySet()) {
+			Set<String> neos = map.get(reactome);
+			if(neos.size()>1) {
+				neos.remove("<http://purl.obolibrary.org/obo/CHEBI_24431>");//remove chemical entity if others present
+				if(neos.size()>1) {
+					//remove 'protein' if others present
+					neos.remove("<http://purl.obolibrary.org/obo/CHEBI_36080>");
+				}
+			}
 			System.out.println(reactome+"\t"+map.get(reactome));
 		}
-
-
+		System.out.println();
+		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();				
+		OWLOntology eo = ontman.loadOntologyFromOntologyDocument(new File("/Users/bgood/Desktop/test/RAF_MAP_Reactome_physical_entities.ttl"));	
+		OWLReasonerFactory reasonerFactory1 = new ElkReasonerFactory();
+		OWLReasoner reasoner1 = reasonerFactory1.createReasoner(eo);
+		//get all the physical entities.
+		Set<OWLClass> entities = reasoner1.getSubClasses(GoCAM.go_complex, false).getFlattened();
+		entities.addAll(reasoner1.getSubClasses(GoCAM.chebi_protein, false).getFlattened());
+		entities.addAll(reasoner1.getSubClasses(GoCAM.chemical_entity, false).getFlattened());
+		for(OWLClass entity : entities) {
+			Set<String> neos = map.get(entity.toString());		
+			if((neos==null||neos.size()==0)&&(entity.toString().contains("model"))) {
+				System.out.println("neos none "+entity.toString());
+			}
+		}
+		
 		String pro_mapping = "/Users/bgood/Desktop/test/REO/promapping.txt";
 		String input_biopax = 
 				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_may27_2019.owl";
