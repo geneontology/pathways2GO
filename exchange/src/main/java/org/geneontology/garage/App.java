@@ -106,29 +106,8 @@ public class App {
 	//	String maximal_lego = "src/main/resources/org/geneontology/gocam/exchange/go-lego-full.owl";	
 
 	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
-		
-		String input_folder = "/Users/bgood/Documents/GitHub/GO_Shapes/test_ttl/go_cams/should_pass/";
 
-		final OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();				
-		final OWLOntology ont = ontman.loadOntologyFromOntologyDocument(new File("/Users/bgood/WebstormProjects/minerva/minerva-core/src/test/resources/go-mgi-signaling-test.obo"));
-		System.out.println("Ont axioms: "+ont.getAxiomCount());
-	
-		OWLOntologyID ontologyID = new OWLOntologyID(Optional.of(IRI.create("http://testmodel.geneontology.org/5d64551f00000003/5d64551f00000005")), Optional.of(IRI.create("http://testmodel.geneontology.org/5d64551f00000003/5d64551f000000052")));
-		ChangeApplied c = ontman.applyChange(new SetOntologyID(ont, ontologyID));
 		
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		ontman.saveOntology(ont, new TurtleDocumentFormat(), outputStream);
-		String modelString = outputStream.toString();
-		System.out.println(modelString);
-//		Model rdf = getModel(ont);
-//		System.out.println("Model triples: "+rdf.size());
-//		FileOutputStream o = new FileOutputStream("/Users/bgood/Desktop/entities_rdfq.owl");
-//		rdf.write(o, "TURTLE");
-//		o.close();
-		/**
-		 * Ont axioms: 759448
-			Model triples: 983131
-		 */
 	}
 
 

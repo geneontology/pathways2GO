@@ -40,10 +40,12 @@ import org.semanticweb.owlapi.util.OWLEntityRemover;
 public class PRO {
 	OWLOntologyManager ontman;
 	OWLOntology pro_ont;
-	OWLObjectProperty species_prop;
+	OWLObjectProperty only_in_taxon;
+	OWLObjectProperty in_taxon;
 	OWLClass human_class;
 	OWLClass protein_class;
 	OWLObjectSomeValuesFrom is_human_axiom;
+	OWLObjectSomeValuesFrom is_only_human_axiom;
 	OWLEntityRemover remover;
 
 
@@ -53,11 +55,16 @@ public class PRO {
 	 */
 	public PRO(String pro_file) throws OWLOntologyCreationException {
 		ontman =  OWLManager.createOWLOntologyManager();
+		System.out.println("Loading "+pro_file);
 		pro_ont = ontman.loadOntologyFromOntologyDocument(new File(pro_file));
-		species_prop = ontman.getOWLDataFactory().getOWLObjectProperty(IRI.create("http://purl.obolibrary.org/obo/RO_0002160"));
+		System.out.println("done loading");
+		in_taxon = ontman.getOWLDataFactory().getOWLObjectProperty(IRI.create("http://purl.obolibrary.org/obo/RO_0002162"));
+		only_in_taxon = ontman.getOWLDataFactory().getOWLObjectProperty(IRI.create("http://purl.obolibrary.org/obo/RO_0002160"));
 		human_class = ontman.getOWLDataFactory().getOWLClass(IRI.create("http://purl.obolibrary.org/obo/NCBITaxon_9606"));
 		protein_class = ontman.getOWLDataFactory().getOWLClass(IRI.create("http://purl.obolibrary.org/obo/PR_000000001"));
-		is_human_axiom = ontman.getOWLDataFactory().getOWLObjectSomeValuesFrom(species_prop, human_class);
+		is_only_human_axiom = ontman.getOWLDataFactory().getOWLObjectSomeValuesFrom(only_in_taxon, human_class);
+		is_human_axiom = ontman.getOWLDataFactory().getOWLObjectSomeValuesFrom(in_taxon, human_class);
+
 		remover = new OWLEntityRemover(Collections.singleton(pro_ont)); 
 	}
 
@@ -67,14 +74,14 @@ public class PRO {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, IOException {
-		//PRO pro = new PRO("/Users/bgood/Desktop/test/REO/pro_reasoned.owl");
-		//String human_specific = "/Users/bgood/Desktop/test/REO/human_pro_reasoned.owl";
-		//pro.makeSpeciesSpecificPRO(pro.human_class, human_specific);
+		PRO pro = new PRO("/Users/bgood/gocam_ontology/go-lego-merged-9-23-2019.owl");
+		String human_specific = "/Users/bgood/gocam_ontology/go-lego-merged-9-23-2019-human.owl";
+		pro.makeSpeciesSpecificPRO(pro.human_class, human_specific);
 
-		String mapping = "/Users/bgood/Desktop/test/REO/promapping.txt";
-		Map<String, Set<String>> exact_map = readReact2PRO(mapping, "exact");
-		Map<String, Set<String>> isa_map = readReact2PRO(mapping, "is_a");
-		System.out.println(exact_map.size()+" "+isa_map.size());
+	//	String mapping = "/Users/bgood/Desktop/test/REO/promapping.txt";
+	//	Map<String, Set<String>> exact_map = readReact2PRO(mapping, "exact");
+	//	Map<String, Set<String>> isa_map = readReact2PRO(mapping, "is_a");
+	//	System.out.println(exact_map.size()+" "+isa_map.size());
 	}
 
 	/**
@@ -120,6 +127,9 @@ or exact
 		int total = all_class.size();
 		int n = 0; int n_checked = 0;
 		for(OWLClass term : all_class) {
+			if(term.toString().contains("identifiers")) {
+				System.out.println("its a gene");
+			}
 			n_checked++;
 			OWLClass species = getSpecies(term);
 			if(species!=null&&(!species.equals(target_species))) {
@@ -153,7 +163,7 @@ or exact
 			OWLClassExpression c = i.next();
 			if(c.getClassExpressionType().equals(ClassExpressionType.OBJECT_SOME_VALUES_FROM)) {
 				OWLObjectSomeValuesFrom test = (OWLObjectSomeValuesFrom)c;
-				if(test.getProperty().equals(species_prop)) {
+				if(test.getProperty().equals(in_taxon)||test.getProperty().equals(only_in_taxon)) {
 					OWLClassExpression object = test.getFiller();
 					species = object.asOWLClass();
 					break;
@@ -165,7 +175,11 @@ or exact
 
 	public boolean isHuman(OWLClass term) {
 		OWLSubClassOfAxiom s = ontman.getOWLDataFactory().getOWLSubClassOfAxiom(term, is_human_axiom);
-		boolean is_human_thing = EntitySearcher.containsAxiom(s, pro_ont,false);
+		OWLSubClassOfAxiom s2 = ontman.getOWLDataFactory().getOWLSubClassOfAxiom(term, is_only_human_axiom);
+		boolean is_human_thing = false;
+		if(EntitySearcher.containsAxiom(s, pro_ont,false)||EntitySearcher.containsAxiom(s2, pro_ont,false)) {
+			is_human_thing = true;
+		}
 		return is_human_thing;
 	}
 

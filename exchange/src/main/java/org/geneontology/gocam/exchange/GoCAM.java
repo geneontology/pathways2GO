@@ -117,7 +117,7 @@ public class GoCAM {
 	bp_class, continuant_class, process_class, go_complex, cc_class, molecular_function, 
 	eco_imported, eco_imported_auto, eco_inferred_auto, 
 	chebi_molecular_entity, 
-	chebi_protein, chebi_gene, chemical_entity, chemical_role, 
+	chebi_protein, chebi_information_biomacromolecule, chemical_entity, chemical_role, 
 	catalytic_activity, signal_transducer_activity, transporter_activity,
 	binding, protein_binding, protein_complex_binding, 
 	establishment_of_protein_localization, negative_regulation_of_molecular_function, positive_regulation_of_molecular_function,
@@ -282,8 +282,8 @@ public class GoCAM {
 		//proteins and genes as they are in neo
 		chebi_protein = df.getOWLClass(IRI.create(obo_iri + "CHEBI_36080"));
 		addLabel(chebi_protein, "chebi protein");
-		chebi_gene = df.getOWLClass(IRI.create(obo_iri + "CHEBI_33695"));
-		addLabel(chebi_gene, "chebi gene"); 
+		chebi_information_biomacromolecule = df.getOWLClass(IRI.create(obo_iri + "CHEBI_33695"));
+		addLabel(chebi_information_biomacromolecule, "chebi information biomacromolecule"); 
 		chemical_entity =df.getOWLClass(IRI.create(obo_iri+"CHEBI_24431"));
 		addLabel(chemical_entity, "chemical entity");
 		chebi_mrna = df.getOWLClass(IRI.create(obo_iri+"CHEBI_33699"));
