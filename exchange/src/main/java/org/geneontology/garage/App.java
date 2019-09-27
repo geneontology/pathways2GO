@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.jena.query.QueryExecution;
@@ -59,6 +60,7 @@ import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
@@ -82,11 +84,13 @@ import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.model.SetOntologyID;
 import org.semanticweb.owlapi.model.parameters.ChangeApplied;
+import org.semanticweb.owlapi.model.parameters.OntologyCopy;
 import org.semanticweb.owlapi.reasoner.NodeSet;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 import org.semanticweb.owlapi.search.EntitySearcher;
+import org.semanticweb.owlapi.search.Searcher;
 import org.semanticweb.owlapi.util.OWLDocumentFormatFactoryImpl;
 import org.semanticweb.owlapi.util.OWLEntityRemover;
 import org.semanticweb.owlapi.util.OWLOntologyWalker;
@@ -106,8 +110,50 @@ public class App {
 	//	String maximal_lego = "src/main/resources/org/geneontology/gocam/exchange/go-lego-full.owl";	
 
 	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
+		//"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-Attachment_of_GPI_anchor_to_uPAR.ttl");
+		String test_file = "/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-A_tetrasaccharide_linker_sequence_is_required_for_GAG_synthesis.ttl";
+		GoCAM go_cam = new GoCAM(test_file);		
+		OWLOntologyManager aman = OWLManager.createOWLOntologyManager();
+		OWLDataFactory df = aman.getOWLDataFactory();
+		OWLOntology tbox = aman.loadOntologyFromOntologyDocument(
+				new File("/Users/bgood/gocam_ontology/REO.owl"));
+		OWLOntology abox = aman.copyOntology(go_cam.go_cam_ont, OntologyCopy.DEEP);
+		//		OWLOntology abox = aman.createOntology();
+		//		aman.addAxioms(abox, go_cam.go_cam_ont.getAxioms());
+		OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
+		OWLReasoner abox_reasoner = reasonerFactory.createReasoner(abox);
+		//convert to canonical
+		//list all instances of genes, chemicals with a canonical reference
 
-		
+		abox.getIndividualsInSignature().forEach(i->{ 
+			Set<OWLClass> types = abox_reasoner.getTypes(i, true).getFlattened();
+			System.out.println(i+" Types = " + types); 
+			for(OWLClass type : types) {
+				Collection<OWLAnnotation> canons = EntitySearcher.getAnnotationObjects(type, tbox, GoCAM.canonical_record);
+				if(type.toString().contains("http://model.geneontology.org/R-HSA-8863599")) {
+					System.out.println(canons);
+				}
+				//adding multiple types to an instance of a set object is 
+				//probably not kosher.. but seems to work.
+				if(canons!=null&&canons.size()>0) {
+					//	OWLAnnotation canon = canons.iterator().next();
+					for(OWLAnnotation canon : canons) {
+						if(canon.getValue().asIRI().isPresent()) {
+							OWLClass canonical = df.getOWLClass(canon.getValue().asIRI().get());
+							//direct swap
+							//remove the old one
+							OWLClassAssertionAxiom original = df.getOWLClassAssertionAxiom(type, i);
+							aman.removeAxiom(abox, original);
+							//add the new one
+							OWLClassAssertionAxiom canonical_type = df.getOWLClassAssertionAxiom(canonical, i);
+							aman.addAxiom(abox, canonical_type);
+						}
+					}
+				}
+			}
+		});
+		Helper.writeOntology("/Users/bgood/Desktop/test/go_cams/canon_unconverted.ttl", go_cam.go_cam_ont);
+		Helper.writeOntology("/Users/bgood/Desktop/test/go_cams/canon_converted.ttl", abox);
 	}
 
 
@@ -118,27 +164,27 @@ public class App {
 	 * @return the JENA API model
 	 */
 	public static Model getModel(final OWLOntology ontology) {
-	    Model model = ModelFactory.createDefaultModel();
+		Model model = ModelFactory.createDefaultModel();
 
-	    try (PipedInputStream is = new PipedInputStream(); PipedOutputStream os = new PipedOutputStream(is)) {
-	        new Thread(new Runnable() {
-	            @Override
-	            public void run() {
-	                try {
-	                    ontology.getOWLOntologyManager().saveOntology(ontology, new TurtleDocumentFormat(), os);
-	                    os.close();
-	                } catch (OWLOntologyStorageException | IOException e) {
-	                    e.printStackTrace();
-	                }
-	            }
-	        }).start();
-	        model.read(is, null, "TURTLE");
-	        return model;
-	    } catch (Exception e) {
-	        throw new RuntimeException("Could not convert OWL API ontology to JENA API model.", e);
-	    }
+		try (PipedInputStream is = new PipedInputStream(); PipedOutputStream os = new PipedOutputStream(is)) {
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						ontology.getOWLOntologyManager().saveOntology(ontology, new TurtleDocumentFormat(), os);
+						os.close();
+					} catch (OWLOntologyStorageException | IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}).start();
+			model.read(is, null, "TURTLE");
+			return model;
+		} catch (Exception e) {
+			throw new RuntimeException("Could not convert OWL API ontology to JENA API model.", e);
+		}
 	}
-	
+
 	static void makeBlazeGraphJournal(QRunner qrunner, String outfilename, String journal) throws OWLOntologyStorageException, OWLOntologyCreationException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		File outfilefile = new File(outfilename);	
 		//use jena export
@@ -172,7 +218,7 @@ public class App {
 			}
 		}
 	}
-	
+
 	public static void demoReasoner() throws OWLOntologyCreationException {
 		String ontf = "/Users/bgood/Desktop/test/tmp/GoPlusPlusRhea.ttl";
 		//"/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go-plus-merged.owl";
@@ -326,7 +372,7 @@ public class App {
 		String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
 		buildReasonedGraph(input_folder, output_folder, tbox_file);
 	}
-	
+
 	public static void buildReasonedGraph(String input_folder, String output_folder, String tbox_file) throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException{
 		Set<String> t = new HashSet<String>();
 		t.add(tbox_file);
@@ -345,7 +391,7 @@ public class App {
 		boolean add_class_definitions = false;
 		a.reasonAllInFolder(input_folder, output_folder, add_property_definitions, add_class_definitions);
 	}
-	
+
 	public static void typeGraph(String input_folder, String output_folder, Set<String> tbox_files) throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException{
 		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
 		Set<OWLOntology> tboxes = new HashSet<OWLOntology>();
@@ -356,7 +402,7 @@ public class App {
 		ArachneAccessor a = new ArachneAccessor(tboxes);
 		a.categorizeInstanceNodesInFolder(input_folder, output_folder);
 	}
-	
+
 	public static void queryCollection() throws OWLOntologyCreationException, OWLOntologyStorageException, IOException {
 		String input_folder = "/Users/bgood/reactome-go-cam-models/humantest/";
 		OWLOntology abox = ArachneAccessor.makeOneOntologyFromDirectory(input_folder);
@@ -374,7 +420,7 @@ public class App {
 
 	private static QRunner testInference(OWLOntology abox, OWLOntology tbox, boolean add_inferences,
 			boolean add_property_definitions, boolean add_class_definitions) throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException {
-		
+
 		List<OWLOntology> boxes = new ArrayList<OWLOntology>();
 		boxes.add(tbox);
 		return(testInference(abox, boxes, add_inferences, add_property_definitions, add_class_definitions));
@@ -406,21 +452,21 @@ public class App {
 	}
 
 	public static void testCausal(QRunner qrunner) {
-			String q = 
-					"prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " + 
-					"SELECT ?subject ?object WHERE { " 
-							+"?subject http://purl.obolibrary.org/obo/RO_0002410 ?object  " + 
-					"   } ";
-			QueryExecution qe = QueryExecutionFactory.create(q, qrunner.jena);
-			ResultSet results = qe.execSelect();
-			while (results.hasNext()) {
-				QuerySolution qs = results.next();
-				Resource s = qs.getResource("subject");
-				Resource o = qs.getResource("object");
-			}
-			qe.close();
+		String q = 
+				"prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " + 
+						"SELECT ?subject ?object WHERE { " 
+						+"?subject http://purl.obolibrary.org/obo/RO_0002410 ?object  " + 
+						"   } ";
+		QueryExecution qe = QueryExecutionFactory.create(q, qrunner.jena);
+		ResultSet results = qe.execSelect();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Resource s = qs.getResource("subject");
+			Resource o = qs.getResource("object");
+		}
+		qe.close();
 	}
-	
+
 	//TODO Maybe someday unit tests..  
 	public static QRunner testInference(OWLOntology abox, List<OWLOntology> tboxes, 
 			boolean add_inferences, boolean add_property_definitions, boolean add_class_definitions)  throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException {

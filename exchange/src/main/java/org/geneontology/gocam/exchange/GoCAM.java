@@ -125,7 +125,7 @@ public class GoCAM {
 	transport, protein_transport, human, 
 	union_set;
 	public static OWLClassExpression taxon_human;
-	
+
 	public OWLOntology go_cam_ont;
 	public OWLDataFactory df;
 	public OWLOntologyManager ontman;
@@ -387,7 +387,7 @@ public class GoCAM {
 		has_target_end_location = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002339"));
 		has_target_start_location = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002338"));
 		contributes_to = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002326"));
-		
+
 		//re-usable restrictions
 		taxon_human = df.getOWLObjectSomeValuesFrom(only_in_taxon, human);
 	}
@@ -1433,7 +1433,7 @@ BP has_part R
 					}
 					Set<OWLAnnotation> annos = getDefaultAnnotations();
 					OWLNamedIndividual regulator = makeUnannotatedIndividual(er.entity_uri);
-		
+
 					OWLObjectProperty prop_for_deletion = GoCAM.involved_in_negative_regulation_of;
 					OWLObjectProperty regulator_prop = GoCAM.negatively_regulates;
 					String explain = "The relation was added to account for an assertion about an entity regulating (not 'enabling') the target reaction .  See and comment on mapping rules at https://tinyurl.com/y8jctxxv . See entity_regulator_1";
@@ -1453,7 +1453,7 @@ BP has_part R
 					addRefBackedObjectPropertyAssertion(binding_node, regulator_prop, reaction, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
 
 					if(er.enabler_uri!=null) {
-						OWLNamedIndividual enabler = cloneIndividual(er.enabler_uri, model_id, true, true, false);
+						OWLNamedIndividual enabler = cloneIndividual(er.enabler_uri, model_id, true, true, false, true);
 						addRefBackedObjectPropertyAssertion(binding_node, has_input, enabler, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
 						//delete the cloned enable relation
 						applyAnnotatedTripleRemover(reaction.getIRI(), enabled_by.getIRI(), enabler.getIRI());
@@ -1497,19 +1497,21 @@ BP has_part R
 	}
 
 
-	private OWLNamedIndividual cloneIndividual(String entity_uri, String model_id, boolean clone_annotations, boolean clone_outgoing, boolean clone_incoming) {
+	private OWLNamedIndividual cloneIndividual(String entity_uri, String model_id, boolean clone_annotations, boolean clone_outgoing, boolean clone_incoming, boolean clone_types) {
 		OWLNamedIndividual source = makeUnannotatedIndividual(entity_uri);
-		return cloneIndividual(source, model_id, clone_annotations, clone_outgoing, clone_incoming);
+		return cloneIndividual(source, model_id, clone_annotations, clone_outgoing, clone_incoming, clone_types);
 	}
 
 
-	private OWLNamedIndividual cloneIndividual(OWLNamedIndividual source, String model_id, boolean clone_annotations, boolean clone_outgoing, boolean clone_incoming) {
+	private OWLNamedIndividual cloneIndividual(OWLNamedIndividual source, String model_id, boolean clone_annotations, boolean clone_outgoing, boolean clone_incoming, boolean clone_types) {
 		OWLNamedIndividual clone = makeUnannotatedIndividual(makeRandomIri(model_id));
-		//always want the types
-		Collection<OWLClassExpression> types = EntitySearcher.getTypes(source, go_cam_ont);
-		Iterator<OWLClassExpression> typesi = types.iterator();
-		while(typesi.hasNext()) {
-			addTypeAssertion(clone, typesi.next());
+		//almost always want the types
+		if(clone_types) {
+			Collection<OWLClassExpression> types = EntitySearcher.getTypes(source, go_cam_ont);
+			Iterator<OWLClassExpression> typesi = types.iterator();
+			while(typesi.hasNext()) {
+				addTypeAssertion(clone, typesi.next());
+			}
 		}
 		//annotations sometimes
 		if(clone_annotations) {
@@ -1537,11 +1539,11 @@ BP has_part R
 				//need to do similar clone for annotations
 				Set<OWLAnnotation> source_annos = oprop_axiom.getAnnotations();
 				if(clone_outgoing&&source.equals(oprop_axiom.getSubject())) {
-					OWLNamedIndividual object_clone = cloneIndividual(oprop_axiom.getObject().asOWLNamedIndividual(), model_id, clone_annotations, false, false);//don't recurse
+					OWLNamedIndividual object_clone = cloneIndividual(oprop_axiom.getObject().asOWLNamedIndividual(), model_id, clone_annotations, false, false, true);//don't recurse
 					add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(oprop_axiom.getProperty(), clone, object_clone, cloneAnnotations(source_annos, model_id));
 				}
 				else if (clone_incoming&&source.equals(oprop_axiom.getObject())) {
-					OWLNamedIndividual subject_clone = cloneIndividual(oprop_axiom.getSubject().asOWLNamedIndividual(), model_id, clone_annotations, false, false);
+					OWLNamedIndividual subject_clone = cloneIndividual(oprop_axiom.getSubject().asOWLNamedIndividual(), model_id, clone_annotations, false, false, true);
 					add_prop_axiom = df.getOWLObjectPropertyAssertionAxiom(oprop_axiom.getProperty(), subject_clone, clone, cloneAnnotations(source_annos, model_id));
 				}
 				if(add_prop_axiom !=null) {
@@ -1569,7 +1571,7 @@ BP has_part R
 				//looking at an evidence node
 			}else if(anno_value.asIRI().isPresent()) {
 				OWLNamedIndividual evidence = df.getOWLNamedIndividual(anno_value.asIRI().get());
-				OWLNamedIndividual cloned_evidence = cloneIndividual(evidence, model_id, true, false, false);
+				OWLNamedIndividual cloned_evidence = cloneIndividual(evidence, model_id, true, false, false, true);
 				OWLAnnotation cloned_anno = df.getOWLAnnotation(anno_prop, cloned_evidence.getIRI());
 				cloned.add(cloned_anno);
 			}
