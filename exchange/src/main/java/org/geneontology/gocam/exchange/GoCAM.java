@@ -985,6 +985,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 						explain = "This reaction represents the process of transporting something aside from a protein (e.g. a complex) from one location to another, hence the GO-CAM conversion automatically assigned the type 'protein transport'";
 					}
 				}else {
+					addTypeAssertion(reaction, GoCAM.molecular_function);
 					System.out.println("No enabler for transport reaction "+getaLabel(reaction));
 				}
 				addLiteralAnnotations2Individual(reaction.getIRI(), rdfs_comment, explain);
