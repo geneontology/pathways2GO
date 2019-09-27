@@ -1231,7 +1231,8 @@ public class BioPaxtoGO {
 								for(OWLNamedIndividual active_unit :active_units) {
 									go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, active_unit, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);	
 									//make the complex itself a contributor
-									go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.contributes_to, e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);	
+									//taking this out per https://github.com/geneontology/pathways2GO/issues/72
+									//go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.contributes_to, e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);	
 								}
 							}else {
 								go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, controller_e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);	
