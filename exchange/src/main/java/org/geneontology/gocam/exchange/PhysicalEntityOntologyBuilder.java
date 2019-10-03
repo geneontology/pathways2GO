@@ -126,7 +126,7 @@ public class PhysicalEntityOntologyBuilder {
 		String pro_mapping = "/Users/bgood/Desktop/test/REO/promapping.txt";
 		String input_biopax = 
 		//		"/Users/bgood/Desktop/test/biopax/ca_pathway_rna_example.owl";
-				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_may27_2019.owl";
+				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_sept9_2019.owl";
 		//"/Users/bgood/Desktop/test/biopax/RAF_MAP.owl";
 		String outputformat = "RDFXML";
 		String outfilename = 

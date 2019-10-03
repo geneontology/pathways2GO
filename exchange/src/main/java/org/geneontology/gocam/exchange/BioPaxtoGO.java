@@ -124,7 +124,7 @@ public class BioPaxtoGO {
 	Map<String, String> gocamid_sourceid = new HashMap<String, String>();
 	static boolean check_consistency = false;
 	static boolean ignore_diseases = true;
-	static boolean add_lego_import = false; //unless you never want to open the output in Protege always leave false..(or learn how to use a catalogue file)
+	static boolean add_lego_import = true; //unless you never want to open the output in Protege always leave false..(or learn how to use a catalogue file)
 	static boolean save_inferences = false;  //adds inferences to blazegraph journal
 	static boolean expand_subpathways = false;  //this is a bad idea for high level nodes like 'Signaling Pathways'
 	//these define the extent to which information from other pathways is brought into the pathway in question
@@ -168,7 +168,7 @@ public class BioPaxtoGO {
 		
 		BioPaxtoGO bp2g = new BioPaxtoGO();
 		String input_biopax = 
-				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_may27_2019.owl";
+				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_sept9_2019.owl";
 		String converted = 
 				"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
 
@@ -238,7 +238,6 @@ public class BioPaxtoGO {
 
 	private void convertReactomeFolder(String input_folder, String output_folder, boolean save_inferences, boolean expand_subpathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		boolean split_by_pathway = true;
-		boolean add_lego_import = false;
 		String base_title = "Reactome pathway ontology"; 
 		String base_contributor = "Reactome contributor"; 
 		String base_provider = "https://reactome.org";

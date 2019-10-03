@@ -183,11 +183,15 @@ public class GoCAM {
 		df = OWLManager.getOWLDataFactory();
 		initializeClassesAndRelations();
 
-		//TODO basically never going to do this, maybe take it out..
+		//TODO find a better way
 		if(add_lego_import) {
 			String lego_iri = "http://purl.obolibrary.org/obo/go/extensions/go-lego.owl";
 			OWLImportsDeclaration legoImportDeclaration = df.getOWLImportsDeclaration(IRI.create(lego_iri));
 			ontman.applyChange(new AddImport(go_cam_ont, legoImportDeclaration));
+			//until it is in go_lego all the models are going to need it
+			String reo_iri = "https://github.com/geneontology/pathways2GO/raw/master/exchange/generated/REO.owl";
+			OWLImportsDeclaration reoImportDeclaration = df.getOWLImportsDeclaration(IRI.create(reo_iri));
+			ontman.applyChange(new AddImport(go_cam_ont, reoImportDeclaration));
 		}
 		//Annotate the ontology
 		OWLAnnotation title_anno = df.getOWLAnnotation(title_prop, df.getOWLLiteral(gocam_title));
