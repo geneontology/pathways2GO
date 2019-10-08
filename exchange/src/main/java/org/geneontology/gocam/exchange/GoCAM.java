@@ -189,7 +189,8 @@ public class GoCAM {
 			OWLImportsDeclaration legoImportDeclaration = df.getOWLImportsDeclaration(IRI.create(lego_iri));
 			ontman.applyChange(new AddImport(go_cam_ont, legoImportDeclaration));
 			//until it is in go_lego all the models are going to need it
-			String reo_iri = "https://github.com/geneontology/pathways2GO/raw/master/exchange/generated/REO.owl";
+			//String reo_iri = "https://github.com/geneontology/pathways2GO/raw/master/exchange/generated/REO.owl";
+			String reo_iri = "https://github.com/geneontology/pathways2GO/raw/master/exchange/generated/plant-REO.owl";
 			OWLImportsDeclaration reoImportDeclaration = df.getOWLImportsDeclaration(IRI.create(reo_iri));
 			ontman.applyChange(new AddImport(go_cam_ont, reoImportDeclaration));
 		}

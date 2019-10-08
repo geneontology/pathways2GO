@@ -126,14 +126,16 @@ public class PhysicalEntityOntologyBuilder {
 		String pro_mapping = "/Users/bgood/Desktop/test/REO/promapping.txt";
 		String input_biopax = 
 		//		"/Users/bgood/Desktop/test/biopax/ca_pathway_rna_example.owl";
-				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_sept9_2019.owl";
-		//"/Users/bgood/Desktop/test/biopax/RAF_MAP.owl";
+		//		"/Users/bgood/Desktop/test/biopax/Homo_sapiens_sept9_2019.owl";
+		//"/Users/bgood/Desktop/test/biopax/glycolysis.owl";
+		"/Users/bgood/Downloads/biopax3/Oryza_sativa.owl";
+		
 		String outputformat = "RDFXML";
 		String outfilename = 
-		//		"/Users/bgood/Desktop/test/ca";
-		"/Users/bgood/gocam_ontology/REO";
-		//"/Users/bgood/Desktop/test/RAF_MAP_";
-
+		//"/Users/bgood/gocam_ontology/REO";
+		//"/Users/bgood/Desktop/test/REO/glycolysis_entities";
+		"/Users/bgood/Desktop/test/REO/Oryza_sativa_entities";
+		
 		String base_ont_title = "Reactome Entity Ontology (REO)";//"SignalingByERBB2_Physical_Entities"; //"Reactome_physical_entities";
 		String base_extra_info = "https://reactome.org/content/detail/";
 		String base_short_namespace = "Reactome";
@@ -153,7 +155,8 @@ public class PhysicalEntityOntologyBuilder {
 		//String iri = "http://model.geneontology.org/"+base_ont_title;
 		//making it resolvable.. where it currently lives
 		//TODO better URIs
-		String ont_uri = "https://github.com/geneontology/pathways2GO/raw/master/exchange/generated/REO.owl";
+		String ont_uri = "https://github.com/geneontology/pathways2GO/raw/master/exchange/generated/plant-REO.owl";
+				//"https://github.com/geneontology/pathways2GO/raw/master/exchange/generated/REO.owl";
 		IRI ont_iri = IRI.create(ont_uri);
 		GoCAM go_cam = new GoCAM(ont_iri, base_ont_title, base_contributor, null, base_provider, add_lego_import);
 		//Annotate the ontology
