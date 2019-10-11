@@ -107,7 +107,9 @@ public class MFCreator {
 		has_stoichiometry  = go_cam.df.getOWLDataProperty(IRI.create(base+"has_stoichiometry")); 
 		has_directed_reaction  = go_cam.df.getOWLObjectProperty(IRI.create(base+"has_directed_reaction")); 
 		go_jena = ModelFactory.createDefaultModel();
-		go_jena.read("/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go.owl");
+		go_jena.read("/Users/bgood/rhea/go.owl");
+		
+		//go_jena.read("/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/go.owl");
 		rhea_go = new HashMap<String, Set<OWLClass>>();
 		rhea_ec_go =  new HashMap<String, Set<OWLClass>>();
 		reactions = loadRheaMapFromRDF();
@@ -126,7 +128,7 @@ public class MFCreator {
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException, IOException {
 		String ontology_input_file = null; //add an ontology you want to modofy or leave null to make a new one
-		String ontology_output_file = "/Users/bgood/Desktop/test/tmp/test_rhea_all_axioms_union.ttl";
+		String ontology_output_file = "/Users/bgood/rhea/union_axioms.ttl";
 		Set<String> test_classes = new HashSet<String>(); //leave null for all
 		test_classes.add("http://purl.obolibrary.org/obo/GO_0003978");
 		test_classes.add("http://purl.obolibrary.org/obo/GO_0008108");
@@ -163,8 +165,10 @@ public class MFCreator {
 			i++;
 			Set<OWLClass> mfs = null;
 			//first check for match by rhea
-			//GO uses the bidirectional version 
-			String rhea = reaction.rhea_bidirectional_id;
+			//GO used to use the bidirectional version..
+			//String rhea = reaction.rhea_bidirectional_id;
+			//but now uses the master
+			String rhea = reaction.rhea_master_id;
 			mfs = getGObyDbXref(rhea);
 			rhea_go.put(rhea, mfs);
 			OWLClass mf = null;
@@ -174,7 +178,8 @@ public class MFCreator {
 				System.out.println("rhea match "+rhea+" "+mf.getIRI());
 			}else if(mfs.size()>1) {
 				System.out.println(mfs.size()+" GO classes for "+rhea);
-				System.exit(0);
+				continue; //skip
+			//	System.exit(0);
 			}
 			//			if(mf==null) {
 			//				//else check for match by ec number
@@ -379,7 +384,7 @@ public class MFCreator {
 		System.out.println("Added "+n_saved+" logical definitions");
 
 		for(String ont : ont_terms.keySet()) {
-			FileWriter f = new FileWriter("/Users/bgood/git/noctua_exchange/exchange/src/main/resources/org/geneontology/gocam/exchange/"+ont+"-terms.txt");
+			FileWriter f = new FileWriter("/Users/bgood/rhea/"+ont+"-terms.txt");
 			for(String term : ont_terms.get(ont)) {
 				f.write(term+"\n");
 			}

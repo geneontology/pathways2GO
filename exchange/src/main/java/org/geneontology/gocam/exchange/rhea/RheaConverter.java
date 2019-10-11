@@ -40,6 +40,7 @@ import org.apache.jena.rdf.model.Statement;
  */
 public class RheaConverter {
 
+	public static String rhea_rdf_file = "/Users/bgood/rhea/rhea.rdf";
 	/**
 	 * 
 	 */
@@ -91,10 +92,10 @@ public class RheaConverter {
 	public Map<String, rheaReaction> getReactionsFromRDF() {
 		Map<String, rheaReaction> reactions = new HashMap<String,rheaReaction>();
 		Model model = ModelFactory.createDefaultModel();
-		model.read("/Users/bgood/Desktop/test/rhea/rhea.rdf");
+		model.read(rhea_rdf_file);
 		String q = null;
 		try {
-			q = IOUtils.toString(App.class.getResourceAsStream("rhea_get_reactions.rq"), StandardCharsets.UTF_8);
+			q = IOUtils.toString(RheaConverter.class.getResourceAsStream("rhea_get_reactions.rq"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			System.out.println("Could not load SPARQL query from jar \n"+e);
 		}
@@ -159,39 +160,5 @@ public class RheaConverter {
 		return reactions;
 	}
 
-	public void convertBioPax() throws FileNotFoundException {
-		String input_biopax = 
-				//"/Users/bgood/gocam_input/rhea/rhea-biopax_lite.owl";rhea-biopax_full
-				"/Users/bgood/gocam_input/rhea/rhea-biopax_full.owl";
-		String converted = 
-				"/Users/bgood/Desktop/test/rhea/rhea-go.ttl";
-		String output_biopax = 
-				"/Users/bgood/gocam_input/rhea/rhea-biopax_lite_bpL3.owl";
-
-		BioPAXIOHandler handler = new SimpleIOHandler();
-		FileInputStream f = new FileInputStream(input_biopax);
-		org.biopax.paxtools.model.Model l2 = handler.convertFromOWL(f);
-		LevelUpgrader levelup = new LevelUpgrader();
-		org.biopax.paxtools.model.Model model = levelup.filter(l2);
-		//if care about it going faster, save this out first
-		//handler.convertToOWL(model, new FileOutputStream(output_biopax));
-
-		System.out.println(model+" exists");
-		int total_interactions = model.getObjects(BiochemicalReaction.class).size();
-		System.out.println("bp level = "+model.getLevel());		
-		System.out.println(total_interactions);
-		int n_interactions = 0;
-		BioPAXFactory factory = BioPAXLevel.L3.getDefaultFactory();
-		org.biopax.paxtools.model.Model sample = factory.createModel();
-		for (BiochemicalReaction reaction : model.getObjects(BiochemicalReaction.class)){
-			sample.add(reaction);
-			n_interactions++;
-			System.out.println(n_interactions+" of "+total_interactions+" BiochemicalReaction:"+reaction.getName()); 
-			if(n_interactions > 10) {
-				break;
-			}
-		}
-		handler.convertToOWL(sample, new FileOutputStream("/Users/bgood/Desktop/test/rhea/sample_full.owl"));
-	}
 
 }
