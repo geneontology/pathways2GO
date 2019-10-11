@@ -18,13 +18,22 @@ where {
   ?reaction2 obo:BFO_0000050 ?pathway . 
   ?reaction1 obo:RO_0002411 ?reaction2 . 
   #obo:RO_0002333enabled by or obo:RO_0002326 contributes to  
-  { ?reaction2 obo:RO_0002333 ?reaction2enabler . }                    
-   UNION 
-  {  ?reaction2enabler obo:RO_0002326 ?reaction2 }
+  #{ ?reaction2 obo:RO_0002333 ?reaction2enabler . }                    
+  # UNION 
+  #{  
+    ?reaction2 obo:RO_0002333 ?reaction2enabler . 
+    ?complex2 obo:BFO_0000051 ?reaction2enabler .
+    ?complex2 rdf:type ?complex_type . 
+    ?reaction1 obo:RO_0002234 ?complex1 .
+    ?complex1 rdf:type ?complex_type .
+    #we knowl lonnger use contributes to to connect complexes to functions
+    #this breaks this rule as complexes are always the intermediaries
+    #?reaction2enabler obo:RO_0002326 ?reaction2 
+  #}
    
-  ?reaction1 obo:RO_0002234 ?r1output .   
-  ?r1output skos:exactMatch ?A . 
-  ?reaction2enabler skos:exactMatch ?A .
+  #?reaction1 obo:RO_0002234 ?r1output .   
+  #?r1output skos:exactMatch ?A . 
+ # ?reaction2enabler skos:exactMatch ?A .
   filter(?reaction1 != ?reaction2) .
 	optional {
     ?reaction2enabler rdfs:label ?reaction2enablerLabel .
