@@ -106,8 +106,9 @@ public class BioPaxtoGO {
 	public static final String legorel_file = "/Users/bgood/gocam_ontology/legorel.owl"; 
 	public static final String go_bfo_bridge_file = "/Users/bgood/gocam_ontology/go-bfo-bridge.owl"; 
 	public static final String eco_base_file = "/Users/bgood/gocam_ontology/eco-base.owl"; 
-	public static final String reactome_physical_entities_file = "/Users/bgood/Desktop/test/REO/Oryza_sativa_entities.owl";
-			//"/Users/bgood/gocam_ontology/REO.owl";
+	public static final String reactome_physical_entities_file = "/Users/bgood/gocam_ontology/REO.owl";
+			//"/Users/bgood/Desktop/test/REO/Oryza_sativa_entities.owl";
+			
 
 	Set<String> tbox_files;
 	ImportStrategy strategy;
@@ -169,11 +170,12 @@ public class BioPaxtoGO {
 		
 		BioPaxtoGO bp2g = new BioPaxtoGO();
 		String input_biopax = 
-				"/Users/bgood/Downloads/biopax3/Oryza_sativa.owl";
-				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_sept9_2019.owl";
+				//"/Users/bgood/Downloads/biopax3/Oryza_sativa.owl";
+				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_sept9_2019.owl";
 		String converted = 
-				"/Users/bgood/Desktop/test/go_cams/plant-reactome/reactome-Oryza_sativa-";
-
+				//"/Users/bgood/Desktop/test/go_cams/plant-reactome/reactome-Oryza_sativa-";
+				"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
+		
 		String base_title = "title here";//"Will be replaced if a title can be found for the pathway in its annotations
 		String base_contributor = "https://orcid.org/0000-0002-7334-7852"; //Ben Good
 		String base_provider = "https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";
@@ -229,7 +231,7 @@ public class BioPaxtoGO {
 				//check for relations between events that might not be biopax typed chemical reactions - e.g. degradation
 	//			test_pathways.add("HDL clearance");
 	//	//set to null to do full run
-		test_pathways = null;
+	//	test_pathways = null;
 		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathways);
 	} 
 
