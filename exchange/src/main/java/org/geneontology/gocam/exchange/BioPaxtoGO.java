@@ -100,15 +100,19 @@ import org.semarglproject.vocab.OWL;
  *
  */
 public class BioPaxtoGO {
+	String go_lego_file;
+	String go_plus_file;
+	GOPlus goplus; //The fully axiomitized Gene Ontology. Used in multiple places for different purposes. 
 	//TODO replace this with a configuration that accepts go-lego and uses a catalogue file to set up local imports of everything
-	public static final String ro_file = "/Users/bgood/gocam_ontology/ro.owl"; 
+/*	public static final String ro_file = "/Users/bgood/gocam_ontology/ro.owl"; 
 	public static final String goplus_file = "/Users/bgood/gocam_ontology/go-plus.owl";
 	public static final String legorel_file = "/Users/bgood/gocam_ontology/legorel.owl"; 
 	public static final String go_bfo_bridge_file = "/Users/bgood/gocam_ontology/go-bfo-bridge.owl"; 
 	public static final String eco_base_file = "/Users/bgood/gocam_ontology/eco-base.owl"; 
 	public static final String reactome_physical_entities_file = "/Users/bgood/gocam_ontology/REO.owl";
+*/
 	//"/Users/bgood/Desktop/test/REO/Oryza_sativa_entities.owl";
-	Set<String> tbox_files;
+//	Set<String> tbox_files;
 	String blazegraph_output_journal;//Generated models will be stored both as files and as entries in this blazegraph journal.  Note this is ready for use in a Noctua/Minerva instance without any further processing.
 	ImportStrategy strategy;
 	enum ImportStrategy {
@@ -117,8 +121,7 @@ public class BioPaxtoGO {
 	boolean apply_layout = false; //If true, attempts a rational layout for Noctua based on the semantic structure of the model.  (Breaks down or larger models)
 	boolean generate_report = false; //If true, generates GoCAMReport and ReasonerReport objects after each model is created.  These are added to the GoMappingReport object that contains one report per pathway processed. 
 	boolean explain_inconsistant_models = true; //If true, will output text explanations for OWL inconsistent models before halting.  
-	GoMappingReport report; //Captures details of mappings from input biopax pathways to output go-cams as well as information about the results of OWL reasoning on these models. 
-	GOPlus goplus; //The fully axiomitized Gene Ontology. Used in multiple places for different purposes.   
+	GoMappingReport report; //Captures details of mappings from input biopax pathways to output go-cams as well as information about the results of OWL reasoning on these models.   
 	Model biopax_model; //The BioPAX model that is being converted.  
 	static boolean check_consistency = false; //set to true to execute an OWL consistency check each time a pathway is processed.  If inconsistent, it generates a report and halts the program
 	static boolean ignore_diseases = true; //If true, skips any pathway that has the word 'disease' in its name or any of its parent pathway's name 
@@ -138,19 +141,19 @@ public class BioPaxtoGO {
 	public BioPaxtoGO(){
 		strategy = ImportStrategy.NoctuaCuration; 
 		report = new GoMappingReport();
-		tbox_files = new HashSet<String>();
-		tbox_files.add(goplus_file);
-		tbox_files.add(ro_file);
-		tbox_files.add(legorel_file);
-		tbox_files.add(go_bfo_bridge_file);
-		tbox_files.add(eco_base_file);
-		tbox_files.add(reactome_physical_entities_file);
-		try {
-			goplus = new GOPlus();
-		} catch (OWLOntologyCreationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		tbox_files = new HashSet<String>();
+//		tbox_files.add(goplus_file);
+//		tbox_files.add(ro_file);
+//		tbox_files.add(legorel_file);
+//		tbox_files.add(go_bfo_bridge_file);
+//		tbox_files.add(eco_base_file);
+//		tbox_files.add(reactome_physical_entities_file);
+//		try {
+//			goplus = new GOPlus();
+//		} catch (OWLOntologyCreationException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	/**
 	 * @param args
@@ -173,7 +176,8 @@ public class BioPaxtoGO {
 				//"/Users/bgood/Desktop/test/go_cams/plant-reactome/reactome-Oryza_sativa-";
 				"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
 		bp2g.blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";  
-		
+		bp2g.go_lego_file = "/Users/bgood/git/noctua_exchange/exchange/src/test/go-lego-test.owl";
+
 		String base_title = "title here";//"Will be replaced if a title can be found for the pathway in its annotations
 		String base_contributor = "https://orcid.org/0000-0002-7334-7852"; //Ben Good
 		String base_provider = "https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";
@@ -181,16 +185,20 @@ public class BioPaxtoGO {
 		if(expand_subpathways) {
 			tag = "expanded";
 		}	
-
+		bp2g.go_plus_file = "/Users/bgood/gocam_ontology/go-plus.owl";
+		bp2g.go_lego_file = "/Users/bgood/git/noctua_exchange/exchange/src/test/go-lego-test.owl";
+		bp2g.goplus = new GOPlus(bp2g.go_plus_file);
+		
 		Set<String> test_pathways = new HashSet<String>();
 		test_pathways.add("Signaling by BMP");
 		test_pathways.add("Glycolysis");
+		test_pathways.add("Disassembly of the destruction complex and recruitment of AXIN to the membrane");
 		//	//set to null to do full run
 		//	test_pathways = null;
 		bp2g.convertReactomeFile(input_biopax, converted, base_title, base_contributor, base_provider, tag, test_pathways);
 	} 
 
-	private void convertReactomeFile(String input_file, 
+	void convertReactomeFile(String input_file, 
 			String output, String base_title, String base_contributor, String base_provider, String tag, Set<String> test_pathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		convert(input_file, output, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathways);
 	}
@@ -231,7 +239,7 @@ public class BioPaxtoGO {
 	 * @throws RDFParseException 
 	 * @throws RepositoryException 
 	 */
-	private void convert(
+	void convert(
 			String input_biopax, 
 			String converted, 
 			boolean split_out_by_pathway, 
@@ -272,7 +280,8 @@ public class BioPaxtoGO {
 		clean.write("");
 		clean.close();
 		Blazer blaze = go_cam.initializeBlazeGraph(journal);
-		QRunner tbox_qrunner = go_cam.initializeQRunnerForTboxInference(tbox_files);
+		QRunner tbox_qrunner = go_cam.initializeQRunnerForTboxInference(Collections.singleton(go_lego_file));
+	//	QRunner tbox_qrunner = go_cam.initializeQRunnerForTboxInference(tbox_files);
 		//list pathways
 		int total_pathways = biopax_model.getObjects(Pathway.class).size();
 		boolean add_pathway_components = true;

@@ -37,7 +37,7 @@ import com.google.common.base.Optional;
  *
  */
 public class GOPlus {
-	String go_loc = BioPaxtoGO.goplus_file;
+	//String go_loc;
 	OWLOntology go;
 	OWLOntologyManager ontman;				
 	OWLDataFactory df;
@@ -52,10 +52,10 @@ public class GOPlus {
 	 * @throws OWLOntologyCreationException 
 	 * 
 	 */
-	public GOPlus() throws OWLOntologyCreationException {
+	public GOPlus(String go_plus_file) throws OWLOntologyCreationException {
 		ontman = OWLManager.createOWLOntologyManager();	
 		df = OWLManager.getOWLDataFactory();
-		go = loadOntology(go_loc);
+		go = loadOntology(go_plus_file);
 		xref_gos = new HashMap<String, Set<String>>();	
 		GoCAM tmp = new GoCAM();//make the init functions run..
 		System.out.println("GOPlus loaded, axioms "+go.getAxiomCount());
@@ -121,7 +121,7 @@ public class GOPlus {
 	 * @throws OWLOntologyCreationException 
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException {
-		GOPlus o = new GOPlus();
+		GOPlus o = new GOPlus("goplus.owl");
 		String test = o.obo_base+"GO_0000004";
 		System.out.println("ep "+o.isDeprecated(test));
 		OWLClass t = o.getOboClass(test, false);

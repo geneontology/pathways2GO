@@ -198,7 +198,7 @@ public class PhysicalEntityOntologyBuilder {
 		//add this in so shex validator works without needing to import all of chebi..
 		go_cam.addSubClassAssertion(GoCAM.chebi_molecular_entity, GoCAM.chemical_entity);
 		//build it all!  
-		PhysicalEntityOntologyBuilder converter = new PhysicalEntityOntologyBuilder(new GOPlus(), base_short_namespace, base_extra_info, r, pro_mapping);
+		PhysicalEntityOntologyBuilder converter = new PhysicalEntityOntologyBuilder(new GOPlus("/Users/bgood/gocam_ontology/go-plus.owl"), base_short_namespace, base_extra_info, r, pro_mapping);
 		for (PhysicalEntity entity : biopax_model.getObjects(PhysicalEntity.class)){		
 			String model_id = entity.hashCode()+"";
 			n++;

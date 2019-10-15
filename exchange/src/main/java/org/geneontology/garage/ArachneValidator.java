@@ -50,12 +50,13 @@ public class ArachneValidator {
 	public ArachneValidator() throws OWLOntologyCreationException {		
 		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
 		Map<String,OWLOntology> tboxes = new HashMap<String,OWLOntology>();	
-		tboxes.put("goplus",tman.loadOntologyFromOntologyDocument(new File(BioPaxtoGO.goplus_file)));
-		tboxes.put("ro",tman.loadOntologyFromOntologyDocument(new File(BioPaxtoGO.ro_file)));
-		tboxes.put("legorel",tman.loadOntologyFromOntologyDocument(new File(BioPaxtoGO.legorel_file)));
-		tboxes.put("go_bfo_bridge",tman.loadOntologyFromOntologyDocument(new File(BioPaxtoGO.go_bfo_bridge_file)));
-		tboxes.put("eco_base",tman.loadOntologyFromOntologyDocument(new File(BioPaxtoGO.eco_base_file)));
-		tboxes.put("reactome",tman.loadOntologyFromOntologyDocument(new File(BioPaxtoGO.reactome_physical_entities_file)));
+		tboxes.put("goplus",tman.loadOntologyFromOntologyDocument(new File("/Users/bgood/gocam_ontology/go-plus.owl")));
+		tboxes.put("golego",tman.loadOntologyFromOntologyDocument(new File("/Users/bgood/git/noctua_exchange/exchange/src/test/go-lego-test.owl")));
+//		tboxes.put("ro",tman.loadOntologyFromOntologyDocument(new File(BioPaxtoGO.ro_file)));
+//		tboxes.put("legorel",tman.loadOntologyFromOntologyDocument(new File(BioPaxtoGO.legorel_file)));
+//		tboxes.put("go_bfo_bridge",tman.loadOntologyFromOntologyDocument(new File(BioPaxtoGO.go_bfo_bridge_file)));
+//		tboxes.put("eco_base",tman.loadOntologyFromOntologyDocument(new File(BioPaxtoGO.eco_base_file)));
+//		tboxes.put("reactome",tman.loadOntologyFromOntologyDocument(new File(BioPaxtoGO.reactome_physical_entities_file)));
 		
 		merged_annotations = tman.createOntology();
 		for(OWLAxiom a : tboxes.get("goplus").getAxioms()){
