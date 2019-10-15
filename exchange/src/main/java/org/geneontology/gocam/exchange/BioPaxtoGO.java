@@ -107,36 +107,33 @@ public class BioPaxtoGO {
 	public static final String go_bfo_bridge_file = "/Users/bgood/gocam_ontology/go-bfo-bridge.owl"; 
 	public static final String eco_base_file = "/Users/bgood/gocam_ontology/eco-base.owl"; 
 	public static final String reactome_physical_entities_file = "/Users/bgood/gocam_ontology/REO.owl";
-			//"/Users/bgood/Desktop/test/REO/Oryza_sativa_entities.owl";
-			
-
+	//"/Users/bgood/Desktop/test/REO/Oryza_sativa_entities.owl";
 	Set<String> tbox_files;
+	String blazegraph_output_journal;//Generated models will be stored both as files and as entries in this blazegraph journal.  Note this is ready for use in a Noctua/Minerva instance without any further processing.
 	ImportStrategy strategy;
 	enum ImportStrategy {
 		NoctuaCuration, 
 	}
-
-	boolean apply_layout = false;
-	boolean generate_report = false;
-	boolean explain_inconsistant_models = true;
-	String blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";
-	GoMappingReport report;
-	GOPlus goplus;
-	Model biopax_model;
-	Map<String, String> gocamid_sourceid = new HashMap<String, String>();
-	static boolean check_consistency = false;
-	static boolean ignore_diseases = true;
-	static boolean add_lego_import = true; //unless you never want to open the output in Protege always leave false..(or learn how to use a catalogue file)
-	static boolean save_inferences = false;  //adds inferences to blazegraph journal
-	static boolean expand_subpathways = false;  //this is a bad idea for high level nodes like 'Signaling Pathways'
+	boolean apply_layout = false; //If true, attempts a rational layout for Noctua based on the semantic structure of the model.  (Breaks down or larger models)
+	boolean generate_report = false; //If true, generates GoCAMReport and ReasonerReport objects after each model is created.  These are added to the GoMappingReport object that contains one report per pathway processed. 
+	boolean explain_inconsistant_models = true; //If true, will output text explanations for OWL inconsistent models before halting.  
+	GoMappingReport report; //Captures details of mappings from input biopax pathways to output go-cams as well as information about the results of OWL reasoning on these models. 
+	GOPlus goplus; //The fully axiomitized Gene Ontology. Used in multiple places for different purposes.   
+	Model biopax_model; //The BioPAX model that is being converted.  
+	static boolean check_consistency = false; //set to true to execute an OWL consistency check each time a pathway is processed.  If inconsistent, it generates a report and halts the program
+	static boolean ignore_diseases = true; //If true, skips any pathway that has the word 'disease' in its name or any of its parent pathway's name 
+	static boolean add_lego_import = true; //If true, an OWL import statement bring in go-lego.owl is added to each generated model.  
+	static boolean save_inferences = false;  //If true, adds inferences to blazegraph journal
+	static boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
+	static boolean expand_subpathways = false;  //If true, add content from all lower level pathways.  This is generally a bad idea for high level nodes like 'Signaling Pathways'
 	//these define the extent to which information from other pathways is brought into the pathway in question
 	//leaving all false, limits the reactions captured in each pathway to those shown in a e.g. Reactome view of the pathway
-	static boolean causal_recurse = false;
-	static boolean add_pathway_parents = false;
-	static boolean add_neighboring_events_from_other_pathways = false;
-	static boolean add_upstream_controller_events_from_other_pathways = false;
-	static boolean add_subpathway_bridges = false;
-	static String default_namespace_prefix = "Reactome";
+	static boolean causal_recurse = false;  //if true this will follow BioPAX nextStep links to gather content from other pathways
+	static boolean add_pathway_parents = false; //if true will add all pathways that contain each reaction.  (Reactions may be present in multiple pathways.)
+	static boolean add_neighboring_events_from_other_pathways = false; //if true will pull in nextStep connections from other pathways.  Note that this is not recursive, will only go one level out.
+	static boolean add_upstream_controller_events_from_other_pathways = false; //if true will add reactions from other pathways if one of their participants is a controller (catalyst or regulator) of a reaction in the current pathway.  
+	static boolean add_subpathway_bridges = false; //this is groundwork for an approach that generates go-cams that reference members of other go-cams, here referencing other pathways.  
+	static String default_namespace_prefix = "Reactome"; //this is used to generate curi structured references - e.g. Reactome:HSA-007
 
 	public BioPaxtoGO(){
 		strategy = ImportStrategy.NoctuaCuration; 
@@ -167,7 +164,7 @@ public class BioPaxtoGO {
 	public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		//need to put in a check to make sure the entity ontology is based on the same version as the one being processed
 		//dig from xml:base="http://www.reactome.org/biopax/69/48887#" and check 
-		
+
 		BioPaxtoGO bp2g = new BioPaxtoGO();
 		String input_biopax = 
 				//"/Users/bgood/Downloads/biopax3/Oryza_sativa.owl";
@@ -175,6 +172,7 @@ public class BioPaxtoGO {
 		String converted = 
 				//"/Users/bgood/Desktop/test/go_cams/plant-reactome/reactome-Oryza_sativa-";
 				"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
+		bp2g.blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";  
 		
 		String base_title = "title here";//"Will be replaced if a title can be found for the pathway in its annotations
 		String base_contributor = "https://orcid.org/0000-0002-7334-7852"; //Ben Good
@@ -183,60 +181,17 @@ public class BioPaxtoGO {
 		if(expand_subpathways) {
 			tag = "expanded";
 		}	
-		boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
 
-		//"Glycolysis"; //"Signaling by BMP"; //"TCF dependent signaling in response to WNT"; //"RAF-independent MAPK1/3 activation";//"Oxidative Stress Induced Senescence"; //"Activation of PUMA and translocation to mitochondria";//"HDR through Single Strand Annealing (SSA)";  //"IRE1alpha activates chaperones"; //"Generation of second messenger molecules";//null;//"Clathrin-mediated endocytosis";
-		//next tests: 
-		//for continuant problem: Import of palmitoyl-CoA into the mitochondrial matrix 
-		//error in rule rule:reg3 NTRK2 activates RAC1
-		//
-		//(rule:reg3) The relation 'DOCK3 binds FYN associated with NTRK2' 'directly positively regulates' 'DOCK3 activates RAC1' was inferred because: reaction1 has an output that is the enabler of reaction 2.
-		//
 		Set<String> test_pathways = new HashSet<String>();
-		//test for active site recognition
-	//	test_pathways.add("SCF(Skp2)-mediated degradation of p27/p21");
-		//unions
-	//			test_pathways.add("GRB2 events in ERBB2 signaling");
-	//			test_pathways.add("Elongator complex acetylates replicative histone H3, H4");
-				//looks good
-			//	test_pathways.add("Attenuation phase");
-		//		test_pathways.add("NTRK2 activates RAC1");
-		//		test_pathways.add("Unwinding of DNA");
-		//		test_pathways.add("Regulation of TNFR1 signaling");
-		//		test_pathways.add("SCF(Skp2)-mediated degradation of p27/p21");
-				test_pathways.add("Signaling by BMP");
-
-		//inconsistent, but not sure how to fix		
-		//test_pathways.add("tRNA modification in the nucleus and cytosol");
-		//inconsistent
-		//test_pathways.add("Apoptosis induced DNA fragmentation");
-		
-		//		test_pathways.add("SHC1 events in ERBB4 signaling");
-			//looks good.  example of converting binding function to regulatory process template
-			//	 test_pathways.add("FRS-mediated FGFR3 signaling");
-			//	 test_pathways.add("FRS-mediated FGFR4 signaling");
-			//looks good, nice inference for demo	 
-		//		 test_pathways.add("Activation of G protein gated Potassium channels");
-		//		 test_pathways.add("Regulation of actin dynamics for phagocytic cup formation");
-		//		 test_pathways.add("SHC-mediated cascade:FGFR2");
-		//		 test_pathways.add("SHC-mediated cascade:FGFR3");
-			//check this one for annotations on regulates edges
-		//		test_pathways.add("RAF-independent MAPK1/3 activation");
-			//great example of why we are not getting a complete data set without inter model linking.  
-		//		test_pathways.add("TCF dependent signaling in response to WNT");
-				//looks great..
+		test_pathways.add("Signaling by BMP");
 		test_pathways.add("Glycolysis");
-		//looks good 
-	//	test_pathways.add("activated TAK1 mediates p38 MAPK activation");
-				//check for relations between events that might not be biopax typed chemical reactions - e.g. degradation
-	//			test_pathways.add("HDL clearance");
-	//	//set to null to do full run
-	//	test_pathways = null;
-		bp2g.convertReactomeFile(input_biopax, converted, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathways);
+		//	//set to null to do full run
+		//	test_pathways = null;
+		bp2g.convertReactomeFile(input_biopax, converted, base_title, base_contributor, base_provider, tag, test_pathways);
 	} 
 
 	private void convertReactomeFile(String input_file, 
-			String output, boolean split_by_pathway, String base_title, String base_contributor, String base_provider, String tag, Set<String> test_pathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
+			String output, String base_title, String base_contributor, String base_provider, String tag, Set<String> test_pathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		convert(input_file, output, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathways);
 	}
 
@@ -277,9 +232,14 @@ public class BioPaxtoGO {
 	 * @throws RepositoryException 
 	 */
 	private void convert(
-			String input_biopax, String converted, 
+			String input_biopax, 
+			String converted, 
 			boolean split_out_by_pathway, 
-			String base_title, String base_contributor, String base_provider, String tag, Set<String> test_pathway_names) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException  {
+			String base_title, 
+			String base_contributor, 
+			String base_provider, 
+			String tag, 
+			Set<String> test_pathway_names) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException  {
 		//set for writing metadata
 		String datasource = "";
 		if(base_provider.equals("https://reactome.org")) {
@@ -289,7 +249,7 @@ public class BioPaxtoGO {
 		}else if(base_provider.equals("https://www.pathwaycommons.org/")) {
 			datasource = "Pathway Commons";
 		}
-
+		
 		//read biopax pathway(s)
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileInputStream f = new FileInputStream(input_biopax);
@@ -437,11 +397,13 @@ public class BioPaxtoGO {
 			//default to keeping all reactome content
 			keep = true;
 			//but ignore disease pathways
-			Set<Pathway> parents = getPathwayParents(pathway, null);
-			for(Pathway parent : parents) {
-				if(parent.getDisplayName().equals("Disease")) {
-					keep = false;
-					break;
+			if(ignore_diseases) {
+				Set<Pathway> parents = getPathwayParents(pathway, null);
+				for(Pathway parent : parents) {
+					if(parent.getDisplayName().equals("Disease")) {
+						keep = false;
+						break;
+					}
 				}
 			}
 		}else {
@@ -702,7 +664,7 @@ public class BioPaxtoGO {
 				else if(process.getModelInterface().equals(Pathway.class)){
 					//different pathway - bridging relation.
 					if(add_subpathway_bridges){
-						String child_model_id = this.getEntityReferenceId(process);
+						String child_model_id = getEntityReferenceId(process);
 						IRI child_pathway_iri = GoCAM.makeGoCamifiedIRI(child_model_id, child_model_id);
 						OWLNamedIndividual child_pathway = go_cam.makeBridgingIndividual(child_pathway_iri);
 						go_cam.addRefBackedObjectPropertyAssertion(child_pathway, GoCAM.part_of, pathway_e, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
