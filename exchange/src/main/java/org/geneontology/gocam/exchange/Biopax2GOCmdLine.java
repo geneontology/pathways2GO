@@ -3,7 +3,10 @@
  */
 package org.geneontology.gocam.exchange;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,17 +22,12 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 
 /**
+ * Convert biopax pathways into GO-CAMs from the command line.  
+ * Example parameters: -b "/test/biopax/Homo_sapiens_sept9_2019.owl" -o "/test/go_cams/reactome/reactome-homosapiens-" -bg "/blazegraph.jnl" -tag "unexpanded" -dc "https://orcid.org/0000-0002-7334-7852" -dp "https://reactome.org" -go "/gocam_ontology/go-plus.owl" -lego "/test/go-lego-test.owl" -tp "Glycolysis"
  * @author bgood
  *
  */
 public class Biopax2GOCmdLine {
-
-	/**
-	 * 
-	 */
-	public Biopax2GOCmdLine() {
-		// TODO Auto-generated constructor stub
-	}
 
 	/**
 	 * @param args
@@ -51,7 +49,7 @@ public class Biopax2GOCmdLine {
 		String base_title = "title here";//"Will be replaced if a title can be found for the pathway in its annotations
 		String default_contributor = "";//"https://orcid.org/0000-0002-7334-7852"; //
 		String default_provider = "";//"https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";	
-
+		String test_pathway_name = null;
 		// create Options object
 		Options options = new Options();
 		options.addOption("b", true, "biopax pathway file to convert");
@@ -62,12 +60,14 @@ public class Biopax2GOCmdLine {
 		options.addOption("dp", true, "URL of default provider for attribution, e.g. https://reactome.org");
 		options.addOption("lego", true, "Location of go-lego ontology file.  This is an ontology that serves to import other ontologies important for GO validation and operation.");
 		options.addOption("go", true, "Location of primary GO file. Use GOPlus for inference. ");
-		
+		options.addOption("tp", true, "Exact name of a specific pathway to test - e.g. \"Signaling by MP\".  Other pathways in the biopax input file will be ignored. Default is that all pathways are processed");
+
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = parser.parse( options, args);
 
 		if(cmd.hasOption("b")) {
-			input_biopax = cmd.getOptionValue("b");}
+			input_biopax = cmd.getOptionValue("b");
+		}
 		else {
 			System.out.println("please provide a biopax file to validate to convert.");
 			System.exit(0);}
@@ -101,15 +101,36 @@ public class Biopax2GOCmdLine {
 		else {
 			System.out.println("please provide a go OWL file.");
 			System.exit(0);}
-
-
-		Set<String> test_pathways = new HashSet<String>();
-		test_pathways.add("Signaling by BMP");
-		test_pathways.add("Glycolysis");
-		test_pathways.add("Disassembly of the destruction complex and recruitment of AXIN to the membrane");
-		//	//set to null to do full run
-		//	test_pathways = null;
-		bp2g.convertReactomeFile(input_biopax, output_file_stub, base_title, default_contributor, default_provider, tag, test_pathways);
+		Set<String> test_pathways = null;
+		if(cmd.hasOption("tp")) {
+			test_pathways = new HashSet<String>();
+			test_pathway_name = cmd.getOptionValue("tp");
+			test_pathways.add(test_pathway_name);
+		}
+		String journal = bp2g.blazegraph_output_journal;	
+		//clean out any prior data in triple store
+		FileWriter clean = new FileWriter(journal, false);
+		clean.write("");
+		clean.close();
+		Blazer blaze = new Blazer(journal);
+		//initialize the rules for inference
+		QRunner tbox_qrunner = GoCAM.getQRunnerForTboxInference(Collections.singleton(bp2g.go_lego_file));
+		File dir = new File(input_biopax);
+		File[] directoryListing = dir.listFiles();
+		//run through all files
+		if (directoryListing != null) {
+			for (File biopax : directoryListing) {
+				String name = biopax.getName();
+				if(name.contains(".owl")||name.contains(".xml")) { 
+					name = name.replaceAll(".owl", "-");
+					name = name.replaceAll(".xml", "-");
+					String this_output_file_stub = output_file_stub+name;
+					bp2g.convert(biopax.getAbsolutePath(), this_output_file_stub, base_title, default_contributor, default_provider, tag, test_pathways, blaze, tbox_qrunner);
+				}
+			}
+		}else {
+			bp2g.convert(input_biopax, output_file_stub, base_title, default_contributor, default_provider, tag, test_pathways, blaze, tbox_qrunner);
+		}
 
 	}
 

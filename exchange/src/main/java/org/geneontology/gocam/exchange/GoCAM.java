@@ -153,7 +153,8 @@ public class GoCAM {
 	}
 
 	/**
-	 * This is the one to use if trying to read in a GO-CAM model that imports lego (which imports the universe).  Use the catalogue file to control what gets imported - your probably don't need anything.
+	 * This is the one to use if trying to read in a GO-CAM model that imports lego (which imports the universe).  
+	 * Use the catalogue file to control what gets imported - your probably don't need anything.
 	 * @param ontology_file
 	 * @param catalog
 	 * @throws OWLOntologyCreationException
@@ -802,6 +803,19 @@ final long counterValue = instanceCounter.getAndIncrement();
 		boolean add_inferences = true;
 		boolean add_property_definitions = false; boolean add_class_definitions = false;
 		qrunner = new QRunner(tboxes, go_cam_ont, add_inferences, add_property_definitions, add_class_definitions);
+		return qrunner;
+	}
+	public static QRunner getQRunnerForTboxInference(Set<String> tbox_files) throws OWLOntologyCreationException {
+		System.out.println("building tbox rule base for arachne");
+		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
+		List<OWLOntology> tboxes = new ArrayList<OWLOntology>();
+		for(String tbox_file : tbox_files) {
+			OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
+			tboxes.add(tbox);
+		}
+		boolean add_inferences = true;
+		boolean add_property_definitions = false; boolean add_class_definitions = false;
+		QRunner qrunner = new QRunner(tboxes, null, add_inferences, add_property_definitions, add_class_definitions);
 		return qrunner;
 	}
 

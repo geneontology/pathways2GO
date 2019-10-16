@@ -195,59 +195,30 @@ public class BioPaxtoGO {
 		test_pathways.add("Disassembly of the destruction complex and recruitment of AXIN to the membrane");
 		//	//set to null to do full run
 		//	test_pathways = null;
-		bp2g.convertReactomeFile(input_biopax, converted, base_title, base_contributor, base_provider, tag, test_pathways);
+		
+		//set up reasoner and blazegraph output
+		//for blazegraph output
+		String journal = bp2g.blazegraph_output_journal;	
+		//clean out any prior data in store
+		FileWriter clean = new FileWriter(journal, false);
+		clean.write("");
+		clean.close();	
+		Blazer blaze = new Blazer(journal);
+			
+		QRunner tbox_qrunner = GoCAM.getQRunnerForTboxInference(Collections.singleton(bp2g.go_lego_file));
+		bp2g.convert(input_biopax, converted, base_title, base_contributor, base_provider, tag, test_pathways, blaze, tbox_qrunner);
 	} 
 
-	void convertReactomeFile(String input_file, 
-			String output, String base_title, String base_contributor, String base_provider, String tag, Set<String> test_pathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
-		convert(input_file, output, split_by_pathway, base_title, base_contributor, base_provider, tag, test_pathways);
-	}
-
-	private void convertReactomeFolder(String input_folder, String output_folder, boolean save_inferences, boolean expand_subpathways) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
-		boolean split_by_pathway = true;
-		String base_title = "Reactome pathway ontology"; 
-		String base_contributor = "Reactome contributor"; 
-		String base_provider = "https://reactome.org";
-
-		File dir = new File(input_folder);
-		File[] directoryListing = dir.listFiles();
-		if (directoryListing != null) {
-			for (File input_biopax : directoryListing) {
-				String species = input_biopax.getName();
-				if(species.contains(".owl")) { //ignore other kinds of files.. like DS_STORE!
-					String output_file_stub = output_folder+"/reactome-"+species.replaceAll(".owl", "-");
-					convert(input_biopax.getAbsolutePath(), output_file_stub, split_by_pathway, base_title, base_contributor, base_provider, species, null);
-				}
-			}
-		} 
-	}
-
-	/**
-	 * The main point of access for converting BioPAX level 3 OWL models into GO-CAM OWL models
-	 * @param input_biopax
-	 * @param converted
-	 * @param split_by_pathway
-	 * @param add_lego_import
-	 * @param base_title
-	 * @param base_contributor
-	 * @param base_provider
-	 * @param tag
-	 * @throws OWLOntologyCreationException
-	 * @throws OWLOntologyStorageException
-	 * @throws IOException 
-	 * @throws RDFHandlerException 
-	 * @throws RDFParseException 
-	 * @throws RepositoryException 
-	 */
 	void convert(
 			String input_biopax, 
 			String converted, 
-			boolean split_out_by_pathway, 
 			String base_title, 
 			String base_contributor, 
 			String base_provider, 
 			String tag, 
-			Set<String> test_pathway_names) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException  {
+			Set<String> test_pathway_names,
+			Blazer blaze,
+			QRunner tbox_qrunner) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException  {
 		//set for writing metadata
 		String datasource = "";
 		if(base_provider.equals("https://reactome.org")) {
@@ -263,25 +234,20 @@ public class BioPaxtoGO {
 		FileInputStream f = new FileInputStream(input_biopax);
 		biopax_model = handler.convertFromOWL(f);
 		int n_pathways = 0;
+		
 		//set up ontology (used if not split)
 		String base_ont_title = base_title;
 		String iri = "http://model.geneontology.org/"+base_ont_title.hashCode(); 
 		IRI ont_iri = IRI.create(iri);
 		GoCAM go_cam = new GoCAM(ont_iri, base_ont_title, base_contributor, null, base_provider, add_lego_import);
-		//for blazegraph output
-		boolean save2blazegraph = true;
-		String journal = blazegraph_output_journal;
-		if(journal.equals("")) {
-			journal = converted+".jnl";
+		go_cam.qrunner = tbox_qrunner;
+		//set up access to blazegraph journal for output
+		boolean save2blazegraph = false;
+		go_cam.path2bgjournal = blazegraph_output_journal;
+		if(go_cam.path2bgjournal !=null) {
+			save2blazegraph = true;
 		}
-		go_cam.path2bgjournal = journal;
-		//clean out any prior data in store
-		FileWriter clean = new FileWriter(journal, false);
-		clean.write("");
-		clean.close();
-		Blazer blaze = go_cam.initializeBlazeGraph(journal);
-		QRunner tbox_qrunner = go_cam.initializeQRunnerForTboxInference(Collections.singleton(go_lego_file));
-	//	QRunner tbox_qrunner = go_cam.initializeQRunnerForTboxInference(tbox_files);
+
 		//list pathways
 		int total_pathways = biopax_model.getObjects(Pathway.class).size();
 		boolean add_pathway_components = true;
@@ -307,7 +273,7 @@ public class BioPaxtoGO {
 			Set<String> pathway_source_comments = new HashSet<String>();
 			n_pathways++;
 			System.out.println(n_pathways+" of "+total_pathways+" Pathway:"+currentPathway.getName()); 
-			if(split_out_by_pathway) {
+			if(split_by_pathway) {
 				//then reinitialize for each pathway
 				model_id = ""+base_ont_title.hashCode();
 				String contributor_link = base_provider;
@@ -331,7 +297,7 @@ public class BioPaxtoGO {
 				ont_iri = IRI.create(iri);	
 				go_cam = new GoCAM(ont_iri, base_ont_title, contributor_link, null, base_provider, add_lego_import);
 				//journal is by default in 'append' mode - keeping the same journal reference add each pathway to same journal
-				go_cam.path2bgjournal = journal;
+				go_cam.path2bgjournal = blazegraph_output_journal;
 				go_cam.blazegraphdb = blaze;
 				go_cam.name = currentPathway.getDisplayName();
 			}
@@ -357,7 +323,7 @@ public class BioPaxtoGO {
 				}
 			}
 			//write results
-			if(split_out_by_pathway) {
+			if(split_by_pathway) {
 				String n = currentPathway.getDisplayName();
 				n = n.replaceAll("/", "-");	
 				n = n.replaceAll(" ", "_");
@@ -370,7 +336,7 @@ public class BioPaxtoGO {
 			} 
 		}	
 		//export all
-		if(!split_out_by_pathway) {
+		if(!split_by_pathway) {
 			wrapAndWrite(converted+".ttl", go_cam, tbox_qrunner, save_inferences, save2blazegraph, converted, expand_subpathways, null);		
 		}
 
