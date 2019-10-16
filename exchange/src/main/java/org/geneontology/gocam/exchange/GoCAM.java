@@ -168,7 +168,7 @@ public class GoCAM {
 		go_cam_ont = ontman.loadOntologyFromOntologyDocument(ontology_file);
 		df = OWLManager.getOWLDataFactory();
 		initializeClassesAndRelations();
-	}
+	} 
 
 	/**
 	 * @throws OWLOntologyCreationException 

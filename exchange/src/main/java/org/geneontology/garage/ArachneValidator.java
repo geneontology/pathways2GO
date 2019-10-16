@@ -92,22 +92,22 @@ public class ArachneValidator {
 		ArachneValidator validator = new ArachneValidator();
 		String go_cam_folder = "/Users/bgood/Desktop/test/go_cams/reactome/";
 		//"/Users/bgood/Documents/GitHub/noctua-models/models/";
-		String out = "/Users/bgood/Desktop/test/go_cams/arachne_validator_reactome_june11.txt";
+		String out = "/Users/bgood/Desktop/test/go_cams/arachne_validator_reactome_oct16.txt";
 		String filename_must_contain = "reactome";
 		String catalog_file = "/Users/bgood/gocam_ontology/catalog-no-import.xml";
-		//validator.testConsistencyForFolder(go_cam_folder, out, filename_must_contain, catalog_file);
+		validator.testConsistencyForFolder(go_cam_folder, out, filename_must_contain, catalog_file, true);
 		//		GoCAM go_cam = new GoCAM(new File("/Users/bgood/Documents/GitHub/noctua-models/models/MGI_MGI_1923628.ttl"), catalog_file);
 		//		boolean is_logical = validator.arachneTest(go_cam, true);	
-		Set<String> files = new HashSet<String>();
-		files.add(go_cam_folder+"reactome-homosapiens-Synthesis_of_Lipoxins_(LX).ttl"); 
-		files.add(go_cam_folder+"reactome-homosapiens-Synthesis_of_5-eicosatetraenoic_acids.ttl"); 
-		files.add(go_cam_folder+"reactome-homosapiens-Apoptotic_cleavage_of_cellular_proteins.ttl"); 
-		files.add(go_cam_folder+"reactome-homosapiens-Breakdown_of_the_nuclear_lamina.ttl"); 
-		files.add(go_cam_folder+"reactome-homosapiens-Apoptosis_induced_DNA_fragmentation.ttl"); 
-		files.add(go_cam_folder+"reactome-homosapiens-Synthesis_of_Leukotrienes_(LT)_and_Eoxins_(EX).ttl"); 
-		files.add(go_cam_folder+"reactome-homosapiens-tRNA_modification_in_the_nucleus_and_cytosol.ttl");
-		boolean print_explanations = true;
-		validator.testConsistencyForFiles(files, out, filename_must_contain, catalog_file, print_explanations);
+//		Set<String> files = new HashSet<String>();
+//		files.add(go_cam_folder+"reactome-homosapiens-Synthesis_of_Lipoxins_(LX).ttl"); 
+//		files.add(go_cam_folder+"reactome-homosapiens-Synthesis_of_5-eicosatetraenoic_acids.ttl"); 
+//		files.add(go_cam_folder+"reactome-homosapiens-Apoptotic_cleavage_of_cellular_proteins.ttl"); 
+//		files.add(go_cam_folder+"reactome-homosapiens-Breakdown_of_the_nuclear_lamina.ttl"); 
+//		files.add(go_cam_folder+"reactome-homosapiens-Apoptosis_induced_DNA_fragmentation.ttl"); 
+//		files.add(go_cam_folder+"reactome-homosapiens-Synthesis_of_Leukotrienes_(LT)_and_Eoxins_(EX).ttl"); 
+//		files.add(go_cam_folder+"reactome-homosapiens-tRNA_modification_in_the_nucleus_and_cytosol.ttl");
+//		boolean print_explanations = true;
+//		validator.testConsistencyForFiles(files, out, filename_must_contain, catalog_file, print_explanations);
 	}
 
 	void testConsistencyForFolder(String input_folder, String output_file, String filename_must_contain, String catalog_file, boolean print_explanations) throws OWLOntologyCreationException, IOException {

@@ -5,30 +5,104 @@ package org.geneontology.gocam.exchange;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.geneontology.rules.engine.WorkingMemory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openrdf.repository.RepositoryException;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 
 /**
  * @author bgood
  *
  */
 public class BioPaxtoGOTest {
-
+	//use default values for testing
+	static BioPaxtoGO bp2g = new BioPaxtoGO();
+	//parameters to set
+	static String empty_catalogue_file = "./src/test/resources/catalog-no-import.xml";
+	static String input_biopax = "./src/test/resources/biopax/"; 
+	static String output_file_folder = "./src/test/resources/gocam/"; 
+	static String output_file_stub = "./src/test/resources/gocam/test-"; 
+	static String output_blazegraph_journal = "./src/test/resources/gocam/blazegraph.jnl";  
+	static String tag = ""; //unexpanded
+	static String base_title = "title here";//"Will be replaced if a title can be found for the pathway in its annotations
+	static String default_contributor = "";//"https://orcid.org/0000-0002-7334-7852"; //
+	static String default_provider = "";//"https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";	
+	static String test_pathway_name = null;
+	static String go_lego_file = "./src/test/resources/go-lego-test.owl";
+	static String go_plus_file = "./src/test/resources/go-plus.owl";
+	static Blazer blaze;
+	static QRunner tbox_qrunner;
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		System.out.println("set up before class");
+		bp2g.go_lego_file = go_lego_file;
+		bp2g.goplus = new GOPlus(go_plus_file);
+		bp2g.blazegraph_output_journal = output_blazegraph_journal;
+		//clean out any prior data in triple store
+		FileWriter clean = new FileWriter(bp2g.blazegraph_output_journal, false);
+		clean.write("");
+		clean.close();
+		//open connection to triple store
+		blaze = new Blazer(bp2g.blazegraph_output_journal);
+		//initialize the rules for inference
+		tbox_qrunner = GoCAM.getQRunnerForTboxInference(Collections.singleton(bp2g.go_lego_file));
+		//run the conversion on all the test biopax files
+		System.out.println("test biopaxtogo");
+		File dir = new File(input_biopax);
+		File[] directoryListing = dir.listFiles();
+		//run through all files
+		if (directoryListing != null) {
+			for (File biopax : directoryListing) {
+				String name = biopax.getName();
+				if(name.contains(".owl")||name.contains(".xml")) { 
+					name = name.replaceAll(".owl", "-");
+					name = name.replaceAll(".xml", "-");
+					String this_output_file_stub = output_file_stub+name;
+					try {
+						bp2g.convert(biopax.getAbsolutePath(), this_output_file_stub, base_title, default_contributor, default_provider, tag, null, blaze, tbox_qrunner);
+					} catch (OWLOntologyCreationException | OWLOntologyStorageException | RepositoryException
+							| RDFParseException | RDFHandlerException | IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			} 
+		}else {
+			try {
+				bp2g.convert(input_biopax, output_file_stub, base_title, default_contributor, default_provider, tag, null, blaze, tbox_qrunner);
+			} catch (OWLOntologyCreationException | OWLOntologyStorageException | RepositoryException
+					| RDFParseException | RDFHandlerException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		System.out.println("done set up before class");
 	}
 
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
+		System.out.println("tear down after class");
 	}
 
 	/**
@@ -36,6 +110,7 @@ public class BioPaxtoGOTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		System.out.println("setup");
 	}
 
 	/**
@@ -43,6 +118,7 @@ public class BioPaxtoGOTest {
 	 */
 	@After
 	public void tearDown() throws Exception {
+		System.out.println("tear down ");
 	}
 
 	/**
@@ -90,25 +166,35 @@ public class BioPaxtoGOTest {
 		//			test_pathways.add("HDL clearance");
 	 * 
 	 */
-	@Test
-	public final void testBioPaxtoGO() {
-		fail("Not yet implemented"); // TODO
-	}
+
+
+
+	
 
 	/**
-	 * Test method for {@link org.geneontology.gocam.exchange.BioPaxtoGO#main(java.lang.String[])}.
+	 * Test that all generated models are consistent.
 	 */
 	@Test
-	public final void testMain() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link org.geneontology.gocam.exchange.BioPaxtoGO#getEntityReferenceId(org.biopax.paxtools.model.level3.Entity)}.
-	 */
-	@Test
-	public final void testGetEntityReferenceId() {
-		fail("Not yet implemented"); // TODO
+	public final void testOWLConsistency() {
+		File dir = new File(output_file_folder);
+		File[] directoryListing = dir.listFiles();
+		for (File abox_file : directoryListing) {
+			if(abox_file.getAbsolutePath().endsWith(".ttl")) {
+				try {
+					GoCAM go_cam = new GoCAM(abox_file.getAbsoluteFile(), empty_catalogue_file);
+					go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 		
+					WorkingMemory wm_with_tbox = tbox_qrunner.arachne.createInferredModel(go_cam.go_cam_ont,false, false);			
+					go_cam.qrunner.jena = go_cam.qrunner.makeJenaModel(wm_with_tbox);
+					boolean is_logical = go_cam.validateGoCAM();	
+					System.out.println(abox_file.getName()+" owl consistent:"+is_logical);
+					assertTrue(is_logical);
+				} catch (OWLOntologyCreationException | IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}
 	}
 
 }

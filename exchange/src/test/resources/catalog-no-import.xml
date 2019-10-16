@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+    <group id="Folder Repository, directory=/Users/bgood/gocam_ontology/, recursive=true, Auto-Update=true, version=2" prefer="public" xml:base="file:///Users/bgood/gocam_ontology/">
+        <uri id="Automatically generated entry, Timestamp=1550181509803" name="http://purl.obolibrary.org/obo/go/extensions/go-lego.owl" uri="empty.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1550181509803" name="http://purl.obolibrary.org/obo/go/releases/2019-03-19/extensions/go-plus.owl" uri="empty.owl"/>        
+    </group>
+</catalog>

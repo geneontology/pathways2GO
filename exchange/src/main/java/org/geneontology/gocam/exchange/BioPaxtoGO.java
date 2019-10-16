@@ -197,7 +197,7 @@ public class BioPaxtoGO {
 		//	test_pathways = null;
 		
 		//set up reasoner and blazegraph output
-		//for blazegraph output
+		//for blazegraph output 
 		String journal = bp2g.blazegraph_output_journal;	
 		//clean out any prior data in store
 		FileWriter clean = new FileWriter(journal, false);
