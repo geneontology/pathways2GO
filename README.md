@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/geneontology/pathways2GO.svg?branch=master)](https://travis-ci.com/geneontology/pathways2GO)
 # Pathways to GO
 Code for converting between biological pathways (e.g. Reactome, Wikipathways) expressed using the BioPAX standard and the Gene Ontology Causal Activity OWL Model (GO-CAM) structure.  
 
