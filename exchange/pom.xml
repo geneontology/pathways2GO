@@ -67,11 +67,12 @@
  	</plugins>
  	</build>
   <dependencies>
-  	<dependency> 
+  	<!--  <dependency> 
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>HttpClient</artifactId>
 			<version>4.5.5</version>
 		</dependency>
+		-->
   		<dependency> 
 			<groupId>org.apache.jena</groupId>
 			<artifactId>apache-jena-libs</artifactId>
