@@ -1,1 +1,4 @@
 /.DS_Store
+exchange/src/test/.DS_Store
+exchange/src/test/resources/.DS_Store
+*.yml~

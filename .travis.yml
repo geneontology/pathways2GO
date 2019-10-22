@@ -8,4 +8,12 @@ jdk:
 
 # command to run tests
 script: 
-  - cd exchange; MAVEN_OPTS=-Xmx8g travis_wait 60 mvn clean test
+  - cd exchange; MAVEN_OPTS=-Xmx8g travis_wait 20 mvn clean test
+  - git clone https://github.com/geneontology/minerva.git
+  - cd minerva
+  - git checkout dev
+  - ./build-cli.sh
+  - cd minerva-cli/
+  - pwd
+  - ls ../../
+  - java -Xmx8g -jar bin/minerva-cli.jar  --validate-go-cams -f ../../src/test/resources/gocam/ -expand -travis
