@@ -252,15 +252,6 @@ public class BioPaxtoGO {
 		int total_pathways = biopax_model.getObjects(Pathway.class).size();
 		boolean add_pathway_components = true;
 		for (Pathway currentPathway : biopax_model.getObjects(Pathway.class)){
-			//			if(n_pathways>10) {
-			//				break;
-			//			}
-
-			//			if(currentPathway.getDisplayName().equals("tRNA modification in the nucleus and cytosol")) {
-			//				System.out.println("Skipping pathway: "+currentPathway.getDisplayName());
-			//				continue;
-			//			}
-
 			go_cam.name = currentPathway.getDisplayName();
 			if(test_pathway_names!=null&&!test_pathway_names.contains(go_cam.name)) {
 				continue;
@@ -278,8 +269,7 @@ public class BioPaxtoGO {
 				model_id = ""+base_ont_title.hashCode();
 				String contributor_link = base_provider;
 				//See if there is a specific pathway reference to allow a direct link
-				Set<Xref> xrefs = currentPathway.getXref();
-				model_id = this.getEntityReferenceId(currentPathway);
+				model_id = getEntityReferenceId(currentPathway);
 				contributor_link = "https://reactome.org/content/detail/"+model_id;
 				//check for datasource (seen commonly in Pathway Commons)
 				Set<Provenance> datasources = currentPathway.getDataSource();
@@ -301,8 +291,6 @@ public class BioPaxtoGO {
 				go_cam.blazegraphdb = blaze;
 				go_cam.name = currentPathway.getDisplayName();
 			}
-
-			String uri = currentPathway.getUri();
 			//make the OWL individual representing the pathway so it can be used below
 			OWLNamedIndividual p = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(model_id, model_id));
 			//annotate it with any provenance comments

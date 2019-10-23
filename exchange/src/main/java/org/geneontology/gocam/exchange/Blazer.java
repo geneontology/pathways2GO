@@ -12,7 +12,14 @@ import java.util.Properties;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
+import org.openrdf.model.Value;
 import org.openrdf.model.impl.URIImpl;
+import org.openrdf.query.BindingSet;
+import org.openrdf.query.MalformedQueryException;
+import org.openrdf.query.QueryEvaluationException;
+import org.openrdf.query.QueryLanguage;
+import org.openrdf.query.TupleQuery;
+import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
@@ -64,7 +71,7 @@ public class Blazer {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Imports ontology RDF directly to database. No OWL checks are performed. 
 	 * @param file
@@ -134,7 +141,7 @@ public class Blazer {
 			inputStream.close();
 		}
 	}
-	
+
 	private static class FoundTripleException extends RuntimeException {
 
 		private static final long serialVersionUID = 8366509854229115430L;
@@ -148,13 +155,54 @@ public class Blazer {
 			return this.statement;
 		}
 	}
-	
+
+	public TupleQueryResult runSparqlQuery(String query) {
+		// open connection
+		try {
+			BigdataSailRepositoryConnection cxn = ((BigdataSailRepository) repo).getReadOnlyConnection();
+			// evaluate sparql query
+			try {
+				final TupleQuery tupleQuery = cxn.prepareTupleQuery(QueryLanguage.SPARQL,query);
+				TupleQueryResult result = tupleQuery.evaluate();
+				return result;
+			} catch (MalformedQueryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				// close the repository connection
+				cxn.close();
+			}
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		return null; 
+	}
+
 	/**
 	 * @param args
+	 * @throws RepositoryException 
+	 * @throws QueryEvaluationException 
 	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+	public static void main(String[] args) throws QueryEvaluationException {
+		Blazer b = new Blazer("./src/test/resources/gocam/blazegraph.jnl"); 
+		TupleQueryResult result = null;
+		try {
+			result = b.runSparqlQuery("select ?s ?p ?o where {?s ?p ?o } limit 3");
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				System.out.println(bindingSet);
+			}
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			result.close();
+		}
 	}
 
 }
+

@@ -1612,7 +1612,7 @@ BP has_part R
 			}
 			blazegraphdb.importModelToDatabase(outfilefile);
 		}
-	}
+	} 
 
 	void writeGoCAM_jena(String outfilename, boolean save2blazegraph, String outputformat) throws OWLOntologyStorageException, OWLOntologyCreationException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
 		File outfilefile = new File(outfilename);	

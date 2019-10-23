@@ -599,7 +599,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		while (results.hasNext()) {
 			QuerySolution qs = results.next();
 			Resource pathway = qs.getResource("pathway");
-			
+			 
 			String pathway_uri = "";
 			if(pathway!=null) {pathway_uri = pathway.getURI();}
 			Resource reaction = qs.getResource("reaction"); 

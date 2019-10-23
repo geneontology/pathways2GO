@@ -18,6 +18,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openrdf.query.BindingSet;
+import org.openrdf.query.QueryEvaluationException;
+import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
@@ -42,12 +45,12 @@ public class BioPaxtoGOTest {
 	static String default_contributor = "";//"https://orcid.org/0000-0002-7334-7852"; //
 	static String default_provider = "";//"https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";	
 	static String test_pathway_name = null;
-	static String go_lego_file = "./src/test/resources/go-lego-test.owl";
+	static String go_lego_file = "./src/test/resources/go-lego-nothing.owl";
 	static String go_plus_file = "./src/test/resources/go-plus.owl";
 	static Blazer blaze;
 	static QRunner tbox_qrunner;
 	/**
-	 * @throws java.lang.Exception
+	 * @throws java.lang.Exception 
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -174,7 +177,7 @@ public class BioPaxtoGOTest {
 	/**
 	 * Test that all generated models are consistent.
 	 */
-	@Test
+	//@Test
 	public final void testOWLConsistency() {
 		File dir = new File(output_file_folder);
 		File[] directoryListing = dir.listFiles();
@@ -196,5 +199,83 @@ public class BioPaxtoGOTest {
 			
 		}
 	}
+	
+	/**
+	 * Test that transport processes are correctly typed.
+	 * Currently as molecular function.
+	 * Use reaction in Signaling By BMP R-HSA-201451
+	 * 	The phospho-R-Smad1/5/8:Co-Smad transfers to the nucleus
+	 * 	https://reactome.org/content/detail/R-HSA-201472
+	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-201451
+	 */
+	@Test
+	public final void testInferTransportProcess() {
+		TupleQueryResult result = null;
+		try {
+			result = blaze.runSparqlQuery(
+				"select ?type " + 
+				"where { " + 
+				"  <http://model.geneontology.org/R-HSA-201451/R-HSA-201472> rdf:type ?type . " + 
+				"  filter(?type != owl:NamedIndividual) " + 
+				"}");
+			int n = 0; String type = null;
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				type = bindingSet.getValue("type").stringValue();
+				n++;
+			}
+			assertTrue(n==1);
+			assertTrue(type.equals("http://purl.obolibrary.org/obo/GO_0003674"));
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 
+	/**
+	 * Test that dissociation processes are correctly typed.
+	 * Currently as molecular function.
+	 * Use reaction in Signaling By BMP R-HSA-201451
+	 * 	Phospho-R-Smad1/5/8 dissociates from the receptor complex
+	 * 	https://reactome.org/content/detail/R-HSA-201453
+	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-201451
+	 */
+	@Test
+	public final void testInferDissociationProcess() {
+		TupleQueryResult result = null;
+		try {
+			result = blaze.runSparqlQuery(
+				"select ?type " + 
+				"where { " + 
+				"  <http://model.geneontology.org/R-HSA-201451/R-HSA-201453> rdf:type ?type . " + 
+				"  filter(?type != owl:NamedIndividual) " + 
+				"}");
+			int n = 0; String type = null;
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				type = bindingSet.getValue("type").stringValue();
+				n++;
+			}
+			assertTrue(n==1);
+			assertTrue(type.equals("http://purl.obolibrary.org/obo/GO_0003674"));
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
 }
