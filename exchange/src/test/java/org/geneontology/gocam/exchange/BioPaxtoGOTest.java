@@ -45,7 +45,7 @@ public class BioPaxtoGOTest {
 	static String default_contributor = "";//"https://orcid.org/0000-0002-7334-7852"; //
 	static String default_provider = "";//"https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";	
 	static String test_pathway_name = null;
-	static String go_lego_file = "./src/test/resources/go-lego-nothing.owl";
+	static String go_lego_file = "./src/test/resources/go-lego-test.owl";
 	static String go_plus_file = "./src/test/resources/go-plus.owl";
 	static Blazer blaze;
 	static QRunner tbox_qrunner;
@@ -125,7 +125,7 @@ public class BioPaxtoGOTest {
 	}
 
 	/**
-	 * Test method for {@link org.geneontology.gocam.exchange.BioPaxtoGO#BioPaxtoGO()}.
+	 * 
 	 * 
 	 * 		//"Glycolysis"; //"Signaling by BMP"; //"TCF dependent signaling in response to WNT"; //"RAF-independent MAPK1/3 activation";//"Oxidative Stress Induced Senescence"; //"Activation of PUMA and translocation to mitochondria";//"HDR through Single Strand Annealing (SSA)";  //"IRE1alpha activates chaperones"; //"Generation of second messenger molecules";//null;//"Clathrin-mediated endocytosis";
 		//next tests: 
@@ -201,8 +201,12 @@ public class BioPaxtoGOTest {
 	}
 	
 	/**
-	 * Test that transport processes are correctly typed.
-	 * Currently as molecular function.
+	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferTransportProcess()}.
+	 * Test that transport processes are:
+	 *  correctly typed as molecular function
+	 * 	have the proper starting and ending locations
+	 *  have the right number of inputs and outputs
+	 *  have an input that is also an output 
 	 * Use reaction in Signaling By BMP R-HSA-201451
 	 * 	The phospho-R-Smad1/5/8:Co-Smad transfers to the nucleus
 	 * 	https://reactome.org/content/detail/R-HSA-201472
@@ -212,20 +216,36 @@ public class BioPaxtoGOTest {
 	public final void testInferTransportProcess() {
 		TupleQueryResult result = null;
 		try {
-			result = blaze.runSparqlQuery(
-				"select ?type " + 
-				"where { " + 
-				"  <http://model.geneontology.org/R-HSA-201451/R-HSA-201472> rdf:type ?type . " + 
-				"  filter(?type != owl:NamedIndividual) " + 
-				"}");
-			int n = 0; String type = null;
+			String query =
+					"prefix obo: <http://purl.obolibrary.org/obo/> "
+					+ "select ?type (count(distinct ?output) AS ?outputs) (count(distinct ?input) AS ?inputs) " + 
+					"where { " + 
+					" VALUES ?reaction { <http://model.geneontology.org/R-HSA-201451/R-HSA-201472> } "
+					+ " ?reaction rdf:type ?type . " + 
+					"  filter(?type != owl:NamedIndividual) "
+					+ " ?reaction obo:RO_0002234 ?output . " + 
+					" ?reaction obo:RO_0002233 ?input . " + 
+					"  ?reaction obo:RO_0002339 ?endlocation . " + 
+					"  ?endlocation rdf:type <http://purl.obolibrary.org/obo/GO_0005654> . " + 
+					"  ?reaction obo:RO_0002338 ?startlocation . " + 
+					"  ?startlocation rdf:type <http://purl.obolibrary.org/obo/GO_0005829> . "
+					+ "?input rdf:type ?entityclass . "
+					+ "?output rdf:type ?entityclass ." + 
+					"}"
+				+" group by ?type ";
+			result = blaze.runSparqlQuery(query);
+			int n = 0; String type = null; int outputs = 0; int inputs = 0;
 			while (result.hasNext()) {
 				BindingSet bindingSet = result.next();
 				type = bindingSet.getValue("type").stringValue();
+				outputs = Integer.parseInt(bindingSet.getValue("outputs").stringValue());
+				inputs = Integer.parseInt(bindingSet.getValue("inputs").stringValue());
 				n++;
 			}
 			assertTrue(n==1);
 			assertTrue(type.equals("http://purl.obolibrary.org/obo/GO_0003674"));
+			assertTrue(inputs==1);
+			assertTrue(outputs==1);
 		} catch (QueryEvaluationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -240,9 +260,11 @@ public class BioPaxtoGOTest {
 	}
 
 	/**
+	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferTransportProcess()}.
 	 * Test that dissociation processes are:
 	 * 	correctly typed: as molecular function 
 	 *  have proper start and end locations defined 	
+	 *  and have the correct number of inputs and outputs
 	 * Use reaction in Signaling By BMP R-HSA-201451
 	 * 	Phospho-R-Smad1/5/8 dissociates from the receptor complex
 	 * 	https://reactome.org/content/detail/R-HSA-201453
@@ -256,13 +278,14 @@ public class BioPaxtoGOTest {
 				"prefix obo: <http://purl.obolibrary.org/obo/> "
 				+ "select ?type (count(distinct ?output) AS ?outputs) (count(distinct ?input) AS ?inputs) " + 
 				"where { " + 
-				"  <http://model.geneontology.org/R-HSA-201451/R-HSA-201453> rdf:type ?type . "
-				+ "<http://model.geneontology.org/R-HSA-201451/R-HSA-201453> obo:RO_0002339 ?endlocation . " + 
+				"VALUES ?reaction { <http://model.geneontology.org/R-HSA-201451/R-HSA-201453> }" + 
+				"  ?reaction rdf:type ?type .	" + 
+				"  ?reaction obo:RO_0002339 ?endlocation . " + 
 				"  ?endlocation rdf:type <http://purl.obolibrary.org/obo/GO_0005829> . " + 
-				"  <http://model.geneontology.org/R-HSA-201451/R-HSA-201453> obo:RO_0002338 ?startlocation . " + 
-				"  ?startlocation rdf:type <http://purl.obolibrary.org/obo/GO_0031901> . "
-				+ "<http://model.geneontology.org/R-HSA-201451/R-HSA-201453> obo:RO_0002234 ?output . " + 
-				"  <http://model.geneontology.org/R-HSA-201451/R-HSA-201453> obo:RO_0002233 ?input . " + 
+				"  ?reaction obo:RO_0002338 ?startlocation . " + 
+				"  ?startlocation rdf:type <http://purl.obolibrary.org/obo/GO_0031901> ." + 
+				"  ?reaction obo:RO_0002234 ?output . " + 
+				"  ?reaction obo:RO_0002233 ?input ." + 
 				"  filter(?type != owl:NamedIndividual)" + 
 				"} "+
 				"group by ?type ");
@@ -291,4 +314,89 @@ public class BioPaxtoGOTest {
 		}
 	}
 	
+
+	/**
+	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferOccursInFromEntityLocations()}.
+	 * Test that occurs_in statements on reactions are inferred from entity locations
+	 * Use reaction in Signaling By BMP R-HSA-201451
+	 * 	Phospho-R-Smad1/5/8 forms a complex with Co-Smad
+	 * 	https://reactome.org/content/detail/R-HSA-201422
+	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-201451
+	 */
+	@Test
+	public final void testOccursInFromEntityLocations() {
+		TupleQueryResult result = null;
+		try {
+			result = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> "
+				+ "select ?locationclass " + 
+				"where { " + 
+				"VALUES ?reaction { <http://model.geneontology.org/R-HSA-201451/R-HSA-201422> }" + 
+				"  ?reaction obo:BFO_0000066 ?location . "
+				+ "?location rdf:type ?locationclass " + 
+				"  filter(?locationclass != owl:NamedIndividual)" + 
+				"}");
+			int n = 0; String location = null;
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				location = bindingSet.getValue("locationclass").stringValue();
+				n++;
+			}
+			assertTrue(n==1);
+			assertTrue(location.equals("http://purl.obolibrary.org/obo/GO_0005829"));
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
+	/**
+	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferOccursInFromEntityLocations()}.
+	 * Test that occurs_in statements on reactions are inferred from enabling molecules
+	 * Use reaction R-HSA-201425 is Signaling by BMP 
+	 * 	Ubiquitin-dependent degradation of the Smad complex terminates BMP2 signalling
+	 * 	https://reactome.org/content/detail/R-HSA-201425 
+	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-201451
+	 */
+	@Test
+	public final void testOccursInFromEnablerLocation() {
+		TupleQueryResult result = null;
+		try {
+			result = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> "
+				+ "select ?locationclass " + 
+				"where { " + 
+				"VALUES ?reaction { <http://model.geneontology.org/R-HSA-201451/R-HSA-201425> }" + 
+				"  ?reaction obo:BFO_0000066 ?location . "
+				+ "?location rdf:type ?locationclass " + 
+				"  filter(?locationclass != owl:NamedIndividual)" + 
+				"}");
+			int n = 0; String location = null;
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				location = bindingSet.getValue("locationclass").stringValue();
+				n++;
+			}
+			assertTrue(n==1);
+			assertTrue(location, location.equals("http://purl.obolibrary.org/obo/GO_0005654"));
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 }
