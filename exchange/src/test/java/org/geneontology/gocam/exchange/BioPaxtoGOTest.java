@@ -240,8 +240,9 @@ public class BioPaxtoGOTest {
 	}
 
 	/**
-	 * Test that dissociation processes are correctly typed.
-	 * Currently as molecular function.
+	 * Test that dissociation processes are:
+	 * 	correctly typed: as molecular function 
+	 *  have proper start and end locations defined 	
 	 * Use reaction in Signaling By BMP R-HSA-201451
 	 * 	Phospho-R-Smad1/5/8 dissociates from the receptor complex
 	 * 	https://reactome.org/content/detail/R-HSA-201453
@@ -252,19 +253,31 @@ public class BioPaxtoGOTest {
 		TupleQueryResult result = null;
 		try {
 			result = blaze.runSparqlQuery(
-				"select ?type " + 
+				"prefix obo: <http://purl.obolibrary.org/obo/> "
+				+ "select ?type (count(distinct ?output) AS ?outputs) (count(distinct ?input) AS ?inputs) " + 
 				"where { " + 
-				"  <http://model.geneontology.org/R-HSA-201451/R-HSA-201453> rdf:type ?type . " + 
-				"  filter(?type != owl:NamedIndividual) " + 
-				"}");
-			int n = 0; String type = null;
+				"  <http://model.geneontology.org/R-HSA-201451/R-HSA-201453> rdf:type ?type . "
+				+ "<http://model.geneontology.org/R-HSA-201451/R-HSA-201453> obo:RO_0002339 ?endlocation . " + 
+				"  ?endlocation rdf:type <http://purl.obolibrary.org/obo/GO_0005829> . " + 
+				"  <http://model.geneontology.org/R-HSA-201451/R-HSA-201453> obo:RO_0002338 ?startlocation . " + 
+				"  ?startlocation rdf:type <http://purl.obolibrary.org/obo/GO_0031901> . "
+				+ "<http://model.geneontology.org/R-HSA-201451/R-HSA-201453> obo:RO_0002234 ?output . " + 
+				"  <http://model.geneontology.org/R-HSA-201451/R-HSA-201453> obo:RO_0002233 ?input . " + 
+				"  filter(?type != owl:NamedIndividual)" + 
+				"} "+
+				"group by ?type ");
+			int n = 0; String type = null; int outputs = 0; int inputs = 0;
 			while (result.hasNext()) {
 				BindingSet bindingSet = result.next();
 				type = bindingSet.getValue("type").stringValue();
+				outputs = Integer.parseInt(bindingSet.getValue("outputs").stringValue());
+				inputs = Integer.parseInt(bindingSet.getValue("inputs").stringValue());
 				n++;
 			}
 			assertTrue(n==1);
 			assertTrue(type.equals("http://purl.obolibrary.org/obo/GO_0003674"));
+			assertTrue(outputs == 2);
+			assertTrue(inputs == 1);
 		} catch (QueryEvaluationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
