@@ -817,7 +817,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		boolean add_property_definitions = false; boolean add_class_definitions = false;
 		QRunner qrunner = new QRunner(tboxes, null, add_inferences, add_property_definitions, add_class_definitions);
 		return qrunner;
-	}
+	} 
 
 	public QRunner initializeQRunner(Collection<OWLOntology> tbox) throws OWLOntologyCreationException {
 		System.out.println("initializeQRunner()");

@@ -8,10 +8,13 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import org.apache.jena.rdf.model.Model;
 import org.geneontology.rules.engine.WorkingMemory;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -24,8 +27,15 @@ import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
+import org.semanticweb.owlapi.reasoner.OWLReasoner;
+import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
+import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 
 /**
  * @author bgood
@@ -33,7 +43,7 @@ import org.semanticweb.owlapi.model.OWLOntologyStorageException;
  */
 public class BioPaxtoGOTest {
 	//use default values for testing
-	static BioPaxtoGO bp2g = new BioPaxtoGO();
+	static BioPaxtoGO bp2g = new BioPaxtoGO(); 
 	//parameters to set
 	static String empty_catalogue_file = "./src/test/resources/catalog-no-import.xml";
 	static String input_biopax = "./src/test/resources/biopax/"; 
@@ -46,9 +56,12 @@ public class BioPaxtoGOTest {
 	static String default_provider = "";//"https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";	
 	static String test_pathway_name = null;
 	static String go_lego_file = "./src/test/resources/go-lego-test.owl";
-	static String go_plus_file = "./src/test/resources/go-plus.owl";
+	static String go_plus_url = "http://purl.obolibrary.org/obo/go/extensions/go-plus.owl";
+	static String go_plus_file = "./target/go-plus.owl";
 	static Blazer blaze;
 	static QRunner tbox_qrunner;
+
+	static OWLReasoner tbox_reasoner = null;
 	/**
 	 * @throws java.lang.Exception 
 	 */
@@ -56,6 +69,12 @@ public class BioPaxtoGOTest {
 	public static void setUpBeforeClass() throws Exception {
 		System.out.println("set up before class");
 		bp2g.go_lego_file = go_lego_file;
+		File goplus_file = new File(go_plus_file);
+		if(!goplus_file.exists()) {
+			URL goplus_location = new URL(go_plus_url);
+			System.out.println("downloading goplus ontology from "+go_plus_url);
+			org.apache.commons.io.FileUtils.copyURLToFile(goplus_location, goplus_file);
+		}		
 		bp2g.goplus = new GOPlus(go_plus_file);
 		bp2g.blazegraph_output_journal = output_blazegraph_journal;
 		//clean out any prior data in triple store
@@ -64,10 +83,18 @@ public class BioPaxtoGOTest {
 		clean.close();
 		//open connection to triple store
 		blaze = new Blazer(bp2g.blazegraph_output_journal);
+		//set up for validation
+		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();					
+		OWLOntology tbox = ontman.loadOntologyFromOntologyDocument(new File(go_lego_file));
+		System.out.println("done loading, building structural reasoner for shex validation");
+		OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
+		tbox_reasoner = reasonerFactory.createReasoner(tbox);
+		System.out.println("done building structural reasoner, now building arachne");
 		//initialize the rules for inference
-		tbox_qrunner = GoCAM.getQRunnerForTboxInference(Collections.singleton(bp2g.go_lego_file));
+		tbox_qrunner = new QRunner(Collections.singleton(tbox), null, true, false, false);
+		System.out.println("done building arachne");		
 		//run the conversion on all the test biopax files
-		System.out.println("test biopaxtogo");
+		System.out.println("running biopaxtogo on all test files");
 		File dir = new File(input_biopax);
 		File[] directoryListing = dir.listFiles();
 		//run through all files
@@ -98,8 +125,7 @@ public class BioPaxtoGOTest {
 		}
 		System.out.println("done set up before class");
 	}
-
-	
+		
 	/**
 	 * @throws java.lang.Exception
 	 */

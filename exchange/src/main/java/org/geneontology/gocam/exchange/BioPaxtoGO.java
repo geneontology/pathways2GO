@@ -207,6 +207,7 @@ public class BioPaxtoGO {
 			
 		QRunner tbox_qrunner = GoCAM.getQRunnerForTboxInference(Collections.singleton(bp2g.go_lego_file));
 		bp2g.convert(input_biopax, converted, base_title, base_contributor, base_provider, tag, test_pathways, blaze, tbox_qrunner);
+	
 	} 
 
 	void convert(
