@@ -1,0 +1,5 @@
+/.DS_Store
+/.travis.yml~
+*.class
+exchange/arachne.log
+exchange/src/test/resources/.DS_Store
