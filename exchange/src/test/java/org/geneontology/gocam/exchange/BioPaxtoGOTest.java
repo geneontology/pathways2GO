@@ -49,13 +49,13 @@ public class BioPaxtoGOTest {
 	static String input_biopax = "./src/test/resources/biopax/"; 
 	static String output_file_folder = "./src/test/resources/gocam/"; 
 	static String output_file_stub = "./src/test/resources/gocam/test-"; 
-	static String output_blazegraph_journal = "./src/test/resources/gocam/blazegraph.jnl";  
+	static String output_blazegraph_journal = "/Users/bgood/noctua-config/blazegraph.jnl";//"./src/test/resources/gocam/blazegraph.jnl";  
 	static String tag = ""; //unexpanded
 	static String base_title = "title here";//"Will be replaced if a title can be found for the pathway in its annotations
-	static String default_contributor = "";//"https://orcid.org/0000-0002-7334-7852"; //
-	static String default_provider = "";//"https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";	
+	static String default_contributor = "https://orcid.org/0000-0002-7334-7852"; //
+	static String default_provider = "https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";	
 	static String test_pathway_name = null;
-	static String go_lego_file = "./src/test/resources/go-lego-test.owl";
+	static String go_lego_file = "./src/test/resources/go-lego-nothing.owl";
 	static String go_plus_url = "http://purl.obolibrary.org/obo/go/extensions/go-plus.owl";
 	static String go_plus_file = "./target/go-plus.owl";
 	static Blazer blaze;
@@ -101,9 +101,8 @@ public class BioPaxtoGOTest {
 		if (directoryListing != null) {
 			for (File biopax : directoryListing) {
 				String name = biopax.getName();
-				if(name.contains(".owl")||name.contains(".xml")) { 
+				if(name.contains(".owl")) { 
 					name = name.replaceAll(".owl", "-");
-					name = name.replaceAll(".xml", "-");
 					String this_output_file_stub = output_file_stub+name;
 					try {
 						bp2g.convert(biopax.getAbsolutePath(), this_output_file_stub, base_title, default_contributor, default_provider, tag, null, blaze, tbox_qrunner);

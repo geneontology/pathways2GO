@@ -1164,7 +1164,11 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 			}
 			Set<OWLAnnotation> annos = getDefaultAnnotations();
 			//add the process process regulates relation
-			String entity_label = getaLabel(entity);
+			OWLClass entity_type = this.df.getOWLClass(IRI.create(ir.entity_type_uri));
+			String entity_label = getaLabel(entity_type);
+			if(entity_label==null) {
+				entity_label = ir.entity_type_uri;
+			}
 			String explain = "The is relation was inferred because reaction1 has output "+entity_label+" and "
 					+ entity_label+" "+reg+" reaction2.  Note that this regulation is non-catalytic. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));

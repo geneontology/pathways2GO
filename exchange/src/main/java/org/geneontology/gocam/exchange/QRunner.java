@@ -400,13 +400,15 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		String prop_uri;
 		String pathway_uri;
 		String entity_uri;
+		String entity_type_uri;
 		String enabler_uri; 
-		InferredRegulator(String r1_uri, String p_uri, String r2_uri, String pathway, String entity){
+		InferredRegulator(String r1_uri, String p_uri, String r2_uri, String pathway, String entity, String entity_type){
 			reaction1_uri = r1_uri;
 			prop_uri = p_uri;
 			reaction2_uri = r2_uri;
 			pathway_uri = pathway;
 			entity_uri = entity;
+			entity_type_uri = entity_type;
 		}
 	}
 	
@@ -427,12 +429,13 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			Resource property = qs.getResource("prop");
 			Resource pathway = qs.getResource("pathway");
 			Resource entity = qs.getResource("entityZ");
+			Resource entity_type = qs.getResource("ztype");
 			//reaction1  regulated somehow by reaction 2
 			String pathway_uri = "";
 			if(pathway!=null) {
 				pathway_uri = pathway.getURI();
 			}
-			ir.add(new InferredRegulator(reaction1.getURI(), property.getURI(), reaction2.getURI(), pathway_uri, entity.getURI()));
+			ir.add(new InferredRegulator(reaction1.getURI(), property.getURI(), reaction2.getURI(), pathway_uri, entity.getURI(), entity_type.getURI()));
 		}
 		qe.close();
 		return ir;
@@ -461,7 +464,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			if(pathway!=null) {
 				pathway_uri = pathway.getURI();
 			}
-			ir.add(new InferredRegulator(reaction1.getURI(), GoCAM.directly_negatively_regulates.getIRI().toString(), reaction2.getURI(), pathway_uri, ""));
+			ir.add(new InferredRegulator(reaction1.getURI(), GoCAM.directly_negatively_regulates.getIRI().toString(), reaction2.getURI(), pathway_uri, "", ""));
 		}
 		qe.close();
 		return ir;
@@ -489,7 +492,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			if(pathway!=null) {
 				pathway_uri = pathway.getURI();
 			}
-			ir.add(new InferredRegulator(reaction1.getURI(), GoCAM.directly_positively_regulates.getIRI().toString(), reaction2.getURI(), pathway_uri, ""));
+			ir.add(new InferredRegulator(reaction1.getURI(), GoCAM.directly_positively_regulates.getIRI().toString(), reaction2.getURI(), pathway_uri, "", ""));
 		}
 		qe.close();
 		return ir;
@@ -517,7 +520,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			if(pathway!=null) {
 				pathway_uri = pathway.getURI();
 			}
-			InferredRegulator ir = new InferredRegulator(reaction.getURI(), property.getURI(), reaction.getURI(), pathway_uri, regulator.getURI());
+			InferredRegulator ir = new InferredRegulator(reaction.getURI(), property.getURI(), reaction.getURI(), pathway_uri, regulator.getURI(), "");
 			Resource enabler = qs.getResource("enabler");
 			if(enabler != null) {
 				ir.enabler_uri = enabler.getURI();
@@ -550,7 +553,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			if(pathway!=null) {
 				pathway_uri = pathway.getURI();
 			}
-			ir.add(new InferredRegulator(reaction1.getURI(), GoCAM.provides_direct_input_for.getIRI().toString(), reaction2.getURI(), pathway_uri, ""));
+			ir.add(new InferredRegulator(reaction1.getURI(), GoCAM.provides_direct_input_for.getIRI().toString(), reaction2.getURI(), pathway_uri, "", ""));
 		}
 		qe.close();
 		return ir;

@@ -10,33 +10,30 @@ prefix skos: <http://www.w3.org/2004/02/skos/core#>
 		 # Then infer that reaction 2 regulates reaction 1
 		 # (capture if its positive or negative regulation)
 
-select ?reaction1 ?prop ?reaction2 ?pathway ?entityZ # obo:RO_0002023 directly negatively regulated by 
-where {
+select ?reaction1 ?prop ?reaction2 ?pathway ?entityZ ?ztype # obo:RO_0002023 directly negatively regulated by 
+where 
    { 
-    #?reaction1 rdf:type obo:GO_0003674 .
-    #?reaction2 rdf:type obo:GO_0003674 .
-    ?entityZ ?prop  ?reaction1 .   #obo:RO_0002430  involved_in_negative_regulation_of 
-    VALUES ?prop { obo:RO_0002430 obo:RO_0002429} #RO_0002429 involved_in_positive_regulation_of
-       ?reaction2 obo:RO_0002234 ?entityY .  #has output
-    ?entityZ skos:exactMatch ?complex . 
-    ?entityY skos:exactMatch ?complex . 
-    ?entityZ rdf:type obo:GO_0032991 .
-    ?entityY rdf:type obo:GO_0032991 .
-   }
-   UNION
+    #2 reactions, same pathway
+    ?reaction1 obo:BFO_0000050 ?pathway . 
+    ?reaction2 obo:BFO_0000050 ?pathway . 
+   VALUES ?prop { obo:RO_0002430 obo:RO_0002429} . #regulation
    {
-   #?reaction1 rdf:type obo:GO_0003674 .
-   #?reaction2 rdf:type obo:GO_0003674 .
-    ?entityZ ?prop  ?reaction1 .   #obo:RO_0002430  involved_in_negative_regulation_of 
-    VALUES ?prop { obo:RO_0002430 obo:RO_0002429} #RO_0002429 involved_in_positive_regulation_of
-       ?reaction2 obo:RO_0002234 ?entityY .  #has output
-    ?entityZ skos:exactMatch ?protein . 
-    ?entityY skos:exactMatch ?protein . 
-    ?entityZ rdf:type ?uniprot .
-    ?entityY rdf:type ?uniprot .
-    ?uniprot rdfs:subClassOf obo:CHEBI_36080 . 
-   }
-   OPTIONAL{?reaction1 obo:BFO_0000050 ?pathway }
+    ?entityZ obo:BFO_0000051 ?entityP .
+    ?entityP ?prop  ?reaction1 .    
+ 	}
+ 	UNION
+    {
+    # z regulates reaction 1           
+    ?entityZ ?prop  ?reaction1 .   #obo:RO_0002430  involved_in_negative_regulation_of  
+    }
+    ?entityZ rdf:type ?ztype . 
+    # reaction 2 produces z
+    ?reaction2 obo:RO_0002234 ?entityY .  #has output
+    ?entityY rdf:type ?ztype .  
+    #since sometimes the type may be overly general and cause spurious matches
+    #add an instance=level check to make sure they are referring to the same thing
+    ?entityZ skos:exactMatch ?biopax_entity . 
+    ?entityY skos:exactMatch ?biopax_entity . 
 }
 
  #   ?entityZ rdf:type ?entity_class .
@@ -61,16 +58,29 @@ where {
 # obo:BFO_0000051 has part
 # obo:RO_0002413 provides direct input for
 
-# directly_negatively_regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002023"));
-# 		addLabel(directly_negatively_regulated_by, "directly negatively regulated by");
-# 		directly_positively_regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002024"));
-# 		addLabel(directly_positively_regulated_by, "directly positively regulated by");
-# 		//RO_0002430 involved_in_negative_regulation_of
-# 		//RO_0002429 involved_in_positive_regulation_of
-# 		involved_in_negative_regulation_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002430"));
-# 		addLabel(involved_in_negative_regulation_of, "involved in negative regulation_of");
-# 		involved_in_positive_regulation_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002429"));
-# 		addLabel(involved_in_positive_regulation_of, "involved in positive regulation_of");
-# 		
-# 		involved_in_regulation_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002428"));
-# 		addLabel(involved_in_regulation_of, "involved in regulation of");
+
+#   { 
+    #?reaction1 rdf:type obo:GO_0003674 .
+    #?reaction2 rdf:type obo:GO_0003674 .
+#    ?entityZ ?prop  ?reaction1 .   #obo:RO_0002430  involved_in_negative_regulation_of 
+ #   VALUES ?prop { obo:RO_0002430 obo:RO_0002429} #RO_0002429 involved_in_positive_regulation_of
+#       ?reaction2 obo:RO_0002234 ?entityY .  #has output
+#    ?entityZ skos:exactMatch ?complex . 
+#    ?entityY skos:exactMatch ?complex . 
+#    ?entityZ rdf:type obo:GO_0032991 .
+#    ?entityY rdf:type obo:GO_0032991 .
+#   }
+#   UNION
+#   {
+   #?reaction1 rdf:type obo:GO_0003674 .
+   #?reaction2 rdf:type obo:GO_0003674 .
+#    ?entityZ ?prop  ?reaction1 .   #obo:RO_0002430  involved_in_negative_regulation_of 
+#    VALUES ?prop { obo:RO_0002430 obo:RO_0002429} #RO_0002429 involved_in_positive_regulation_of
+#       ?reaction2 obo:RO_0002234 ?entityY .  #has output
+#    ?entityZ skos:exactMatch ?protein . 
+#    ?entityY skos:exactMatch ?protein . 
+#    ?entityZ rdf:type ?uniprot .
+#    ?entityY rdf:type ?uniprot .
+#    ?uniprot rdfs:subClassOf obo:CHEBI_36080 . 
+#   }
+#   OPTIONAL{?reaction1 obo:BFO_0000050 ?pathway }
