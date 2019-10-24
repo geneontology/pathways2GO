@@ -8,3 +8,4 @@ exchange/target/maven*
 exchange/target/test-classes/*
 exchange/src/test/resources/biopax/catalog-v001.xml
 exchange/src/test/resources/gocam/*
+*.ttl
