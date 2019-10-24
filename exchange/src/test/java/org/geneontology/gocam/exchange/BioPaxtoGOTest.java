@@ -49,13 +49,13 @@ public class BioPaxtoGOTest {
 	static String input_biopax = "./src/test/resources/biopax/"; 
 	static String output_file_folder = "./src/test/resources/gocam/"; 
 	static String output_file_stub = "./src/test/resources/gocam/test-"; 
-	static String output_blazegraph_journal = "/Users/bgood/noctua-config/blazegraph.jnl";//"./src/test/resources/gocam/blazegraph.jnl";  
+	static String output_blazegraph_journal = "./src/test/resources/gocam/blazegraph.jnl";  //"/Users/bgood/noctua-config/blazegraph.jnl";
 	static String tag = ""; //unexpanded
 	static String base_title = "title here";//"Will be replaced if a title can be found for the pathway in its annotations
 	static String default_contributor = "https://orcid.org/0000-0002-7334-7852"; //
 	static String default_provider = "https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";	
 	static String test_pathway_name = null;
-	static String go_lego_file = "./src/test/resources/go-lego-nothing.owl";
+	static String go_lego_file = "./src/test/resources/go-lego-test.owl";
 	static String go_plus_url = "http://purl.obolibrary.org/obo/go/extensions/go-plus.owl";
 	static String go_plus_file = "./target/go-plus.owl";
 	static Blazer blaze;
@@ -412,6 +412,190 @@ public class BioPaxtoGOTest {
 			}
 			assertTrue(n==1);
 			assertTrue(location, location.equals("http://purl.obolibrary.org/obo/GO_0005654"));
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferRegulatesViaOutputRegulates()}.
+	 * Test that if reaction1 has_output M and reaction2 is regulated by M then reaction1 regulates reaction2
+	 * Use pathway R-HSA-4641262 , reactions R-HSA-201691 regulates R-HSA-201685 
+	 * 	Beta-catenin is released from the destruction complex
+	 * 	https://reactome.org/content/detail/R-HSA-4641262 
+	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-4641262
+	 */
+	@Test
+	public final void testInferRegulatesViaOutputRegulates() {
+		TupleQueryResult result = null;
+		try {
+			result = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> "
+				+ "select ?prop " + 
+				"where { " + 
+				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-4641262/R-HSA-201691> } ." + 
+				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-4641262/R-HSA-201685> } . " + 
+				"  ?reaction1 ?prop ?reaction2 . "+
+				"}");
+			int n = 0; String prop = null;
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				prop = bindingSet.getValue("prop").stringValue();
+				n++;
+			}
+			assertTrue(n==1);
+			assertTrue("got "+prop, prop.equals("http://purl.obolibrary.org/obo/RO_0002629"));
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Test method for active site handling in {@link org.geneontology.gocam.exchange.BioPaxtoGO#defineReactionEntity}.
+	 * When reactome (this is a reactome specific hack) indicates in a Control object that a specific element of a complex
+	 * is the active controller (regulator, catalyst), then that part should be pulled out, linked to its parent via has_part and
+	 * used as the agent in the reaction.
+	 * This is also a test for {@link org.geneontology.gocam.exchange.GoCAM#convertEntityRegulatorsToBindingFunctions}
+	 * Use pathway R-HSA-4641262 , reaction = R-HSA-201685 
+	 * 	Beta-catenin is released from the destruction complex
+	 * 	https://reactome.org/content/detail/R-HSA-4641262 
+	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-4641262
+	 */
+	@Test
+	public final void testActiveSiteInController() {
+		TupleQueryResult result = null;
+		try {
+			result = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> "
+				+ "select ?pathway " + 
+				"where { " + 
+				"VALUES ?reaction { <http://model.geneontology.org/R-HSA-4641262/R-HSA-201685> } . "+ 
+				" ?binding_function obo:RO_0002213 ?reaction .  "
+				+ "?binding_function obo:BFO_0000050 ?process . "
+				+ "?process obo:RO_0002213 ?pathway . "
+				+ "?binding_function obo:RO_0002233 ?active_part . "
+				+ "?larger_thing obo:BFO_0000051 ?active_part "+
+				"}");
+			int n = 0; String pathway = null;
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				pathway = bindingSet.getValue("pathway").stringValue();
+				n++;
+			}
+			assertTrue(n==1);
+			assertTrue("got "+pathway, pathway.equals("http://model.geneontology.org/R-HSA-4641262/R-HSA-4641262"));
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+
+	/**
+	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferRegulatesViaOutputEnables}.
+	 * Use pathway R-HSA-4641262 , reaction1 = R-HSA-1504186 reaction2 = R-HSA-201677
+	 * Relation should be RO:0002413 directly positive regulates
+	 * 	DVL recruits GSK3beta:AXIN1 to the receptor complex
+	 * Phosphorylation of LRP5/6 cytoplasmic domain by membrane-associated GSK3beta
+	 * 	https://reactome.org/content/detail/R-HSA-4641262 
+	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-4641262
+	 * 
+	 * Also an active site detection test
+	 */
+	@Test
+	public final void testInferRegulatesViaOutputEnables() {
+		TupleQueryResult result = null;
+		try {
+			result = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> "
+				+ "select ?pathway " + 
+				"where { " + 
+				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-4641262/R-HSA-1504186> } . "+ 
+				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-4641262/R-HSA-201677> } . "+
+				" ?reaction1 obo:RO_0002629 ?reaction2 . "
+				+ "?reaction2 obo:RO_0002333 ?active_part . "
+				+ "?larger_thing obo:BFO_0000051 ?active_part . "
+				+ "?reaction1 obo:BFO_0000050 ?pathway "+
+				
+				"}");
+			int n = 0; String pathway = null;
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				pathway = bindingSet.getValue("pathway").stringValue();
+				n++;
+			}
+			assertTrue(n==1);
+			assertTrue("got "+pathway, pathway.equals("http://model.geneontology.org/R-HSA-4641262/R-HSA-4641262"));
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	//gomodel:R-HSA-4641262/R-HSA-201677 / RO:0002413 / gomodel:R-HSA-4641262/R-HSA-201691
+	// #inferProvidesInput	
+	/**
+	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferProvidesInput}.
+	 * Use pathway R-HSA-4641262 , reaction1 = R-HSA-201677 reaction2 = R-HSA-201691
+	 * Relation should be RO:0002413 directly positive regulates
+	 * Phosphorylation of LRP5/6 cytoplasmic domain by membrane-associated GSK3beta
+	 * Phosphorylation of LRP5/6 cytoplasmic domain by CSNKI
+	 * 	https://reactome.org/content/detail/R-HSA-4641262 
+	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-4641262
+	 * 
+	 * Also an active site detection test
+	 */
+	@Test
+	public final void testInferProvidesInput() {
+		TupleQueryResult result = null;
+		try {
+			result = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> "
+				+ "select ?pathway " + 
+				"where { " + 
+				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-4641262/R-HSA-201677> } . "+ 
+				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-4641262/R-HSA-201691> } . "+
+				" ?reaction1 obo:RO_0002413 ?reaction2 . "
+				+ "?reaction1 obo:BFO_0000050 ?pathway "+				
+				"}");
+			int n = 0; String pathway = null;
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				pathway = bindingSet.getValue("pathway").stringValue();
+				n++;
+			}
+			assertTrue(n==1);
+			assertTrue("got "+pathway, pathway.equals("http://model.geneontology.org/R-HSA-4641262/R-HSA-4641262"));
 		} catch (QueryEvaluationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
