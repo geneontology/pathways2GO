@@ -176,8 +176,10 @@ public class BioPaxtoGO {
 				//"/Users/bgood/Desktop/test/go_cams/plant-reactome/reactome-Oryza_sativa-";
 				"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
 		bp2g.blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";  
-		bp2g.go_lego_file = "/Users/bgood/git/noctua_exchange/exchange/src/test/go-lego-test.owl";
-
+		bp2g.go_lego_file = "/Users/bgood/git/noctua_exchange/exchange/src/test/resources/go-lego-test.owl";
+		bp2g.go_plus_file = "/Users/bgood/gocam_ontology/go-plus.owl";
+		bp2g.goplus = new GOPlus(bp2g.go_plus_file);
+		
 		String base_title = "title here";//"Will be replaced if a title can be found for the pathway in its annotations
 		String base_contributor = "https://orcid.org/0000-0002-7334-7852"; //Ben Good
 		String base_provider = "https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";
@@ -185,16 +187,13 @@ public class BioPaxtoGO {
 		if(expand_subpathways) {
 			tag = "expanded";
 		}	
-		bp2g.go_plus_file = "/Users/bgood/gocam_ontology/go-plus.owl";
-		bp2g.go_lego_file = "/Users/bgood/git/noctua_exchange/exchange/src/test/go-lego-test.owl";
-		bp2g.goplus = new GOPlus(bp2g.go_plus_file);
 		
 		Set<String> test_pathways = new HashSet<String>();
 		test_pathways.add("Signaling by BMP");
 		test_pathways.add("Glycolysis");
 		test_pathways.add("Disassembly of the destruction complex and recruitment of AXIN to the membrane");
-		//	//set to null to do full run
-		//	test_pathways = null;
+		//set to null to do full run
+		test_pathways = null;
 		
 		//set up reasoner and blazegraph output
 		//for blazegraph output 
