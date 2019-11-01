@@ -32,18 +32,29 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
    :consumes :cx ;
    :produces :cx .
 
-:indra a :tool, :nlp .
-:vsm-box a :tool, :curation .
+## tools
+
+:indra a :tool, :nlp ;
+   :produces :bel .
+
+:vsm-box a :tool, :curation ;
+   :produces :vsm-json .
+
+:boolean-modeling-tool a :tool, :boolean-modeling ;
+   :consumes :miJSON .
+
+:next-gen-enrichment-tool a :tool, :enrichment .
+
 
 ## conversions
 
 :causalTAB-to-go-cam a :conversion ;
   :left :causalTAB ;
   :right :go-cam ;
-  :spec "Vasundra working on this" ;
+  :spec "Vasundra working on this, will link to gdoc later" ;
   :implementation [
     :dir :left-to-right ;
-    :author gh:ebert 
+    :author gh:dustine32  
   ] .
 
 :biopax3-to-go-cam a :conversion ;
@@ -52,7 +63,8 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
   :spec "Ben" ;
   :implementation [
     :dir :left-to-right ;
-    :author gh:bgood ;
+    :author gh:goodb ;
+    :status "beta" ;
     :code "https://github.com/geneontology/pathways2GO/"^^xsd:anyURI
   ] .
 
