@@ -1,0 +1,83 @@
+PREFIX : <http://x.org/>
+PREFIX gh: <https://github.com/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+## formats
+
+:go-cam a :format , :activity-centric ;
+   :spec "https://github.com/geneontology/go-shapes/"^^xsd:anyURI .
+:biopax3 a :format , :entity-centric .
+:cx a :format , :generic .
+:bel a :format , :generic .
+:sif a :format , :generic .
+:vsm-json a :format , :generic .
+:gpad a :format , :entity-to-term .
+:gaf a :format , :entity-to-term .
+:causalTAB a :format, :entity-centric .
+:miJSON a :format, :entity-centric .
+:signorTSV a :format, :entity-centric .
+:miTAB a :format, :entity-centric .
+:MI2CAST a :format, :entity-centric .
+
+
+## resources
+
+:go-central a :database, :curated ;
+   :produces :go-cam .
+:MODs a :database, :curated ;
+   :produces :gaf, :gpad .
+:signore a :database, :curated ;
+   :produces :signoreTSV, :causalTAB .
+:NDEX a :database, :aggregated ;
+   :consumes :cx ;
+   :produces :cx .
+
+## tools
+
+:indra a :tool, :nlp ;
+   :produces :bel .
+
+:vsm-box a :tool, :curation ;
+   :produces :vsm-json .
+
+:boolean-modeling-tool a :tool, :boolean-modeling ;
+   :consumes :miJSON .
+
+:next-gen-enrichment-tool a :tool, :enrichment .
+
+
+## conversions
+
+:causalTAB-to-go-cam a :conversion ;
+  :left :causalTAB ;
+  :right :go-cam ;
+  :spec "Vasundra working on this, will link to gdoc later" ;
+  :implementation [
+    :dir :left-to-right ;
+    :author gh:dustine32  
+  ] .
+
+:biopax3-to-go-cam a :conversion ;
+  :left :biopax3 ;
+  :right :go-cam ;
+  :spec "Ben" ;
+  :implementation [
+    :dir :left-to-right ;
+    :author gh:goodb ;
+    :status "beta" ;
+    :code "https://github.com/geneontology/pathways2GO/"^^xsd:anyURI
+  ] .
+
+:vsm-json-to-MIjson a :conversion ;
+  :left :vsm-json ;
+  :right :miJSON ;
+  :spec "Steven" ;
+  :implementation [
+    :dir :left-to-right ;
+    :author gh: 
+  ] .
+
+
+
+
+
