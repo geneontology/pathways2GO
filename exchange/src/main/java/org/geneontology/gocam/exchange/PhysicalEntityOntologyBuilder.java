@@ -6,6 +6,7 @@ package org.geneontology.gocam.exchange;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -126,15 +127,15 @@ public class PhysicalEntityOntologyBuilder {
 		String pro_mapping = "/Users/bgood/Desktop/test/REO/promapping.txt";
 		String input_biopax = 
 		//		"/Users/bgood/Desktop/test/biopax/ca_pathway_rna_example.owl";
-		//		"/Users/bgood/Desktop/test/biopax/Homo_sapiens_sept9_2019.owl";
+				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_sept9_2019.owl";
 		//"/Users/bgood/Desktop/test/biopax/glycolysis.owl";
-		"/Users/bgood/Downloads/biopax3/Oryza_sativa.owl";
+		//"/Users/bgood/Downloads/biopax3/Oryza_sativa.owl";
 		
 		String outputformat = "RDFXML";
 		String outfilename = 
-		//"/Users/bgood/gocam_ontology/REO";
+		"/Users/bgood/gocam_ontology/REO";
 		//"/Users/bgood/Desktop/test/REO/glycolysis_entities";
-		"/Users/bgood/Desktop/test/REO/Oryza_sativa_entities";
+		//"/Users/bgood/Desktop/test/REO/Oryza_sativa_entities";
 		
 		String base_ont_title = "Reactome Entity Ontology (REO)";//"SignalingByERBB2_Physical_Entities"; //"Reactome_physical_entities";
 		String base_extra_info = "https://reactome.org/content/detail/";
@@ -155,8 +156,9 @@ public class PhysicalEntityOntologyBuilder {
 		//String iri = "http://model.geneontology.org/"+base_ont_title;
 		//making it resolvable.. where it currently lives
 		//TODO better URIs
-		String ont_uri = "https://github.com/geneontology/pathways2GO/raw/master/exchange/generated/plant-REO.owl";
-				//"https://github.com/geneontology/pathways2GO/raw/master/exchange/generated/REO.owl";
+		String ont_uri = 
+				//"https://github.com/geneontology/pathways2GO/raw/master/exchange/generated/plant-REO.owl";
+				"https://github.com/geneontology/pathways2GO/raw/master/exchange/generated/REO.owl";
 		IRI ont_iri = IRI.create(ont_uri);
 		GoCAM go_cam = new GoCAM(ont_iri, base_ont_title, base_contributor, null, base_provider, add_lego_import);
 		//Annotate the ontology
@@ -677,6 +679,7 @@ public class PhysicalEntityOntologyBuilder {
 		String mapping = "/Users/bgood/Desktop/test/REO/promapping.txt";
 		Map<String, Set<String>> exact_map = PRO.readReact2PRO(mapping, "exact");
 		Map<String, Set<String>> any_map = PRO.readReact2PRO(mapping, "is_a");
+		Map<String, String> physical_ref = new HashMap<String, String>();
 		any_map.putAll(exact_map);
 		for (PhysicalEntity e : biopax_model.getObjects(PhysicalEntity.class)){
 			n_all++;
@@ -733,6 +736,7 @@ public class PhysicalEntityOntologyBuilder {
 				n_rna_region++;
 			}else if(e.getModelInterface().equals(PhysicalEntity.class)){
 				n_physical++;
+				physical_ref.put(BioPaxtoGO.getEntityReferenceId(e), e.getDisplayName());
 			}else {
 				n_other++;
 				System.out.println(e.getModelInterface());
@@ -748,6 +752,11 @@ public class PhysicalEntityOntologyBuilder {
 		System.out.println("n_all_pro\tn_sets_pro\tn_complex_pro\tn_protein_prp\tn_small_molecule_pro");
 		System.out.println( n_all_pro+"\t"+n_sets_pro+"\t"+n_complex_pro+"\t"+n_protein_pro+"\t"+n_small_molecule_pro);
 
+		FileWriter f = new FileWriter("/Users/bgood/Desktop/untyped_physical.txt");
+		for(String n : physical_ref.keySet()) {
+			f.write(n+"\t"+physical_ref.get(n)+"\n");
+		}
+		f.close();
 	}
 
 }

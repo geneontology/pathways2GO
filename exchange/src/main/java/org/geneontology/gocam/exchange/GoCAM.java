@@ -988,6 +988,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 					//should only end up with one per reaction.. make sure
 					continue;
 				}
+				String thing = transport_reaction.thing_label;
 				transport_pathways.add(transport_reaction.pathway_uri);
 				OWLNamedIndividual reaction = this.makeAnnotatedIndividual(transport_reaction.reaction_uri);
 				OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(molecular_function, reaction);

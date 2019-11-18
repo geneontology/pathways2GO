@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.ClassExpressionType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -31,6 +32,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.search.EntitySearcher;
+import org.semanticweb.owlapi.search.Searcher;
 import org.semanticweb.owlapi.util.OWLEntityRemover;
 
 /**
@@ -42,10 +44,10 @@ public class PRO {
 	OWLOntology pro_ont;
 	OWLObjectProperty only_in_taxon;
 	OWLObjectProperty in_taxon;
-	OWLClass human_class;
+	OWLClass taxon_class;
 	OWLClass protein_class;
-	OWLObjectSomeValuesFrom is_human_axiom;
-	OWLObjectSomeValuesFrom is_only_human_axiom;
+	OWLObjectSomeValuesFrom is_taxon_axiom;
+	OWLObjectSomeValuesFrom is_only_taxon_axiom;
 	OWLEntityRemover remover;
 
 
@@ -53,17 +55,17 @@ public class PRO {
 	 * @throws OWLOntologyCreationException 
 	 * 
 	 */
-	public PRO(String pro_file) throws OWLOntologyCreationException {
+	public PRO(String pro_file, String taxon_id) throws OWLOntologyCreationException {
 		ontman =  OWLManager.createOWLOntologyManager();
 		System.out.println("Loading "+pro_file);
 		pro_ont = ontman.loadOntologyFromOntologyDocument(new File(pro_file));
 		System.out.println("done loading");
 		in_taxon = ontman.getOWLDataFactory().getOWLObjectProperty(IRI.create("http://purl.obolibrary.org/obo/RO_0002162"));
 		only_in_taxon = ontman.getOWLDataFactory().getOWLObjectProperty(IRI.create("http://purl.obolibrary.org/obo/RO_0002160"));
-		human_class = ontman.getOWLDataFactory().getOWLClass(IRI.create("http://purl.obolibrary.org/obo/NCBITaxon_9606"));
+		taxon_class = ontman.getOWLDataFactory().getOWLClass(IRI.create("http://purl.obolibrary.org/obo/NCBITaxon_"+taxon_id));
 		protein_class = ontman.getOWLDataFactory().getOWLClass(IRI.create("http://purl.obolibrary.org/obo/PR_000000001"));
-		is_only_human_axiom = ontman.getOWLDataFactory().getOWLObjectSomeValuesFrom(only_in_taxon, human_class);
-		is_human_axiom = ontman.getOWLDataFactory().getOWLObjectSomeValuesFrom(in_taxon, human_class);
+		is_only_taxon_axiom = ontman.getOWLDataFactory().getOWLObjectSomeValuesFrom(only_in_taxon, taxon_class);
+		is_taxon_axiom = ontman.getOWLDataFactory().getOWLObjectSomeValuesFrom(in_taxon, taxon_class);
 
 		remover = new OWLEntityRemover(Collections.singleton(pro_ont)); 
 	}
@@ -74,9 +76,10 @@ public class PRO {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, IOException {
-		PRO pro = new PRO("/Users/bgood/gocam_ontology/go-lego-merged-9-23-2019.owl");
-		String human_specific = "/Users/bgood/gocam_ontology/go-lego-merged-9-23-2019-human.owl";
-		pro.makeSpeciesSpecificPRO(pro.human_class, human_specific);
+		PRO pro = new PRO("/Users/bgood/gocam_ontology/go-lego-merged-10-25-2019.owl", "9606"); //zfin 7955 pombe "4896"
+		String taxon_specific = "/Users/bgood/gocam_ontology/go-lego-merged-10-25-2019_pombe.owl";
+		pro.getEntityTypes();
+	//	pro.makeSpeciesSpecificPRO(pro.taxon_class, taxon_specific);
 
 	//	String mapping = "/Users/bgood/Desktop/test/REO/promapping.txt";
 	//	Map<String, Set<String>> exact_map = readReact2PRO(mapping, "exact");
@@ -121,15 +124,38 @@ or exact
 		return react_pros;
 	}
 
+	public void getEntityTypes() {
+		Set<OWLSubClassOfAxiom> sc_axes = pro_ont.getAxioms(AxiomType.SUBCLASS_OF);
+		Map<String, Integer> class_count = new HashMap<String, Integer>();
+		Map<String, String> class_example = new HashMap<String, String>();
+		for(OWLSubClassOfAxiom sc_ax : sc_axes) {
+			OWLClassExpression s = sc_ax.getSuperClass();
+			if(!s.isAnonymous()) {
+				Integer c = class_count.get(s.toString());
+				if(c==null) {
+					c = 0;
+					class_example.put(s.toString(), sc_ax.getSubClass().toString());
+				}
+				c++;
+				class_count.put(s.toString(), c);
+			}
+		}
+		for(String c : class_count.keySet()) {
+			if(class_count.get(c)>100) {
+				System.out.println(c+"\t"+class_count.get(c)+"\t"+class_example.get(c));
+			}
+		}
+	}
+	
 	public void makeSpeciesSpecificPRO(OWLClass target_species, String outfile) {
 		int n_axioms = pro_ont.getAxiomCount();
 		Set<OWLClass> all_class = pro_ont.getClassesInSignature();
 		int total = all_class.size();
 		int n = 0; int n_checked = 0;
 		for(OWLClass term : all_class) {
-			if(term.toString().contains("identifiers")) {
-				System.out.println("its a gene");
-			}
+//			if(term.toString().contains("identifiers")) {
+//				System.out.println("its a gene");
+//			}
 			n_checked++;
 			OWLClass species = getSpecies(term);
 			if(species!=null&&(!species.equals(target_species))) {
@@ -173,9 +199,9 @@ or exact
 		return species;
 	}
 
-	public boolean isHuman(OWLClass term) {
-		OWLSubClassOfAxiom s = ontman.getOWLDataFactory().getOWLSubClassOfAxiom(term, is_human_axiom);
-		OWLSubClassOfAxiom s2 = ontman.getOWLDataFactory().getOWLSubClassOfAxiom(term, is_only_human_axiom);
+	public boolean isTaxon(OWLClass term) {
+		OWLSubClassOfAxiom s = ontman.getOWLDataFactory().getOWLSubClassOfAxiom(term, is_taxon_axiom);
+		OWLSubClassOfAxiom s2 = ontman.getOWLDataFactory().getOWLSubClassOfAxiom(term, is_only_taxon_axiom);
 		boolean is_human_thing = false;
 		if(EntitySearcher.containsAxiom(s, pro_ont,false)||EntitySearcher.containsAxiom(s2, pro_ont,false)) {
 			is_human_thing = true;

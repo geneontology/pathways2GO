@@ -21,6 +21,7 @@ import org.geneontology.gocam.exchange.QRunner;
 import org.geneontology.rules.engine.Explanation;
 import org.geneontology.rules.engine.Triple;
 import org.geneontology.rules.engine.WorkingMemory;
+import org.obolibrary.robot.CatalogXmlIRIMapper;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
@@ -34,6 +35,8 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.search.EntitySearcher;
 
+import com.google.common.collect.Sets;
+
 /**
  * @author bgood
  *
@@ -45,13 +48,19 @@ public class ArachneValidator {
 	OWLOntology merged_annotations;
 	/**
 	 * @throws OWLOntologyCreationException 
+	 * @throws IOException 
 	 * 
 	 */
-	public ArachneValidator() throws OWLOntologyCreationException {		
+	public ArachneValidator() throws OWLOntologyCreationException, IOException {
+		String url_for_tbox = "http://purl.obolibrary.org/obo/go/extensions/go-lego.owl";
 		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
 		Map<String,OWLOntology> tboxes = new HashMap<String,OWLOntology>();	
-		tboxes.put("goplus",tman.loadOntologyFromOntologyDocument(new File("/Users/bgood/gocam_ontology/go-plus.owl")));
-		tboxes.put("golego",tman.loadOntologyFromOntologyDocument(new File("/Users/bgood/git/noctua_exchange/exchange/src/test/go-lego-test.owl")));
+		String catalog = "/Users/bgood/gocam_ontology/catalog-v001-for-noctua.xml";
+		System.out.println("using catalog: "+catalog);
+		tman.setIRIMappers(Sets.newHashSet(new CatalogXmlIRIMapper(catalog)));
+//		tboxes.put("goplus",tman.loadOntologyFromOntologyDocument(new File("/Users/bgood/gocam_ontology/go-plus.owl")));
+		tboxes.put("golego",tman.loadOntology(IRI.create(url_for_tbox)));
+//		tboxes.put("golego",tman.loadOntologyFromOntologyDocument(new File("/Users/bgood/git/noctua_exchange/exchange/src/test/go-lego-test.owl")));
 //		tboxes.put("ro",tman.loadOntologyFromOntologyDocument(new File(BioPaxtoGO.ro_file)));
 //		tboxes.put("legorel",tman.loadOntologyFromOntologyDocument(new File(BioPaxtoGO.legorel_file)));
 //		tboxes.put("go_bfo_bridge",tman.loadOntologyFromOntologyDocument(new File(BioPaxtoGO.go_bfo_bridge_file)));
@@ -59,21 +68,26 @@ public class ArachneValidator {
 //		tboxes.put("reactome",tman.loadOntologyFromOntologyDocument(new File(BioPaxtoGO.reactome_physical_entities_file)));
 		
 		merged_annotations = tman.createOntology();
-		for(OWLAxiom a : tboxes.get("goplus").getAxioms()){
-			if(a.isAnnotationAxiom()) {
-				tman.addAxiom(merged_annotations, a);
-			}
+		for(OWLAxiom a : tboxes.get("golego").getAxioms()){
+		if(a.isAnnotationAxiom()) {
+			tman.addAxiom(merged_annotations, a);
 		}
-		for(OWLAxiom a : tboxes.get("reactome").getAxioms()){
-			if(a.isAnnotationAxiom()) {
-				tman.addAxiom(merged_annotations, a);
-			}
-		}
-		for(OWLAxiom a : tboxes.get("ro").getAxioms()){
-			if(a.isAnnotationAxiom()) {
-				tman.addAxiom(merged_annotations, a);
-			}
-		}
+	}
+//		for(OWLAxiom a : tboxes.get("goplus").getAxioms()){
+//			if(a.isAnnotationAxiom()) {
+//				tman.addAxiom(merged_annotations, a);
+//			}
+//		}
+//		for(OWLAxiom a : tboxes.get("reactome").getAxioms()){
+//			if(a.isAnnotationAxiom()) {
+//				tman.addAxiom(merged_annotations, a);
+//			}
+//		}
+//		for(OWLAxiom a : tboxes.get("ro").getAxioms()){
+//			if(a.isAnnotationAxiom()) {
+//				tman.addAxiom(merged_annotations, a);
+//			}
+//		}
 		
 		go_cam = new GoCAM();
 		boolean add_inferences = true;
@@ -92,7 +106,7 @@ public class ArachneValidator {
 		ArachneValidator validator = new ArachneValidator();
 		String go_cam_folder = "/Users/bgood/Desktop/test/go_cams/reactome/";
 		//"/Users/bgood/Documents/GitHub/noctua-models/models/";
-		String out = "/Users/bgood/Desktop/test/go_cams/arachne_validator_reactome_oct16.txt";
+		String out = "/Users/bgood/Desktop/test/go_cams/arachne_validator_reactome_oct29.txt";
 		String filename_must_contain = "reactome";
 		String catalog_file = "/Users/bgood/gocam_ontology/catalog-no-import.xml";
 		validator.testConsistencyForFolder(go_cam_folder, out, filename_must_contain, catalog_file, true);
@@ -128,8 +142,6 @@ public class ArachneValidator {
 		for (String abox_file : files) {
 			if(abox_file.endsWith(".ttl")&&abox_file.contains(filename_must_contain)) {
 				total++;
-			}else {
-				files.remove(abox_file);
 			}
 		}
 		if(print_explanations) {

@@ -202,7 +202,7 @@ public class BioPaxtoGOTest {
 	/**
 	 * Test that all generated models are consistent.
 	 */
-	//@Test
+	@Test
 	public final void testOWLConsistency() {
 		File dir = new File(output_file_folder);
 		File[] directoryListing = dir.listFiles();
@@ -239,6 +239,7 @@ public class BioPaxtoGOTest {
 	 */
 	@Test
 	public final void testInferTransportProcess() {
+		System.out.println("Testing transport inference");
 		TupleQueryResult result = null;
 		try {
 			String query =
@@ -282,6 +283,7 @@ public class BioPaxtoGOTest {
 				e.printStackTrace();
 			}
 		}
+		System.out.println("Done testing transport inference");
 	}
 
 	/**
@@ -297,6 +299,7 @@ public class BioPaxtoGOTest {
 	 */
 	@Test
 	public final void testInferDissociationProcess() {
+		System.out.println("Testing dissociation inference");
 		TupleQueryResult result = null;
 		try {
 			result = blaze.runSparqlQuery(
@@ -337,6 +340,7 @@ public class BioPaxtoGOTest {
 				e.printStackTrace();
 			}
 		}
+		System.out.println("Done testing dissociation inference");
 	}
 	
 
@@ -350,6 +354,7 @@ public class BioPaxtoGOTest {
 	 */
 	@Test
 	public final void testOccursInFromEntityLocations() {
+		System.out.println("Testing occurs in from entities inference");
 		TupleQueryResult result = null;
 		try {
 			result = blaze.runSparqlQuery(
@@ -380,6 +385,7 @@ public class BioPaxtoGOTest {
 				e.printStackTrace();
 			}
 		}
+		System.out.println("Done occurs in from entities inference");
 	}
 	
 	
@@ -393,6 +399,7 @@ public class BioPaxtoGOTest {
 	 */
 	@Test
 	public final void testOccursInFromEnablerLocation() {
+		System.out.println("Testing occurs in from enabler inference");
 		TupleQueryResult result = null;
 		try {
 			result = blaze.runSparqlQuery(
@@ -423,6 +430,7 @@ public class BioPaxtoGOTest {
 				e.printStackTrace();
 			}
 		}
+		System.out.println("Done testing occurs in from enabler inference");
 	}
 	
 	/**
@@ -435,6 +443,7 @@ public class BioPaxtoGOTest {
 	 */
 	@Test
 	public final void testInferRegulatesViaOutputRegulates() {
+		System.out.println("Testing infer regulates via output regulates");
 		TupleQueryResult result = null;
 		try {
 			result = blaze.runSparqlQuery(
@@ -464,6 +473,7 @@ public class BioPaxtoGOTest {
 				e.printStackTrace();
 			}
 		}
+		System.out.println("Done testing infer regulates via output regulates");
 	}
 	
 	/**
@@ -479,6 +489,7 @@ public class BioPaxtoGOTest {
 	 */
 	@Test
 	public final void testActiveSiteInController() {
+		System.out.println("Testing active sites in controller");
 		TupleQueryResult result = null;
 		try {
 			result = blaze.runSparqlQuery(
@@ -511,6 +522,7 @@ public class BioPaxtoGOTest {
 				e.printStackTrace();
 			}
 		}
+		System.out.println("Done testing active sites in controller");
 	}
 	
 
@@ -527,6 +539,7 @@ public class BioPaxtoGOTest {
 	 */
 	@Test
 	public final void testInferRegulatesViaOutputEnables() {
+		System.out.println("Testing regulates via output enables");
 		TupleQueryResult result = null;
 		try {
 			result = blaze.runSparqlQuery(
@@ -560,6 +573,7 @@ public class BioPaxtoGOTest {
 				e.printStackTrace();
 			}
 		}
+		System.out.println("Done testing regulates via output enables");
 	}
 	
 	//gomodel:R-HSA-4641262/R-HSA-201677 / RO:0002413 / gomodel:R-HSA-4641262/R-HSA-201691
@@ -577,6 +591,7 @@ public class BioPaxtoGOTest {
 	 */
 	@Test
 	public final void testInferProvidesInput() {
+		System.out.println("Testing provides input");
 		TupleQueryResult result = null;
 		try {
 			result = blaze.runSparqlQuery(
@@ -607,5 +622,6 @@ public class BioPaxtoGOTest {
 				e.printStackTrace();
 			}
 		}
+		System.out.println("Done testing regulates via output enables");
 	}
 }
