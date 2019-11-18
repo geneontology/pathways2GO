@@ -119,7 +119,7 @@ public class GoCAM {
 	chebi_molecular_entity, 
 	chebi_protein, chebi_information_biomacromolecule, chemical_entity, chemical_role, 
 	catalytic_activity, signal_transducer_activity, transporter_activity,
-	binding, protein_binding, protein_complex_binding, 
+	binding, protein_binding, protein_complex_binding, establishment_of_localization, 
 	establishment_of_protein_localization, negative_regulation_of_molecular_function, positive_regulation_of_molecular_function,
 	chebi_mrna, chebi_rna, chebi_dna, unfolded_protein, 
 	transport, protein_transport, human, 
@@ -248,6 +248,7 @@ public class GoCAM {
 		protein_binding = df.getOWLClass(IRI.create(obo_iri+"GO_0005515"));
 		protein_complex_binding = df.getOWLClass(IRI.create(obo_iri+"GO_0044877"));	
 		establishment_of_protein_localization = df.getOWLClass(IRI.create(obo_iri+"GO_0045184"));
+		establishment_of_localization = df.getOWLClass(IRI.create(obo_iri+"GO_0051234"));
 		negative_regulation_of_molecular_function = df.getOWLClass(IRI.create(obo_iri+"GO_0044092"));
 		positive_regulation_of_molecular_function = df.getOWLClass(IRI.create(obo_iri+"GO_0044093"));		
 		signal_transducer_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0004871"));
@@ -966,17 +967,13 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 * and the input entities are the same as the output entities
 	 * and the input entities have different locations from the output entities
 	 * then add has_target_end_location and has_target_start_location attributes to the reaction node
-	 * 
-	 * if the reaction is enabled by something
-	 * and the entities are proteins
-	 * then tag it as rdf:type 'protein transport'
-	 * else tag it as 'transport' 
+	 * and add type 'establishment of localization'  
 	 * See: 'TCF dependent signaling in response to WNT' https://reactome.org/PathwayBrowser/#/R-HSA-201681&SEL=R-HSA-201669&PATH=R-HSA-162582,R-HSA-195721
 	 * (1 inference for reaction 'Beta-catenin translocates to the nucleus'
 	 *  Downstream dependency alert: do this before enabler inference step below since we don't want that rule to fire on transport reactions
 	 */	
 	private RuleResults inferTransportProcess(String model_id, RuleResults r) {
-		String transport_rule = "transport";
+		String transport_rule = "localization rule";
 		Integer transport_count = r.checkInitCount(transport_rule, r);
 		Set<String> transport_pathways = r.checkInitPathways(transport_rule, r);		
 		Set<InferredTransport> transports = qrunner.findTransportReactions();		
@@ -993,21 +990,24 @@ final long counterValue = instanceCounter.getAndIncrement();
 				OWLNamedIndividual reaction = this.makeAnnotatedIndividual(transport_reaction.reaction_uri);
 				OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(molecular_function, reaction);
 				ontman.removeAxiom(go_cam_ont, classAssertion);
-				//add transport type
-				//but only if there is an enabler
-				String explain = "No type is assigned because the reaction did not have one assigned.  This is likely some kind of transport function but without something to enable it, the GO will not make a claim about what it might be.";
-				if(transport_reaction.enabler_uri!=null) {
-					if(transport_reaction.thing_type_uri.contains("uniprot")) {
-						addTypeAssertion(reaction, protein_transport);
-						explain = "This reaction represents the process of transporting a protein from one location to another, hence the GO-CAM conversion automatically assigned the type 'protein transport'";
-					}else {
-						addTypeAssertion(reaction, transport);
-						explain = "This reaction represents the process of transporting something aside from a protein (e.g. a complex) from one location to another, hence the GO-CAM conversion automatically assigned the type 'protein transport'";
-					}
-				}else {
-					addTypeAssertion(reaction, GoCAM.molecular_function);
-					System.out.println("No enabler for transport reaction "+getaLabel(reaction));
-				}
+				addTypeAssertion(reaction, establishment_of_localization);
+				String explain = "This reaction represents the process of localizing something (a protein, complex, etc.)";
+				
+//				//add transport type
+//				//but only if there is an enabler
+//				String explain = "No type is assigned because the reaction did not have one assigned.  This is likely some kind of transport function but without something to enable it, the GO will not make a claim about what it might be.";
+//				if(transport_reaction.enabler_uri!=null) {
+//					if(transport_reaction.thing_type_uri.contains("uniprot")) {
+//						addTypeAssertion(reaction, protein_transport);
+//						explain = "This reaction represents the process of transporting a protein from one location to another, hence the GO-CAM conversion automatically assigned the type 'protein transport'";
+//					}else {
+//						addTypeAssertion(reaction, transport);
+//						explain = "This reaction represents the process of transporting something aside from a protein (e.g. a complex) from one location to another, hence the GO-CAM conversion automatically assigned the type 'protein transport'";
+//					}
+//				}else {
+//					addTypeAssertion(reaction, GoCAM.molecular_function);
+//					System.out.println("No enabler for transport reaction "+getaLabel(reaction));
+//				}
 				addLiteralAnnotations2Individual(reaction.getIRI(), rdfs_comment, explain);
 				//record what moved where so the classifier can see it properly
 				OWLNamedIndividual start_loc = makeAnnotatedIndividual(makeRandomIri(model_id));

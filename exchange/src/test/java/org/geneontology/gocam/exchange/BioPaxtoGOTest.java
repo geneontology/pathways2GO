@@ -269,7 +269,7 @@ public class BioPaxtoGOTest {
 				n++;
 			}
 			assertTrue(n==1);
-			assertTrue(type.equals("http://purl.obolibrary.org/obo/GO_0003674"));
+			assertTrue(type.equals("http://purl.obolibrary.org/obo/GO_0051234"));
 			assertTrue(inputs==1);
 			assertTrue(outputs==1);
 		} catch (QueryEvaluationException e) {
