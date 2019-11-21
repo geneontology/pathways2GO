@@ -1,0 +1,14 @@
+{
+    "blacklist": [
+        "http://www.w3.org/2004/02/skos/core#definition",
+        "http://www.w3.org/2004/02/skos/core#example",
+        "http://www.w3.org/2004/02/skos/core#note",
+        "http://www.w3.org/2000/01/rdf-schema#label",
+        "http://dig.isi.edu/ontologies/dig-annotation/crm_equivalent"
+    ],
+    "instance": {
+        "http://x.org/conversion": "#ff0000",
+        "default": "#ffff99"
+    }
+}
+    
