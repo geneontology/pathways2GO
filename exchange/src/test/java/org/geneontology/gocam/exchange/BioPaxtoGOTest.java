@@ -86,6 +86,7 @@ public class BioPaxtoGOTest {
 		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();					
 		OWLOntology tbox = ontman.loadOntologyFromOntologyDocument(new File(go_lego_file));
 		Set<OWLOntology> imports = tbox.getImports();
+		imports.add(tbox);
 		//initialize the rules for inference
 		tbox_qrunner = new QRunner(imports, null, true, false, false);
 		System.out.println("done building arachne");		
@@ -211,7 +212,7 @@ public class BioPaxtoGOTest {
 					go_cam.qrunner.jena = go_cam.qrunner.makeJenaModel(wm_with_tbox);
 					boolean is_logical = go_cam.validateGoCAM();	
 					System.out.println(abox_file.getName()+" owl consistent:"+is_logical);
-					assertTrue(is_logical);
+					assertTrue(abox_file.getName()+" owl consistent:"+is_logical, is_logical);
 				} catch (OWLOntologyCreationException | IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -224,7 +225,7 @@ public class BioPaxtoGOTest {
 	/**
 	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferTransportProcess()}.
 	 * Test that transport processes are:
-	 *  correctly typed as molecular function
+	 *  correctly typed as localization
 	 * 	have the proper starting and ending locations
 	 *  have the right number of inputs and outputs
 	 *  have an input that is also an output 
@@ -234,8 +235,8 @@ public class BioPaxtoGOTest {
 	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-201451
 	 */
 	@Test
-	public final void testInferTransportProcess() {
-		System.out.println("Testing transport inference");
+	public final void testInferLocalizationProcess() {
+		System.out.println("Testing localization inference");
 		TupleQueryResult result = null;
 		try {
 			String query =
@@ -281,13 +282,71 @@ public class BioPaxtoGOTest {
 		}
 		System.out.println("Done testing transport inference");
 	}
+	
+	/**
+	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferTransportProcess()}.
+	 * Test that protein transport processes are:
+	 *  correctly typed as protein localization 
+	 * 	have the proper starting and ending locations
+	 *  have the right number of inputs and outputs
+	 *  have an input that is also an output 
+	 * Use reaction in TCF dependent signaling in response to WNT R-HSA-201681
+	 * Beta-catenin translocates to the nucleus
+	 * 	reaction uri http://model.geneontology.org/R-HSA-201681/R-HSA-201669 
+	 */
+	@Test
+	public final void testInferProteinLocalizationProcess() {
+		System.out.println("Testing localization inference");
+		TupleQueryResult result = null;
+		try {
+			String query =
+					"prefix obo: <http://purl.obolibrary.org/obo/> "
+					+ "select ?type (count(distinct ?output) AS ?outputs) (count(distinct ?input) AS ?inputs) " + 
+					"where { " + 
+					" VALUES ?reaction { <http://model.geneontology.org/R-HSA-201681/R-HSA-201669> } "
+					+ " ?reaction rdf:type ?type . " + 
+					"  filter(?type != owl:NamedIndividual) "
+					+ " ?reaction obo:RO_0002234 ?output . " + 
+					" ?reaction obo:RO_0002233 ?input . " + 
+					"  ?reaction obo:RO_0002339 ?endlocation . " + 
+					"  ?endlocation rdf:type <http://purl.obolibrary.org/obo/GO_0005654> . " + 
+					"  ?reaction obo:RO_0002338 ?startlocation . " + 
+					"  ?startlocation rdf:type <http://purl.obolibrary.org/obo/GO_0005829> . "
+					+ "?input rdf:type ?entityclass . "
+					+ "?output rdf:type ?entityclass ." + 
+					"}"
+				+" group by ?type ";
+			result = blaze.runSparqlQuery(query);
+			int n = 0; String type = null; int outputs = 0; int inputs = 0;
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				type = bindingSet.getValue("type").stringValue();
+				outputs = Integer.parseInt(bindingSet.getValue("outputs").stringValue());
+				inputs = Integer.parseInt(bindingSet.getValue("inputs").stringValue());
+				n++;
+			}
+			assertTrue(n==1);
+			assertTrue(type.equals("http://purl.obolibrary.org/obo/GO_0045184"));
+			assertTrue(inputs==1);
+			assertTrue(outputs==1);
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		System.out.println("Done testing protein transport inference");
+	}
 
 	/**
 	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferTransportProcess()}.
 	 * Test that dissociation processes are:
-	 * 	correctly typed: as molecular function 
-	 *  have proper start and end locations defined 	
-	 *  and have the correct number of inputs and outputs
+	 * 	correctly typed: as protein complex disassembly GO_0032984  
 	 * Use reaction in Signaling By BMP R-HSA-201451
 	 * 	Phospho-R-Smad1/5/8 dissociates from the receptor complex
 	 * 	https://reactome.org/content/detail/R-HSA-201453
@@ -300,31 +359,20 @@ public class BioPaxtoGOTest {
 		try {
 			result = blaze.runSparqlQuery(
 				"prefix obo: <http://purl.obolibrary.org/obo/> "
-				+ "select ?type (count(distinct ?output) AS ?outputs) (count(distinct ?input) AS ?inputs) " + 
+				+ "select ?type " + 
 				"where { " + 
 				"VALUES ?reaction { <http://model.geneontology.org/R-HSA-201451/R-HSA-201453> }" + 
 				"  ?reaction rdf:type ?type .	" + 
-				"  ?reaction obo:RO_0002339 ?endlocation . " + 
-				"  ?endlocation rdf:type <http://purl.obolibrary.org/obo/GO_0005829> . " + 
-				"  ?reaction obo:RO_0002338 ?startlocation . " + 
-				"  ?startlocation rdf:type <http://purl.obolibrary.org/obo/GO_0031901> ." + 
-				"  ?reaction obo:RO_0002234 ?output . " + 
-				"  ?reaction obo:RO_0002233 ?input ." + 
-				"  filter(?type != owl:NamedIndividual)" + 
-				"} "+
-				"group by ?type ");
-			int n = 0; String type = null; int outputs = 0; int inputs = 0;
+				"  filter(?type != owl:NamedIndividual) " + 
+				"} ");
+			int n = 0; String type = null; 
 			while (result.hasNext()) {
 				BindingSet bindingSet = result.next();
 				type = bindingSet.getValue("type").stringValue();
-				outputs = Integer.parseInt(bindingSet.getValue("outputs").stringValue());
-				inputs = Integer.parseInt(bindingSet.getValue("inputs").stringValue());
 				n++;
 			}
 			assertTrue(n==1);
-			assertTrue(type.equals("http://purl.obolibrary.org/obo/GO_0003674"));
-			assertTrue(outputs == 2);
-			assertTrue(inputs == 1);
+			assertTrue(type.equals("http://purl.obolibrary.org/obo/GO_0032984"));
 		} catch (QueryEvaluationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
