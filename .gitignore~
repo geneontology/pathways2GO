@@ -1,5 +1,14 @@
-/.DS_Store
+*.DS_Store
 /.travis.yml~
 *.class
 exchange/arachne.log
 exchange/src/test/resources/.DS_Store
+exchange/target/classes/*
+exchange/target/go-plus.owl
+exchange/target/maven*
+*.log
+exchange/target/test-classes/*
+exchange/src/test/resources/biopax/catalog-v001.xml
+exchange/src/test/resources/gocam/*
+
+*.ttl

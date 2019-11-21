@@ -61,7 +61,6 @@ public class BioPaxtoGOTest {
 	static Blazer blaze;
 	static QRunner tbox_qrunner;
 
-	static OWLReasoner tbox_reasoner = null;
 	/**
 	 * @throws java.lang.Exception 
 	 */
@@ -86,12 +85,9 @@ public class BioPaxtoGOTest {
 		//set up for validation
 		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();					
 		OWLOntology tbox = ontman.loadOntologyFromOntologyDocument(new File(go_lego_file));
-		System.out.println("done loading, building structural reasoner for shex validation");
-		OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
-		tbox_reasoner = reasonerFactory.createReasoner(tbox);
-		System.out.println("done building structural reasoner, now building arachne");
+		Set<OWLOntology> imports = tbox.getImports();
 		//initialize the rules for inference
-		tbox_qrunner = new QRunner(Collections.singleton(tbox), null, true, false, false);
+		tbox_qrunner = new QRunner(imports, null, true, false, false);
 		System.out.println("done building arachne");		
 		//run the conversion on all the test biopax files
 		System.out.println("running biopaxtogo on all test files");

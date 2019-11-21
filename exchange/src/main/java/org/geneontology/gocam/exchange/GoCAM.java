@@ -119,7 +119,7 @@ public class GoCAM {
 	chebi_molecular_entity, 
 	chebi_protein, chebi_information_biomacromolecule, chemical_entity, chemical_role, 
 	catalytic_activity, signal_transducer_activity, transporter_activity,
-	binding, protein_binding, protein_complex_binding, establishment_of_localization, 
+	binding, protein_binding, protein_complex_binding, establishment_of_localization, protein_complex_dissassembly, 
 	establishment_of_protein_localization, negative_regulation_of_molecular_function, positive_regulation_of_molecular_function,
 	chebi_mrna, chebi_rna, chebi_dna, unfolded_protein, 
 	transport, protein_transport, human, 
@@ -249,6 +249,7 @@ public class GoCAM {
 		protein_complex_binding = df.getOWLClass(IRI.create(obo_iri+"GO_0044877"));	
 		establishment_of_protein_localization = df.getOWLClass(IRI.create(obo_iri+"GO_0045184"));
 		establishment_of_localization = df.getOWLClass(IRI.create(obo_iri+"GO_0051234"));
+		protein_complex_dissassembly = df.getOWLClass(IRI.create(obo_iri+"GO_0032984"));
 		negative_regulation_of_molecular_function = df.getOWLClass(IRI.create(obo_iri+"GO_0044092"));
 		positive_regulation_of_molecular_function = df.getOWLClass(IRI.create(obo_iri+"GO_0044093"));		
 		signal_transducer_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0004871"));
@@ -936,13 +937,14 @@ final long counterValue = instanceCounter.getAndIncrement();
 	/**
 	 * Use sparql queries to inform modifications to the go-cam owl ontology 
 	 * assumes it is loaded with everything to start with a la qrunner = new QRunner(go_cam_ont); 
+	 * @param tbox_qrunner 
 	 * @throws IOException 
 	 */
-	RuleResults applySparqlRules(String model_id) {
+	RuleResults applySparqlRules(String model_id, QRunner tbox_qrunner) {
 
 		RuleResults r = new RuleResults();
 		//NOTE that the order these are run matters.
-		r = inferTransportProcess(model_id, r);	//must be run before occurs_in and before deleteLocations	 
+		r = inferTransportProcess(model_id, r, tbox_qrunner);	//must be run before occurs_in and before deleteLocations	 
 		r = inferOccursInFromEntityLocations(model_id, r);
 		//This is turned off based on discussions May 8, 2018
 		//we will now only be capturing location information in the form of occurs_in statements on reactions.
@@ -972,7 +974,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 * (1 inference for reaction 'Beta-catenin translocates to the nucleus'
 	 *  Downstream dependency alert: do this before enabler inference step below since we don't want that rule to fire on transport reactions
 	 */	
-	private RuleResults inferTransportProcess(String model_id, RuleResults r) {
+	private RuleResults inferTransportProcess(String model_id, RuleResults r, QRunner tbox_qrunner) {
 		String transport_rule = "localization rule";
 		Integer transport_count = r.checkInitCount(transport_rule, r);
 		Set<String> transport_pathways = r.checkInitPathways(transport_rule, r);		
@@ -985,29 +987,27 @@ final long counterValue = instanceCounter.getAndIncrement();
 					//should only end up with one per reaction.. make sure
 					continue;
 				}
-				String thing = transport_reaction.thing_label;
 				transport_pathways.add(transport_reaction.pathway_uri);
 				OWLNamedIndividual reaction = this.makeAnnotatedIndividual(transport_reaction.reaction_uri);
 				OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(molecular_function, reaction);
 				ontman.removeAxiom(go_cam_ont, classAssertion);
-				addTypeAssertion(reaction, establishment_of_localization);
-				String explain = "This reaction represents the process of localizing something (a protein, complex, etc.)";
 				
-//				//add transport type
-//				//but only if there is an enabler
-//				String explain = "No type is assigned because the reaction did not have one assigned.  This is likely some kind of transport function but without something to enable it, the GO will not make a claim about what it might be.";
-//				if(transport_reaction.enabler_uri!=null) {
-//					if(transport_reaction.thing_type_uri.contains("uniprot")) {
-//						addTypeAssertion(reaction, protein_transport);
-//						explain = "This reaction represents the process of transporting a protein from one location to another, hence the GO-CAM conversion automatically assigned the type 'protein transport'";
-//					}else {
-//						addTypeAssertion(reaction, transport);
-//						explain = "This reaction represents the process of transporting something aside from a protein (e.g. a complex) from one location to another, hence the GO-CAM conversion automatically assigned the type 'protein transport'";
-//					}
-//				}else {
-//					addTypeAssertion(reaction, GoCAM.molecular_function);
-//					System.out.println("No enabler for transport reaction "+getaLabel(reaction));
-//				}
+				String thing_type_uri = transport_reaction.thing_type_uri;
+				OWLClass thing = this.df.getOWLClass(IRI.create(thing_type_uri));
+				Set<OWLClass> entity_types = tbox_qrunner.getSuperClasses(thing, false);
+				System.out.println(thing_type_uri+" types "+entity_types);
+				String explain = "This reaction represents the process of localizing ";
+				if(entity_types!=null&&entity_types.contains(chebi_protein)) {
+					addTypeAssertion(reaction, establishment_of_protein_localization);
+					explain+=" a protein.";
+				}else {
+					addTypeAssertion(reaction, establishment_of_localization);
+					if(entity_types.contains(go_complex)) {
+						explain+=" a complex.";
+					}
+					explain+=" something.";
+				}	
+				
 				addLiteralAnnotations2Individual(reaction.getIRI(), rdfs_comment, explain);
 				//record what moved where so the classifier can see it properly
 				OWLNamedIndividual start_loc = makeAnnotatedIndividual(makeRandomIri(model_id));

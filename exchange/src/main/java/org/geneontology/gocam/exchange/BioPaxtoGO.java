@@ -103,16 +103,6 @@ public class BioPaxtoGO {
 	String go_lego_file;
 	String go_plus_file;
 	GOPlus goplus; //The fully axiomitized Gene Ontology. Used in multiple places for different purposes. 
-	//TODO replace this with a configuration that accepts go-lego and uses a catalogue file to set up local imports of everything
-/*	public static final String ro_file = "/Users/bgood/gocam_ontology/ro.owl"; 
-	public static final String goplus_file = "/Users/bgood/gocam_ontology/go-plus.owl";
-	public static final String legorel_file = "/Users/bgood/gocam_ontology/legorel.owl"; 
-	public static final String go_bfo_bridge_file = "/Users/bgood/gocam_ontology/go-bfo-bridge.owl"; 
-	public static final String eco_base_file = "/Users/bgood/gocam_ontology/eco-base.owl"; 
-	public static final String reactome_physical_entities_file = "/Users/bgood/gocam_ontology/REO.owl";
-*/
-	//"/Users/bgood/Desktop/test/REO/Oryza_sativa_entities.owl";
-//	Set<String> tbox_files;
 	String blazegraph_output_journal;//Generated models will be stored both as files and as entries in this blazegraph journal.  Note this is ready for use in a Noctua/Minerva instance without any further processing.
 	ImportStrategy strategy;
 	enum ImportStrategy {
@@ -171,10 +161,12 @@ public class BioPaxtoGO {
 		BioPaxtoGO bp2g = new BioPaxtoGO();
 		String input_biopax = 
 				//"/Users/bgood/Downloads/biopax3/Oryza_sativa.owl";
-				"/Users/bgood/Desktop/test/biopax/Homo_sapiens_sept9_2019.owl";
+				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_sept9_2019.owl";
+				"/Users/bgood/Desktop/test/biopax/wnt-curator-195721.owl";
 		String converted = 
 				//"/Users/bgood/Desktop/test/go_cams/plant-reactome/reactome-Oryza_sativa-";
-				"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
+				"/Users/bgood/Desktop/test/go_cams/tmp-wnt-curator/";
+				//"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
 		bp2g.blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";  
 		bp2g.go_lego_file = "/Users/bgood/git/noctua_exchange/exchange/src/test/resources/go-lego-test.owl";
 		bp2g.go_plus_file = "/Users/bgood/gocam_ontology/go-plus.owl";
@@ -409,7 +401,7 @@ public class BioPaxtoGO {
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
 		//infer new edges based on sparql matching
 		System.out.println("Before sparql inference -  triples: "+go_cam.qrunner.nTriples());
-		GoCAM.RuleResults rule_results = go_cam.applySparqlRules(reactome_id);
+		GoCAM.RuleResults rule_results = go_cam.applySparqlRules(reactome_id, tbox_qrunner);
 		System.out.println("After sparql inference -  triples: "+go_cam.qrunner.nTriples());
 		System.out.println("Rule results:\n"+rule_results.toString());
 		//sparql rules make additions to go_cam_ont, add them to the rdf model 
@@ -1250,14 +1242,18 @@ public class BioPaxtoGO {
 					}
 					//default to mf
 					if(!ecmapped) {
-						Binder b = isBindingReaction(e, go_cam);
+						//try to infer protein binding or complex dissociation
+						ComplexFunction b = checkForComplexFunction(e, go_cam);
 						if(b.protein_complex_binding) {
 							go_cam.addTypeAssertion(e, GoCAM.protein_complex_binding);	
 						}else if(b.protein_binding) {
 							go_cam.addTypeAssertion(e, GoCAM.protein_binding);	
 						}else if(b.binding){
 							go_cam.addTypeAssertion(e, GoCAM.binding);
-						} else {
+						}else if(b.dissociation) {
+							go_cam.addTypeAssertion(e, GoCAM.protein_complex_dissassembly);
+						}
+						else {
 							go_cam.addTypeAssertion(e, GoCAM.molecular_function);	
 						}
 					}
@@ -1303,14 +1299,22 @@ public class BioPaxtoGO {
 
 	}
 
-	class Binder {
+	class ComplexFunction {
 		boolean protein_complex_binding = false;
 		boolean protein_binding = false;
 		boolean binding = false;
+		boolean dissociation = false;
 	}
 
-	private Binder isBindingReaction(OWLNamedIndividual reaction, GoCAM go_cam) {
-		Binder binder = new Binder();
+	/**
+	 * Complex functions include protein binding, complex binding, and dissociation.
+	 * These are not typically tagged in reactome.
+	 * @param reaction
+	 * @param go_cam
+	 * @return
+	 */
+	private ComplexFunction checkForComplexFunction(OWLNamedIndividual reaction, GoCAM go_cam) {
+		ComplexFunction binder = new ComplexFunction();
 		//String r_label = go_cam.getaLabel(reaction);
 		//collect inputs and outputs
 		Collection<OWLIndividual> inputs = EntitySearcher.getObjectPropertyValues(reaction, GoCAM.has_input, go_cam.go_cam_ont);
@@ -1355,8 +1359,11 @@ public class BioPaxtoGO {
 					}
 				}
 			}
+			//then it may be a protein complex disassembly reaction
+		}else if(inputs.size()<outputs.size()) {
+			System.out.println("dissociation reaction? "+go_cam.getaLabel(reaction));
+			binder.dissociation = true;
 		}
-		//System.out.println("binding reaction? "+go_cam.getaLabel(reaction)+" binding "+binder.binding+" protein binding "+binder.protein_binding+" protein complex binding "+binder.protein_complex_binding);
 		return binder;
 	}
 

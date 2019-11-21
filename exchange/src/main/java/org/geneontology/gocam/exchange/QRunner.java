@@ -37,11 +37,16 @@ import org.geneontology.rules.engine.Triple;
 import org.geneontology.rules.engine.WorkingMemory;
 import org.geneontology.rules.util.Bridge;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.reasoner.OWLReasoner;
+import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
+import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 
 import scala.collection.JavaConverters;
 
@@ -54,6 +59,7 @@ import scala.collection.JavaConverters;
 public class QRunner {
 	public Model jena;
 	public ArachneAccessor arachne;
+	public OWLReasoner tbox_class_reasoner;
 	public WorkingMemory wm;
 	public Map<String, OWLOntology> ontology_map;
 	
@@ -63,6 +69,22 @@ public class QRunner {
 		return q;
 	}
 	
+	public void setUpSubClassReasoner(Collection<OWLOntology> tboxes) throws OWLOntologyCreationException {
+		OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
+		OWLOntologyManager aman = OWLManager.createOWLOntologyManager();
+		OWLOntology tbox = aman.createOntology();
+		for(OWLOntology t : tboxes) {
+			aman.addAxioms(tbox, t.getAxioms());
+		}
+		System.out.println("loaded tbox for structural reasoner with "+tbox.getAxiomCount()+" axioms");
+		tbox_class_reasoner = reasonerFactory.createReasoner(tbox);
+		OWLClass test = aman.getOWLDataFactory().getOWLClass(IRI.create("http://model.geneontology.org/R-HSA-947607"));
+		System.out.println("test "+tbox_class_reasoner.getSuperClasses(test, false));
+		OWLClass test2 = aman.getOWLDataFactory().getOWLClass(IRI.create("http://model.geneontology.org/R-HSA-201419"));
+		System.out.println("test 2 "+tbox_class_reasoner.getSuperClasses(test2, false));
+		OWLClass test3 = aman.getOWLDataFactory().getOWLClass(IRI.create("http://purl.obolibrary.org/obo/GO_0032991"));
+		System.out.println("test 3 "+tbox_class_reasoner.getSuperClasses(test3, false));
+	}
 	
 	/**
 	 * @throws OWLOntologyCreationException 
@@ -70,6 +92,9 @@ public class QRunner {
 	 */
 	public QRunner(Collection<OWLOntology> tboxes, OWLOntology abox, boolean add_inferences, boolean add_property_definitions, boolean add_class_definitions) throws OWLOntologyCreationException {		
 		if(add_inferences) {
+			System.out.println("Adding access to tbox subclass inferences with a structural reasoner");
+			setUpSubClassReasoner(tboxes);
+			
 			System.out.println("Setting up Arachne reasoner for Qrunner, extracting rules from tbox");
 			if(abox!=null) {
 				//pull out any rules from abox.. and add to tbox
@@ -586,8 +611,9 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		String output_loc_class_uri;
 		String thing_type_uri;
 		String pathway_uri;
-		String enabler_uri = null;
+		String thing_uri;
 		String thing_label;
+		String enabler_uri;
 	}
 	
 	Set<InferredTransport> findTransportReactions() {
@@ -617,6 +643,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			t.input_loc_class_uri = start.getURI();
 			t.output_loc_class_uri = end.getURI();
 			t.thing_label = qs.getLiteral("thing_label").getString();
+			t.thing_type_uri = qs.getResource("input_thing_type").getURI();
 			t.input_loc_uri = start_loc_instance.getURI();
 			t.output_loc_uri = end_loc_instance.getURI();
 			t.pathway_uri = pathway_uri;
@@ -858,6 +885,13 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		FileOutputStream o = new FileOutputStream(file);
 		jena.write(o, format);
 		o.close();
+	}
+
+	public Set<OWLClass> getSuperClasses(OWLClass thing, boolean direct) {
+		if(tbox_class_reasoner==null) {
+			return null;
+		}
+		return tbox_class_reasoner.getSuperClasses(thing, direct).getFlattened();
 	}
 
 }

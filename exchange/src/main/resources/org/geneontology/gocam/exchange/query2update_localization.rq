@@ -10,7 +10,7 @@ prefix skos: <http://www.w3.org/2004/02/skos/core#>
 #and the input entities have different locations from the output entities
 #then there may be some transport happening - (but for GO, only when there is something that enables the transport to happen)
 
-select ?reaction  ?start_location_type ?end_location_type ?start_location ?end_location ?thing_label ?pathway ?enabler   
+select ?reaction  ?start_location_type ?end_location_type ?start_location ?end_location ?input_thing_type ?output_thing_type ?thing_label ?pathway ?enabler   
 where {
   	#reaction annotated to root (check for reasoning..)
   	?reaction rdf:type obo:GO_0003674 .
@@ -34,26 +34,12 @@ where {
 	?output rdfs:label ?output_label . 
 	filter(?thing_label = ?output_label) . 
 
-	#output that is of a specific type
-   #{	?output rdf:type ?thing_type . 
-   	#input that is of the same type (e.g. the same protein class)
-	#?input rdf:type ?thing_type . 
-	#} UNION  
-	#this works with owl constructs as types
-	#{?output rdf:type ?bnode1 .
-	# ?bnode1 rdf:type ?thing_type . 
-   	#input that is of the same type (e.g. the same protein class)
-	#?input rdf:type ?bnode2 .
-	#?bnode2 rdf:type ?thing_type . 
-	#}
-	
+	?output rdf:type ?output_thing_type .
+	?input rdf:type ?input_thing_type . 
 	
 	#and the thing types are not boring
-	#filter(?thing_type != <http://www.w3.org/2002/07/owl#NamedIndividual>) . 
-	#filter(?thing_type != <http://www.w3.org/2002/07/owl#Class>) . 
-	#and are not complexes..
-	#removing this constraint
-	#filter(?thing_type != <http://purl.obolibrary.org/obo/GO_0032991>)
+	filter(?input_thing_type != <http://www.w3.org/2002/07/owl#NamedIndividual>) . 
+	filter(?input_thing_type != <http://www.w3.org/2002/07/owl#Class>) . 
 	
 	#and the locations are different
 	filter(?start_location_type != ?end_location_type) .
