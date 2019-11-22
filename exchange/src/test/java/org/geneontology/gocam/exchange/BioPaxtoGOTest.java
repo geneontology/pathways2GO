@@ -49,7 +49,7 @@ public class BioPaxtoGOTest {
 	static String input_biopax = "./src/test/resources/biopax/"; 
 	static String output_file_folder = "./src/test/resources/gocam/"; 
 	static String output_file_stub = "./src/test/resources/gocam/test-"; 
-	static String output_blazegraph_journal = "/Users/bgood/noctua-config/blazegraph.jnl"; //"./src/test/resources/gocam/blazegraph.jnl";  //
+	static String output_blazegraph_journal = "/Users/bgood/noctua-config/blazegraph.jnl"; // "./src/test/resources/gocam/blazegraph.jnl"; 
 	static String tag = ""; //unexpanded
 	static String base_title = "title here";//"Will be replaced if a title can be found for the pathway in its annotations
 	static String default_contributor = "https://orcid.org/0000-0002-7334-7852"; //
@@ -211,7 +211,7 @@ public class BioPaxtoGOTest {
 	/**
 	 * Test that all generated models are consistent.
 	 */
-	@Test
+//	@Test
 	public final void testOWLConsistency() {
 		File dir = new File(output_file_folder);
 		File[] directoryListing = dir.listFiles();
@@ -338,7 +338,7 @@ public class BioPaxtoGOTest {
 				n++;
 			}
 			assertTrue(n==1);
-			assertTrue(type.equals("http://purl.obolibrary.org/obo/GO_0045184"));
+			assertTrue("type is "+type, type.equals("http://purl.obolibrary.org/obo/GO_0045184"));
 			assertTrue(inputs==1);
 			assertTrue(outputs==1);
 		} catch (QueryEvaluationException e) {

@@ -18,7 +18,10 @@ import org.apache.commons.cli.ParseException;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 
 /**
@@ -114,7 +117,11 @@ public class Biopax2GOCmdLine {
 		clean.close();
 		Blazer blaze = new Blazer(journal);
 		//initialize the rules for inference
-		QRunner tbox_qrunner = GoCAM.getQRunnerForTboxInference(Collections.singleton(bp2g.go_lego_file));
+		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();				
+		OWLOntology tbox = ontman.loadOntologyFromOntologyDocument(new File(bp2g.go_lego_file));
+		Set<OWLOntology> imports = tbox.getImports();
+		imports.add(tbox);		
+		QRunner tbox_qrunner = new QRunner(imports, null, true, false, false);
 		File dir = new File(input_biopax);
 		File[] directoryListing = dir.listFiles();
 		//run through all files
