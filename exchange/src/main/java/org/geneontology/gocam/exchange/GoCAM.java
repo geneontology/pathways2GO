@@ -957,7 +957,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		//r = inferNegativeRegulationByBinding(model_id, r);
 		r = inferRegulatesViaOutputEnables(model_id, r);
 		r = inferProvidesInput(model_id, r);
-		r = convertEntityRegulatorsToBindingFunctions(model_id, r);
+//		r = convertEntityRegulatorsToBindingFunctions(model_id, r);
 		deleteLocations();
 		cleanOutUnconnectedNodes();
 		return r;
@@ -1154,6 +1154,7 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 		regulator_count+=ir1.size();
 		for(InferredRegulator ir : ir1) {
 			regulator_pathways.add(ir.pathway_uri);
+			OWLNamedIndividual pathway = this.makeAnnotatedIndividual(IRI.create(ir.pathway_uri));
 			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ir.reaction1_uri);
 			OWLNamedIndividual r1 = this.makeAnnotatedIndividual(ir.reaction2_uri);
 			OWLObjectProperty o = GoCAM.directly_negatively_regulates;
@@ -1164,7 +1165,25 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 				reg = "positively regulates";
 			}
 			Set<OWLAnnotation> annos = getDefaultAnnotations();
+			OWLClass entity_type = this.df.getOWLClass(IRI.create(ir.entity_type_uri));
+			String entity_label = getaLabel(entity_type);
+			if(entity_label==null) {
+				entity_label = ir.entity_type_uri;
+			}
+			String explain = "The is relation was inferred because reaction1 has output "+entity_label+" and "
+					+ entity_label+" "+reg+" reaction2.  Note that this regulation is non-catalytic. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
+			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
+			//add the function provides input for binding function regulates function 
+			//make the MF node
+			OWLNamedIndividual binding_node = makeAnnotatedIndividual(makeRandomIri(model_id));
+			addTypeAssertion(binding_node, binding);
+			addRefBackedObjectPropertyAssertion(binding_node, has_input, entity, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+			addRefBackedObjectPropertyAssertion(binding_node, part_of, pathway, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+			addRefBackedObjectPropertyAssertion(r1, provides_direct_input_for, binding_node, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+			addRefBackedObjectPropertyAssertion(binding_node, o, r2, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+	
 			//add the process process regulates relation
+			/*
 			OWLClass entity_type = this.df.getOWLClass(IRI.create(ir.entity_type_uri));
 			String entity_label = getaLabel(entity_type);
 			if(entity_label==null) {
@@ -1174,9 +1193,9 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 					+ entity_label+" "+reg+" reaction2.  Note that this regulation is non-catalytic. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 			this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+			*/
 			//delete the entity regulates process relation 
 			applyAnnotatedTripleRemover(entity.getIRI(), o.getIRI(), r2.getIRI());
-
 		}
 		r.rule_hitcount.put(regulator_rule, regulator_count);
 		r.rule_pathways.put(regulator_rule, regulator_pathways);

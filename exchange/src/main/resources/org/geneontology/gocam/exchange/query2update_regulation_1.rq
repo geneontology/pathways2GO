@@ -27,6 +27,8 @@ where
     ?entityZ ?prop  ?reaction1 .   #obo:RO_0002430  involved_in_negative_regulation_of  
     }
     ?entityZ rdf:type ?ztype . 
+    filter(?ztype != <http://www.w3.org/2002/07/owl#NamedIndividual>) . 
+    
     # reaction 2 produces z
     ?reaction2 obo:RO_0002234 ?entityY .  #has output
     ?entityY rdf:type ?ztype .  
