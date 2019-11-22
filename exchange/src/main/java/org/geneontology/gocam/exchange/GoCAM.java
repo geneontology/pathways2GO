@@ -957,7 +957,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		//r = inferNegativeRegulationByBinding(model_id, r);
 		r = inferRegulatesViaOutputEnables(model_id, r);
 		r = inferProvidesInput(model_id, r);
-//		r = convertEntityRegulatorsToBindingFunctions(model_id, r);
+		r = convertEntityRegulatorsToBindingFunctions(model_id, r);
 		deleteLocations();
 		cleanOutUnconnectedNodes();
 		return r;
@@ -1181,21 +1181,9 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 			addRefBackedObjectPropertyAssertion(binding_node, part_of, pathway, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
 			addRefBackedObjectPropertyAssertion(r1, provides_direct_input_for, binding_node, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
 			addRefBackedObjectPropertyAssertion(binding_node, o, r2, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
-	
-			//add the process process regulates relation
-			/*
-			OWLClass entity_type = this.df.getOWLClass(IRI.create(ir.entity_type_uri));
-			String entity_label = getaLabel(entity_type);
-			if(entity_label==null) {
-				entity_label = ir.entity_type_uri;
-			}
-			String explain = "The is relation was inferred because reaction1 has output "+entity_label+" and "
-					+ entity_label+" "+reg+" reaction2.  Note that this regulation is non-catalytic. See and comment on mapping rules at https://tinyurl.com/y8jctxxv ";
-			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
-			this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
-			*/
+
 			//delete the entity regulates process relation 
-			applyAnnotatedTripleRemover(entity.getIRI(), o.getIRI(), r2.getIRI());
+			applyAnnotatedTripleRemover(entity.getIRI(), IRI.create(ir.prop_uri), r2.getIRI());
 		}
 		r.rule_hitcount.put(regulator_rule, regulator_count);
 		r.rule_pathways.put(regulator_rule, regulator_pathways);

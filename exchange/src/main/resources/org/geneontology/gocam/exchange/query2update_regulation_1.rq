@@ -18,24 +18,30 @@ where
     ?reaction2 obo:BFO_0000050 ?pathway . 
    VALUES ?prop { obo:RO_0002430 obo:RO_0002429} . #regulation
    {
-    ?entityZ obo:BFO_0000051 ?entityP .
-    ?entityP ?prop  ?reaction1 .    
+    ?reaction2 obo:RO_0002234 ?outputEntityComplex .  #has output
+    ?outputEntityComplex rdf:type ?outputEntityComplexType .    
+    ?inputEntityComplex rdf:type ?outputEntityComplexType .    
+    filter(?outputEntityComplexType != <http://www.w3.org/2002/07/owl#NamedIndividual>) .  
+    ?inputEntityComplex obo:BFO_0000051 ?entityZ .
+    ?entityZ ?prop  ?reaction1 .    
  	}
  	UNION
     {
-    # z regulates reaction 1           
+    # z regulates reaction 1     
+    ?reaction2 obo:RO_0002234 ?entityOutput .    
+    ?entityOutput rdf:type ?ztype .  
     ?entityZ ?prop  ?reaction1 .   #obo:RO_0002430  involved_in_negative_regulation_of  
     }
-    ?entityZ rdf:type ?ztype . 
-    filter(?ztype != <http://www.w3.org/2002/07/owl#NamedIndividual>) . 
     
+    ?entityZ rdf:type ?ztype . 
+    filter(?ztype != <http://www.w3.org/2002/07/owl#NamedIndividual>) .  
     # reaction 2 produces z
-    ?reaction2 obo:RO_0002234 ?entityY .  #has output
-    ?entityY rdf:type ?ztype .  
+    
+    #?entityY rdf:type ?ztype .  
     #since sometimes the type may be overly general and cause spurious matches
     #add an instance=level check to make sure they are referring to the same thing
-    ?entityZ skos:exactMatch ?biopax_entity . 
-    ?entityY skos:exactMatch ?biopax_entity . 
+    #?entityZ skos:exactMatch ?biopax_entity . 
+    #?entityY skos:exactMatch ?biopax_entity . 
 }
 
  #   ?entityZ rdf:type ?entity_class .

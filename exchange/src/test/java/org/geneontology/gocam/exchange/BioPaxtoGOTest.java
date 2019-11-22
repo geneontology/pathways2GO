@@ -127,6 +127,7 @@ public class BioPaxtoGOTest {
 	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
+		blaze.getRepo().shutDown();
 		System.out.println("tear down after class");
 	}
 
@@ -485,7 +486,7 @@ public class BioPaxtoGOTest {
 	 * 	https://reactome.org/content/detail/R-HSA-4641262 
 	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-4641262
 	 */
-	@Test
+	@Test 
 	public final void testInferRegulatesViaOutputRegulates() {
 		System.out.println("Testing infer regulates via output regulates");
 		TupleQueryResult result = null;
@@ -496,15 +497,16 @@ public class BioPaxtoGOTest {
 				"where { " + 
 				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-4641262/R-HSA-201691> } ." + 
 				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-4641262/R-HSA-201685> } . " + 
-				"  ?reaction1 ?prop ?reaction2 . "+
-				"}");
+				"  ?reaction1 <http://purl.obolibrary.org/obo/RO_0002413> ?binding_reaction ."
+				+ "?binding_reaction ?prop ?reaction2 . "+
+				"}"); 
 			int n = 0; String prop = null;
 			while (result.hasNext()) {
 				BindingSet bindingSet = result.next();
 				prop = bindingSet.getValue("prop").stringValue();
 				n++;
 			}
-			assertTrue(n==1);
+			assertTrue("should have been 1, but got n results: "+n, n==1);
 			assertTrue("got "+prop, prop.equals("http://purl.obolibrary.org/obo/RO_0002629"));
 		} catch (QueryEvaluationException e) {
 			// TODO Auto-generated catch block
@@ -541,9 +543,8 @@ public class BioPaxtoGOTest {
 				+ "select ?pathway " + 
 				"where { " + 
 				"VALUES ?reaction { <http://model.geneontology.org/R-HSA-4641262/R-HSA-201685> } . "+ 
-				" ?binding_function obo:RO_0002213 ?reaction .  "
-				+ "?binding_function obo:BFO_0000050 ?process . "
-				+ "?process obo:RO_0002213 ?pathway . "
+				" ?binding_function obo:RO_0002629 ?reaction .  "
+				+ "?binding_function obo:BFO_0000050 ?pathway . "
 				+ "?binding_function obo:RO_0002233 ?active_part . "
 				+ "?larger_thing obo:BFO_0000051 ?active_part "+
 				"}");
@@ -553,7 +554,7 @@ public class BioPaxtoGOTest {
 				pathway = bindingSet.getValue("pathway").stringValue();
 				n++;
 			}
-			assertTrue(n==1);
+			assertTrue("expected 1, got "+n, n==1);
 			assertTrue("got "+pathway, pathway.equals("http://model.geneontology.org/R-HSA-4641262/R-HSA-4641262"));
 		} catch (QueryEvaluationException e) {
 			// TODO Auto-generated catch block
