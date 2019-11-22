@@ -66,6 +66,16 @@ public class BioPaxtoGOTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		//fullBuild();
+		loadBlazegraph();
+	}
+	
+	public static void loadBlazegraph() {
+		bp2g.blazegraph_output_journal = output_blazegraph_journal;
+		blaze = new Blazer(bp2g.blazegraph_output_journal);
+	}
+	
+	public static void fullBuild() throws Exception{
 		System.out.println("set up before class");
 		bp2g.go_lego_file = go_lego_file;
 		File goplus_file = new File(go_plus_file);
@@ -120,8 +130,9 @@ public class BioPaxtoGOTest {
 			}
 		}
 		System.out.println("done set up before class");
-	}
 		
+	}
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -508,6 +519,57 @@ public class BioPaxtoGOTest {
 			}
 			assertTrue("should have been 1, but got n results: "+n, n==1);
 			assertTrue("got "+prop, prop.equals("http://purl.obolibrary.org/obo/RO_0002629"));
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		System.out.println("Done testing infer regulates via output regulates");
+	}
+	
+	/**
+	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#convertEntityRegulatorsToBindingFunctions()}.
+	 * Test that if reaction1 has_output M and reaction2 is regulated by M then reaction1 regulates reaction2
+	 * Use pathway Glycolysis R-HSA-70171 , reaction R-HSA-71670  
+	 * 	phosphoenolpyruvate + ADP => pyruvate + ATP
+entity involved in regulation of function 
+Binding has_input E1
+Binding has_input E2
+Binding +-_regulates R
+Binding part_of +-_regulation_of BP
+⇐ 	
+E1 +- involved_in_regulation_of R
+R enabled_by E2
+BP has_part R
+	 */
+	@Test 
+	public final void testConvertEntityRegulatorsToBindingFunctions() {
+		System.out.println("Testing convert entity regulators to binding functions");
+		TupleQueryResult result = null;
+		try {
+			result = blaze.runSparqlQuery(
+				"select distinct ?binding_reaction " + 
+				"where { " + 
+				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-70171/R-HSA-71670> } ."  
+				+ " ?binding_reaction <http://purl.obolibrary.org/obo/RO_0002212> ?reaction1 . " //
+				+ "?binding_reaction rdf:type <http://purl.obolibrary.org/obo/GO_0005488> . "
+				+ "?binding_reaction <http://purl.obolibrary.org/obo/RO_0002233> ?input1 . "
+				+ "?binding_reaction <http://purl.obolibrary.org/obo/RO_0002233> ?input2 . "
+				+ "filter(?input1 != ?input2) "
+				+"}"); 
+			int n = 0; 
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				String br = bindingSet.getValue("binding_reaction").stringValue();
+				n++;
+			}
+			assertTrue("should have been 3, but got n results: "+n, n==3);
 		} catch (QueryEvaluationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -124,11 +124,11 @@ public class PhysicalEntityOntologyBuilder {
 	 * @throws OWLOntologyStorageException 
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
-		String pro_mapping = "/Users/bgood/Desktop/test/REO/promapping.txt";
+		String pro_mapping = "/Users/bgood/gocam_ontology/REO/promapping.txt";
 		String input_biopax = 
 		//		"/Users/bgood/Desktop/test/biopax/ca_pathway_rna_example.owl";
-				"/Users/bgood/Desktop/test/biopax/wnt-curator-195721.owl";
-		//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_sept9_2019.owl";
+		//		"/Users/bgood/Desktop/test/biopax/wnt-curator-195721.owl";
+		"/Users/bgood/Desktop/test/biopax/Homo_sapiens_sept9_2019.owl";
 		//"/Users/bgood/Desktop/test/biopax/glycolysis.owl";
 		//"/Users/bgood/Downloads/biopax3/Oryza_sativa.owl";
 		
