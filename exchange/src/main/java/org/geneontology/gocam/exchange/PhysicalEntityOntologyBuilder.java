@@ -29,13 +29,18 @@ import org.biopax.paxtools.model.level3.DnaRegion;
 import org.biopax.paxtools.model.level3.Entity;
 import org.biopax.paxtools.model.level3.EntityFeature;
 import org.biopax.paxtools.model.level3.EntityReference;
+import org.biopax.paxtools.model.level3.FragmentFeature;
 import org.biopax.paxtools.model.level3.ModificationFeature;
 import org.biopax.paxtools.model.level3.Pathway;
 import org.biopax.paxtools.model.level3.PhysicalEntity;
 import org.biopax.paxtools.model.level3.Protein;
 import org.biopax.paxtools.model.level3.Rna;
 import org.biopax.paxtools.model.level3.RnaRegion;
+import org.biopax.paxtools.model.level3.SequenceInterval;
+import org.biopax.paxtools.model.level3.SequenceLocation;
 import org.biopax.paxtools.model.level3.SequenceModificationVocabulary;
+import org.biopax.paxtools.model.level3.SequenceRegionVocabulary;
+import org.biopax.paxtools.model.level3.SequenceSite;
 import org.biopax.paxtools.model.level3.SmallMolecule;
 import org.biopax.paxtools.model.level3.Stoichiometry;
 import org.biopax.paxtools.model.level3.UnificationXref;
@@ -61,6 +66,7 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLImportsDeclaration;
+import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
 import org.semanticweb.owlapi.model.OWLObjectUnionOf;
@@ -400,6 +406,26 @@ public class PhysicalEntityOntologyBuilder {
 					//check for modifications
 					Set<EntityFeature> features = entity.getFeature();
 					for(EntityFeature feature : features) {
+						int seq_start = -1; int seq_end = -1;
+						//position of all features (relative to UniProt entry)
+						SequenceLocation region = feature.getFeatureLocation();
+						if(region instanceof SequenceInterval) {
+							SequenceInterval interval = (SequenceInterval) region;
+							SequenceSite begin = interval.getSequenceIntervalBegin();
+							seq_start = begin.getSequencePosition();
+							SequenceSite end = interval.getSequenceIntervalEnd();
+							seq_end = end.getSequencePosition();
+						}else if(region instanceof SequenceSite){
+							SequenceSite site = (SequenceSite)region;
+							seq_start = site.getSequencePosition();
+						}
+						//not used in reactome
+						SequenceRegionVocabulary region_type = feature.getFeatureLocationType();
+						if(region_type!=null) {
+							System.out.println("region type used for first time, investigate: "+entity.getDisplayName());
+							System.exit(0);
+						}
+						
 						if(feature instanceof ModificationFeature) {
 							ModificationFeature mod = (ModificationFeature)feature;
 							SequenceModificationVocabulary mod_type = mod.getModificationType();
@@ -415,13 +441,40 @@ public class PhysicalEntityOntologyBuilder {
 										OWLClass mod_class = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri+mod_id)); 
 										go_cam.addLabel(mod_class, mod_type_label);
 										OWLClassExpression has_mod = go_cam.df.getOWLObjectSomeValuesFrom(GoCAM.has_part, mod_class);
-										go_cam.addSubclassAssertion(e, has_mod, null);	
+										if(seq_start>-1&&seq_end==-1) {
+											OWLLiteral start_literal = go_cam.df.getOWLLiteral(seq_start); 
+											OWLClassExpression has_start_exp = go_cam.df.getOWLDataHasValue(GoCAM.has_start, start_literal);
+											OWLClassExpression mod_with_region = go_cam.df.getOWLObjectIntersectionOf(has_mod, has_start_exp);
+											go_cam.addSubclassAssertion(e, mod_with_region, null);
+										}else if(seq_start>-1&&seq_end>-1) {
+											OWLLiteral start_literal = go_cam.df.getOWLLiteral(seq_start); 
+											OWLClassExpression has_start_exp = go_cam.df.getOWLDataHasValue(GoCAM.has_start, start_literal);
+											OWLLiteral end_literal = go_cam.df.getOWLLiteral(seq_end); 
+											OWLClassExpression has_end_exp = go_cam.df.getOWLDataHasValue(GoCAM.has_end, end_literal);
+											OWLClassExpression mod_with_region = go_cam.df.getOWLObjectIntersectionOf(has_mod, has_start_exp, has_end_exp);
+											go_cam.addSubclassAssertion(e, mod_with_region, null);
+										}else {
+											go_cam.addSubclassAssertion(e, has_mod, null);	
+										}
 									}
 								}
 							}else {
 								go_cam.addComment(e, "Unspecified modification type.  Comment: "+mod.getComment());
 								//System.exit(0);
 							}
+						}else if(feature instanceof FragmentFeature) {
+							if(seq_start>-1&&seq_end==-1) {
+								OWLLiteral start_literal = go_cam.df.getOWLLiteral(seq_start); 
+								OWLClassExpression has_start_exp = go_cam.df.getOWLDataHasValue(GoCAM.has_start, start_literal);
+								go_cam.addSubclassAssertion(e, has_start_exp, null);
+							}else if(seq_start>-1&&seq_end>-1) {
+								OWLLiteral start_literal = go_cam.df.getOWLLiteral(seq_start); 
+								OWLClassExpression has_start_exp = go_cam.df.getOWLDataHasValue(GoCAM.has_start, start_literal);
+								OWLLiteral end_literal = go_cam.df.getOWLLiteral(seq_end); 
+								OWLClassExpression has_end_exp = go_cam.df.getOWLDataHasValue(GoCAM.has_end, end_literal);
+								OWLClassExpression frag_with_region = go_cam.df.getOWLObjectIntersectionOf(has_start_exp, has_end_exp);
+								go_cam.addSubclassAssertion(e, frag_with_region, null);
+							}	
 						}
 					}
 				}else if(entity.getModelInterface().equals(Protein.class)) {
@@ -677,7 +730,7 @@ public class PhysicalEntityOntologyBuilder {
 		int n_other = 0; int n_physical = 0; 
 		int n_sets_of_complexes = 0; int n_sets_of_sets = 0;
 		Set<String> set_types = new HashSet<String>();		
-		String mapping = "/Users/bgood/Desktop/test/REO/promapping.txt";
+		String mapping = "/Users/bgood/gocam_ontology/REO/promapping.txt";
 		Map<String, Set<String>> exact_map = PRO.readReact2PRO(mapping, "exact");
 		Map<String, Set<String>> any_map = PRO.readReact2PRO(mapping, "is_a");
 		Map<String, String> physical_ref = new HashMap<String, String>();

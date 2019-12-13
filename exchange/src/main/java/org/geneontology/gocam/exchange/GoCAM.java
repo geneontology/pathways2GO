@@ -61,6 +61,7 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDocumentFormat;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
@@ -112,7 +113,8 @@ public class GoCAM {
 	negatively_regulates, positively_regulates, 
 	has_target_end_location, has_target_start_location, interacts_with, has_participant, functionally_related_to,
 	contributes_to, only_in_taxon;
-
+	public static OWLDataProperty has_start, has_end;
+	
 	public static OWLClass 
 	bp_class, continuant_class, process_class, go_complex, cc_class, molecular_function, 
 	eco_imported, eco_imported_auto, eco_inferred_auto, 
@@ -398,6 +400,10 @@ public class GoCAM {
 
 		//re-usable restrictions
 		taxon_human = df.getOWLObjectSomeValuesFrom(only_in_taxon, human);
+		
+		//data properties
+		has_start = df.getOWLDataProperty(IRI.create(obo_iri + "has_start"));
+		has_end = df.getOWLDataProperty(IRI.create(obo_iri + "has_end"));
 	}
 
 	//	public GoCAMReport getGoCAMReport(){
