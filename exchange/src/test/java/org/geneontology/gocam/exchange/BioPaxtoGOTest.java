@@ -515,8 +515,8 @@ public class BioPaxtoGOTest {
 				"prefix obo: <http://purl.obolibrary.org/obo/> "
 				+ "select ?prop " + 
 				"where { " + 
-				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-4641262/R-HSA-201691> } ." + 
-				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-4641262/R-HSA-201685> } . " + 
+				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-4411364/R-HSA-4411351> } ." + 
+				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-4411364/R-HSA-4411372> } . " + 
 				"  ?reaction1 <http://purl.obolibrary.org/obo/RO_0002413> ?binding_reaction ."
 				+ "?binding_reaction ?prop ?reaction2 . "+
 				"}"); 
@@ -614,8 +614,8 @@ BP has_part R
 				+ "select ?pathway " + 
 				"where { " + 
 				"VALUES ?reaction { <http://model.geneontology.org/R-HSA-4641262/R-HSA-201677> } . " 
-				+ "?function obo:BFO_0000050 ?pathway . "
-				+ "?function obo:RO_0002333 ?active_part . "
+				+ "?reaction obo:BFO_0000050 ?pathway . "
+				+ "?reaction obo:RO_0002333 ?active_part . "
 				+ "?larger_thing obo:BFO_0000051 ?active_part "+
 				"}");
 			int n = 0; String pathway = null;
