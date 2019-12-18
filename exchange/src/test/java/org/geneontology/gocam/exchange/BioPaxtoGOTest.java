@@ -66,8 +66,8 @@ public class BioPaxtoGOTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		//fullBuild();
-		loadBlazegraph();
+		fullBuild();
+		//loadBlazegraph();
 	}
 	
 	public static void loadBlazegraph() {
@@ -92,12 +92,14 @@ public class BioPaxtoGOTest {
 		clean.close();
 		//open connection to triple store
 		blaze = new Blazer(bp2g.blazegraph_output_journal);
+		System.out.println("done connecting to blaze, loading axioms");
 		//set up for validation
 		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();					
 		OWLOntology tbox = ontman.loadOntologyFromOntologyDocument(new File(go_lego_file));
 		Set<OWLOntology> imports = tbox.getImports();
 		imports.add(tbox);
 		//initialize the rules for inference
+		System.out.println("starting tbox build");
 		tbox_qrunner = new QRunner(imports, null, true, false, false);
 		System.out.println("done building arachne");		
 		//run the conversion on all the test biopax files
@@ -604,10 +606,9 @@ BP has_part R
 				"prefix obo: <http://purl.obolibrary.org/obo/> "
 				+ "select ?pathway " + 
 				"where { " + 
-				"VALUES ?reaction { <http://model.geneontology.org/R-HSA-4641262/R-HSA-201685> } . "+ 
-				" ?binding_function obo:RO_0002629 ?reaction .  "
-				+ "?binding_function obo:BFO_0000050 ?pathway . "
-				+ "?binding_function obo:RO_0002233 ?active_part . "
+				"VALUES ?reaction { <http://model.geneontology.org/R-HSA-4641262/R-HSA-201677> } . " 
+				+ "?function obo:BFO_0000050 ?pathway . "
+				+ "?function obo:RO_0002333 ?active_part . "
 				+ "?larger_thing obo:BFO_0000051 ?active_part "+
 				"}");
 			int n = 0; String pathway = null;

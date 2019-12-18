@@ -16,6 +16,8 @@ where
     #2 reactions, same pathway
     ?reaction1 obo:BFO_0000050 ?pathway . 
     ?reaction2 obo:BFO_0000050 ?pathway . 
+    #reaction2 causally upstream of reaction2
+    ?reaction2 obo:RO_0002411 ?reaction1 . 
    VALUES ?prop { obo:RO_0002430 obo:RO_0002429} . #regulation
    {
     ?reaction2 obo:RO_0002234 ?outputEntityComplex .  #has output
