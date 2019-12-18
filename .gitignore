@@ -9,3 +9,4 @@ exchange/target/test-classes/*
 exchange/src/test/resources/biopax/catalog-v001.xml
 exchange/src/test/resources/gocam/*
 *.ttl
+exchange/generated/REO.owl
