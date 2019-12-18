@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+    <group id="Folder Repository, directory=, recursive=true, Auto-Update=true, version=2" prefer="public" xml:base="">
+    <uri id="Manually handling a custom go_lego import, Timestamp=1550181509806" name="http://purl.obolibrary.org/obo/go/extensions/go-lego.owl" uri="go-lego-no-neo.owl"/>
+    <uri id="Manually eliminating neo from go_lego import, Timestamp=1550181509806" name="http://purl.obolibrary.org/obo/go/noctua/neo.owl" uri="neo.owl"/>
+    </group>
+</catalog>

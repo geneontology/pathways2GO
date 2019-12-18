@@ -16,4 +16,5 @@ script:
   - cd minerva-cli/
   - pwd
   - ls ../../
-  - java -Xmx8g -jar bin/minerva-cli.jar  --validate-go-cams -f ../../src/test/resources/gocam/ -local-go-lego ../../src/test/resources/go-lego-test.owl -expand -travis -downloadtbox
+  - java -Xmx8g -jar bin/minerva-cli.jar --validate-go-cams --shex -c ../../src/test/resources/ontology/catalog-for-validation.xml -i ../../src/test/resources/gocam/ -r ./shape_report_shouldpass.txt -e ./shape_explanation_shouldpass.txt -travis
+

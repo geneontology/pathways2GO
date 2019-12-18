@@ -58,8 +58,8 @@ public class BioPaxtoGOTest {
 	static String default_provider = "https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";	
 	static String test_pathway_name = null;
 	static String empty_catalogue_file = "./src/test/resources/catalog-no-import.xml";
-	static String local_catalogue_file = "/Users/bgood/gocam_ontology/catalog-v001-for-noctua.xml";
-	static String go_lego_file = "./src/test/resources/go-lego-test.owl";
+	static String local_catalogue_file = "./src/test/resources/ontology/catalog-for-validation.xml";//  //"/Users/bgood/gocam_ontology/catalog-v001-for-noctua.xml";
+	static String go_lego_file = "./src/test/resources/ontology/go-lego-no-neo.owl";
 	static String go_plus_url = "http://purl.obolibrary.org/obo/go/extensions/go-plus.owl";
 	static String go_plus_file = "./target/go-plus.owl";
 	static Blazer blaze;
