@@ -112,7 +112,7 @@ public class GoCAM {
 	directly_negatively_regulates, directly_positively_regulates, has_role, causally_upstream_of, causally_upstream_of_negative_effect, causally_upstream_of_positive_effect,
 	negatively_regulates, positively_regulates, 
 	has_target_end_location, has_target_start_location, interacts_with, has_participant, functionally_related_to,
-	contributes_to, only_in_taxon;
+	contributes_to, only_in_taxon, transports_or_maintains_localization_of;
 	public static OWLDataProperty has_start, has_end;
 	
 	public static OWLClass 
@@ -397,7 +397,7 @@ public class GoCAM {
 		has_target_end_location = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002339"));
 		has_target_start_location = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002338"));
 		contributes_to = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002326"));
-
+		transports_or_maintains_localization_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002313"));
 		//re-usable restrictions
 		taxon_human = df.getOWLObjectSomeValuesFrom(only_in_taxon, human);
 		
@@ -975,13 +975,13 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 * and the input entities are the same as the output entities
 	 * and the input entities have different locations from the output entities
 	 * then add has_target_end_location and has_target_start_location attributes to the reaction node
-	 * and add type 'establishment of localization'  
+	 * and add type 'transport'  
 	 * See: 'TCF dependent signaling in response to WNT' https://reactome.org/PathwayBrowser/#/R-HSA-201681&SEL=R-HSA-201669&PATH=R-HSA-162582,R-HSA-195721
 	 * (1 inference for reaction 'Beta-catenin translocates to the nucleus'
 	 *  Downstream dependency alert: do this before enabler inference step below since we don't want that rule to fire on transport reactions
 	 */	
 	private RuleResults inferTransportProcess(String model_id, RuleResults r, QRunner tbox_qrunner) {
-		String transport_rule = "localization rule";
+		String transport_rule = "transport rule";
 		Integer transport_count = r.checkInitCount(transport_rule, r);
 		Set<String> transport_pathways = r.checkInitPathways(transport_rule, r);		
 		Set<InferredTransport> transports = qrunner.findTransportReactions();		
@@ -999,15 +999,16 @@ final long counterValue = instanceCounter.getAndIncrement();
 				ontman.removeAxiom(go_cam_ont, classAssertion);
 				
 				String thing_type_uri = transport_reaction.thing_type_uri;
-				OWLClass thing = this.df.getOWLClass(IRI.create(thing_type_uri));
-				Set<OWLClass> entity_types = tbox_qrunner.getSuperClasses(thing, false);
+				OWLClass thing_type = this.df.getOWLClass(IRI.create(thing_type_uri));
+				OWLNamedIndividual thing = this.makeAnnotatedIndividual(transport_reaction.thing_uri);
+				Set<OWLClass> entity_types = tbox_qrunner.getSuperClasses(thing_type, false);
 				System.out.println(thing_type_uri+" types "+entity_types);
-				String explain = "This reaction represents the process of localizing ";
+				String explain = "This reaction represents the process of transporting ";
 				if(entity_types!=null&&entity_types.contains(chebi_protein)) {
-					addTypeAssertion(reaction, establishment_of_protein_localization);
+					addTypeAssertion(reaction, protein_transport);
 					explain+=" a protein.";
 				}else {
-					addTypeAssertion(reaction, establishment_of_localization);
+					addTypeAssertion(reaction, transport);
 					if(entity_types.contains(go_complex)) {
 						explain+=" a complex.";
 					}
@@ -1033,6 +1034,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 				Set<OWLAnnotation> annos2 = getDefaultAnnotations();
 				annos2.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain2)));
 				addRefBackedObjectPropertyAssertion(reaction, has_target_end_location, end_loc, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos2, model_id);
+				//needed to support inferences into the localization hierarchy
+				addRefBackedObjectPropertyAssertion(reaction, transports_or_maintains_localization_of, thing, Collections.singleton(model_id), GoCAM.eco_inferred_auto,"Reactome", annos2, model_id);
 			}
 			//enabled by needs to know if there are any transport reactions as these should not be included
 			//hence reload graph from ontology

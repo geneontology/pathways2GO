@@ -633,6 +633,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			String pathway_uri = "";
 			if(pathway!=null) {pathway_uri = pathway.getURI();}
 			Resource reaction = qs.getResource("reaction"); 
+			Resource input_thing = qs.getResource("input");
 			Resource start = qs.getResource("start_location_type"); 
 			Resource end = qs.getResource("end_location_type"); 
 			Resource start_loc_instance = qs.getResource("start_location"); 
@@ -640,6 +641,7 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			Resource enabler = qs.getResource("enabler");
 			InferredTransport t = new InferredTransport();
 			t.reaction_uri = reaction.getURI();
+			t.thing_uri = input_thing.getURI();
 			t.input_loc_class_uri = start.getURI();
 			t.output_loc_class_uri = end.getURI();
 			t.thing_label = qs.getLiteral("thing_label").getString();

@@ -21,6 +21,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.obolibrary.robot.CatalogXmlIRIMapper;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResult;
@@ -37,6 +38,8 @@ import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 
+import com.google.common.collect.Sets;
+
 /**
  * @author bgood
  *
@@ -45,16 +48,17 @@ public class BioPaxtoGOTest {
 	//use default values for testing
 	static BioPaxtoGO bp2g = new BioPaxtoGO(); 
 	//parameters to set
-	static String empty_catalogue_file = "./src/test/resources/catalog-no-import.xml";
 	static String input_biopax = "./src/test/resources/biopax/"; 
 	static String output_file_folder = "./src/test/resources/gocam/"; 
 	static String output_file_stub = "./src/test/resources/gocam/test-"; 
-	static String output_blazegraph_journal = "/Users/bgood/noctua-config/blazegraph.jnl"; // "./src/test/resources/gocam/blazegraph.jnl"; 
+	static String output_blazegraph_journal = "./src/test/resources/gocam/blazegraph.jnl"; //"/Users/bgood/noctua-config/blazegraph.jnl"; //
 	static String tag = ""; //unexpanded
 	static String base_title = "title here";//"Will be replaced if a title can be found for the pathway in its annotations
 	static String default_contributor = "https://orcid.org/0000-0002-7334-7852"; //
 	static String default_provider = "https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";	
 	static String test_pathway_name = null;
+	static String empty_catalogue_file = "./src/test/resources/catalog-no-import.xml";
+	static String local_catalogue_file = "/Users/bgood/gocam_ontology/catalog-v001-for-noctua.xml";
 	static String go_lego_file = "./src/test/resources/go-lego-test.owl";
 	static String go_plus_url = "http://purl.obolibrary.org/obo/go/extensions/go-plus.owl";
 	static String go_plus_file = "./target/go-plus.owl";
@@ -94,7 +98,10 @@ public class BioPaxtoGOTest {
 		blaze = new Blazer(bp2g.blazegraph_output_journal);
 		System.out.println("done connecting to blaze, loading axioms");
 		//set up for validation
-		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();					
+		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();	
+		if(local_catalogue_file!=null) {
+			ontman.setIRIMappers(Collections.singleton(new CatalogXmlIRIMapper(local_catalogue_file)));
+		}
 		OWLOntology tbox = ontman.loadOntologyFromOntologyDocument(new File(go_lego_file));
 		Set<OWLOntology> imports = tbox.getImports();
 		imports.add(tbox);
@@ -280,7 +287,7 @@ public class BioPaxtoGOTest {
 				n++;
 			}
 			assertTrue(n==1);
-			assertTrue(type.equals("http://purl.obolibrary.org/obo/GO_0051234"));
+			assertTrue(type.equals("http://purl.obolibrary.org/obo/GO_0006810"));
 			assertTrue(inputs==1);
 			assertTrue(outputs==1);
 		} catch (QueryEvaluationException e) {
@@ -340,7 +347,7 @@ public class BioPaxtoGOTest {
 				n++;
 			}
 			assertTrue(n==1);
-			assertTrue("type is "+type, type.equals("http://purl.obolibrary.org/obo/GO_0045184"));
+			assertTrue("type is "+type, type.equals("http://purl.obolibrary.org/obo/GO_0015031"));
 			assertTrue(inputs==1);
 			assertTrue(outputs==1);
 		} catch (QueryEvaluationException e) {
