@@ -54,6 +54,7 @@ import org.biopax.paxtools.model.level3.Provenance;
 import org.biopax.paxtools.model.level3.PublicationXref;
 import org.biopax.paxtools.model.level3.RelationshipXref;
 import org.biopax.paxtools.model.level3.Rna;
+import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.biopax.paxtools.model.level3.SmallMolecule;
 import org.biopax.paxtools.model.level3.TemplateDirectionType;
 import org.biopax.paxtools.model.level3.TemplateReaction;
@@ -131,19 +132,19 @@ public class BioPaxtoGO {
 	public BioPaxtoGO(){
 		strategy = ImportStrategy.NoctuaCuration; 
 		report = new GoMappingReport();
-//		tbox_files = new HashSet<String>();
-//		tbox_files.add(goplus_file);
-//		tbox_files.add(ro_file);
-//		tbox_files.add(legorel_file);
-//		tbox_files.add(go_bfo_bridge_file);
-//		tbox_files.add(eco_base_file);
-//		tbox_files.add(reactome_physical_entities_file);
-//		try {
-//			goplus = new GOPlus();
-//		} catch (OWLOntologyCreationException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		//		tbox_files = new HashSet<String>();
+		//		tbox_files.add(goplus_file);
+		//		tbox_files.add(ro_file);
+		//		tbox_files.add(legorel_file);
+		//		tbox_files.add(go_bfo_bridge_file);
+		//		tbox_files.add(eco_base_file);
+		//		tbox_files.add(reactome_physical_entities_file);
+		//		try {
+		//			goplus = new GOPlus();
+		//		} catch (OWLOntologyCreationException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}
 	}
 	/**
 	 * @param args
@@ -166,12 +167,12 @@ public class BioPaxtoGO {
 		String converted = 
 				//"/Users/bgood/Desktop/test/go_cams/plant-reactome/reactome-Oryza_sativa-";
 				"/Users/bgood/Desktop/test/go_cams/tmp-wnt-curator/";
-				//"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
+		//"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
 		bp2g.blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";  
 		bp2g.go_lego_file = "/Users/bgood/git/noctua_exchange/exchange/src/test/resources/go-lego-test.owl";
 		bp2g.go_plus_file = "/Users/bgood/gocam_ontology/go-plus.owl";
 		bp2g.goplus = new GOPlus(bp2g.go_plus_file);
-		
+
 		String base_title = "title here";//"Will be replaced if a title can be found for the pathway in its annotations
 		String base_contributor = "https://orcid.org/0000-0002-7334-7852"; //Ben Good
 		String base_provider = "https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";
@@ -179,14 +180,14 @@ public class BioPaxtoGO {
 		if(expand_subpathways) {
 			tag = "expanded";
 		}	
-		
+
 		Set<String> test_pathways = new HashSet<String>();
 		test_pathways.add("Signaling by BMP");
 		test_pathways.add("Glycolysis");
 		test_pathways.add("Disassembly of the destruction complex and recruitment of AXIN to the membrane");
 		//set to null to do full run
 		test_pathways = null;
-		
+
 		//set up reasoner and blazegraph output
 		//for blazegraph output 
 		String journal = bp2g.blazegraph_output_journal;	
@@ -195,10 +196,10 @@ public class BioPaxtoGO {
 		clean.write("");
 		clean.close();	
 		Blazer blaze = new Blazer(journal);
-			
+
 		QRunner tbox_qrunner = GoCAM.getQRunnerForTboxInference(Collections.singleton(bp2g.go_lego_file));
 		bp2g.convert(input_biopax, converted, base_title, base_contributor, base_provider, tag, test_pathways, blaze, tbox_qrunner);
-	
+
 	} 
 
 	void convert(
@@ -220,13 +221,13 @@ public class BioPaxtoGO {
 		}else if(base_provider.equals("https://www.pathwaycommons.org/")) {
 			datasource = "Pathway Commons";
 		}
-		
+
 		//read biopax pathway(s)
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileInputStream f = new FileInputStream(input_biopax);
 		biopax_model = handler.convertFromOWL(f);
 		int n_pathways = 0;
-		
+
 		//set up ontology (used if not split)
 		String base_ont_title = base_title;
 		String iri = "http://model.geneontology.org/"+base_ont_title.hashCode(); 
@@ -340,6 +341,27 @@ public class BioPaxtoGO {
 		return id;
 	}
 
+	public static String getDrugReferenceId(PhysicalEntity bp_entity) {
+		String id = null;
+		try {
+			EntityReference r = null;
+			if(bp_entity.getModelInterface().equals(Protein.class)) {
+				r = ((Protein) bp_entity).getEntityReference();
+			}else if(bp_entity.getModelInterface().equals(SmallMolecule.class)){
+				r = ((SmallMolecule) bp_entity).getEntityReference();
+			}if(r!=null) {
+				Set<Xref> erefs = r.getXref();
+				for(Xref eref : erefs) {
+					if(eref.getDb().equals("IUPHAR")) {
+						id = eref.getId();
+					}
+				}
+			}
+		}catch(Exception e) {
+			return null;
+		}
+		return id;
+	}
 
 	/**
 	 * Only keep it if it has some useful content

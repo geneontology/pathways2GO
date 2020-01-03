@@ -134,7 +134,7 @@ public class PhysicalEntityOntologyBuilder {
 		String input_biopax = 
 		//		"/Users/bgood/Desktop/test/biopax/ca_pathway_rna_example.owl";
 		//		"/Users/bgood/Desktop/test/biopax/wnt-curator-195721.owl";
-		"/Users/bgood/Desktop/test/biopax/Homo_sapiens_sept9_2019.owl";
+		"/Users/bgood/Desktop/test/biopax/Homo_sapiens_nov25.owl";
 		//"/Users/bgood/Desktop/test/biopax/glycolysis.owl";
 		//"/Users/bgood/Downloads/biopax3/Oryza_sativa.owl";
 		
@@ -206,6 +206,7 @@ public class PhysicalEntityOntologyBuilder {
 		}
 		//add this in so shex validator works without needing to import all of chebi..
 		go_cam.addSubClassAssertion(GoCAM.chebi_molecular_entity, GoCAM.chemical_entity);
+		go_cam.addSubClassAssertion(GoCAM.chebi_protein, GoCAM.chebi_information_biomacromolecule);
 		//build it all!  
 		PhysicalEntityOntologyBuilder converter = new PhysicalEntityOntologyBuilder(new GOPlus("/Users/bgood/gocam_ontology/go-plus.owl"), base_short_namespace, base_extra_info, r, pro_mapping);
 		for (PhysicalEntity entity : biopax_model.getObjects(PhysicalEntity.class)){		
@@ -278,6 +279,11 @@ public class PhysicalEntityOntologyBuilder {
 			String reactome_url = base_extra_info+entity_id;
 			go_cam.addSeeAlso(e, reactome_url);
 			go_cam.addComment(e, "BioPAX type: "+entity.getModelInterface());
+			//add specific drug reference if its there - reactions with drugs are treated differently
+			String iuphar_id = BioPaxtoGO.getDrugReferenceId(entity);
+			if(iuphar_id!=null) {
+				go_cam.addDrugReference(e, "IUPHAR:"+iuphar_id);
+			}
 			if(pro_exact_map.containsKey(entity_id)) {
 				for(String pro_id : pro_exact_map.get(entity_id)) {
 					if(add_pro_logical_connections) {
@@ -728,6 +734,7 @@ public class PhysicalEntityOntologyBuilder {
 		int n_all_pro = 0; int n_complex_pro = 0; int n_sets_pro = 0; int n_protein_pro = 0; int n_small_molecule_pro = 0;
 		int n_dna = 0; int n_rna = 0; int n_dna_region = 0;  int n_rna_region = 0;
 		int n_other = 0; int n_physical = 0; 
+		int n_drug = 0;
 		int n_sets_of_complexes = 0; int n_sets_of_sets = 0;
 		Set<String> set_types = new HashSet<String>();		
 		String mapping = "/Users/bgood/gocam_ontology/REO/promapping.txt";
@@ -735,7 +742,8 @@ public class PhysicalEntityOntologyBuilder {
 		Map<String, Set<String>> any_map = PRO.readReact2PRO(mapping, "is_a");
 		Map<String, String> physical_ref = new HashMap<String, String>();
 		any_map.putAll(exact_map);
-		for (PhysicalEntity e : biopax_model.getObjects(PhysicalEntity.class)){
+		boolean isa_set = false;
+		for (PhysicalEntity e : biopax_model.getObjects(PhysicalEntity.class)){		
 			n_all++;
 			boolean in_pro = false;
 			String id = BioPaxtoGO.getEntityReferenceId(e);
@@ -743,9 +751,17 @@ public class PhysicalEntityOntologyBuilder {
 				n_all_pro++;
 				in_pro = true;
 			}
-
+			String drug_id = BioPaxtoGO.getDrugReferenceId(e);
+			if(drug_id==null) {
+				drug_id = "no_IUPHAR";
+			}else {
+				drug_id = "IUPHAR:"+drug_id;
+				n_drug++;
+			}
+			
 			if(!e.getMemberPhysicalEntity().isEmpty()) {
 				n_sets++;
+				isa_set = true;
 				if(in_pro) {
 					n_sets_pro++;
 				}
@@ -764,7 +780,11 @@ public class PhysicalEntityOntologyBuilder {
 						break;
 					}
 				}
-			}			
+			}else {
+				isa_set = false;
+			}
+			physical_ref.put(BioPaxtoGO.getEntityReferenceId(e)+"\t"+drug_id+"\t"+isa_set, e.getDisplayName()+"\t"+e.getModelInterface());
+			
 			if(e instanceof Complex) {
 				n_complex++;
 				if(in_pro) {
@@ -790,23 +810,23 @@ public class PhysicalEntityOntologyBuilder {
 				n_rna_region++;
 			}else if(e.getModelInterface().equals(PhysicalEntity.class)){
 				n_physical++;
-				physical_ref.put(BioPaxtoGO.getEntityReferenceId(e), e.getDisplayName());
 			}else {
 				n_other++;
 				System.out.println(e.getModelInterface());
 			}
 		}
 		System.out.println("n_all\tn_physical\tn_sets\tn_complex\tn_protein\tn_small_molecule"
-				+"\tn_dna\tn_rna\tn_dna_region\tn_rna_region\tn_other");
+				+"\tn_dna\tn_rna\tn_dna_region\tn_rna_region\tn_other\tn_drug");
 		System.out.println( n_all+"\t"+n_physical+"\t"+n_sets+"\t"+n_complex+"\t"+n_protein+"\t"+n_small_molecule 
 				+"\t"+n_dna+"\t"+n_rna+"\t"+n_dna_region+"\t"+n_rna_region 
-				+"\t"+n_other);
+				+"\t"+n_other+"\t"+n_drug);
 		System.out.println("n_sets_of_complexes = "+n_sets_of_complexes+" n_sets_of_sets = "+n_sets_of_sets);
 		System.out.println(set_types);
 		System.out.println("n_all_pro\tn_sets_pro\tn_complex_pro\tn_protein_prp\tn_small_molecule_pro");
 		System.out.println( n_all_pro+"\t"+n_sets_pro+"\t"+n_complex_pro+"\t"+n_protein_pro+"\t"+n_small_molecule_pro);
 
 		FileWriter f = new FileWriter("/Users/bgood/Desktop/untyped_physical.txt");
+		f.write("id	drug	set	name	biopax type\n");
 		for(String n : physical_ref.keySet()) {
 			f.write(n+"\t"+physical_ref.get(n)+"\n");
 		}
