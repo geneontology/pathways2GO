@@ -132,17 +132,13 @@ public class PhysicalEntityOntologyBuilder {
 	public static void main(String[] args) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
 		String pro_mapping = "/Users/bgood/gocam_ontology/REO/promapping.txt";
 		String input_biopax = 
-		//		"/Users/bgood/Desktop/test/biopax/ca_pathway_rna_example.owl";
-		//		"/Users/bgood/Desktop/test/biopax/wnt-curator-195721.owl";
+		//		"/Users/bgood/Desktop/test/biopax/SignalingByERBB-curator.owl";
+		//"/Users/bgood/Downloads/1227986.owl";
 		"/Users/bgood/Desktop/test/biopax/Homo_sapiens_nov25.owl";
-		//"/Users/bgood/Desktop/test/biopax/glycolysis.owl";
-		//"/Users/bgood/Downloads/biopax3/Oryza_sativa.owl";
 		
 		String outputformat = "RDFXML";
-		String outfilename = 
-		"/Users/bgood/gocam_ontology/REO";
-		//"/Users/bgood/Desktop/test/REO/glycolysis_entities";
-		//"/Users/bgood/Desktop/test/REO/Oryza_sativa_entities";
+		String outfilename = "/Users/bgood/gocam_ontology/REO";
+
 		
 		String base_ont_title = "Reactome Entity Ontology (REO)";//"SignalingByERBB2_Physical_Entities"; //"Reactome_physical_entities";
 		String base_extra_info = "https://reactome.org/content/detail/";
@@ -750,6 +746,10 @@ public class PhysicalEntityOntologyBuilder {
 			if(any_map.containsKey(id)) {
 				n_all_pro++;
 				in_pro = true;
+			}
+			if(e.getDisplayName()!=null&&e.getDisplayName().equals("pertuzumab")) {
+				String testdrug_id = BioPaxtoGO.getDrugReferenceId(e);
+				System.out.println("hello pertuzumab "+testdrug_id);
 			}
 			String drug_id = BioPaxtoGO.getDrugReferenceId(e);
 			if(drug_id==null) {

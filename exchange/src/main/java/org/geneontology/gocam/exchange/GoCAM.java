@@ -23,6 +23,11 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.vocabulary.RDF;
 import org.biopax.paxtools.model.level3.PublicationXref;
@@ -114,7 +119,7 @@ public class GoCAM {
 	has_target_end_location, has_target_start_location, interacts_with, has_participant, functionally_related_to,
 	contributes_to, only_in_taxon, transports_or_maintains_localization_of;
 	public static OWLDataProperty has_start, has_end;
-	
+
 	public static OWLClass 
 	bp_class, continuant_class, process_class, go_complex, cc_class, molecular_function, 
 	eco_imported, eco_imported_auto, eco_inferred_auto, 
@@ -241,7 +246,7 @@ public class GoCAM {
 		database_cross_reference = df.getOWLAnnotationProperty(IRI.create("http://www.geneontology.org/formats/oboInOwl#hasDbXref"));	
 		canonical_record = df.getOWLAnnotationProperty(IRI.create("http://geneontology.org/lego/canonical_record"));
 		iuphar_id = df.getOWLAnnotationProperty(IRI.create("http://geneontology.org/lego/iuphar_id"));
-		
+
 		//Will add classes and relations as we need them now. 
 		//TODO add something to validate that ids are correct..  
 		//classes	
@@ -401,7 +406,7 @@ public class GoCAM {
 		transports_or_maintains_localization_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002313"));
 		//re-usable restrictions
 		taxon_human = df.getOWLObjectSomeValuesFrom(only_in_taxon, human);
-		
+
 		//data properties
 		has_start = df.getOWLDataProperty(IRI.create(obo_iri + "has_start"));
 		has_end = df.getOWLDataProperty(IRI.create(obo_iri + "has_end"));
@@ -588,7 +593,7 @@ public class GoCAM {
 
 	}
 
-	
+
 	public void addDrugReference(OWLEntity e, String drug_id) {
 		if(drug_id==null) {
 			return;
@@ -600,7 +605,7 @@ public class GoCAM {
 		return;
 
 	}
-	
+
 	public void addAltLabel(OWLEntity entity, String label) {
 		if(label==null) {
 			return;
@@ -983,6 +988,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		return r;
 	}
 
+
 	/**
 	 * Infer Transport reactions
 	 * If a reaction has not been provided with an rdf:type 
@@ -1011,7 +1017,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 				OWLNamedIndividual reaction = this.makeAnnotatedIndividual(transport_reaction.reaction_uri);
 				OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(molecular_function, reaction);
 				ontman.removeAxiom(go_cam_ont, classAssertion);
-				
+
 				String thing_type_uri = transport_reaction.thing_type_uri;
 				OWLClass thing_type = this.df.getOWLClass(IRI.create(thing_type_uri));
 				OWLNamedIndividual thing = this.makeAnnotatedIndividual(transport_reaction.thing_uri);
@@ -1028,7 +1034,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 					}
 					explain+=" something.";
 				}	
-				
+
 				addLiteralAnnotations2Individual(reaction.getIRI(), rdfs_comment, explain);
 				//record what moved where so the classifier can see it properly
 				OWLNamedIndividual start_loc = makeAnnotatedIndividual(makeRandomIri(model_id));
@@ -1761,6 +1767,37 @@ BP has_part R
 			}
 		}
 		System.out.println("removed "+n_removed);
+	}
+
+	public int removeDrugReactions(String reactome_id, Set<String> drug_process_ids) {
+		//get all the nodes in the model 
+		String query = 
+				"prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " + 
+						"select distinct ?node   " + 
+						"where {" + 
+						" 	?node rdf:type ?type . " +  
+						"}";
+		QueryExecution qe = QueryExecutionFactory.create(query, qrunner.jena);
+		ResultSet results = qe.execSelect();
+		Set<String> nodes = new HashSet<String>();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			if(!qs.get("node").isAnon()) {
+				Resource node = qs.getResource("node");
+				String node_id = node.getURI().substring(base_iri.length());
+				nodes.add(node_id);
+			}
+		}
+		//if they show up in the drug process list, remove those nodes and all their detritus
+		nodes.retainAll(drug_process_ids);
+		for(String drug_reaction : nodes) {
+			IRI dr_iri = IRI.create(base_iri+drug_reaction);
+			OWLNamedIndividual reaction = df.getOWLNamedIndividual(dr_iri);
+			deleteOwlEntityAndAllReferencesToIt(reaction);
+			System.out.println("drug reaction\t"+drug_reaction);
+		}
+		qrunner = new QRunner(go_cam_ont);
+		return nodes.size();
 	}
 
 

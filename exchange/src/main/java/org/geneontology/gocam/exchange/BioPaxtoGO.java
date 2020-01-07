@@ -39,6 +39,7 @@ import org.biopax.paxtools.model.level3.Conversion;
 import org.biopax.paxtools.model.level3.ConversionDirectionType;
 import org.biopax.paxtools.model.level3.Degradation;
 import org.biopax.paxtools.model.level3.Dna;
+import org.biopax.paxtools.model.level3.DnaRegion;
 import org.biopax.paxtools.model.level3.Entity;
 import org.biopax.paxtools.model.level3.EntityReference;
 import org.biopax.paxtools.model.level3.GeneticInteraction;
@@ -54,6 +55,7 @@ import org.biopax.paxtools.model.level3.Provenance;
 import org.biopax.paxtools.model.level3.PublicationXref;
 import org.biopax.paxtools.model.level3.RelationshipXref;
 import org.biopax.paxtools.model.level3.Rna;
+import org.biopax.paxtools.model.level3.RnaRegion;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.biopax.paxtools.model.level3.SmallMolecule;
 import org.biopax.paxtools.model.level3.TemplateDirectionType;
@@ -128,6 +130,7 @@ public class BioPaxtoGO {
 	static boolean add_upstream_controller_events_from_other_pathways = false; //if true will add reactions from other pathways if one of their participants is a controller (catalyst or regulator) of a reaction in the current pathway.  
 	static boolean add_subpathway_bridges = false; //this is groundwork for an approach that generates go-cams that reference members of other go-cams, here referencing other pathways.  
 	static String default_namespace_prefix = "Reactome"; //this is used to generate curi structured references - e.g. Reactome:HSA-007
+	Set<String> drug_process_ids = new HashSet<String>(); 
 
 	public BioPaxtoGO(){
 		strategy = ImportStrategy.NoctuaCuration; 
@@ -341,7 +344,7 @@ public class BioPaxtoGO {
 		return id;
 	}
 
-	public static String getDrugReferenceId(PhysicalEntity bp_entity) {
+	public static String getDrugReferenceId(Entity bp_entity) {
 		String id = null;
 		try {
 			EntityReference r = null;
@@ -349,7 +352,18 @@ public class BioPaxtoGO {
 				r = ((Protein) bp_entity).getEntityReference();
 			}else if(bp_entity.getModelInterface().equals(SmallMolecule.class)){
 				r = ((SmallMolecule) bp_entity).getEntityReference();
-			}if(r!=null) {
+			}else if(bp_entity.getModelInterface().equals(Rna.class)){
+				r = ((Rna) bp_entity).getEntityReference();
+			}else if(bp_entity.getModelInterface().equals(Dna.class)){
+				r = ((Dna) bp_entity).getEntityReference();
+			}else if(bp_entity.getModelInterface().equals(RnaRegion.class)){
+				r = ((RnaRegion) bp_entity).getEntityReference();
+			}else if(bp_entity.getModelInterface().equals(DnaRegion.class)){
+				r = ((DnaRegion) bp_entity).getEntityReference();
+			}else if(bp_entity.getModelInterface().equals(PhysicalEntity.class)) {
+				System.err.println("Can not access EntityReference for untyped physical entity: "+bp_entity.getDisplayName());
+			}
+			if(r!=null) {
 				Set<Xref> erefs = r.getXref();
 				for(Xref eref : erefs) {
 					if(eref.getDb().equals("IUPHAR")) {
@@ -360,6 +374,7 @@ public class BioPaxtoGO {
 		}catch(Exception e) {
 			return null;
 		}
+		System.out.println("found drug id "+id+" "+bp_entity.getDisplayName());
 		return id;
 	}
 
@@ -421,6 +436,12 @@ public class BioPaxtoGO {
 		//set up a sparqlable kb in sync with ontology
 		System.out.println("setting up rdf model for sparql rules");
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
+		//filter out reactions involving drugs
+		if(drug_process_ids!=null&&drug_process_ids.size()>0) {
+			System.out.println("Before drug removal -  triples: "+go_cam.qrunner.nTriples());
+			int n_reactions_removed = go_cam.removeDrugReactions(reactome_id, drug_process_ids); 
+			System.out.println("After drug removal  triples: "+go_cam.qrunner.nTriples()+"\nremoved "+n_reactions_removed+" reactions");
+		}
 		//infer new edges based on sparql matching
 		System.out.println("Before sparql inference -  triples: "+go_cam.qrunner.nTriples());
 		GoCAM.RuleResults rule_results = go_cam.applySparqlRules(reactome_id, tbox_qrunner);
@@ -788,17 +809,14 @@ public class BioPaxtoGO {
 		//add entity to ontology, whatever it is
 		OWLNamedIndividual e = go_cam.makeAnnotatedIndividual(this_iri);
 		//check specifically for Reactome id
-		String reactome_entity_id = null;
+		String reactome_entity_id = getEntityReferenceId(entity);
+		//add xrefs
 		for(Xref xref : entity.getXref()) {
 			if(xref.getModelInterface().equals(UnificationXref.class)) {
 				UnificationXref r = (UnificationXref)xref;	    			
 				if(r.getDb().equals("Reactome")) {
-					reactome_entity_id = r.getId();
-					if(reactome_entity_id.startsWith("R-HSA")) {
-						go_cam.addDatabaseXref(e, "Reactome:"+reactome_entity_id);
+						go_cam.addDatabaseXref(e, "Reactome:"+r.getId());
 						dbids.add(reactome_entity_id);
-						break;
-					}
 				}
 			}
 		}		
@@ -808,7 +826,21 @@ public class BioPaxtoGO {
 		//	Set<String> pubids = getPubmedIds(entity);		
 		String entity_name = entity.getDisplayName();
 		go_cam.addLabel(e, entity_name);
+		if(entity_name.equals("pertuzumab")) {
+			System.out.println("drugg!  "+reactome_entity_id);
+		}
 		if(entity instanceof PhysicalEntity) {
+			if(reactome_entity_id.contains("R-ALL-9665971")) {
+				System.out.println("what?Q");
+			}
+			String drug_id = getDrugReferenceId(entity);
+			if(drug_id!=null) {
+				Set<Interaction> entity_processes = entity.getParticipantOf();
+				for(Interaction process : entity_processes) {
+					String process_id = getEntityReferenceId(process);
+					drug_process_ids.add(model_id+"/"+process_id);
+				}
+			}		
 			//if it is a physical entity, then we should already have created a class to describe it based on the unique id.  
 			//TODO this needs some generalizing, but focusing on getting Reactome done right now.
 			IRI entity_class_iri = IRI.create(GoCAM.base_iri+entity_id);
