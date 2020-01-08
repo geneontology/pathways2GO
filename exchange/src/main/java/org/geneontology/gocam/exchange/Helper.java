@@ -1,6 +1,7 @@
 package org.geneontology.gocam.exchange;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,6 +11,7 @@ import org.semanticweb.owlapi.io.FileDocumentTarget;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataFactory;
@@ -17,6 +19,7 @@ import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
+import org.semanticweb.owlapi.search.EntitySearcher;
 
 public class Helper {
 
@@ -43,6 +46,18 @@ public class Helper {
 			s = s.substring(0,s.length()-1);
 		}
 		return s;
+	}
+	
+	public static Set<String> getAnnotations(OWLEntity e, OWLOntology ont, OWLAnnotationProperty anno_prop){
+		Set<String> values = new HashSet<String>();
+		Collection<OWLAnnotation> annos = EntitySearcher.getAnnotationObjects(e, ont, anno_prop);
+		for(OWLAnnotation a : annos) {
+			if(a.getValue() instanceof OWLLiteral) {
+				OWLLiteral val = (OWLLiteral) a.getValue();
+				values.add(val.getLiteral());
+			}
+		}
+		return values;
 	}
 	
 	public static Set<String> getLabels(String uri, OWLOntology ont){

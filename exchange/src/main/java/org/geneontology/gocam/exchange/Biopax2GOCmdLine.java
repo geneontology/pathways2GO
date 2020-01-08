@@ -15,6 +15,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.obolibrary.robot.CatalogXmlIRIMapper;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
@@ -53,6 +54,7 @@ public class Biopax2GOCmdLine {
 		String default_contributor = "";//"https://orcid.org/0000-0002-7334-7852"; //
 		String default_provider = "";//"https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";	
 		String test_pathway_name = null;
+		String catalog = null;
 		// create Options object
 		Options options = new Options();
 		options.addOption("b", true, "biopax pathway file to convert");
@@ -64,7 +66,9 @@ public class Biopax2GOCmdLine {
 		options.addOption("lego", true, "Location of go-lego ontology file.  This is an ontology that serves to import other ontologies important for GO validation and operation.");
 		options.addOption("go", true, "Location of primary GO file. Use GOPlus for inference. ");
 		options.addOption("tp", true, "Exact name of a specific pathway to test - e.g. \"Signaling by MP\".  Other pathways in the biopax input file will be ignored. Default is that all pathways are processed");
+		options.addOption("c", true, "Catalog file for tbox");
 
+		
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = parser.parse( options, args);
 
@@ -75,7 +79,8 @@ public class Biopax2GOCmdLine {
 			System.out.println("please provide a biopax file to validate to convert.");
 			System.exit(0);}
 		if(cmd.hasOption("o")) {
-			output_file_stub = cmd.getOptionValue("o");}
+			output_file_stub = cmd.getOptionValue("o");
+			}
 		else {
 			System.out.println("please specify an output directory, with optional file prefix, e.g. /test/go_cams/reactome/reactome-homosapiens-");
 			System.exit(0);}
@@ -97,18 +102,21 @@ public class Biopax2GOCmdLine {
 		else {
 			System.out.println("please provide a go-lego OWL file.");
 			System.exit(0);}
-		if(cmd.hasOption("go")) {
-			bp2g.go_plus_file = cmd.getOptionValue("go");
-			bp2g.goplus = new GOPlus(bp2g.go_plus_file);
-			}
-		else {
-			System.out.println("please provide a go OWL file.");
-			System.exit(0);}
+//		if(cmd.hasOption("go")) {
+//			bp2g.go_plus_file = cmd.getOptionValue("go");
+//			bp2g.goplus = new GOPlus(bp2g.go_plus_file);
+//			}
+//		else {
+//			System.out.println("please provide a go OWL file.");
+//			System.exit(0);}
 		Set<String> test_pathways = null;
 		if(cmd.hasOption("tp")) {
 			test_pathways = new HashSet<String>();
 			test_pathway_name = cmd.getOptionValue("tp");
 			test_pathways.add(test_pathway_name);
+		}
+		if(cmd.hasOption("c")) {
+			catalog = cmd.getOptionValue("c");
 		}
 		String journal = bp2g.blazegraph_output_journal;	
 		//clean out any prior data in triple store
@@ -117,11 +125,15 @@ public class Biopax2GOCmdLine {
 		clean.close();
 		Blazer blaze = new Blazer(journal);
 		//initialize the rules for inference
-		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();				
+		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();	
+		if(catalog!=null) {
+			ontman.setIRIMappers(Collections.singleton(new CatalogXmlIRIMapper(catalog)));
+		}
 		OWLOntology tbox = ontman.loadOntologyFromOntologyDocument(new File(bp2g.go_lego_file));
-		Set<OWLOntology> imports = tbox.getImports();
-		imports.add(tbox);		
-		QRunner tbox_qrunner = new QRunner(imports, null, true, false, false);
+		bp2g.golego = new GOLego(tbox);
+		QRunner tbox_qrunner = new QRunner(Collections.singleton(tbox), null, bp2g.golego.golego_reasoner, true, false, false);
+		bp2g.tbox_qrunner = tbox_qrunner;
+
 		File dir = new File(input_biopax);
 		File[] directoryListing = dir.listFiles();
 		//run through all files
@@ -132,11 +144,11 @@ public class Biopax2GOCmdLine {
 					name = name.replaceAll(".owl", "-");
 					name = name.replaceAll(".xml", "-");
 					String this_output_file_stub = output_file_stub+name;
-					bp2g.convert(biopax.getAbsolutePath(), this_output_file_stub, base_title, default_contributor, default_provider, tag, test_pathways, blaze, tbox_qrunner);
+					bp2g.convert(biopax.getAbsolutePath(), this_output_file_stub, base_title, default_contributor, default_provider, tag, test_pathways, blaze);
 				}
 			}
 		}else {
-			bp2g.convert(input_biopax, output_file_stub, base_title, default_contributor, default_provider, tag, test_pathways, blaze, tbox_qrunner);
+			bp2g.convert(input_biopax, output_file_stub, base_title, default_contributor, default_provider, tag, test_pathways, blaze);
 		}
 
 	}

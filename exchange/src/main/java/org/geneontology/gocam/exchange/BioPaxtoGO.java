@@ -70,9 +70,11 @@ import org.geneontology.rules.engine.Rule;
 import org.geneontology.rules.engine.Triple;
 import org.geneontology.rules.engine.TriplePattern;
 import org.geneontology.rules.engine.WorkingMemory;
+import org.obolibrary.robot.CatalogXmlIRIMapper;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
+import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.ClassExpressionType;
 import org.semanticweb.owlapi.model.IRI;
@@ -92,6 +94,7 @@ import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLObjectUnionOf;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.search.EntitySearcher;
@@ -104,9 +107,9 @@ import org.semarglproject.vocab.OWL;
  */
 public class BioPaxtoGO {
 	String go_lego_file;
-	String go_plus_file;
-	GOPlus goplus; //The fully axiomitized Gene Ontology. Used in multiple places for different purposes. 
+	GOLego golego; //The fully axiomitized Gene Ontology. Used in multiple places for different purposes. 
 	String blazegraph_output_journal;//Generated models will be stored both as files and as entries in this blazegraph journal.  Note this is ready for use in a Noctua/Minerva instance without any further processing.
+	QRunner tbox_qrunner;
 	ImportStrategy strategy;
 	enum ImportStrategy {
 		NoctuaCuration, 
@@ -173,8 +176,13 @@ public class BioPaxtoGO {
 		//"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
 		bp2g.blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";  
 		bp2g.go_lego_file = "/Users/bgood/git/noctua_exchange/exchange/src/test/resources/go-lego-test.owl";
-		bp2g.go_plus_file = "/Users/bgood/gocam_ontology/go-plus.owl";
-		bp2g.goplus = new GOPlus(bp2g.go_plus_file);
+		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();	
+		//		if(local_catalogue_file!=null) {
+		//			ontman.setIRIMappers(Collections.singleton(new CatalogXmlIRIMapper(local_catalogue_file)));
+		//		}
+		OWLOntology tbox = ontman.loadOntologyFromOntologyDocument(new File(bp2g.go_lego_file));
+
+		bp2g.golego = new GOLego(tbox);
 
 		String base_title = "title here";//"Will be replaced if a title can be found for the pathway in its annotations
 		String base_contributor = "https://orcid.org/0000-0002-7334-7852"; //Ben Good
@@ -200,8 +208,8 @@ public class BioPaxtoGO {
 		clean.close();	
 		Blazer blaze = new Blazer(journal);
 
-		QRunner tbox_qrunner = GoCAM.getQRunnerForTboxInference(Collections.singleton(bp2g.go_lego_file));
-		bp2g.convert(input_biopax, converted, base_title, base_contributor, base_provider, tag, test_pathways, blaze, tbox_qrunner);
+		bp2g.tbox_qrunner = new QRunner(Collections.singleton(bp2g.golego.golego_ont), null, bp2g.golego.golego_reasoner, true, false, false);
+		bp2g.convert(input_biopax, converted, base_title, base_contributor, base_provider, tag, test_pathways, blaze);
 
 	} 
 
@@ -213,8 +221,7 @@ public class BioPaxtoGO {
 			String base_provider, 
 			String tag, 
 			Set<String> test_pathway_names,
-			Blazer blaze,
-			QRunner tbox_qrunner) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException  {
+			Blazer blaze) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException  {
 		//set for writing metadata
 		String datasource = "";
 		if(base_provider.equals("https://reactome.org")) {
@@ -312,7 +319,7 @@ public class BioPaxtoGO {
 				n = n.replaceAll("/", "-");	
 				n = n.replaceAll(" ", "_");
 				String outfilename = converted+n+".ttl";	
-				wrapAndWrite(outfilename, go_cam, tbox_qrunner, save_inferences, save2blazegraph, n, expand_subpathways, model_id);
+				wrapAndWrite(outfilename, go_cam, save_inferences, save2blazegraph, n, expand_subpathways, model_id);
 				//reset for next pathway.
 				go_cam.ontman.removeOntology(go_cam.go_cam_ont);
 				go_cam.qrunner = null;
@@ -321,7 +328,7 @@ public class BioPaxtoGO {
 		}	
 		//export all
 		if(!split_by_pathway) {
-			wrapAndWrite(converted+".ttl", go_cam, tbox_qrunner, save_inferences, save2blazegraph, converted, expand_subpathways, null);		
+			wrapAndWrite(converted+".ttl", go_cam, save_inferences, save2blazegraph, converted, expand_subpathways, null);		
 		}
 
 		System.out.println("done with file "+input_biopax);
@@ -341,40 +348,6 @@ public class BioPaxtoGO {
 				}
 			}
 		}	
-		return id;
-	}
-
-	public static String getDrugReferenceId(Entity bp_entity) {
-		String id = null;
-		try {
-			EntityReference r = null;
-			if(bp_entity.getModelInterface().equals(Protein.class)) {
-				r = ((Protein) bp_entity).getEntityReference();
-			}else if(bp_entity.getModelInterface().equals(SmallMolecule.class)){
-				r = ((SmallMolecule) bp_entity).getEntityReference();
-			}else if(bp_entity.getModelInterface().equals(Rna.class)){
-				r = ((Rna) bp_entity).getEntityReference();
-			}else if(bp_entity.getModelInterface().equals(Dna.class)){
-				r = ((Dna) bp_entity).getEntityReference();
-			}else if(bp_entity.getModelInterface().equals(RnaRegion.class)){
-				r = ((RnaRegion) bp_entity).getEntityReference();
-			}else if(bp_entity.getModelInterface().equals(DnaRegion.class)){
-				r = ((DnaRegion) bp_entity).getEntityReference();
-			}else if(bp_entity.getModelInterface().equals(PhysicalEntity.class)) {
-				System.err.println("Can not access EntityReference for untyped physical entity: "+bp_entity.getDisplayName());
-			}
-			if(r!=null) {
-				Set<Xref> erefs = r.getXref();
-				for(Xref eref : erefs) {
-					if(eref.getDb().equals("IUPHAR")) {
-						id = eref.getId();
-					}
-				}
-			}
-		}catch(Exception e) {
-			return null;
-		}
-		System.out.println("found drug id "+id+" "+bp_entity.getDisplayName());
 		return id;
 	}
 
@@ -432,7 +405,7 @@ public class BioPaxtoGO {
 	 * @throws RDFHandlerException
 	 * @throws IOException
 	 */
-	private void wrapAndWrite(String outfilename, GoCAM go_cam, QRunner tbox_qrunner, boolean save_inferences, boolean save2blazegraph, String pathwayname, boolean expand_subpathways, String reactome_id) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {		
+	private void wrapAndWrite(String outfilename, GoCAM go_cam, boolean save_inferences, boolean save2blazegraph, String pathwayname, boolean expand_subpathways, String reactome_id) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {		
 		//set up a sparqlable kb in sync with ontology
 		System.out.println("setting up rdf model for sparql rules");
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
@@ -441,6 +414,8 @@ public class BioPaxtoGO {
 			System.out.println("Before drug removal -  triples: "+go_cam.qrunner.nTriples());
 			int n_reactions_removed = go_cam.removeDrugReactions(reactome_id, drug_process_ids); 
 			System.out.println("After drug removal  triples: "+go_cam.qrunner.nTriples()+"\nremoved "+n_reactions_removed+" reactions");
+		}else {
+			System.out.println("No drugs detected");
 		}
 		//infer new edges based on sparql matching
 		System.out.println("Before sparql inference -  triples: "+go_cam.qrunner.nTriples());
@@ -457,7 +432,7 @@ public class BioPaxtoGO {
 		}
 		if(generate_report) {
 			System.out.println("Report after local rules");
-			GoCAMReport gocam_report_after_rules = new GoCAMReport(wm_with_tbox, outfilename, go_cam, goplus.go);
+			GoCAMReport gocam_report_after_rules = new GoCAMReport(wm_with_tbox, outfilename, go_cam, golego.golego_ont);
 			ReasonerReport reasoner_report = new ReasonerReport(gocam_report_after_rules);
 			report.pathway_class_report.put(pathwayname, reasoner_report);
 		}
@@ -497,7 +472,7 @@ public class BioPaxtoGO {
 								scala.collection.Iterator<Explanation> e = explanations.iterator();
 								while(e.hasNext()) {
 									Explanation exp = e.next();
-									String exp_string = renderExplanation(exp, go_cam, goplus.go);
+									String exp_string = renderExplanation(exp, go_cam, golego.golego_ont);
 									System.out.println(exp_string);
 									System.out.println();
 								}
@@ -621,8 +596,8 @@ public class BioPaxtoGO {
 					String goid = r.getId().replaceAll(":", "_");
 					//OWLClass xref_go_parent = go_cam.df.getOWLClass(IRI.create(GoCAM.obo_iri + goid));
 					String uri = GoCAM.obo_iri + goid;					
-					OWLClass xref_go_parent = goplus.getOboClass(uri, true);
-					boolean deprecated = goplus.isDeprecated(uri);
+					OWLClass xref_go_parent = golego.getOboClass(uri, true);
+					boolean deprecated = golego.isDeprecated(uri);
 					if(deprecated) {
 						report.deprecated_classes.add(pathway.getDisplayName()+"\t"+uri+"\tBP");
 					}					
@@ -815,8 +790,8 @@ public class BioPaxtoGO {
 			if(xref.getModelInterface().equals(UnificationXref.class)) {
 				UnificationXref r = (UnificationXref)xref;	    			
 				if(r.getDb().equals("Reactome")) {
-						go_cam.addDatabaseXref(e, "Reactome:"+r.getId());
-						dbids.add(reactome_entity_id);
+					go_cam.addDatabaseXref(e, "Reactome:"+r.getId());
+					dbids.add(reactome_entity_id);
 				}
 			}
 		}		
@@ -830,22 +805,22 @@ public class BioPaxtoGO {
 			System.out.println("drugg!  "+reactome_entity_id);
 		}
 		if(entity instanceof PhysicalEntity) {
-			if(reactome_entity_id.contains("R-ALL-9665971")) {
-				System.out.println("what?Q");
-			}
-			String drug_id = getDrugReferenceId(entity);
-			if(drug_id!=null) {
-				Set<Interaction> entity_processes = entity.getParticipantOf();
-				for(Interaction process : entity_processes) {
-					String process_id = getEntityReferenceId(process);
-					drug_process_ids.add(model_id+"/"+process_id);
-				}
-			}		
+
 			//if it is a physical entity, then we should already have created a class to describe it based on the unique id.  
 			//TODO this needs some generalizing, but focusing on getting Reactome done right now.
 			IRI entity_class_iri = IRI.create(GoCAM.base_iri+entity_id);
 			OWLClass entity_class = go_cam.df.getOWLClass(entity_class_iri); 
 			go_cam.addTypeAssertion(e,  entity_class);
+			
+			Set<String> drug_ids = Helper.getAnnotations(entity_class, tbox_qrunner.tbox_class_reasoner.getRootOntology(), GoCAM.iuphar_id);
+			if(drug_ids!=null&&drug_ids.size()>0) {
+				System.out.println("Drug found for "+entity_class+" "+drug_ids);
+				Set<Interaction> entity_processes = entity.getParticipantOf();
+				for(Interaction process : entity_processes) {
+					String process_id = getEntityReferenceId(process);
+					drug_process_ids.add(model_id+"/"+process_id);
+				}
+			}
 
 			//attempt to localize the entity (only if Physical Entity because that is how BioPAX views existence in space)
 			CellularLocationVocabulary loc = ((PhysicalEntity) entity).getCellularLocation();
@@ -860,8 +835,8 @@ public class BioPaxtoGO {
 						String db = uref.getDb().toLowerCase();
 						if(db.contains("gene ontology")) {
 							String uri = GoCAM.obo_iri + uref.getId().replaceAll(":", "_");						
-							OWLClass xref_go_loc = goplus.getOboClass(uri, true);
-							boolean deprecated = goplus.isDeprecated(uri);
+							OWLClass xref_go_loc = golego.getOboClass(uri, true);
+							boolean deprecated = golego.isDeprecated(uri);
 							if(deprecated) {
 								report.deprecated_classes.add(entity.getDisplayName()+"\t"+xref_go_loc.getIRI().toString()+"\tCC");
 							}
@@ -1102,8 +1077,8 @@ public class BioPaxtoGO {
 							if(db.contains("gene ontology")) {
 								String goid = ref.getId().replaceAll(":", "_");
 								String uri = GoCAM.obo_iri + goid;
-								OWLClass xref_go_func = goplus.getOboClass(uri, true);
-								if(goplus.isDeprecated(uri)) {
+								OWLClass xref_go_func = golego.getOboClass(uri, true);
+								if(golego.isDeprecated(uri)) {
 									report.deprecated_classes.add(entity.getDisplayName()+"\t"+uri+"\tMF");
 								}
 								//add the go function class as a type for the reaction instance being controlled here
@@ -1255,8 +1230,8 @@ public class BioPaxtoGO {
 							String goid = ref.getId().replaceAll(":", "_");
 							go_bp.add(goid);							
 							String uri = GoCAM.obo_iri + goid;
-							OWLClass xref_go_func = goplus.getOboClass(uri, true);
-							if(goplus.isDeprecated(uri)) {
+							OWLClass xref_go_func = golego.getOboClass(uri, true);
+							if(golego.isDeprecated(uri)) {
 								report.deprecated_classes.add(entity.getDisplayName()+"\t"+uri+"\tBP");
 							}
 							//the go class can not be a type for the reaction instance as we want to classify reactions as functions
@@ -1424,7 +1399,7 @@ public class BioPaxtoGO {
 	Set<OWLClass> getTypesFromECs(BiochemicalReaction reaction, GoCAM go_cam){
 		Set<OWLClass> gos = new HashSet<OWLClass>();
 		for(String ec : reaction.getECNumber()) {
-			Set<String> goids = goplus.xref_gos.get("EC:"+ec);
+			Set<String> goids = golego.xref_gos.get("EC:"+ec);
 			for(String goid : goids) {
 				OWLClass go = go_cam.df.getOWLClass(IRI.create(goid));
 				gos.add(go);

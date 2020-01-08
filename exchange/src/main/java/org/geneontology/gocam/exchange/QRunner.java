@@ -63,8 +63,8 @@ public class QRunner {
 	public WorkingMemory wm;
 	public Map<String, OWLOntology> ontology_map;
 	
-	public static QRunner MakeQRunner(Map<String, OWLOntology> name_ont, OWLOntology abox, boolean add_inferences, boolean add_property_definitions, boolean add_class_definitions) throws OWLOntologyCreationException {		
-		QRunner q = new QRunner(name_ont.values(), abox, add_inferences, add_property_definitions, add_class_definitions);
+	public static QRunner MakeQRunner(Map<String, OWLOntology> name_ont, OWLOntology abox, OWLReasoner reasoner, boolean add_inferences, boolean add_property_definitions, boolean add_class_definitions) throws OWLOntologyCreationException {		
+		QRunner q = new QRunner(name_ont.values(), abox, reasoner, add_inferences, add_property_definitions, add_class_definitions);
 		q.ontology_map = name_ont;
 		return q;
 	}
@@ -90,11 +90,15 @@ public class QRunner {
 	 * @throws OWLOntologyCreationException 
 	 * 
 	 */
-	public QRunner(Collection<OWLOntology> tboxes, OWLOntology abox, boolean add_inferences, boolean add_property_definitions, boolean add_class_definitions) throws OWLOntologyCreationException {		
+	public QRunner(Collection<OWLOntology> tboxes, OWLOntology abox, OWLReasoner reasoner, boolean add_inferences, boolean add_property_definitions, boolean add_class_definitions) throws OWLOntologyCreationException {		
 		if(add_inferences) {
-			System.out.println("Adding access to tbox subclass inferences with a structural reasoner");
-			setUpSubClassReasoner(tboxes);
-			
+			if(reasoner==null) {
+				System.out.println("Adding access to tbox subclass inferences with a structural reasoner");
+				setUpSubClassReasoner(tboxes);
+			}else {
+				System.out.println("Reasoner provided - ");
+				tbox_class_reasoner = reasoner;
+			}
 			System.out.println("Setting up Arachne reasoner for Qrunner, extracting rules from tbox");
 			if(abox!=null) {
 				//pull out any rules from abox.. and add to tbox

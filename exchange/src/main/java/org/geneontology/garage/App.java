@@ -403,53 +403,53 @@ public class App {
 		a.categorizeInstanceNodesInFolder(input_folder, output_folder);
 	}
 
-	public static void queryCollection() throws OWLOntologyCreationException, OWLOntologyStorageException, IOException {
-		String input_folder = "/Users/bgood/reactome-go-cam-models/humantest/";
-		OWLOntology abox = ArachneAccessor.makeOneOntologyFromDirectory(input_folder);
-		//prepare tbox
-		String tbox_file = "src/main//resources/org/geneontology/gocam/exchange/ro-merged.owl";
-		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
-		OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
-		//test inference
-		boolean add_inferences = false;
-		boolean add_property_definitions = true;
-		boolean add_class_definitions = false;
-		QRunner q = testInference(abox, tbox, add_inferences, add_property_definitions, add_class_definitions);
-		q.dumpModel("/Users/bgood/reactome-go-cam-models/all_human_no_inference.ttl", "TURTLE");
-	}
+//	public static void queryCollection() throws OWLOntologyCreationException, OWLOntologyStorageException, IOException {
+//		String input_folder = "/Users/bgood/reactome-go-cam-models/humantest/";
+//		OWLOntology abox = ArachneAccessor.makeOneOntologyFromDirectory(input_folder);
+//		//prepare tbox
+//		String tbox_file = "src/main//resources/org/geneontology/gocam/exchange/ro-merged.owl";
+//		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
+//		OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
+//		//test inference
+//		boolean add_inferences = false;
+//		boolean add_property_definitions = true;
+//		boolean add_class_definitions = false;
+//		QRunner q = testInference(abox, tbox, add_inferences, add_property_definitions, add_class_definitions);
+//		q.dumpModel("/Users/bgood/reactome-go-cam-models/all_human_no_inference.ttl", "TURTLE");
+//	}
 
-	private static QRunner testInference(OWLOntology abox, OWLOntology tbox, boolean add_inferences,
-			boolean add_property_definitions, boolean add_class_definitions) throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException {
+//	private static QRunner testInference(OWLOntology abox, OWLOntology tbox, boolean add_inferences,
+//			boolean add_property_definitions, boolean add_class_definitions) throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException {
+//
+//		List<OWLOntology> boxes = new ArrayList<OWLOntology>();
+//		boxes.add(tbox);
+//		return(testInference(abox, boxes, add_inferences, add_property_definitions, add_class_definitions));
+//	}
 
-		List<OWLOntology> boxes = new ArrayList<OWLOntology>();
-		boxes.add(tbox);
-		return(testInference(abox, boxes, add_inferences, add_property_definitions, add_class_definitions));
-	}
 
-
-	public static QRunner testInference(String abox_file, Set<String> tbox_files) throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException {
-		//prepare an abox (taken from Arachne test case)
-		// https://github.com/balhoff/arachne/tree/master/src/test/resources/org/geneontology/rules
-		OWLOntologyManager aman = OWLManager.createOWLOntologyManager();
-		OWLOntology abox = aman.loadOntologyFromOntologyDocument(new File(abox_file));	
-
-		//prepare tbox
-		//String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
-		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
-		System.out.println("Loading tbox ontology ");
-		List<OWLOntology> boxes = new ArrayList<OWLOntology>();
-		for(String tbox_file : tbox_files) {
-			OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
-			boxes.add(tbox);
-		}
-		System.out.println("Building arachne for inference ");
-
-		boolean add_inferences = true;
-		boolean add_property_definitions = true;
-		boolean add_class_definitions = true;
-		QRunner inf = testInference(abox, boxes, add_inferences, add_property_definitions, add_class_definitions);
-		return inf;
-	}
+//	public static QRunner testInference(String abox_file, Set<String> tbox_files) throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException {
+//		//prepare an abox (taken from Arachne test case)
+//		// https://github.com/balhoff/arachne/tree/master/src/test/resources/org/geneontology/rules
+//		OWLOntologyManager aman = OWLManager.createOWLOntologyManager();
+//		OWLOntology abox = aman.loadOntologyFromOntologyDocument(new File(abox_file));	
+//
+//		//prepare tbox
+//		//String tbox_file = "src/main/resources/org/geneontology/gocam/exchange/ro-merged.owl";
+//		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
+//		System.out.println("Loading tbox ontology ");
+//		List<OWLOntology> boxes = new ArrayList<OWLOntology>();
+//		for(String tbox_file : tbox_files) {
+//			OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
+//			boxes.add(tbox);
+//		}
+//		System.out.println("Building arachne for inference ");
+//
+//		boolean add_inferences = true;
+//		boolean add_property_definitions = true;
+//		boolean add_class_definitions = true;
+//		QRunner inf = testInference(abox, boxes, add_inferences, add_property_definitions, add_class_definitions);
+//		return inf;
+//	}
 
 	public static void testCausal(QRunner qrunner) {
 		String q = 
@@ -468,7 +468,7 @@ public class App {
 	}
 
 	//TODO Maybe someday unit tests..  
-	public static QRunner testInference(OWLOntology abox, List<OWLOntology> tboxes, 
+/*	public static QRunner testInference(OWLOntology abox, List<OWLOntology> tboxes, 
 			boolean add_inferences, boolean add_property_definitions, boolean add_class_definitions)  throws OWLOntologyCreationException, OWLOntologyStorageException, FileNotFoundException {
 		boolean printall = false;
 		//Test reading, reasoning, query
@@ -519,7 +519,7 @@ public class App {
 		//arachneInferredTriples = wm.facts
 		return q;
 	}
-
+*/
 	OWLNamedIndividual addComplexAsSimpleClass(GoCAM go_cam, Set<String> component_names, IRI complex_instance_iri, Set<OWLAnnotation> annotations) {
 		String combo_name = GoCAM.base_iri;
 		for(String n : component_names) {

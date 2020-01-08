@@ -88,7 +88,6 @@ public class BioPaxtoGOTest {
 			System.out.println("downloading goplus ontology from "+go_plus_url);
 			org.apache.commons.io.FileUtils.copyURLToFile(goplus_location, goplus_file);
 		}		
-		bp2g.goplus = new GOPlus(go_plus_file);
 		bp2g.blazegraph_output_journal = output_blazegraph_journal;
 		//clean out any prior data in triple store
 		FileWriter clean = new FileWriter(bp2g.blazegraph_output_journal, false);
@@ -103,11 +102,10 @@ public class BioPaxtoGOTest {
 			ontman.setIRIMappers(Collections.singleton(new CatalogXmlIRIMapper(local_catalogue_file)));
 		}
 		OWLOntology tbox = ontman.loadOntologyFromOntologyDocument(new File(go_lego_file));
-		Set<OWLOntology> imports = tbox.getImports();
-		imports.add(tbox);
+		bp2g.golego = new GOLego(tbox);
 		//initialize the rules for inference
 		System.out.println("starting tbox build");
-		tbox_qrunner = new QRunner(imports, null, true, false, false);
+		bp2g.tbox_qrunner = new QRunner(Collections.singleton(tbox), null, bp2g.golego.golego_reasoner, true, false, false);
 		System.out.println("done building arachne");		
 		//run the conversion on all the test biopax files
 		System.out.println("running biopaxtogo on all test files");
@@ -121,7 +119,7 @@ public class BioPaxtoGOTest {
 					name = name.replaceAll(".owl", "-");
 					String this_output_file_stub = output_file_stub+name;
 					try {
-						bp2g.convert(biopax.getAbsolutePath(), this_output_file_stub, base_title, default_contributor, default_provider, tag, null, blaze, tbox_qrunner);
+						bp2g.convert(biopax.getAbsolutePath(), this_output_file_stub, base_title, default_contributor, default_provider, tag, null, blaze);
 					} catch (OWLOntologyCreationException | OWLOntologyStorageException | RepositoryException
 							| RDFParseException | RDFHandlerException | IOException e) {
 						// TODO Auto-generated catch block
@@ -131,7 +129,7 @@ public class BioPaxtoGOTest {
 			} 
 		}else {
 			try {
-				bp2g.convert(input_biopax, output_file_stub, base_title, default_contributor, default_provider, tag, null, blaze, tbox_qrunner);
+				bp2g.convert(input_biopax, output_file_stub, base_title, default_contributor, default_provider, tag, null, blaze);
 			} catch (OWLOntologyCreationException | OWLOntologyStorageException | RepositoryException
 					| RDFParseException | RDFHandlerException | IOException e) {
 				// TODO Auto-generated catch block
@@ -229,7 +227,7 @@ public class BioPaxtoGOTest {
 				try {
 					GoCAM go_cam = new GoCAM(abox_file.getAbsoluteFile(), empty_catalogue_file);
 					go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 		
-					WorkingMemory wm_with_tbox = tbox_qrunner.arachne.createInferredModel(go_cam.go_cam_ont,false, false);			
+					WorkingMemory wm_with_tbox = bp2g.tbox_qrunner.arachne.createInferredModel(go_cam.go_cam_ont,false, false);			
 					go_cam.qrunner.jena = go_cam.qrunner.makeJenaModel(wm_with_tbox);
 					boolean is_logical = go_cam.validateGoCAM();	
 					System.out.println(abox_file.getName()+" owl consistent:"+is_logical);

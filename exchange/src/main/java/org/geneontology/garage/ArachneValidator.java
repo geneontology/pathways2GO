@@ -92,7 +92,7 @@ public class ArachneValidator {
 		go_cam = new GoCAM();
 		boolean add_inferences = true;
 		boolean add_property_definitions = false; boolean add_class_definitions = false;
-		tbox_qrunner = QRunner.MakeQRunner(tboxes, go_cam.go_cam_ont, add_inferences, add_property_definitions, add_class_definitions);
+		tbox_qrunner = QRunner.MakeQRunner(tboxes, go_cam.go_cam_ont, null, add_inferences, add_property_definitions, add_class_definitions);
 		go_cam.qrunner = tbox_qrunner;
 	}
 

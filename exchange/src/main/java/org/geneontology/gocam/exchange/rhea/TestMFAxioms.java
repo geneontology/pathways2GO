@@ -395,7 +395,7 @@ public class TestMFAxioms {
 		f.close();
 	}
 
-	public void testReactomeClassificationsWithArachne() throws OWLOntologyCreationException, IOException {
+/*	public void testReactomeClassificationsWithArachne() throws OWLOntologyCreationException, IOException {
 		String defined_ontology = "/Users/bgood/Desktop/test/tmp/GO_Ultra_GCI_test_new_chebi.ttl"; //GO_3classes_example.ttl"; //
 		String reactome_dir = "/Users/bgood/reactome-go-cam-models/human/";
 		String report_dir = "/Users/bgood/Desktop/test/tmp/inf_report/Ultra_GCI_new_chebi_";
@@ -456,7 +456,7 @@ public class TestMFAxioms {
 		//record how many new MF annotations are generated 
 
 	}
-
+*/
 
 	public void buildOntologyDefinitions() throws OWLOntologyCreationException, IOException, OWLOntologyStorageException {
 		String output_ontology = "/Users/bgood/Desktop/test/tmp/GO_Just_GCI_test.ttl";

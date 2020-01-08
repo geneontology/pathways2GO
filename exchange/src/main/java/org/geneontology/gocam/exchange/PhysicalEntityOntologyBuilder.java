@@ -95,7 +95,7 @@ public class PhysicalEntityOntologyBuilder {
 	final static boolean capture_complex_stoichiometry = true;
 	final static boolean add_pro_logical_connections = false;
 	final static boolean add_imports = false;
-	GOPlus goplus;
+	GOLego golego;
 	String default_namespace_prefix;
 	String base_extra_info;
 	Map<String, OWLClassExpression> id_class_map;
@@ -109,8 +109,8 @@ public class PhysicalEntityOntologyBuilder {
 	 * @throws IOException 
 	 * 
 	 */
-	public PhysicalEntityOntologyBuilder(GOPlus go_plus, String default_namespace_prefix_, String base_extra_info_, ReasonerImplementation reasoner_, String pro_mapping_file) throws IOException {
-		goplus = go_plus;
+	public PhysicalEntityOntologyBuilder(GOLego go_lego, String default_namespace_prefix_, String base_extra_info_, ReasonerImplementation reasoner_, String pro_mapping_file) throws IOException {
+		golego = go_lego;
 		default_namespace_prefix = default_namespace_prefix_;
 		base_extra_info = base_extra_info_;
 		id_class_map = new HashMap<String, OWLClassExpression>();
@@ -204,7 +204,12 @@ public class PhysicalEntityOntologyBuilder {
 		go_cam.addSubClassAssertion(GoCAM.chebi_molecular_entity, GoCAM.chemical_entity);
 		go_cam.addSubClassAssertion(GoCAM.chebi_protein, GoCAM.chebi_information_biomacromolecule);
 		//build it all!  
-		PhysicalEntityOntologyBuilder converter = new PhysicalEntityOntologyBuilder(new GOPlus("/Users/bgood/gocam_ontology/go-plus.owl"), base_short_namespace, base_extra_info, r, pro_mapping);
+//		if(local_catalogue_file!=null) {
+//			ontman.setIRIMappers(Collections.singleton(new CatalogXmlIRIMapper(local_catalogue_file)));
+//		}
+		OWLOntology tbox = go_cam.ontman.loadOntologyFromOntologyDocument(new File("/Users/bgood/gocam_ontology/go-plus.owl"));
+
+		PhysicalEntityOntologyBuilder converter = new PhysicalEntityOntologyBuilder(new GOLego(tbox), base_short_namespace, base_extra_info, r, pro_mapping);
 		for (PhysicalEntity entity : biopax_model.getObjects(PhysicalEntity.class)){		
 			String model_id = entity.hashCode()+"";
 			n++;
@@ -276,7 +281,7 @@ public class PhysicalEntityOntologyBuilder {
 			go_cam.addSeeAlso(e, reactome_url);
 			go_cam.addComment(e, "BioPAX type: "+entity.getModelInterface());
 			//add specific drug reference if its there - reactions with drugs are treated differently
-			String iuphar_id = BioPaxtoGO.getDrugReferenceId(entity);
+			String iuphar_id = getDrugReferenceId(entity);
 			if(iuphar_id!=null) {
 				go_cam.addDrugReference(e, "IUPHAR:"+iuphar_id);
 			}
@@ -329,7 +334,7 @@ public class PhysicalEntityOntologyBuilder {
 					String db = uref.getDb().toLowerCase();
 					if(db.contains("gene ontology")) {
 						String uri = GoCAM.obo_iri + uref.getId().replaceAll(":", "_");						
-						go_loc_class = goplus.getOboClass(uri, true);
+						go_loc_class = golego.getOboClass(uri, true);
 						Set<XReferrable> refs = uref.getXrefOf();							
 						for(XReferrable ref : refs) {
 							location_term = ref.toString().replaceAll("CellularLocationVocabulary_", "");
@@ -364,6 +369,10 @@ public class PhysicalEntityOntologyBuilder {
 					Set<Stoichiometry> stoichs = complex.getComponentStoichiometry();
 					for(Stoichiometry stoich : stoichs) {
 						PhysicalEntity part = stoich.getPhysicalEntity();
+						String iuphar_id = getDrugReferenceId(part);
+						if(iuphar_id!=null){
+							go_cam.addDrugReference(e, "IUPHAR:"+iuphar_id);
+						}
 						Integer s = (int) stoich.getStoichiometricCoefficient();
 						OWLClassExpression owl_part = definePhysicalEntity(go_cam, part,null, model_id);
 						OWLClassExpression exact_cardinality = go_cam.df.getOWLObjectExactCardinality(s, GoCAM.has_component, owl_part);
@@ -374,6 +383,10 @@ public class PhysicalEntityOntologyBuilder {
 					Set<OWLClassExpression> owl_parts = new HashSet<OWLClassExpression>();
 					Set<PhysicalEntity> known_parts = complex.getComponent();
 					for(PhysicalEntity part : known_parts) {
+						String iuphar_id = getDrugReferenceId(part);
+						if(iuphar_id!=null){
+							go_cam.addDrugReference(e, "IUPHAR:"+iuphar_id);
+						}
 						OWLClassExpression owl_part = definePhysicalEntity(go_cam, part,null, model_id);
 						OWLClassExpression has_part_exp = go_cam.df.getOWLObjectSomeValuesFrom(GoCAM.has_part, owl_part);
 						owl_parts.add(has_part_exp);
@@ -593,9 +606,9 @@ public class PhysicalEntityOntologyBuilder {
 					if(chebi_id!=null) {			
 						reference = true;
 						String chebi_uri = GoCAM.obo_iri + chebi_id;
-						OWLClass mlc_class = goplus.getOboClass(chebi_uri, true);
+						OWLClass mlc_class = golego.getOboClass(chebi_uri, true);
 						go_cam.addUriAnnotations2Individual(e.getIRI(), GoCAM.canonical_record, mlc_class.getIRI());
-						if(goplus.isChebiRole(chebi_uri)) {
+						if(golego.isChebiRole(chebi_uri)) {
 							go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_role, null);									
 							//assert entity here is a chemical instance
 							go_cam.addSubclassAssertion(e, GoCAM.chemical_entity, null);
@@ -631,6 +644,10 @@ public class PhysicalEntityOntologyBuilder {
 			Set<String> types = new HashSet<String>();
 			boolean reference_found = false;
 			for(PhysicalEntity part : parts_list) {
+				String iuphar_id = getDrugReferenceId(part);
+				if(iuphar_id!=null){
+					go_cam.addDrugReference(e, "IUPHAR:"+iuphar_id);
+				}
 				OWLClassExpression part_exp = definePhysicalEntity(go_cam, part, null, model_id);
 				owl_parts.add(part_exp);
 				types.add(part.getModelInterface().getName().toLowerCase());
@@ -725,6 +742,40 @@ public class PhysicalEntityOntologyBuilder {
 		return id;
 	}
 
+	public static String getDrugReferenceId(Entity bp_entity) {
+		String id = null;
+		try {
+			EntityReference r = null;
+			if(bp_entity.getModelInterface().equals(Protein.class)) {
+				r = ((Protein) bp_entity).getEntityReference();
+			}else if(bp_entity.getModelInterface().equals(SmallMolecule.class)){
+				r = ((SmallMolecule) bp_entity).getEntityReference();
+			}else if(bp_entity.getModelInterface().equals(Rna.class)){
+				r = ((Rna) bp_entity).getEntityReference();
+			}else if(bp_entity.getModelInterface().equals(Dna.class)){
+				r = ((Dna) bp_entity).getEntityReference();
+			}else if(bp_entity.getModelInterface().equals(RnaRegion.class)){
+				r = ((RnaRegion) bp_entity).getEntityReference();
+			}else if(bp_entity.getModelInterface().equals(DnaRegion.class)){
+				r = ((DnaRegion) bp_entity).getEntityReference();
+			}else if(bp_entity.getModelInterface().equals(PhysicalEntity.class)) {
+				System.err.println("Can not access EntityReference for untyped physical entity: "+bp_entity.getDisplayName());
+			}
+			if(r!=null) {
+				Set<Xref> erefs = r.getXref();
+				for(Xref eref : erefs) {
+					if(eref.getDb().equals("IUPHAR")) {
+						id = eref.getId();
+					}
+				}
+			}
+		}catch(Exception e) {
+			return null;
+		}
+		System.out.println("found drug id "+id+" "+bp_entity.getDisplayName());
+		return id;
+	}
+	
 	public static void countPhysical(Model biopax_model) throws IOException {
 		int n_all = 0; int n_complex = 0; int n_sets = 0; int n_protein = 0; int n_small_molecule = 0;
 		int n_all_pro = 0; int n_complex_pro = 0; int n_sets_pro = 0; int n_protein_pro = 0; int n_small_molecule_pro = 0;
@@ -748,10 +799,10 @@ public class PhysicalEntityOntologyBuilder {
 				in_pro = true;
 			}
 			if(e.getDisplayName()!=null&&e.getDisplayName().equals("pertuzumab")) {
-				String testdrug_id = BioPaxtoGO.getDrugReferenceId(e);
+				String testdrug_id = getDrugReferenceId(e);
 				System.out.println("hello pertuzumab "+testdrug_id);
 			}
-			String drug_id = BioPaxtoGO.getDrugReferenceId(e);
+			String drug_id = getDrugReferenceId(e);
 			if(drug_id==null) {
 				drug_id = "no_IUPHAR";
 			}else {

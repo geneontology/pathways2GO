@@ -665,6 +665,7 @@ public class GoCAM {
 		return Helper.getaLabel(e, go_cam_ont);
 	}
 
+
 	/**
 	 //TODO maybe... COuld use the minerva pattern that follows or implement something that makes purls etc.
 static String uniqueTop = Long.toHexString(Math.abs((System.currentTimeMillis()/1000)));
@@ -819,40 +820,40 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 * Sets up the inference rules from provided TBox
 	 * @throws OWLOntologyCreationException
 	 */
-	public QRunner initializeQRunnerForTboxInference(Set<String> tbox_files) throws OWLOntologyCreationException {
-		System.out.println("initializeQRunnerForTboxInference()");
-		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
-		List<OWLOntology> tboxes = new ArrayList<OWLOntology>();
-		for(String tbox_file : tbox_files) {
-			OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
-			tboxes.add(tbox);
-		}
-		boolean add_inferences = true;
-		boolean add_property_definitions = false; boolean add_class_definitions = false;
-		qrunner = new QRunner(tboxes, go_cam_ont, add_inferences, add_property_definitions, add_class_definitions);
-		return qrunner;
-	}
-	public static QRunner getQRunnerForTboxInference(Set<String> tbox_files) throws OWLOntologyCreationException {
-		System.out.println("building tbox rule base for arachne");
-		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
-		List<OWLOntology> tboxes = new ArrayList<OWLOntology>();
-		for(String tbox_file : tbox_files) {
-			OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
-			tboxes.add(tbox);
-		}
-		boolean add_inferences = true;
-		boolean add_property_definitions = false; boolean add_class_definitions = false;
-		QRunner qrunner = new QRunner(tboxes, null, add_inferences, add_property_definitions, add_class_definitions);
-		return qrunner;
-	} 
+//	public QRunner initializeQRunnerForTboxInference(Set<String> tbox_files) throws OWLOntologyCreationException {
+//		System.out.println("initializeQRunnerForTboxInference()");
+//		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
+//		List<OWLOntology> tboxes = new ArrayList<OWLOntology>();
+//		for(String tbox_file : tbox_files) {
+//			OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
+//			tboxes.add(tbox);
+//		}
+//		boolean add_inferences = true;
+//		boolean add_property_definitions = false; boolean add_class_definitions = false;
+//		qrunner = new QRunner(tboxes, go_cam_ont, add_inferences, add_property_definitions, add_class_definitions);
+//		return qrunner;
+//	}
+//	public static QRunner getQRunnerForTboxInference(Set<String> tbox_files) throws OWLOntologyCreationException {
+//		System.out.println("building tbox rule base for arachne");
+//		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
+//		List<OWLOntology> tboxes = new ArrayList<OWLOntology>();
+//		for(String tbox_file : tbox_files) {
+//			OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
+//			tboxes.add(tbox);
+//		}
+//		boolean add_inferences = true;
+//		boolean add_property_definitions = false; boolean add_class_definitions = false;
+//		QRunner qrunner = new QRunner(tboxes, null, add_inferences, add_property_definitions, add_class_definitions);
+//		return qrunner;
+//	} 
 
-	public QRunner initializeQRunner(Collection<OWLOntology> tbox) throws OWLOntologyCreationException {
-		System.out.println("initializeQRunner()");
-		boolean add_inferences = true;
-		boolean add_property_definitions = false; boolean add_class_definitions = false;
-		qrunner = new QRunner(tbox, null, add_inferences, add_property_definitions, add_class_definitions);
-		return qrunner;
-	}
+//	public QRunner initializeQRunner(Collection<OWLOntology> tbox) throws OWLOntologyCreationException {
+//		System.out.println("initializeQRunner()");
+//		boolean add_inferences = true;
+//		boolean add_property_definitions = false; boolean add_class_definitions = false;
+//		qrunner = new QRunner(tbox, null, add_inferences, add_property_definitions, add_class_definitions);
+//		return qrunner;
+//	}
 
 	//	void addInferredEdges() throws OWLOntologyCreationException {
 	//		if(qrunner==null||qrunner.arachne==null) {
