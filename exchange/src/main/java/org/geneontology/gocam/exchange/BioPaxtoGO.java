@@ -800,9 +800,8 @@ public class BioPaxtoGO {
 		//check for annotations
 		//	Set<String> pubids = getPubmedIds(entity);		
 		String entity_name = entity.getDisplayName();
-		go_cam.addLabel(e, entity_name);
-		if(entity_name.equals("pertuzumab")) {
-			System.out.println("drugg!  "+reactome_entity_id);
+		if(entity_name!=null) {
+			go_cam.addLabel(e, entity_name);
 		}
 		if(entity instanceof PhysicalEntity) {
 
@@ -817,8 +816,12 @@ public class BioPaxtoGO {
 				System.out.println("Drug found for "+entity_class+" "+drug_ids);
 				Set<Interaction> entity_processes = entity.getParticipantOf();
 				for(Interaction process : entity_processes) {
-					String process_id = getEntityReferenceId(process);
-					drug_process_ids.add(model_id+"/"+process_id);
+					if(process instanceof Conversion) {
+						String process_id = getEntityReferenceId(process);
+						if(process_id!=null) {
+							drug_process_ids.add(model_id+"/"+process_id);
+						}
+					}
 				}
 			}
 
@@ -1054,6 +1057,24 @@ public class BioPaxtoGO {
 				//find controllers 
 				Set<Control> controllers = ((Process) entity).getControlledOf();
 				for(Control controller : controllers) {
+					Set<Controller> controller_entities = controller.getController();
+					boolean skip_drug_controller = false;
+					for(Controller controller_entity : controller_entities) {
+						String controller_entity_id = getEntityReferenceId(controller_entity);
+						System.out.println("controller entity "+controller_entity.getDisplayName()+" "+controller_entity.getModelInterface()+" "+controller_entity_id);
+						IRI entity_class_iri = IRI.create(GoCAM.base_iri+controller_entity_id);
+						OWLClass entity_class = go_cam.df.getOWLClass(entity_class_iri); 						
+						Set<String> drug_ids = Helper.getAnnotations(entity_class, tbox_qrunner.tbox_class_reasoner.getRootOntology(), GoCAM.iuphar_id);
+						if(drug_ids!=null&&drug_ids.size()>0) {
+							System.out.println("Drug found for CONTROLLER "+entity_class+" "+drug_ids);
+							skip_drug_controller = true;
+							break;
+						}
+					}
+					if(skip_drug_controller) {
+						System.out.println("Skipping control event "+controller);
+						continue;
+					}
 					//check if there are active sites annotated on the controller.
 					Set<String> active_site_stable_ids = getActiveSites(controller);
 					ControlType ctype = controller.getControlType();	
@@ -1087,8 +1108,6 @@ public class BioPaxtoGO {
 							}
 						}
 					}	
-
-					Set<Controller> controller_entities = controller.getController();
 					for(Controller controller_entity : controller_entities) {
 						//if the controller is produced by a reaction in another pathway, then we may want to bring that reaction into this model
 						//so we can see the causal relationships between it and the reaction we have here
@@ -1143,11 +1162,7 @@ public class BioPaxtoGO {
 						//this is the non-recursive part.. (and we usually aren't recursing anyway)
 						IRI iri = null;
 						String controller_entity_id = getEntityReferenceId(controller_entity);
-						//iri = GoCAM.makeGoCamifiedIRI(controller_entity.getUri()+entity.getUri()+"controller");
 						iri = GoCAM.makeGoCamifiedIRI(model_id, controller_entity_id+"_"+entity_id+"_controller");
-						if(controller_entity_id.equals("R-HSA-187516")) {
-							System.out.println("Debug trouble R-HSA-187516 Cyclin E/A:p-T160-CDK2:CDKN1A,CDKN1B...");
-						}
 						defineReactionEntity(go_cam, controller_entity, iri, true, model_id, root_pathway_iri);
 						//the protein or complex
 						OWLNamedIndividual controller_e = go_cam.df.getOWLNamedIndividual(iri);
