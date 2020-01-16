@@ -125,7 +125,7 @@ public class GoCAM {
 	eco_imported, eco_imported_auto, eco_inferred_auto, 
 	chebi_molecular_entity, 
 	chebi_protein, chebi_information_biomacromolecule, chemical_entity, chemical_role, 
-	catalytic_activity, signal_transducer_activity, transporter_activity,
+	catalytic_activity, signal_transducer_activity, transporter_activity, protein_transporter_activity, 
 	binding, protein_binding, protein_complex_binding, establishment_of_localization, protein_complex_dissassembly, 
 	establishment_of_protein_localization, negative_regulation_of_molecular_function, positive_regulation_of_molecular_function,
 	chebi_mrna, chebi_rna, chebi_dna, unfolded_protein, 
@@ -262,6 +262,7 @@ public class GoCAM {
 		positive_regulation_of_molecular_function = df.getOWLClass(IRI.create(obo_iri+"GO_0044093"));		
 		signal_transducer_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0004871"));
 		transporter_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0005215"));
+		protein_transporter_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0140318"));
 		protein_transport = df.getOWLClass(IRI.create(obo_iri+"GO_0015031"));
 		transport = df.getOWLClass(IRI.create(obo_iri+"GO_0006810"));
 		union_set = df.getOWLClass(IRI.create("http://placeholder/union_set"));
@@ -1024,12 +1025,12 @@ final long counterValue = instanceCounter.getAndIncrement();
 				OWLNamedIndividual thing = this.makeAnnotatedIndividual(transport_reaction.thing_uri);
 				Set<OWLClass> entity_types = tbox_qrunner.getSuperClasses(thing_type, false);
 				System.out.println(thing_type_uri+" types "+entity_types);
-				String explain = "This reaction represents the process of transporting ";
+				String explain = "This reaction represents the activity of transporting ";
 				if(entity_types!=null&&entity_types.contains(chebi_protein)) {
-					addTypeAssertion(reaction, protein_transport);
+					addTypeAssertion(reaction, protein_transporter_activity);
 					explain+=" a protein.";
 				}else {
-					addTypeAssertion(reaction, transport);
+					addTypeAssertion(reaction, transporter_activity);
 					if(entity_types.contains(go_complex)) {
 						explain+=" a complex.";
 					}
