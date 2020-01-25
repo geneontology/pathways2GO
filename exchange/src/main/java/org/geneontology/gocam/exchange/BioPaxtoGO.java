@@ -411,12 +411,17 @@ public class BioPaxtoGO {
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
 		//filter out reactions involving drugs
 		if(drug_process_ids!=null&&drug_process_ids.size()>0) {
-			System.out.println("Before drug removal -  triples: "+go_cam.qrunner.nTriples());
+			System.out.println("Before drug reaction removal -  triples: "+go_cam.qrunner.nTriples());
 			int n_reactions_removed = go_cam.removeDrugReactions(reactome_id, drug_process_ids); 
-			System.out.println("After drug removal  triples: "+go_cam.qrunner.nTriples()+"\nremoved "+n_reactions_removed+" reactions");
+			System.out.println("After drug reaction removal  triples: "+go_cam.qrunner.nTriples()+"\nremoved "+n_reactions_removed+" reactions");
 		}else {
 			System.out.println("No drugs detected");
 		}
+		//delete any stray drug individuals
+		System.out.println("Before drug removal -  triples: "+go_cam.qrunner.nTriples());
+		int n_drugs_removed = go_cam.removeDrugs(tbox_qrunner); 
+		System.out.println("After drug removal  triples: "+go_cam.qrunner.nTriples()+"\nremoved "+n_drugs_removed+" drugs");
+		
 		//infer new edges based on sparql matching
 		System.out.println("Before sparql inference -  triples: "+go_cam.qrunner.nTriples());
 		GoCAM.RuleResults rule_results = go_cam.applySparqlRules(reactome_id, tbox_qrunner);

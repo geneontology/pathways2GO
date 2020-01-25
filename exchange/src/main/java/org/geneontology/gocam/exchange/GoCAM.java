@@ -821,40 +821,40 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 * Sets up the inference rules from provided TBox
 	 * @throws OWLOntologyCreationException
 	 */
-//	public QRunner initializeQRunnerForTboxInference(Set<String> tbox_files) throws OWLOntologyCreationException {
-//		System.out.println("initializeQRunnerForTboxInference()");
-//		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
-//		List<OWLOntology> tboxes = new ArrayList<OWLOntology>();
-//		for(String tbox_file : tbox_files) {
-//			OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
-//			tboxes.add(tbox);
-//		}
-//		boolean add_inferences = true;
-//		boolean add_property_definitions = false; boolean add_class_definitions = false;
-//		qrunner = new QRunner(tboxes, go_cam_ont, add_inferences, add_property_definitions, add_class_definitions);
-//		return qrunner;
-//	}
-//	public static QRunner getQRunnerForTboxInference(Set<String> tbox_files) throws OWLOntologyCreationException {
-//		System.out.println("building tbox rule base for arachne");
-//		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
-//		List<OWLOntology> tboxes = new ArrayList<OWLOntology>();
-//		for(String tbox_file : tbox_files) {
-//			OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
-//			tboxes.add(tbox);
-//		}
-//		boolean add_inferences = true;
-//		boolean add_property_definitions = false; boolean add_class_definitions = false;
-//		QRunner qrunner = new QRunner(tboxes, null, add_inferences, add_property_definitions, add_class_definitions);
-//		return qrunner;
-//	} 
+	//	public QRunner initializeQRunnerForTboxInference(Set<String> tbox_files) throws OWLOntologyCreationException {
+	//		System.out.println("initializeQRunnerForTboxInference()");
+	//		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
+	//		List<OWLOntology> tboxes = new ArrayList<OWLOntology>();
+	//		for(String tbox_file : tbox_files) {
+	//			OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
+	//			tboxes.add(tbox);
+	//		}
+	//		boolean add_inferences = true;
+	//		boolean add_property_definitions = false; boolean add_class_definitions = false;
+	//		qrunner = new QRunner(tboxes, go_cam_ont, add_inferences, add_property_definitions, add_class_definitions);
+	//		return qrunner;
+	//	}
+	//	public static QRunner getQRunnerForTboxInference(Set<String> tbox_files) throws OWLOntologyCreationException {
+	//		System.out.println("building tbox rule base for arachne");
+	//		OWLOntologyManager tman = OWLManager.createOWLOntologyManager();
+	//		List<OWLOntology> tboxes = new ArrayList<OWLOntology>();
+	//		for(String tbox_file : tbox_files) {
+	//			OWLOntology tbox = tman.loadOntologyFromOntologyDocument(new File(tbox_file));	
+	//			tboxes.add(tbox);
+	//		}
+	//		boolean add_inferences = true;
+	//		boolean add_property_definitions = false; boolean add_class_definitions = false;
+	//		QRunner qrunner = new QRunner(tboxes, null, add_inferences, add_property_definitions, add_class_definitions);
+	//		return qrunner;
+	//	} 
 
-//	public QRunner initializeQRunner(Collection<OWLOntology> tbox) throws OWLOntologyCreationException {
-//		System.out.println("initializeQRunner()");
-//		boolean add_inferences = true;
-//		boolean add_property_definitions = false; boolean add_class_definitions = false;
-//		qrunner = new QRunner(tbox, null, add_inferences, add_property_definitions, add_class_definitions);
-//		return qrunner;
-//	}
+	//	public QRunner initializeQRunner(Collection<OWLOntology> tbox) throws OWLOntologyCreationException {
+	//		System.out.println("initializeQRunner()");
+	//		boolean add_inferences = true;
+	//		boolean add_property_definitions = false; boolean add_class_definitions = false;
+	//		qrunner = new QRunner(tbox, null, add_inferences, add_property_definitions, add_class_definitions);
+	//		return qrunner;
+	//	}
 
 	//	void addInferredEdges() throws OWLOntologyCreationException {
 	//		if(qrunner==null||qrunner.arachne==null) {
@@ -887,10 +887,14 @@ final long counterValue = instanceCounter.getAndIncrement();
 		}
 	}
 
+	void deleteOwlEntityAndAllReferencesToIt(OWLEntity e) {
+		deleteOwlEntityAndAllReferencesToIt(e, false);
+	}
+	
 	//TODO explore whether something like this is faster
 	//https://stackoverflow.com/questions/46860119/deleting-specific-class-and-axioms-in-owlapi
 	//OWLEntityRemover remover = new OWLEntityRemover(Collections.singleton(ontology)); currentClass.accept(remover); manager.applyChanges(remover.getChanges()); 
-	void deleteOwlEntityAndAllReferencesToIt(OWLEntity e) {	
+	void deleteOwlEntityAndAllReferencesToIt(OWLEntity e, boolean delete_related_nodes) {	
 		Collection<OWLAnnotationAssertionAxiom> node_annotations = EntitySearcher.getAnnotationAssertionAxioms(e.getIRI(), this.go_cam_ont);
 		if(node_annotations!=null) {
 			for (OWLAnnotationAssertionAxiom annAx : node_annotations) {
@@ -917,8 +921,20 @@ final long counterValue = instanceCounter.getAndIncrement();
 						deleteOwlEntityAndAllReferencesToIt(evidence);
 					}
 				}
+				if(delete_related_nodes) {
+					for(OWLObjectProperty prop : aAx.getObjectPropertiesInSignature()) {
+						if(prop.equals(has_input)||prop.equals(has_output)||prop.equals(enabled_by)||prop.equals(occurs_in)) {
+							OWLObjectPropertyAssertionAxiom o = (OWLObjectPropertyAssertionAxiom)aAx;
+							OWLNamedIndividual i = o.getObject().asOWLNamedIndividual();
+							if(!i.equals(e)) { //already in process of deleting
+								deleteOwlEntityAndAllReferencesToIt(i);
+							}
+						}
+					}
+				}
 				//now remove the axiom
 				ontman.removeAxiom(go_cam_ont, aAx);
+				
 			}
 		}
 	}
@@ -1823,17 +1839,52 @@ BP has_part R
 		}
 		//if they show up in the drug process list, remove those nodes and all their detritus
 		nodes.retainAll(drug_process_ids);
+		boolean delete_related_nodes = true;
 		for(String drug_reaction : nodes) {
 			IRI dr_iri = IRI.create(base_iri+drug_reaction);
 			OWLNamedIndividual reaction = df.getOWLNamedIndividual(dr_iri);
-			deleteOwlEntityAndAllReferencesToIt(reaction);
+			deleteOwlEntityAndAllReferencesToIt(reaction, delete_related_nodes);
 			System.out.println("drug reaction\t"+drug_reaction);
 		}
 		qrunner = new QRunner(go_cam_ont);
 		return nodes.size();
 	}
 
-
+	public int removeDrugs(QRunner tbox_qrunner) {
+		//get all the nodes in the model 
+		String query = 
+				"PREFIX owl: <http://www.w3.org/2002/07/owl#> "
+				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " + 
+						"select distinct ?node ?type  " + 
+						"where {" + 
+						" 	?node rdf:type ?type . "
+						+ "FILTER(?type != owl:NamedIndividual) . " +  
+						"}";
+		QueryExecution qe = QueryExecutionFactory.create(query, qrunner.jena);
+		ResultSet results = qe.execSelect();
+		Set<String> drug_nodes = new HashSet<String>();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			if(!qs.get("node").isAnon()) {
+				OWLClass entity_class = df.getOWLClass(IRI.create(qs.get("type").asResource().getURI())); 						
+				Set<String> drug_ids = Helper.getAnnotations(entity_class, tbox_qrunner.tbox_class_reasoner.getRootOntology(), GoCAM.iuphar_id);
+				if(drug_ids!=null&&drug_ids.size()>0) {
+					Resource node = qs.getResource("node");
+					String node_id = node.getURI();
+					drug_nodes.add(node_id);
+				}
+			}
+		}
+		//if they show up in the drug process list, remove those nodes and all their detritus
+		for(String drug_node : drug_nodes) {
+			IRI dr_iri = IRI.create(drug_node);
+			OWLNamedIndividual drug = df.getOWLNamedIndividual(dr_iri);
+			deleteOwlEntityAndAllReferencesToIt(drug);
+			System.out.println("drug deleted \t"+drug);
+		}
+		qrunner = new QRunner(go_cam_ont);
+		return drug_nodes.size();
+	}
 
 
 }
