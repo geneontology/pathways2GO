@@ -285,7 +285,7 @@ public class BioPaxtoGOTest {
 				n++;
 			}
 			assertTrue(n==1);
-			assertTrue(type.equals("http://purl.obolibrary.org/obo/GO_0006810"));
+			assertTrue(type.equals("http://purl.obolibrary.org/obo/GO_0005215"));
 			assertTrue(inputs==1);
 			assertTrue(outputs==1);
 		} catch (QueryEvaluationException e) {
@@ -345,7 +345,7 @@ public class BioPaxtoGOTest {
 				n++;
 			}
 			assertTrue(n==1);
-			assertTrue("type is "+type, type.equals("http://purl.obolibrary.org/obo/GO_0015031"));
+			assertTrue("type is "+type, type.equals("http://purl.obolibrary.org/obo/GO_0140318"));
 			assertTrue(inputs==1);
 			assertTrue(outputs==1);
 		} catch (QueryEvaluationException e) {
@@ -373,7 +373,7 @@ public class BioPaxtoGOTest {
 	 */
 	@Test
 	public final void testInferDissociationProcess() {
-		System.out.println("Testing dissociation inference");
+		System.out.println("Testing dissociation reaction - should currently be a raw MF");
 		TupleQueryResult result = null;
 		try {
 			result = blaze.runSparqlQuery(
@@ -391,7 +391,7 @@ public class BioPaxtoGOTest {
 				n++;
 			}
 			assertTrue(n==1);
-			assertTrue(type.equals("http://purl.obolibrary.org/obo/GO_0032984"));
+			assertTrue(type.equals("http://purl.obolibrary.org/obo/GO_0003674"));
 		} catch (QueryEvaluationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -403,7 +403,7 @@ public class BioPaxtoGOTest {
 				e.printStackTrace();
 			}
 		}
-		System.out.println("Done testing dissociation inference");
+		System.out.println("Done testing dissociation ");
 	}
 	
 
