@@ -588,24 +588,6 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		return ir;
 	}
 	
-	Set<String> findBindingReactions() {
-		Set<String> binders = new HashSet<String>();
-		String query = null;
-		try {		
-			query = IOUtils.toString(QRunner.class.getResourceAsStream("query2update_binding.rq"), StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			System.out.println("Could not load SPARQL update from jar \n"+e);
-		}
-		QueryExecution qe = QueryExecutionFactory.create(query, jena);
-		ResultSet results = qe.execSelect();
-		while (results.hasNext()) {
-			QuerySolution qs = results.next();
-			Resource reaction = qs.getResource("reaction"); 
-			binders.add(reaction.getURI());
-		}
-		qe.close();
-		return binders;
-	}
 	
 	public class InferredTransport{
 		String reaction_uri;
@@ -899,5 +881,35 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		}
 		return tbox_class_reasoner.getSuperClasses(thing, direct).getFlattened();
 	}
+	
+	public Map<String, Set<String>> findProteinBindingReactions() {
+		Map<String, Set<String>> reaction_inputs = new HashMap<String, Set<String>>();
+		String query = null;
+		try {		
+			query = IOUtils.toString(QRunner.class.getResourceAsStream("query2update_binding.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL update from jar \n"+e);
+		}
+		QueryExecution qe = QueryExecutionFactory.create(query, jena);
+		ResultSet results = qe.execSelect();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			//?reaction ?upstream_reaction ?input ?input_type  
+			Resource reaction = qs.getResource("reaction"); 
+		//	Resource upstream_reaction = qs.getResource("upstream_reaction"); 
+			Resource input = qs.getResource("input"); 
+		//	Resource input_type = qs.getResource("input_type"); 
+			Set<String> inputs = reaction_inputs.get(reaction.getURI());
+			if(inputs==null) {
+				inputs = new HashSet<String>();
+			}
+			inputs.add(input.getURI());
+			reaction_inputs.put(reaction.getURI(), inputs);
+		}
+		qe.close();
+		return reaction_inputs; 
+	}
+	
+	
 
 }

@@ -810,7 +810,7 @@ public class BioPaxtoGO {
 			IRI entity_class_iri = IRI.create(GoCAM.base_iri+entity_id);
 			OWLClass entity_class = go_cam.df.getOWLClass(entity_class_iri); 
 			go_cam.addTypeAssertion(e,  entity_class);
-			
+
 			Set<String> drug_ids = Helper.getAnnotations(entity_class, tbox_qrunner.tbox_class_reasoner.getRootOntology(), GoCAM.iuphar_id);
 			if(drug_ids!=null&&drug_ids.size()>0) {
 				System.out.println("Drug found for "+entity_class+" "+drug_ids);
@@ -1294,9 +1294,11 @@ public class BioPaxtoGO {
 							go_cam.addTypeAssertion(e, GoCAM.protein_binding);	
 						}else if(b.binding){
 							go_cam.addTypeAssertion(e, GoCAM.binding);
-						}else if(b.dissociation) {
-							go_cam.addTypeAssertion(e, GoCAM.protein_complex_dissassembly);
 						}
+						//changing idea again here.  will handle these events downstream
+						//						else if(b.dissociation) {
+						//							go_cam.addTypeAssertion(e, GoCAM.protein_complex_dissassembly);
+						//						}
 						else {
 							go_cam.addTypeAssertion(e, GoCAM.molecular_function);	
 						}
@@ -1374,10 +1376,11 @@ public class BioPaxtoGO {
 				boolean is_protein_thing = false;
 				for(OWLClassExpression type : types) {
 					if(type.getClassExpressionType().equals(ClassExpressionType.OWL_CLASS)) {
-						String iri = type.asOWLClass().getIRI().toString();
-						if(iri.contains("uniprot")||iri.contains("CHEBI_36080")) {
-							is_protein_thing = true;
-							break;
+						for(OWLClass all_type : tbox_qrunner.tbox_class_reasoner.getSuperClasses(type, false).getFlattened()) {
+							if(all_type.equals(GoCAM.chebi_protein)) {
+								is_protein_thing = true;
+								break;
+							}
 						}
 					}
 				}
@@ -1391,10 +1394,14 @@ public class BioPaxtoGO {
 				for(OWLIndividual input : inputs) {
 					Collection<OWLClassExpression> types = EntitySearcher.getTypes(input, go_cam.go_cam_ont);
 					boolean is_complex_thing = false;
-					for(OWLClassExpression type : types) {
-						if(type.equals(GoCAM.go_complex)) {
-							is_complex_thing = true;
-							break;
+					for(OWLClassExpression type : types) {						
+						if(type.getClassExpressionType().equals(ClassExpressionType.OWL_CLASS)) {
+							for(OWLClass all_type : tbox_qrunner.tbox_class_reasoner.getSuperClasses(type, false).getFlattened()) {
+								if(all_type.equals(GoCAM.go_complex)) {
+									is_complex_thing = true;
+									break;
+								}
+							}
 						}
 					}
 					if(is_complex_thing) {
@@ -1404,10 +1411,12 @@ public class BioPaxtoGO {
 				}
 			}
 			//then it may be a protein complex disassembly reaction
-		}else if(inputs.size()<outputs.size()) {
-			System.out.println("dissociation reaction? "+go_cam.getaLabel(reaction));
-			binder.dissociation = true;
 		}
+		//this is overly promiscuous
+		//		else if(inputs.size()<outputs.size()) {
+		//			System.out.println("dissociation reaction? "+go_cam.getaLabel(reaction));
+		//			binder.dissociation = true;
+		//		}
 		return binder;
 	}
 

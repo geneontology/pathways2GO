@@ -95,7 +95,7 @@ public class PhysicalEntityOntologyBuilder {
 
 	final static boolean capture_complex_stoichiometry = true;
 	final static boolean add_pro_logical_connections = false;
-	final static boolean add_imports = true;
+	final static boolean add_imports = false;
 	GOLego golego;
 	String default_namespace_prefix;
 	String base_extra_info;

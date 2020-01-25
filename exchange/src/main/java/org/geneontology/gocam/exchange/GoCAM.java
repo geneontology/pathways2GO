@@ -971,6 +971,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 
 		RuleResults r = new RuleResults();
 		//NOTE that the order these are run matters.
+		r = inferEnablersForProteinBinding(model_id, r, tbox_qrunner);
 		r = inferTransportProcess(model_id, r, tbox_qrunner);	//must be run before occurs_in and before deleteLocations	 
 		r = inferOccursInFromEntityLocations(model_id, r);
 		//This is turned off based on discussions May 8, 2018
@@ -990,6 +991,36 @@ final long counterValue = instanceCounter.getAndIncrement();
 		return r;
 	}
 
+
+
+	private RuleResults inferEnablersForProteinBinding(String model_id, RuleResults r, QRunner tbox_qrunner) {
+		String enabling_binding_rule = "enabling binding rule";
+		Integer enabling_binding_count = r.checkInitCount(enabling_binding_rule, r);
+		Set<String> enabling_binding_pathways = r.checkInitPathways(enabling_binding_rule, r);		
+		Map<String, Set<String>> binders = qrunner.findProteinBindingReactions();	
+		Set<OWLAnnotation> annos = getDefaultAnnotations();
+		String explain1 = "This enabled_by relation was inferred because the input protein here was the output of the previous reaction in the pathway.";
+		annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain1)));	
+		if(binders!=null&&binders.size()>0) { 
+			for(String reaction_uri : binders.keySet()) {
+				Set<String> inputs = binders.get(reaction_uri);
+				if(inputs.size()==1) {
+					enabling_binding_count++;
+					//change the has input relation to a enabled by relation.  
+					OWLNamedIndividual reaction_instance = df.getOWLNamedIndividual(IRI.create(reaction_uri));
+					OWLNamedIndividual input_instance = df.getOWLNamedIndividual(IRI.create(inputs.iterator().next()));
+					//drop the has input 
+					applyAnnotatedTripleRemover(reaction_instance.getIRI(), has_input.getIRI(), input_instance.getIRI());
+					//add the enabled by					
+					addRefBackedObjectPropertyAssertion(reaction_instance, GoCAM.enabled_by, input_instance, Collections.singleton(model_id), GoCAM.eco_imported_auto, "Reactome", annos, model_id);
+				}
+			}			
+			qrunner = new QRunner(go_cam_ont);
+		}
+		r.rule_hitcount.put(enabling_binding_rule, enabling_binding_count);
+		r.rule_pathways.put(enabling_binding_rule, enabling_binding_pathways);
+		return r;
+	}
 
 	/**
 	 * Infer Transport reactions

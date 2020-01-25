@@ -1,0 +1,45 @@
+# 
+
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+prefix obo: <http://purl.obolibrary.org/obo/>
+prefix biopax: <http://www.biopax.org/release/biopax-level3.owl#>
+prefix skos: <http://www.w3.org/2004/02/skos/core#>
+        
+PREFIX BP: <http://purl.obolibrary.org/obo/GO_0008150>
+PREFIX MF: <http://purl.obolibrary.org/obo/GO_0003674>
+PREFIX CC: <http://purl.obolibrary.org/obo/GO_0005575>
+
+# get untyped reactions and pathways
+# plus their inputs and outputs
+
+select ?reaction (GROUP_CONCAT(DISTINCT ?input;separator=";") AS ?inputs) (GROUP_CONCAT(DISTINCT ?output;separator=";") AS ?outputs)
+where {
+	?reaction rdf:type MF: . 
+	?reaction obo:RO_0002233 ?input . 
+  	?reaction obo:RO_0002234 ?output . 
+#    ?reaction rdfs:label ?label . 
+#   ?reaction <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ?xref 
+#    FILTER (regex(str(?label), "issociat"))
+}
+group by ?reaction  
+
+#obo:RO_0002233 obo:RO_0002333 obo:RO_0002234
+#causal chain relations
+# obo:RO_0002411 causally upstream of 
+# RO_0002024  directly positively regulated by 
+# RO_0002023  directly negatively regulated by 
+# obo:RO_0002212 negatively regulated by
+# obo:RO_0002213 positively regulated by 
+# obo:RO_0002413 provides direct input for
+
+# RO_0002334 regulated by
+# obo:RO_0002233 has input 
+# obo:RO_0002333 enabled by
+# RO_0002234 has output
+# obo:BFO_0000051 has part
+# BFO_0000066 occurs_in
+
+
+
