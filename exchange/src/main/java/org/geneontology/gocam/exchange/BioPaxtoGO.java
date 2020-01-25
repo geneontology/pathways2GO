@@ -1066,18 +1066,15 @@ public class BioPaxtoGO {
 					boolean skip_drug_controller = false;
 					for(Controller controller_entity : controller_entities) {
 						String controller_entity_id = getEntityReferenceId(controller_entity);
-						System.out.println("controller entity "+controller_entity.getDisplayName()+" "+controller_entity.getModelInterface()+" "+controller_entity_id);
 						IRI entity_class_iri = IRI.create(GoCAM.base_iri+controller_entity_id);
 						OWLClass entity_class = go_cam.df.getOWLClass(entity_class_iri); 						
 						Set<String> drug_ids = Helper.getAnnotations(entity_class, tbox_qrunner.tbox_class_reasoner.getRootOntology(), GoCAM.iuphar_id);
 						if(drug_ids!=null&&drug_ids.size()>0) {
-							System.out.println("Drug found for CONTROLLER "+entity_class+" "+drug_ids);
 							skip_drug_controller = true;
 							break;
 						}
 					}
 					if(skip_drug_controller) {
-						System.out.println("Skipping control event "+controller);
 						continue;
 					}
 					//check if there are active sites annotated on the controller.
@@ -1143,9 +1140,6 @@ public class BioPaxtoGO {
 										}
 									}
 								}	
-							}
-							if(events_to_add.size()>5) {
-								System.out.println("uh oh..");
 							}
 							for(Interaction event : events_to_add) {
 								//then we should be in some different, yet related reaction 

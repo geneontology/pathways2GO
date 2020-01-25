@@ -22,7 +22,8 @@ where {
   { ?reaction2 obo:RO_0002333 ?reaction2enabler . 
     ?reaction2enabler rdf:type ?enablertype . 
     ?reaction1 obo:RO_0002234 ?r1output . 
-    ?r1output rdf:type ?enablertype 
+    ?r1output rdf:type ?enablertype . 
+    FILTER(?enablertype != owl:NamedIndividual) . 
   }                    
    UNION 
    #for complexes with active units
@@ -31,7 +32,8 @@ where {
     ?complex2 obo:BFO_0000051 ?reaction2enabler .
     ?complex2 rdf:type ?complex_type . 
     ?reaction1 obo:RO_0002234 ?complex1 .
-    ?complex1 rdf:type ?complex_type .
+    ?complex1 rdf:type ?complex_type . 
+    FILTER(?complex_type != owl:NamedIndividual) . 
   }
    
   filter(?reaction1 != ?reaction2) .
