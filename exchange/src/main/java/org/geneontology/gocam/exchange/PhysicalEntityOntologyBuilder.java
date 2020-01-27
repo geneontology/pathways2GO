@@ -266,6 +266,7 @@ public class PhysicalEntityOntologyBuilder {
 
 
 	private OWLClassExpression definePhysicalEntity(GoCAM go_cam, PhysicalEntity entity, IRI this_iri, String model_id) throws IOException {
+		
 		String entity_id = BioPaxtoGO.getEntityReferenceId(entity);
 		if(id_class_map.containsKey(entity_id)) {
 			return id_class_map.get(entity_id);
@@ -275,6 +276,11 @@ public class PhysicalEntityOntologyBuilder {
 		}else if(this_iri==null&&entity_id==null) {			
 			this_iri = GoCAM.makeGoCamifiedIRI(model_id, entity_id);
 		}
+		
+		if(this_iri.toString().contains("R-HSA-9663470")) {
+			System.out.println("Checking R-HSA-9663470 "+entity.getDisplayName());
+		}
+		
 		//add entity to ontology as a class, whatever it is
 		OWLClass e = go_cam.df.getOWLClass(this_iri); 	
 		if(entity_id!=null) {
@@ -311,9 +317,6 @@ public class PhysicalEntityOntologyBuilder {
 			}
 		}
 		//tag the class with a basic upper level type
-		//according to recent shape validation work, everything is a chemical entity...
-		//TODO resolve whether this can be handled via import
-		//go_cam.addSubClassAssertion(e, GoCAM.chemical_entity);
 		//this allows linkage between different entities in the GO-CAM sense that correspond to the same thing in the BioPax sense
 		go_cam.addUriAnnotations2Individual(e.getIRI(),GoCAM.skos_exact_match, IRI.create(entity.getUri()));		
 		String entity_name = entity.getDisplayName();
@@ -509,6 +512,7 @@ public class PhysicalEntityOntologyBuilder {
 				}else { //entity is just PhysicalEntity.class
 					System.out.println("ambiguous physical entity detected: "+entity.getDisplayName());
 					Set<Xref> e_xrefs = entity.getXref();
+					boolean entity_type_set = false;
 					if(e_xrefs!=null) {
 						for(Xref x : e_xrefs) {
 							if(x.getDb().equals("ChEBI")) {
@@ -523,9 +527,11 @@ public class PhysicalEntityOntologyBuilder {
 									OWLClassExpression role_exp = go_cam.df.getOWLObjectSomeValuesFrom(GoCAM.has_role, (OWLClassExpression)mlc_class);
 									OWLAxiom eq_role = go_cam.df.getOWLEquivalentClassesAxiom(e, role_exp);
 									go_cam.ontman.addAxiom(go_cam.go_cam_ont, eq_role);
+									entity_type_set = true;
 								}else { //presumably its a chemical entity if not a role								
 									go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_entity, null);	
 									go_cam.addSubclassAssertion(e, mlc_class, null);
+									entity_type_set = true;
 								}
 								if(!isa_set) {
 									go_cam.addUriAnnotations2Individual(e.getIRI(), GoCAM.canonical_record, IRI.create(chebi_uri));
@@ -533,14 +539,12 @@ public class PhysicalEntityOntologyBuilder {
 								break;
 							}
 						}
-					}else {
-						//everything is a chemical entity
-						go_cam.addSubclassAssertion(e, GoCAM.chemical_entity, null);	
-						if(!isa_set) {
-							go_cam.addUriAnnotations2Individual(e.getIRI(), GoCAM.canonical_record, GoCAM.chemical_entity.getIRI());					
-						}
 					}
-					
+					if(!entity_type_set&&!isa_set) {
+						//everything is at least a continuant...
+						go_cam.addSubclassAssertion(e, GoCAM.continuant_class, null);	
+						go_cam.addUriAnnotations2Individual(e.getIRI(), GoCAM.canonical_record, GoCAM.continuant_class.getIRI());					
+					}
 				}
 			}
 			//Dna (gene)
@@ -675,9 +679,6 @@ public class PhysicalEntityOntologyBuilder {
 	}
 
 	private boolean checkForAndAddSet(GoCAM go_cam, String model_id, PhysicalEntity entity_set, OWLClass e) throws IOException {
-		if(e.getIRI().toString().contains("R-ALL-9619052")) {
-			System.out.println("Checking ACTEI pro-drugs "+entity_set.getDisplayName());
-		}
 		
 		boolean isa_set = false;
 		//its a set if it contains members
@@ -708,39 +709,6 @@ public class PhysicalEntityOntologyBuilder {
 					reference_found = true;
 				}
 			}	
-			OWLClass entity_type = null;
-//			if(types.size()==1) {
-//				String type = types.iterator().next();
-//				if(type.contains("protein")) {
-//					entity_type = GoCAM.chebi_protein;
-//				}else if(type.contains("complex")) {
-//					entity_type = GoCAM.go_complex;
-//				}else if(type.contains("molecule")) {
-//					entity_type = GoCAM.chemical_entity;
-//				}
-//			}else if(types.size()>1) {
-//				boolean protein = false;
-//				boolean complex = false;
-//				boolean chemical = false;
-//				for(String type: types) {
-//					if(type.contains("protein")) {
-//						protein = true;
-//					}else if(type.contains("complex")) {
-//						complex = true;
-//					}else if(type.contains("molecule")) {
-//						chemical = true;
-//					}
-//				}
-//				if(protein&&complex&&(!chemical)) {
-//					entity_type = GoCAM.chebi_information_biomacromolecule;
-//				}
-//			}
-//			if(entity_type!=null) {
-//				go_cam.addSubClassAssertion(e, entity_type);
-//				if(!reference_found) {
-//					go_cam.addUriAnnotations2Individual(e.getIRI(), GoCAM.canonical_record, entity_type.getIRI());
-//				}
-//			}
 			if(owl_parts!=null) {			
 				if(owl_parts.size()>1) {
 					OWLObjectUnionOf union_exp = go_cam.df.getOWLObjectUnionOf(owl_parts);
@@ -779,11 +747,23 @@ public class PhysicalEntityOntologyBuilder {
 					}
 				}
 				if(main_types.size()>0) {
-					OWLClass main_type = GoCAM.chemical_entity;
-					if(main_types.contains(GoCAM.chebi_protein)) {
+					OWLClass main_type = GoCAM.continuant_class;
+					if(main_types.contains(GoCAM.chebi_dna)) {
+						main_type = GoCAM.chebi_dna;
+					}else if(main_types.contains(GoCAM.chebi_mrna)) {
+						main_type = GoCAM.chebi_mrna;
+					}else if(main_types.contains(GoCAM.chebi_rna)) {
+						main_type = GoCAM.chebi_rna;
+					}else if(main_types.contains(GoCAM.chebi_trna_precursor)) {
+						main_type = GoCAM.chebi_trna_precursor;
+					}else if(main_types.contains(GoCAM.chebi_protein)) {
 						main_type = GoCAM.chebi_protein;
 					}else if(main_types.contains(GoCAM.chebi_information_biomacromolecule)) {
 						main_type = GoCAM.chebi_information_biomacromolecule;
+					}else if(main_types.contains(GoCAM.go_complex)) {
+						main_type = GoCAM.go_complex;
+					}else if(main_types.contains(GoCAM.chemical_entity)) {
+						main_type = GoCAM.chemical_entity;
 					}
 					go_cam.addSubclassAssertion(e, main_type, null);					
 					if(!reference_found) {
@@ -797,7 +777,14 @@ public class PhysicalEntityOntologyBuilder {
 
 
 	private boolean isRootClass(OWLClass owlclass) {
-		if(owlclass.equals(GoCAM.chemical_entity)||owlclass.equals(GoCAM.chebi_protein)||owlclass.equals(GoCAM.chebi_information_biomacromolecule)||owlclass.equals(GoCAM.go_complex)) {
+		if(owlclass.equals(GoCAM.chemical_entity)||
+		   owlclass.equals(GoCAM.chebi_protein)||
+		   owlclass.equals(GoCAM.chebi_information_biomacromolecule)||
+		   owlclass.equals(GoCAM.chebi_dna)||
+		   owlclass.equals(GoCAM.chebi_rna)||
+		   owlclass.equals(GoCAM.chebi_mrna)||
+		   owlclass.equals(GoCAM.chebi_trna_precursor)||
+		   owlclass.equals(GoCAM.go_complex)) {
 			return true;
 		}
 		return false;

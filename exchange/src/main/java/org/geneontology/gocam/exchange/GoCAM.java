@@ -128,7 +128,7 @@ public class GoCAM {
 	catalytic_activity, signal_transducer_activity, transporter_activity, protein_transporter_activity, 
 	binding, protein_binding, protein_complex_binding, establishment_of_localization, protein_complex_dissassembly, 
 	establishment_of_protein_localization, negative_regulation_of_molecular_function, positive_regulation_of_molecular_function,
-	chebi_mrna, chebi_rna, chebi_dna, unfolded_protein, 
+	chebi_mrna, chebi_rna, chebi_trna_precursor, chebi_dna, unfolded_protein, 
 	transport, protein_transport, human, 
 	union_set;
 	public static OWLClassExpression taxon_human;
@@ -305,6 +305,7 @@ public class GoCAM {
 		addLabel(chemical_entity, "chemical entity");
 		chebi_mrna = df.getOWLClass(IRI.create(obo_iri+"CHEBI_33699"));
 		chebi_rna = df.getOWLClass(IRI.create(obo_iri+"CHEBI_33697"));
+		chebi_trna_precursor = df.getOWLClass(IRI.create(obo_iri+"CHEBI_10668"));
 		chebi_dna = df.getOWLClass(IRI.create(obo_iri+"CHEBI_16991"));
 		unfolded_protein = df.getOWLClass(IRI.create(obo_iri+"HINO_0008749"));
 		addLabel(unfolded_protein, "unfolded protein");
