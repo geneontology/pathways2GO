@@ -216,7 +216,7 @@ public class PhysicalEntityOntologyBuilder {
 		for (PhysicalEntity entity : biopax_model.getObjects(PhysicalEntity.class)){		
 			String model_id = entity.hashCode()+"";
 			n++;
-			System.out.println(n+" defining "+entity.getDisplayName()+" "+entity.getModelInterface()+" "+entity.getUri());
+			//System.out.println(n+" defining "+entity.getDisplayName()+" "+entity.getModelInterface()+" "+entity.getUri());
 			converter.definePhysicalEntity(go_cam, entity, null, model_id);
 		}
 
@@ -258,10 +258,10 @@ public class PhysicalEntityOntologyBuilder {
 
 		go_cam.writeGoCAM_jena(outfilename, false, outputformat);
 
-		int n_objects = 0;
-		for(String id : converter.id_class_map.keySet()) {
-			System.out.println(id+" "+(n_objects++)+" "+converter.id_class_map.get(id));
-		}
+//		int n_objects = 0;
+//		for(String id : converter.id_class_map.keySet()) {
+//			System.out.println(id+" "+(n_objects++)+" "+converter.id_class_map.get(id));
+//		}
 	}
 
 
@@ -275,10 +275,6 @@ public class PhysicalEntityOntologyBuilder {
 			this_iri = IRI.create(GoCAM.base_iri+entity_id);
 		}else if(this_iri==null&&entity_id==null) {			
 			this_iri = GoCAM.makeGoCamifiedIRI(model_id, entity_id);
-		}
-		
-		if(this_iri.toString().contains("R-HSA-9663470")) {
-			System.out.println("Checking R-HSA-9663470 "+entity.getDisplayName());
 		}
 		
 		//add entity to ontology as a class, whatever it is
@@ -508,9 +504,8 @@ public class PhysicalEntityOntologyBuilder {
 					}
 				}else if(entity.getModelInterface().equals(Protein.class)) {
 					go_cam.addSubclassAssertion(e, GoCAM.chebi_protein, null);	
-					System.out.println("non uniprot protein detected: "+entity.getDisplayName());
+					//System.out.println("non uniprot protein detected: "+entity.getDisplayName());
 				}else { //entity is just PhysicalEntity.class
-					System.out.println("ambiguous physical entity detected: "+entity.getDisplayName());
 					Set<Xref> e_xrefs = entity.getXref();
 					boolean entity_type_set = false;
 					if(e_xrefs!=null) {
@@ -544,6 +539,7 @@ public class PhysicalEntityOntologyBuilder {
 						//everything is at least a continuant...
 						go_cam.addSubclassAssertion(e, GoCAM.continuant_class, null);	
 						go_cam.addUriAnnotations2Individual(e.getIRI(), GoCAM.canonical_record, GoCAM.continuant_class.getIRI());					
+						System.out.println("unclassified entity\t"+e+"\t"+entity.getDisplayName());
 					}
 				}
 			}
@@ -832,7 +828,7 @@ public class PhysicalEntityOntologyBuilder {
 			}else if(bp_entity.getModelInterface().equals(DnaRegion.class)){
 				r = ((DnaRegion) bp_entity).getEntityReference();
 			}else if(bp_entity.getModelInterface().equals(PhysicalEntity.class)) {
-				System.err.println("Can not access EntityReference for untyped physical entity: "+bp_entity.getDisplayName());
+				//System.err.println("Can not access EntityReference for untyped physical entity: "+bp_entity.getDisplayName());
 			}
 			if(r!=null) {
 				Set<Xref> erefs = r.getXref();
@@ -845,9 +841,9 @@ public class PhysicalEntityOntologyBuilder {
 		}catch(Exception e) {
 			return null;
 		}
-		if(id!=null) {
-			System.out.println("found drug id "+id+" "+bp_entity.getDisplayName());
-		}
+//		if(id!=null) {
+//			System.out.println("found drug id "+id+" "+bp_entity.getDisplayName());
+//		}
 		return id;
 	}
 	
@@ -872,10 +868,6 @@ public class PhysicalEntityOntologyBuilder {
 			if(any_map.containsKey(id)) {
 				n_all_pro++;
 				in_pro = true;
-			}
-			if(e.getDisplayName()!=null&&e.getDisplayName().equals("pertuzumab")) {
-				String testdrug_id = getDrugReferenceId(e);
-				System.out.println("hello pertuzumab "+testdrug_id);
 			}
 			String drug_id = getDrugReferenceId(e);
 			if(drug_id==null) {
