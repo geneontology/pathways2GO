@@ -29,6 +29,7 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.biopax.paxtools.model.level3.PublicationXref;
 import org.biopax.paxtools.model.level3.Xref;
@@ -106,9 +107,10 @@ public class GoCAM {
 	public static final String base_iri = "http://model.geneontology.org/";
 	public static final IRI go_lego_iri = IRI.create("http://purl.obolibrary.org/obo/go/extensions/go-lego.owl");
 	public static final IRI obo_iri = IRI.create("http://purl.obolibrary.org/obo/");
+	public static final IRI reacto_base_iri = IRI.create("http://purl.obolibrary.org/obo/go/extensions/reacto.owl#REACTO_");
 	public static final IRI uniprot_iri = IRI.create("http://identifiers.org/uniprot/");
 	public static IRI base_ont_iri;
-	public static OWLAnnotationProperty title_prop, contributor_prop, date_prop, skos_exact_match, skos_altlabel,  
+	public static OWLAnnotationProperty version_info, title_prop, contributor_prop, date_prop, skos_exact_match, skos_altlabel,  
 	state_prop, evidence_prop, provided_by_prop, x_prop, y_prop, rdfs_label, rdfs_comment, rdfs_seealso, source_prop, 
 	definition, database_cross_reference, canonical_record, iuphar_id;
 	public static OWLObjectProperty part_of, has_part, has_input, has_output, has_component, 
@@ -197,7 +199,7 @@ public class GoCAM {
 			OWLImportsDeclaration legoImportDeclaration = df.getOWLImportsDeclaration(IRI.create(lego_iri));
 			ontman.applyChange(new AddImport(go_cam_ont, legoImportDeclaration));
 			//until it is in go_lego all the models are going to need it
-			String reo_iri = "https://github.com/geneontology/pathways2GO/raw/master/exchange/generated/REO.owl";
+			String reo_iri = "http://purl.obolibrary.org/obo/go/extensions/reacto.owl";
 			//String reo_iri = "https://github.com/geneontology/pathways2GO/raw/master/exchange/generated/plant-REO.owl";
 			OWLImportsDeclaration reoImportDeclaration = df.getOWLImportsDeclaration(IRI.create(reo_iri));
 			ontman.applyChange(new AddImport(go_cam_ont, reoImportDeclaration));
@@ -228,6 +230,7 @@ public class GoCAM {
 
 	public void initializeClassesAndRelations() {
 		//Annotation properties for metadata and evidence
+		version_info = df.getOWLAnnotationProperty(IRI.create(OWL.versionInfo.getURI()));
 		title_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/title"));
 		contributor_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/contributor"));
 		date_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/date"));
@@ -692,6 +695,15 @@ final long counterValue = instanceCounter.getAndIncrement();
 		return iri;
 	}
 
+	
+	public static IRI makeReactoIRI(String model_base_id, String entity_id) {
+		if(entity_id==null) {
+			entity_id = UUID.randomUUID().toString();	
+		}
+		String iri = reacto_base_iri+model_base_id+"/"+entity_id;
+		return IRI.create(iri);
+	}
+	
 	public static IRI makeGoCamifiedIRI(String model_base_id, String entity_id) {
 		String iri = makeGoCamifiedIRIstring(model_base_id, entity_id);
 		return IRI.create(iri);

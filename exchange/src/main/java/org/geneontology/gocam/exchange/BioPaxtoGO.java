@@ -215,7 +215,7 @@ public class BioPaxtoGO {
 
 	void convert(
 			String input_biopax, 
-			String converted, 
+			String file_output_path, 
 			String base_title, 
 			String base_contributor, 
 			String base_provider, 
@@ -315,11 +315,12 @@ public class BioPaxtoGO {
 			}
 			//write results
 			if(split_by_pathway) {
-				String n = currentPathway.getDisplayName();
-				n = n.replaceAll("/", "-");	
-				n = n.replaceAll(" ", "_");
-				String outfilename = converted+n+".ttl";	
-				wrapAndWrite(outfilename, go_cam, save_inferences, save2blazegraph, n, expand_subpathways, model_id);
+//				String n = currentPathway.getDisplayName();
+//				n = n.replaceAll("/", "-");	
+//				n = n.replaceAll(" ", "_");
+//				String outfilename = converted+n+".ttl";	
+				String outfilename = file_output_path+model_id+".ttl";
+				wrapAndWrite(outfilename, go_cam, save_inferences, save2blazegraph, currentPathway.getDisplayName(), expand_subpathways, model_id);
 				//reset for next pathway.
 				go_cam.ontman.removeOntology(go_cam.go_cam_ont);
 				go_cam.qrunner = null;
@@ -328,7 +329,7 @@ public class BioPaxtoGO {
 		}	
 		//export all
 		if(!split_by_pathway) {
-			wrapAndWrite(converted+".ttl", go_cam, save_inferences, save2blazegraph, converted, expand_subpathways, null);		
+			wrapAndWrite(file_output_path+".ttl", go_cam, save_inferences, save2blazegraph, file_output_path, expand_subpathways, null);		
 		}
 
 		System.out.println("done with file "+input_biopax);
@@ -812,7 +813,7 @@ public class BioPaxtoGO {
 
 			//if it is a physical entity, then we should already have created a class to describe it based on the unique id.  
 			//TODO this needs some generalizing, but focusing on getting Reactome done right now.
-			IRI entity_class_iri = IRI.create(GoCAM.base_iri+entity_id);
+			IRI entity_class_iri = IRI.create(GoCAM.reacto_base_iri+entity_id);
 			OWLClass entity_class = go_cam.df.getOWLClass(entity_class_iri); 
 			go_cam.addTypeAssertion(e,  entity_class);
 
@@ -1066,7 +1067,7 @@ public class BioPaxtoGO {
 					boolean skip_drug_controller = false;
 					for(Controller controller_entity : controller_entities) {
 						String controller_entity_id = getEntityReferenceId(controller_entity);
-						IRI entity_class_iri = IRI.create(GoCAM.base_iri+controller_entity_id);
+						IRI entity_class_iri = IRI.create(GoCAM.reacto_base_iri+controller_entity_id);
 						OWLClass entity_class = go_cam.df.getOWLClass(entity_class_iri); 						
 						Set<String> drug_ids = Helper.getAnnotations(entity_class, tbox_qrunner.tbox_class_reasoner.getRootOntology(), GoCAM.iuphar_id);
 						if(drug_ids!=null&&drug_ids.size()>0) {
@@ -1176,7 +1177,7 @@ public class BioPaxtoGO {
 								//get the class for the entity
 								//if it is a physical entity, then we should already have created a class to describe it based on the unique id.  
 								//TODO this needs some generalizing, but focusing on getting Reactome done right now.
-								IRI entity_class_iri = IRI.create(GoCAM.base_iri+active_site_stable_id);
+								IRI entity_class_iri = IRI.create(GoCAM.reacto_base_iri+active_site_stable_id);
 								OWLClass entity_class = go_cam.df.getOWLClass(entity_class_iri); 
 								//make a new individual - hmm.. check for conflict
 								OWLNamedIndividual active_i = go_cam.makeAnnotatedIndividual(GoCAM.makeRandomIri(model_id));

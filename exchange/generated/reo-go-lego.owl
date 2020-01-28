@@ -6,7 +6,7 @@ Prefix(rdfs:=<http://www.w3.org/2000/01/rdf-schema#>)
 
 
 Ontology(<http://purl.obolibrary.org/obo/go/extensions/go-lego.owl>
-Import(<https://github.com/geneontology/pathways2GO/raw/master/exchange/generated/REO.owl>)
+Import(<http://purl.obolibrary.org/obo/go/extensions/reacto.owl>)
 Import(<http://purl.obolibrary.org/obo/ro.owl>)
 Import(<http://purl.obolibrary.org/obo/go/extensions/legorel.owl>)
 Import(<http://purl.obolibrary.org/obo/go/extensions/go-plus.owl>)
