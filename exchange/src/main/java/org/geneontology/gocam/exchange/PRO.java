@@ -9,6 +9,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -87,6 +89,7 @@ public class PRO {
 	//	System.out.println(exact_map.size()+" "+isa_map.size());
 	}
 
+	
 	/**
 PR:000000031	Reactome:R-HSA-1027362	is_a
 PR:000000031	Reactome:R-MMU-1027362	is_a
@@ -97,7 +100,13 @@ or exact
 	 */
 	public static Map<String, Set<String>> readReact2PRO(String mapping_file, String rtype) throws IOException{
 		Map<String, Set<String>> react_pros = new HashMap<String, Set<String>>();
-		BufferedReader reader = new BufferedReader(new FileReader(mapping_file));
+		BufferedReader reader = null;
+		
+		if(mapping_file!=null) {
+			reader = new BufferedReader(new FileReader(mapping_file));
+		}else {
+			reader = new BufferedReader(new InputStreamReader(PRO.class.getResourceAsStream("promapping.txt"), StandardCharsets.UTF_8));
+		}
 		String line = reader.readLine();
 		while(line!=null) {
 			if(line.contains("Reactome")) {

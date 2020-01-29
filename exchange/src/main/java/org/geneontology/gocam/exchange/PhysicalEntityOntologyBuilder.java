@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jena.vocabulary.RDFS;
 import org.biopax.paxtools.io.BioPAXIOHandler;
@@ -115,15 +117,15 @@ public class PhysicalEntityOntologyBuilder {
 	 * @throws IOException 
 	 * 
 	 */
-	public PhysicalEntityOntologyBuilder(GOLego go_lego, String default_namespace_prefix_, String base_extra_info_, ReasonerImplementation reasoner_, String pro_mapping_file) throws IOException {
+	public PhysicalEntityOntologyBuilder(GOLego go_lego, String default_namespace_prefix_, String base_extra_info_, ReasonerImplementation reasoner_) throws IOException {
 		golego = go_lego;
 		default_namespace_prefix = default_namespace_prefix_;
 		base_extra_info = base_extra_info_;
 		id_class_map = new HashMap<String, OWLClassExpression>();
 		reasoner = reasoner_;
 		//get mappings to PRO on hand
-		pro_exact_map = PRO.readReact2PRO(pro_mapping_file, "exact");
-		pro_isa_map = PRO.readReact2PRO(pro_mapping_file, "is_a");
+			pro_exact_map = PRO.readReact2PRO(null, "exact");
+			pro_isa_map = PRO.readReact2PRO(null, "is_a");
 	}
 
 	/**
@@ -136,7 +138,7 @@ public class PhysicalEntityOntologyBuilder {
 	 * @throws OWLOntologyStorageException 
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
-		String pro_mapping = "/Users/benjamingood/gocam_ontology/REO/promapping.txt";
+		//String pro_mapping = "/Users/benjamingood/gocam_ontology/REO/promapping.txt";
 		String input_biopax = 
 				"/Users/benjamingood/test/biopax/curator-Jan8-2020-Homo-sapiens.owl";
 
@@ -216,7 +218,7 @@ public class PhysicalEntityOntologyBuilder {
 		//		}
 		OWLOntology tbox = go_cam.ontman.loadOntologyFromOntologyDocument(new File("/Users/benjamingood/gocam_ontology/go-plus.owl"));
 
-		PhysicalEntityOntologyBuilder converter = new PhysicalEntityOntologyBuilder(new GOLego(tbox), base_short_namespace, base_extra_info, r, pro_mapping);
+		PhysicalEntityOntologyBuilder converter = new PhysicalEntityOntologyBuilder(new GOLego(tbox), base_short_namespace, base_extra_info, r);
 		for (PhysicalEntity entity : biopax_model.getObjects(PhysicalEntity.class)){		
 			String model_id = entity.hashCode()+"";
 			n++;
@@ -262,12 +264,122 @@ public class PhysicalEntityOntologyBuilder {
 
 		go_cam.writeGoCAM_jena(outfilename, false, outputformat);
 
-		//		int n_objects = 0;
-		//		for(String id : converter.id_class_map.keySet()) {
-		//			System.out.println(id+" "+(n_objects++)+" "+converter.id_class_map.get(id));
-		//		}
 	}
 
+	
+	public static void buildReacto(String input_biopax, String outfilename, OWLOntology tbox) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
+
+		String outputformat = "RDFXML";
+		String base_ont_title = "Reactome Entity Ontology (REACTO)";
+		String base_extra_info = "https://reactome.org/content/detail/";
+		String base_short_namespace = "Reactome";
+		ReasonerImplementation r = ReasonerImplementation.Elk;
+
+		BioPAXIOHandler handler = new SimpleIOHandler();
+		FileInputStream f = new FileInputStream(input_biopax);
+		Model biopax_model = handler.convertFromOWL(f);
+		String biopax_build_id = biopax_model.getXmlBase();
+		String base_contributor = "https://orcid.org/0000-0002-7334-7852";
+		String base_provider = "https://reactome.org";
+		boolean add_lego_import = false;
+		int n = 0;
+		String ont_uri = "http://purl.obolibrary.org/obo/go/extensions/reacto.owl";
+		IRI ont_iri = IRI.create(ont_uri);
+		GoCAM go_cam = new GoCAM(ont_iri, base_ont_title, base_contributor, null, base_provider, add_lego_import);
+		//Annotate the ontology		
+		LocalDateTime now = LocalDateTime.now();
+		OWLAnnotation time_anno = go_cam.df.getOWLAnnotation(GoCAM.version_info, go_cam.df.getOWLLiteral("Generated from Reactome biopax build: "+biopax_build_id+" on: "+now.toString()));
+		OWLAxiom timeannoaxiom = go_cam.df.getOWLAnnotationAssertionAxiom(ont_iri, time_anno);
+		go_cam.ontman.addAxiom(go_cam.go_cam_ont, timeannoaxiom);
+		
+		if(add_imports) {
+			//add protein modification ontology
+			String mod_iri = "http://purl.obolibrary.org/obo/mod.owl";
+			OWLImportsDeclaration modImportDeclaration = go_cam.df.getOWLImportsDeclaration(IRI.create(mod_iri));
+			go_cam.ontman.applyChange(new AddImport(go_cam.go_cam_ont, modImportDeclaration));
+			//GO (for locations)
+			String go_iri = "http://purl.obolibrary.org/obo/GO.owl";
+			OWLImportsDeclaration goImportDeclaration = go_cam.df.getOWLImportsDeclaration(IRI.create(go_iri));
+			go_cam.ontman.applyChange(new AddImport(go_cam.go_cam_ont, goImportDeclaration));
+			//PRO (for proteins and complexes)
+			String pro_iri = "http://purl.obolibrary.org/obo/PRO.owl";
+			OWLImportsDeclaration proImportDeclaration = go_cam.df.getOWLImportsDeclaration(IRI.create(pro_iri));
+			go_cam.ontman.applyChange(new AddImport(go_cam.go_cam_ont, proImportDeclaration));
+			//CHEBI for everything
+			String chebi_iri = "http://purl.obolibrary.org/obo/chebi.owl";
+			OWLImportsDeclaration chebiImportDeclaration = go_cam.df.getOWLImportsDeclaration(IRI.create(chebi_iri));
+			go_cam.ontman.applyChange(new AddImport(go_cam.go_cam_ont, chebiImportDeclaration));
+		}else {
+			OWLAnnotation import_comment = go_cam.df.getOWLAnnotation(GoCAM.rdfs_comment, go_cam.df.getOWLLiteral("This ontology references entities from: "
+					+ "the protein modification ontology http://purl.obolibrary.org/obo/mod.owl "
+					+ "the Gene Ontology http://purl.obolibrary.org/obo/GO.owl "
+					+ "the Protein Ontology (optionally) http://purl.obolibrary.org/obo/PRO.owl "
+					+ "and CHEBI.  For complete reasoning, these should be imported.  They are left out to reduce size and and increase tractability "
+					+ "for viewing/editing tools such as Protege. "));
+			OWLAxiom commentaxiom = go_cam.df.getOWLAnnotationAssertionAxiom(ont_iri, import_comment);
+			go_cam.ontman.addAxiom(go_cam.go_cam_ont, commentaxiom);
+		}
+		if(!add_pro_logical_connections) {
+			OWLAnnotation pro_comment = go_cam.df.getOWLAnnotation(
+					GoCAM.rdfs_comment, go_cam.df.getOWLLiteral("This version of the ontology was created "
+							+ "with annotation-level connections to the PRO ontology.  These could be replaced "
+							+ "by subclass (see isa comments) and equivalentClass (see dbXref annotations) axioms if"
+							+ " more direct integration is desired."));
+			OWLAxiom proaxiom = go_cam.df.getOWLAnnotationAssertionAxiom(ont_iri, pro_comment);
+			go_cam.ontman.addAxiom(go_cam.go_cam_ont, proaxiom);
+		}
+		//add this in so shex validator works without needing to import all of chebi..
+		go_cam.addSubClassAssertion(GoCAM.chebi_molecular_entity, GoCAM.chemical_entity);
+		go_cam.addSubClassAssertion(GoCAM.chebi_protein, GoCAM.chebi_information_biomacromolecule);
+
+		PhysicalEntityOntologyBuilder converter = new PhysicalEntityOntologyBuilder(new GOLego(tbox), base_short_namespace, base_extra_info, r);
+		for (PhysicalEntity entity : biopax_model.getObjects(PhysicalEntity.class)){		
+			String model_id = entity.hashCode()+"";
+			n++;
+			converter.definePhysicalEntity(go_cam, entity, null, model_id);
+		}
+
+		System.out.println(" running reasoner ");
+		if(!converter.reasoner.equals(ReasonerImplementation.none)) {
+			OWLReasonerFactory reasonerFactory = null;
+			if(converter.reasoner.equals(ReasonerImplementation.Hermit)) {
+				reasonerFactory = new ReasonerFactory();
+			}else if(converter.reasoner.equals(ReasonerImplementation.Elk)) {
+				reasonerFactory = new ElkReasonerFactory();
+			}		
+			System.out.println(" creating reasoner ");
+			OWLReasoner reasoner = reasonerFactory.createReasoner(go_cam.go_cam_ont);
+			// Classify the ontology.
+			System.out.println(" computing inferences ");
+			reasoner.precomputeInferences(InferenceType.CLASS_HIERARCHY);
+			// inferred axiom generators
+			List<InferredAxiomGenerator<? extends OWLAxiom>> gens = 
+					new ArrayList<InferredAxiomGenerator<? extends OWLAxiom>>();
+			gens.add(new InferredSubClassAxiomGenerator());
+			gens.add(new InferredEquivalentClassAxiomGenerator());
+			InferredOntologyGenerator iog = new InferredOntologyGenerator(reasoner, gens);
+			// Put the inferred axioms into a fresh empty ontology.
+			//OWLOntology infOnt = go_cam.ontman.createOntology();
+			//here just adding them to the original
+			System.out.println(" adding inferences to ontology ");
+			iog.fillOntology(go_cam.ontman.getOWLDataFactory(), go_cam.go_cam_ont);
+			System.out.println(" disposing of reasoner ");
+			reasoner.dispose();
+		}
+
+		System.out.println(" exporting ");
+		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
+		if(outputformat.equals("RDFXML")) {
+			outfilename = outfilename+".owl";
+		}else if(outputformat.equals("TURTLE")) {
+			outfilename = outfilename+".ttl";
+		} 
+
+		go_cam.writeGoCAM_jena(outfilename, false, outputformat);
+
+	}
+
+	
 
 	private OWLClassExpression definePhysicalEntity(GoCAM go_cam, PhysicalEntity entity, IRI this_iri, String model_id) throws IOException {
 

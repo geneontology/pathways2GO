@@ -55,9 +55,12 @@ public class Biopax2GOCmdLine {
 		String default_provider = "";//"https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";	
 		String test_pathway_name = null;
 		String catalog = null;
+		String reacto_out = null;
 		// create Options object
 		Options options = new Options();
 		options.addOption("b", true, "biopax pathway file to convert");
+		options.addOption("reacto", true, "if reacto, generate an ontology of all physical entities in the input biopax file. ");
+
 		options.addOption("o", true, "output directory");
 		options.addOption("bg", true, "blazegraph output journal"); 
 		options.addOption("tag", true, "a tag to be added to the title's of generated go-cams");
@@ -68,7 +71,7 @@ public class Biopax2GOCmdLine {
 		options.addOption("tp", true, "Exact name of a specific pathway to test - e.g. \"Signaling by MP\".  Other pathways in the biopax input file will be ignored. Default is that all pathways are processed");
 		options.addOption("c", true, "Catalog file for tbox");
 
-		
+
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = parser.parse( options, args);
 
@@ -78,12 +81,15 @@ public class Biopax2GOCmdLine {
 		else {
 			System.out.println("please provide a biopax file to validate to convert.");
 			System.exit(0);}
+		if(cmd.hasOption("reacto")) {
+			reacto_out = cmd.getOptionValue("reacto");
+		}		
 		if(cmd.hasOption("o")) {
 			output_file_stub = cmd.getOptionValue("o");
-			}
+		}
 		else {
 			System.out.println("please specify an output directory, with optional file prefix, e.g. /test/go_cams/reactome/reactome-homosapiens-");
-			System.exit(0);}
+		}
 		if(cmd.hasOption("bg")) {
 			output_blazegraph_journal = cmd.getOptionValue("bg");
 			bp2g.blazegraph_output_journal = output_blazegraph_journal;
@@ -102,13 +108,7 @@ public class Biopax2GOCmdLine {
 		else {
 			System.out.println("please provide a go-lego OWL file.");
 			System.exit(0);}
-//		if(cmd.hasOption("go")) {
-//			bp2g.go_plus_file = cmd.getOptionValue("go");
-//			bp2g.goplus = new GOPlus(bp2g.go_plus_file);
-//			}
-//		else {
-//			System.out.println("please provide a go OWL file.");
-//			System.exit(0);}
+
 		Set<String> test_pathways = null;
 		if(cmd.hasOption("tp")) {
 			test_pathways = new HashSet<String>();
@@ -118,39 +118,50 @@ public class Biopax2GOCmdLine {
 		if(cmd.hasOption("c")) {
 			catalog = cmd.getOptionValue("c");
 		}
-		String journal = bp2g.blazegraph_output_journal;	
-		//clean out any prior data in triple store
-		FileWriter clean = new FileWriter(journal, false);
-		clean.write("");
-		clean.close();
-		Blazer blaze = new Blazer(journal);
+		else {
+			System.out.println("please provide a catalog file for go-lego...");
+			System.exit(0);}
+
+
 		//initialize the rules for inference
 		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();	
 		if(catalog!=null) {
 			ontman.setIRIMappers(Collections.singleton(new CatalogXmlIRIMapper(catalog)));
 		}
 		OWLOntology tbox = ontman.loadOntologyFromOntologyDocument(new File(bp2g.go_lego_file));
-		bp2g.golego = new GOLego(tbox);
-		QRunner tbox_qrunner = new QRunner(Collections.singleton(tbox), null, bp2g.golego.golego_reasoner, true, false, false);
-		bp2g.tbox_qrunner = tbox_qrunner;
 
-		File dir = new File(input_biopax);
-		File[] directoryListing = dir.listFiles();
-		//run through all files
-		if (directoryListing != null) {
-			for (File biopax : directoryListing) {
-				String name = biopax.getName();
-				if(name.contains(".owl")||name.contains(".xml")) { 
-					name = name.replaceAll(".owl", "-");
-					name = name.replaceAll(".xml", "-");
-					String this_output_file_stub = output_file_stub+name;
-					bp2g.convert(biopax.getAbsolutePath(), this_output_file_stub, base_title, default_contributor, default_provider, tag, test_pathways, blaze);
-				}
-			}
-		}else {
-			bp2g.convert(input_biopax, output_file_stub, base_title, default_contributor, default_provider, tag, test_pathways, blaze);
+
+		if(reacto_out!=null) {
+			PhysicalEntityOntologyBuilder.buildReacto(input_biopax, reacto_out, tbox);
 		}
-
+		//could chain them together if desired, but simple for now.  
+		else {
+			bp2g.golego = new GOLego(tbox);
+			QRunner tbox_qrunner = new QRunner(Collections.singleton(tbox), null, bp2g.golego.golego_reasoner, true, false, false);
+			bp2g.tbox_qrunner = tbox_qrunner;
+			String journal = bp2g.blazegraph_output_journal;	
+			//clean out any prior data in triple store
+			FileWriter clean = new FileWriter(journal, false);
+			clean.write("");
+			clean.close();
+			Blazer blaze = new Blazer(journal);
+			File dir = new File(input_biopax);
+			File[] directoryListing = dir.listFiles();
+			//run through all files
+			if (directoryListing != null) {
+				for (File biopax : directoryListing) {
+					String name = biopax.getName();
+					if(name.contains(".owl")||name.contains(".xml")) { 
+						name = name.replaceAll(".owl", "-");
+						name = name.replaceAll(".xml", "-");
+						String this_output_file_stub = output_file_stub+name;
+						bp2g.convert(biopax.getAbsolutePath(), this_output_file_stub, base_title, default_contributor, default_provider, tag, test_pathways, blaze);
+					}
+				}
+			}else {
+				bp2g.convert(input_biopax, output_file_stub, base_title, default_contributor, default_provider, tag, test_pathways, blaze);
+			}
+		}
 	}
 
 }
