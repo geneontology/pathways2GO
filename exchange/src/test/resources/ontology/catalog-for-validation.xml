@@ -3,6 +3,6 @@
     <group id="Folder Repository, directory=, recursive=true, Auto-Update=true, version=2" prefer="public" xml:base="">
     <uri id="Manually handling a custom go_lego import, Timestamp=1550181509806" name="http://purl.obolibrary.org/obo/go/extensions/go-lego.owl" uri="go-lego-no-neo.owl"/>
     <uri id="Manually eliminating neo from go_lego import, Timestamp=1550181509806" name="http://purl.obolibrary.org/obo/go/noctua/neo.owl" uri="neo.owl"/>
-    <uri id="Manually adding a local reo, Timestamp=1550181509807" name="http://purl.obolibrary.org/obo/go/extensions/reacto.owl" uri="REACTO.owl"/>
+    <uri id="Manually adding a local reo, Timestamp=1550181509807" name="http://purl.obolibrary.org/obo/go/extensions/reacto.owl" uri="https://github.com/geneontology/pathways2GO/releases/download/v0.1.0/REACTO.owl"/>
     </group>
 </catalog>
