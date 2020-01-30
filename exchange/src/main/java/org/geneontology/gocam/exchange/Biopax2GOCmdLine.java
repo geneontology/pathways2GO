@@ -84,58 +84,58 @@ public class Biopax2GOCmdLine {
 		if(cmd.hasOption("reacto")) {
 			reacto_out = cmd.getOptionValue("reacto");
 		}		
-		if(cmd.hasOption("o")) {
-			output_file_stub = cmd.getOptionValue("o");
-		}
-		else {
-			System.out.println("please specify an output directory, with optional file prefix, e.g. /test/go_cams/reactome/reactome-homosapiens-");
-		}
-		if(cmd.hasOption("bg")) {
-			output_blazegraph_journal = cmd.getOptionValue("bg");
-			bp2g.blazegraph_output_journal = output_blazegraph_journal;
-		}
-		if(cmd.hasOption("tag")) {
-			tag = cmd.getOptionValue("tag");
-		}
-		if(cmd.hasOption("dc")) {
-			default_contributor = cmd.getOptionValue("dc");
-		}
-		if(cmd.hasOption("dp")) {
-			default_provider = cmd.getOptionValue("dp");
-		}
-		if(cmd.hasOption("lego")) {
-			bp2g.go_lego_file = cmd.getOptionValue("lego");}
-		else {
-			System.out.println("please provide a go-lego OWL file.");
-			System.exit(0);}
-
-		Set<String> test_pathways = null;
-		if(cmd.hasOption("tp")) {
-			test_pathways = new HashSet<String>();
-			test_pathway_name = cmd.getOptionValue("tp");
-			test_pathways.add(test_pathway_name);
-		}
-		if(cmd.hasOption("c")) {
-			catalog = cmd.getOptionValue("c");
-		}
-		else {
-			System.out.println("please provide a catalog file for go-lego...");
-			System.exit(0);}
-
-
-		//initialize the rules for inference
-		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();	
-		if(catalog!=null) {
-			ontman.setIRIMappers(Collections.singleton(new CatalogXmlIRIMapper(catalog)));
-		}
-		OWLOntology tbox = ontman.loadOntologyFromOntologyDocument(new File(bp2g.go_lego_file));
 
 
 		if(reacto_out!=null) {
-			PhysicalEntityOntologyBuilder.buildReacto(input_biopax, reacto_out, tbox);
+			PhysicalEntityOntologyBuilder.buildReacto(input_biopax, reacto_out, null);
 		}
 		//could chain them together if desired, but simple for now.  
 		else {
+			if(cmd.hasOption("o")) {
+				output_file_stub = cmd.getOptionValue("o");
+			}
+			else {
+				System.out.println("please specify an output directory, with optional file prefix, e.g. /test/go_cams/reactome/reactome-homosapiens-");
+			}
+			if(cmd.hasOption("bg")) {
+				output_blazegraph_journal = cmd.getOptionValue("bg");
+				bp2g.blazegraph_output_journal = output_blazegraph_journal;
+			}
+			if(cmd.hasOption("tag")) {
+				tag = cmd.getOptionValue("tag");
+			}
+			if(cmd.hasOption("dc")) {
+				default_contributor = cmd.getOptionValue("dc");
+			}
+			if(cmd.hasOption("dp")) {
+				default_provider = cmd.getOptionValue("dp");
+			}
+			if(cmd.hasOption("lego")) {
+				bp2g.go_lego_file = cmd.getOptionValue("lego");}
+			else {
+				System.out.println("please provide a go-lego OWL file.");
+				System.exit(0);}
+
+			Set<String> test_pathways = null;
+			if(cmd.hasOption("tp")) {
+				test_pathways = new HashSet<String>();
+				test_pathway_name = cmd.getOptionValue("tp");
+				test_pathways.add(test_pathway_name);
+			}
+			if(cmd.hasOption("c")) {
+				catalog = cmd.getOptionValue("c");
+			}
+			else {
+				System.out.println("please provide a catalog file for go-lego...");
+				System.exit(0);}
+			
+			
+			//initialize the rules for inference
+			OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();	
+			if(catalog!=null) {
+				ontman.setIRIMappers(Collections.singleton(new CatalogXmlIRIMapper(catalog)));
+			}
+			OWLOntology tbox = ontman.loadOntologyFromOntologyDocument(new File(bp2g.go_lego_file));
 			bp2g.golego = new GOLego(tbox);
 			QRunner tbox_qrunner = new QRunner(Collections.singleton(tbox), null, bp2g.golego.golego_reasoner, true, false, false);
 			bp2g.tbox_qrunner = tbox_qrunner;

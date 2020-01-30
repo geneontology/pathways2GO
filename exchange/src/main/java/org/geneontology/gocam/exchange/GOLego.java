@@ -50,14 +50,18 @@ public class GOLego {
 	OWLReasoner golego_reasoner;
 
 	public GOLego(OWLOntology ontology) throws OWLOntologyCreationException {
-		ontman = ontology.getOWLOntologyManager();
+		if(ontology==null) {	
+			ontman = OWLManager.createOWLOntologyManager();	
+			ontology = ontman.createOntology();
+		}else {
+			ontman = ontology.getOWLOntologyManager();
+		}
 		df = ontman.getOWLDataFactory();
 		golego_ont = ontology;
 		Set<OWLOntology> imports = golego_ont.getImports();
 		for(OWLOntology t : imports) {
 			ontman.addAxioms(golego_ont, t.getAxioms());
 		}
-		System.out.println("GOLego (tbox) loaded, axioms "+golego_ont.getAxiomCount());
 		xref_gos = new HashMap<String, Set<String>>();	
 		GoCAM tmp = new GoCAM();//make the init functions run..
 		golego_reasoner = createReasoner(golego_ont);
