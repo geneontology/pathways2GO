@@ -51,8 +51,8 @@ public class Biopax2GOCmdLine {
 		String output_blazegraph_journal =  null; //"/Users/bgood/noctua-config/blazegraph.jnl";  
 		String tag = ""; //unexpanded
 		String base_title = "title here";//"Will be replaced if a title can be found for the pathway in its annotations
-		String default_contributor = "";//"https://orcid.org/0000-0002-7334-7852"; //
-		String default_provider = "";//"https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";	
+		String default_contributor = "https://orcid.org/0000-0002-7334-7852"; //
+		String default_provider = "https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";	
 		String test_pathway_name = null;
 		String catalog = null;
 		String reacto_out = null;
@@ -97,9 +97,17 @@ public class Biopax2GOCmdLine {
 			else {
 				System.out.println("please specify an output directory, with optional file prefix, e.g. /test/go_cams/reactome/reactome-homosapiens-");
 			}
+			Blazer blaze = null;
 			if(cmd.hasOption("bg")) {
 				output_blazegraph_journal = cmd.getOptionValue("bg");
 				bp2g.blazegraph_output_journal = output_blazegraph_journal;
+				
+				String journal = bp2g.blazegraph_output_journal;	
+				//clean out any prior data in triple store
+				FileWriter clean = new FileWriter(journal, false);
+				clean.write("");
+				clean.close();
+				blaze = new Blazer(journal);
 			}
 			if(cmd.hasOption("tag")) {
 				tag = cmd.getOptionValue("tag");
@@ -122,29 +130,24 @@ public class Biopax2GOCmdLine {
 				test_pathway_name = cmd.getOptionValue("tp");
 				test_pathways.add(test_pathway_name);
 			}
+			
+			OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();	
 			if(cmd.hasOption("c")) {
 				catalog = cmd.getOptionValue("c");
+				if(catalog!=null) {
+					ontman.setIRIMappers(Collections.singleton(new CatalogXmlIRIMapper(catalog)));
+				}
 			}
 			else {
-				System.out.println("please provide a catalog file for go-lego...");
-				System.exit(0);}
-			
-			
-			//initialize the rules for inference
-			OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();	
-			if(catalog!=null) {
-				ontman.setIRIMappers(Collections.singleton(new CatalogXmlIRIMapper(catalog)));
+				System.out.println("Warning, no catalog file provided for for go-lego.   Specify one with -c catalog.xml");
 			}
+			
+			//initialize the rules for inference		
 			OWLOntology tbox = ontman.loadOntologyFromOntologyDocument(new File(bp2g.go_lego_file));
 			bp2g.golego = new GOLego(tbox);
 			QRunner tbox_qrunner = new QRunner(Collections.singleton(tbox), null, bp2g.golego.golego_reasoner, true, false, false);
 			bp2g.tbox_qrunner = tbox_qrunner;
-			String journal = bp2g.blazegraph_output_journal;	
-			//clean out any prior data in triple store
-			FileWriter clean = new FileWriter(journal, false);
-			clean.write("");
-			clean.close();
-			Blazer blaze = new Blazer(journal);
+			
 			File dir = new File(input_biopax);
 			File[] directoryListing = dir.listFiles();
 			//run through all files
