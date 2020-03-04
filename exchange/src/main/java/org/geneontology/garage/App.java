@@ -21,6 +21,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
@@ -110,50 +116,36 @@ public class App {
 	//	String maximal_lego = "src/main/resources/org/geneontology/gocam/exchange/go-lego-full.owl";	
 
 	public static void main( String[] args ) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
-		//"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-Attachment_of_GPI_anchor_to_uPAR.ttl");
-		String test_file = "/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-A_tetrasaccharide_linker_sequence_is_required_for_GAG_synthesis.ttl";
-		GoCAM go_cam = new GoCAM(test_file);		
-		OWLOntologyManager aman = OWLManager.createOWLOntologyManager();
-		OWLDataFactory df = aman.getOWLDataFactory();
-		OWLOntology tbox = aman.loadOntologyFromOntologyDocument(
-				new File("/Users/bgood/gocam_ontology/REO.owl"));
-		OWLOntology abox = aman.copyOntology(go_cam.go_cam_ont, OntologyCopy.DEEP);
-		//		OWLOntology abox = aman.createOntology();
-		//		aman.addAxioms(abox, go_cam.go_cam_ont.getAxioms());
-		OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
-		OWLReasoner abox_reasoner = reasonerFactory.createReasoner(abox);
-		//convert to canonical
-		//list all instances of genes, chemicals with a canonical reference
-
-		abox.getIndividualsInSignature().forEach(i->{ 
-			Set<OWLClass> types = abox_reasoner.getTypes(i, true).getFlattened();
-			System.out.println(i+" Types = " + types); 
-			for(OWLClass type : types) {
-				Collection<OWLAnnotation> canons = EntitySearcher.getAnnotationObjects(type, tbox, GoCAM.canonical_record);
-				if(type.toString().contains("http://model.geneontology.org/R-HSA-8863599")) {
-					System.out.println(canons);
-				}
-				//adding multiple types to an instance of a set object is 
-				//probably not kosher.. but seems to work.
-				if(canons!=null&&canons.size()>0) {
-					//	OWLAnnotation canon = canons.iterator().next();
-					for(OWLAnnotation canon : canons) {
-						if(canon.getValue().asIRI().isPresent()) {
-							OWLClass canonical = df.getOWLClass(canon.getValue().asIRI().get());
-							//direct swap
-							//remove the old one
-							OWLClassAssertionAxiom original = df.getOWLClassAssertionAxiom(type, i);
-							aman.removeAxiom(abox, original);
-							//add the new one
-							OWLClassAssertionAxiom canonical_type = df.getOWLClassAssertionAxiom(canonical, i);
-							aman.addAxiom(abox, canonical_type);
-						}
-					}
-				}
-			}
-		});
-		Helper.writeOntology("/Users/bgood/Desktop/test/go_cams/canon_unconverted.ttl", go_cam.go_cam_ont);
-		Helper.writeOntology("/Users/bgood/Desktop/test/go_cams/canon_converted.ttl", abox);
+		//test canceling..
+		
+		final ExecutorService service = Executors.newSingleThreadExecutor();
+		
+		int timeout = 4000;
+		String test_node = "unfinished";
+		try {
+			final Future<String> f = (Future<String>) service.submit(() -> {
+				String tmp_node = "test node";
+				System.out.println("Do something slow");
+				tmp_node += " modified";
+				Thread.sleep(5000);
+				return tmp_node;
+			});
+			System.out.println("This can happen before the future gets going ");
+			test_node = f.get(timeout, TimeUnit.MILLISECONDS);
+				//capture the result
+			System.out.println("Done with test :"+test_node);
+		} catch (final TimeoutException e) {
+			System.err.println(" took to long for "+test_node);		
+		} catch (InterruptedException e) {
+			System.err.println("interrupted error for "+test_node);
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			System.err.println("execution error for "+test_node);
+			e.printStackTrace();
+		}  finally {
+			System.out.println("shutting down service "+test_node);
+			service.shutdown();			
+		}
 	}
 
 
