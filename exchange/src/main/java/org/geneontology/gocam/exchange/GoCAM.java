@@ -1268,6 +1268,8 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 
 			//delete the entity regulates process relation 
 			applyAnnotatedTripleRemover(entity.getIRI(), IRI.create(ir.prop_uri), r2.getIRI());
+			//delete the causally upstream of assertion (now redundant) 
+			applyAnnotatedTripleRemover(r1.getIRI(), causally_upstream_of.getIRI(), r2.getIRI());
 		}
 		r.rule_hitcount.put(regulator_rule, regulator_count);
 		r.rule_pathways.put(regulator_rule, regulator_pathways);
