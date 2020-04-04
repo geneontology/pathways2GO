@@ -112,7 +112,7 @@ public class GoCAM {
 	public static IRI base_ont_iri;
 	public static OWLAnnotationProperty version_info, title_prop, contributor_prop, date_prop, skos_exact_match, skos_altlabel,  
 	state_prop, evidence_prop, provided_by_prop, x_prop, y_prop, rdfs_label, rdfs_comment, rdfs_seealso, source_prop, 
-	definition, database_cross_reference, canonical_record, iuphar_id;
+	definition, database_cross_reference, canonical_record, iuphar_id, in_taxon;
 	public static OWLObjectProperty part_of, has_part, has_input, has_output, has_component, 
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in,
 	directly_positively_regulated_by, directly_negatively_regulated_by, involved_in_regulation_of, involved_in_negative_regulation_of, involved_in_positive_regulation_of,
@@ -183,7 +183,7 @@ public class GoCAM {
 	 * @throws OWLOntologyCreationException 
 	 * 
 	 */
-	public GoCAM(IRI ont_iri, String gocam_title, String contributor, String date, String provider, boolean add_lego_import) throws OWLOntologyCreationException {
+	public GoCAM(IRI ont_iri, String gocam_title, String contributor, String date, String provider, boolean add_lego_import, Set<String> taxa) throws OWLOntologyCreationException {
 		base_contributor = contributor;
 		base_date = getDate(date);
 		base_provider = provider;
@@ -198,12 +198,6 @@ public class GoCAM {
 			String lego_iri = "http://purl.obolibrary.org/obo/go/extensions/go-lego.owl";
 			OWLImportsDeclaration legoImportDeclaration = df.getOWLImportsDeclaration(IRI.create(lego_iri));
 			ontman.applyChange(new AddImport(go_cam_ont, legoImportDeclaration));
-			//until it is in go_lego all the models are going to need it
-			//either add it here or modify go_lego..
-//			String reo_iri = "http://purl.obolibrary.org/obo/go/extensions/reacto.owl";
-//			//String reo_iri = "https://github.com/geneontology/pathways2GO/raw/master/exchange/generated/plant-REO.owl";
-//			OWLImportsDeclaration reoImportDeclaration = df.getOWLImportsDeclaration(IRI.create(reo_iri));
-//			ontman.applyChange(new AddImport(go_cam_ont, reoImportDeclaration));
 		}
 		//Annotate the ontology
 		OWLAnnotation title_anno = df.getOWLAnnotation(title_prop, df.getOWLLiteral(gocam_title));
@@ -226,6 +220,13 @@ public class GoCAM {
 		OWLAxiom provideraxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, provider_anno);
 		ontman.addAxiom(go_cam_ont, provideraxiom);
 
+		if(taxa!=null) {
+			for(String taxon : taxa) {
+				OWLAnnotation taxon_anno = df.getOWLAnnotation(in_taxon, df.getOWLLiteral(taxon));
+				OWLAxiom taxonaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, taxon_anno);
+				ontman.addAxiom(go_cam_ont, taxonaxiom);
+			}
+		}
 	}
 
 
@@ -250,7 +251,7 @@ public class GoCAM {
 		database_cross_reference = df.getOWLAnnotationProperty(IRI.create("http://www.geneontology.org/formats/oboInOwl#hasDbXref"));	
 		canonical_record = df.getOWLAnnotationProperty(IRI.create("http://geneontology.org/lego/canonical_record"));
 		iuphar_id = df.getOWLAnnotationProperty(IRI.create("http://geneontology.org/lego/iuphar_id"));
-
+		in_taxon = df.getOWLAnnotationProperty(IRI.create("https://w3id.org/biolink/vocab/in_taxon"));
 		//Will add classes and relations as we need them now. 
 		//TODO add something to validate that ids are correct..  
 		//classes	
@@ -696,7 +697,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		return iri;
 	}
 
-	
+
 	public static IRI makeReactoIRI(String model_base_id, String entity_id) {
 		if(entity_id==null) {
 			entity_id = UUID.randomUUID().toString();	
@@ -704,7 +705,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		String iri = reacto_base_iri+model_base_id+"/"+entity_id;
 		return IRI.create(iri);
 	}
-	
+
 	public static IRI makeGoCamifiedIRI(String model_base_id, String entity_id) {
 		String iri = makeGoCamifiedIRIstring(model_base_id, entity_id);
 		return IRI.create(iri);
@@ -904,7 +905,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 	void deleteOwlEntityAndAllReferencesToIt(OWLEntity e) {
 		deleteOwlEntityAndAllReferencesToIt(e, false);
 	}
-	
+
 	//TODO explore whether something like this is faster
 	//https://stackoverflow.com/questions/46860119/deleting-specific-class-and-axioms-in-owlapi
 	//OWLEntityRemover remover = new OWLEntityRemover(Collections.singleton(ontology)); currentClass.accept(remover); manager.applyChanges(remover.getChanges()); 
@@ -948,7 +949,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 				}
 				//now remove the axiom
 				ontman.removeAxiom(go_cam_ont, aAx);
-				
+
 			}
 		}
 	}
@@ -1001,7 +1002,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 
 		RuleResults r = new RuleResults();
 		//NOTE that the order these are run matters.
-		r = inferEnablersForProteinBinding(model_id, r, tbox_qrunner);
+		r = inferEnablersForBinding(model_id, r, tbox_qrunner);
 		r = inferTransportProcess(model_id, r, tbox_qrunner);	//must be run before occurs_in and before deleteLocations	 
 		r = inferOccursInFromEntityLocations(model_id, r);
 		r = inferRegulatesViaOutputRegulates(model_id, r);
@@ -1015,13 +1016,13 @@ final long counterValue = instanceCounter.getAndIncrement();
 
 
 
-	private RuleResults inferEnablersForProteinBinding(String model_id, RuleResults r, QRunner tbox_qrunner) {
-		String enabling_binding_rule = "Enabling Protein Binding Rule";
+	private RuleResults inferEnablersForBinding(String model_id, RuleResults r, QRunner tbox_qrunner) {
+		String enabling_binding_rule = "Enabling Binding Rule";
 		Integer enabling_binding_count = r.checkInitCount(enabling_binding_rule, r);
 		Set<String> enabling_binding_pathways = r.checkInitPathways(enabling_binding_rule, r);		
 		Map<String, Set<String>> binders = qrunner.findProteinBindingReactions();	
 		Set<OWLAnnotation> annos = getDefaultAnnotations();
-		String explain1 = "Enabling Protein Binding Rule. This enabled by relation was inferred because the input protein here was the output of the previous reaction in the pathway.";
+		String explain1 = "Enabling Binding Rule. This enabled by relation was inferred because the input here was the output of the previous reaction in the pathway.";
 		annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain1)));	
 		if(binders!=null&&binders.size()>0) { 
 			for(String reaction_uri : binders.keySet()) {
@@ -1749,7 +1750,7 @@ BP has_part R
 		//get all the nodes in the model 
 		String query = 
 				"PREFIX owl: <http://www.w3.org/2002/07/owl#> "
-				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " + 
+						+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " + 
 						"select distinct ?node ?type  " + 
 						"where {" + 
 						" 	?node rdf:type ?type . "

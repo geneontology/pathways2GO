@@ -150,6 +150,10 @@ public class Biopax2GOCmdLine {
 			
 			File dir = new File(input_biopax);
 			File[] directoryListing = dir.listFiles();
+			//TODO generalize this!  
+			Set<String> taxa = new HashSet<String>();
+			taxa.add("http://purl.obolibrary.org/obo/NCBITaxon_9606");
+			
 			//run through all files
 			if (directoryListing != null) {
 				for (File biopax : directoryListing) {
@@ -158,11 +162,11 @@ public class Biopax2GOCmdLine {
 						name = name.replaceAll(".owl", "-");
 						name = name.replaceAll(".xml", "-");
 						String this_output_file_stub = output_file_stub+name;
-						bp2g.convert(biopax.getAbsolutePath(), this_output_file_stub, base_title, default_contributor, default_provider, tag, test_pathways, blaze);
+						bp2g.convert(biopax.getAbsolutePath(), this_output_file_stub, base_title, default_contributor, default_provider, tag, test_pathways, blaze, taxa);
 					}
 				}
 			}else {
-				bp2g.convert(input_biopax, output_file_stub, base_title, default_contributor, default_provider, tag, test_pathways, blaze);
+				bp2g.convert(input_biopax, output_file_stub, base_title, default_contributor, default_provider, tag, test_pathways, blaze, taxa);
 			}
 		}
 	}

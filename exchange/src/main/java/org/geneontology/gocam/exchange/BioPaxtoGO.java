@@ -209,7 +209,9 @@ public class BioPaxtoGO {
 		Blazer blaze = new Blazer(journal);
 
 		bp2g.tbox_qrunner = new QRunner(Collections.singleton(bp2g.golego.golego_ont), null, bp2g.golego.golego_reasoner, true, false, false);
-		bp2g.convert(input_biopax, converted, base_title, base_contributor, base_provider, tag, test_pathways, blaze);
+		Set<String> taxa = new HashSet<String>();
+		taxa.add("http://purl.obolibrary.org/obo/NCBITaxon_9606");
+		bp2g.convert(input_biopax, converted, base_title, base_contributor, base_provider, tag, test_pathways, blaze, taxa);
 
 	} 
 
@@ -221,7 +223,8 @@ public class BioPaxtoGO {
 			String base_provider, 
 			String tag, 
 			Set<String> test_pathway_names,
-			Blazer blaze) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException  {
+			Blazer blaze,
+			Set<String> taxa) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException  {
 		//set for writing metadata
 		String datasource = "";
 		if(base_provider.equals("https://reactome.org")) {
@@ -242,7 +245,7 @@ public class BioPaxtoGO {
 		String base_ont_title = base_title;
 		String iri = "http://model.geneontology.org/"+base_ont_title.hashCode(); 
 		IRI ont_iri = IRI.create(iri);
-		GoCAM go_cam = new GoCAM(ont_iri, base_ont_title, base_contributor, null, base_provider, add_lego_import);
+		GoCAM go_cam = new GoCAM(ont_iri, base_ont_title, base_contributor, null, base_provider, add_lego_import, taxa);
 		go_cam.qrunner = tbox_qrunner;
 		//set up access to blazegraph journal for output
 		boolean save2blazegraph = false;
@@ -288,7 +291,7 @@ public class BioPaxtoGO {
 				base_ont_title = datasource+":"+tag+":"+currentPathway.getDisplayName();
 				iri = "http://model.geneontology.org/"+model_id; 
 				ont_iri = IRI.create(iri);	
-				go_cam = new GoCAM(ont_iri, base_ont_title, contributor_link, null, base_provider, add_lego_import);
+				go_cam = new GoCAM(ont_iri, base_ont_title, contributor_link, null, base_provider, add_lego_import, taxa);
 				//journal is by default in 'append' mode - keeping the same journal reference add each pathway to same journal
 				go_cam.path2bgjournal = blazegraph_output_journal;
 				go_cam.blazegraphdb = blaze;

@@ -94,7 +94,8 @@ PREFIX GoComplexBinding: <http://purl.obolibrary.org/obo/GO_0044877>
 
 select distinct ?reaction ?upstream_reaction ?input ?input_type  
 where {
-	?reaction rdf:type GoProteinBinding: .	
+    VALUES ?masterbinder {GoProteinBinding: GoBinding: GoComplexBinding: }. 
+	?reaction rdf:type ?masterbinder .	
 	?reaction has_input: ?input . 
     ?input rdf:type ?input_type . 
   	FILTER(?input_type != owl:NamedIndividual) . 
