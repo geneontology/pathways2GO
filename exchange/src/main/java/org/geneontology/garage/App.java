@@ -265,7 +265,7 @@ public class App {
 	}
 
 	public static void testBuildMFDef() throws OWLOntologyCreationException, OWLOntologyStorageException {
-		GoCAM go_cam = new GoCAM(IRI.create("http://test133"), " ", " ", " ", " ", false);
+		GoCAM go_cam = new GoCAM(IRI.create("http://test133"), " ", " ", " ", " ", false, null);
 		String root = "http://www.semanticweb.org/bgood/ontologies/2018/4/untitled-ontology-147#";
 		OWLClass SubstanceSet = go_cam.df.getOWLClass(IRI.create(root+"SubstanceSet"));
 		OWLClass CatalyticActivity = go_cam.df.getOWLClass(IRI.create("http://purl.obolibrary.org/obo/GO_0003824"));

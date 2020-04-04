@@ -111,6 +111,9 @@ public class BioPaxtoGOTest {
 		System.out.println("running biopaxtogo on all test files");
 		File dir = new File(input_biopax);
 		File[] directoryListing = dir.listFiles();
+		//TODO generalize this!  
+		Set<String> taxa = new HashSet<String>();
+		taxa.add("http://purl.obolibrary.org/obo/NCBITaxon_9606");
 		//run through all files
 		if (directoryListing != null) {
 			for (File biopax : directoryListing) {
@@ -119,7 +122,7 @@ public class BioPaxtoGOTest {
 					name = name.replaceAll(".owl", "-");
 					String this_output_file_stub = output_file_stub+name;
 					try {
-						bp2g.convert(biopax.getAbsolutePath(), this_output_file_stub, base_title, default_contributor, default_provider, tag, null, blaze);
+						bp2g.convert(biopax.getAbsolutePath(), this_output_file_stub, base_title, default_contributor, default_provider, tag, null, blaze, taxa);
 					} catch (OWLOntologyCreationException | OWLOntologyStorageException | RepositoryException
 							| RDFParseException | RDFHandlerException | IOException e) {
 						// TODO Auto-generated catch block
@@ -129,7 +132,7 @@ public class BioPaxtoGOTest {
 			} 
 		}else {
 			try {
-				bp2g.convert(input_biopax, output_file_stub, base_title, default_contributor, default_provider, tag, null, blaze);
+				bp2g.convert(input_biopax, output_file_stub, base_title, default_contributor, default_provider, tag, null, blaze, taxa);
 			} catch (OWLOntologyCreationException | OWLOntologyStorageException | RepositoryException
 					| RDFParseException | RDFHandlerException | IOException e) {
 				// TODO Auto-generated catch block
