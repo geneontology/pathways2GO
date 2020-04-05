@@ -84,10 +84,17 @@ public class Biopax2GOCmdLine {
 		if(cmd.hasOption("reacto")) {
 			reacto_out = cmd.getOptionValue("reacto");
 		}		
-
+		if(cmd.hasOption("lego")) {
+			bp2g.go_lego_file = cmd.getOptionValue("lego");}
+		else {
+			System.out.println("please provide a go-lego OWL file.");
+			System.exit(0);}
 
 		if(reacto_out!=null) {
-			PhysicalEntityOntologyBuilder.buildReacto(input_biopax, reacto_out, null);
+			boolean add_imports = true;
+			OWLOntologyManager	ontman = OWLManager.createOWLOntologyManager();				
+			OWLOntology go_lego_tbox = ontman.loadOntologyFromOntologyDocument(new File(bp2g.go_lego_file));
+			PhysicalEntityOntologyBuilder.buildReacto(input_biopax, reacto_out, go_lego_tbox, add_imports);
 		}
 		//could chain them together if desired, but simple for now.  
 		else {
@@ -118,11 +125,6 @@ public class Biopax2GOCmdLine {
 			if(cmd.hasOption("dp")) {
 				default_provider = cmd.getOptionValue("dp");
 			}
-			if(cmd.hasOption("lego")) {
-				bp2g.go_lego_file = cmd.getOptionValue("lego");}
-			else {
-				System.out.println("please provide a go-lego OWL file.");
-				System.exit(0);}
 
 			Set<String> test_pathways = null;
 			if(cmd.hasOption("tp")) {
