@@ -12,3 +12,4 @@ exchange/src/test/resources/gocam/*
 exchange/generated/REO.owl
 exchange/src/test/resources/ontology/REACTO.owl
 exchange/bin/biopax2go.jar
+exchange/src/test/resources/ontology/reacto_test.owl

@@ -139,8 +139,8 @@ public class PhysicalEntityOntologyBuilder {
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
 		//String pro_mapping = "/Users/benjamingood/gocam_ontology/REO/promapping.txt";
-		String input_biopax = 
-				"/Users/benjamingood/test/biopax/curator-Jan8-2020-Homo-sapiens.owl";
+		//TODO clear out this main.  Should run it from the command line client BioPaxtoGOCmdLine.java
+		String input_biopax = ""; //Users/benjamingood/test/biopax/curator-Jan8-2020-Homo-sapiens.owl
 
 		String outputformat = "RDFXML";
 		String outfilename = "/Users/benjamingood/gocam_ontology/REACTO";
@@ -267,7 +267,7 @@ public class PhysicalEntityOntologyBuilder {
 	}
 
 	
-	public static void buildReacto(String input_biopax, String outfilename, OWLOntology tbox) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
+	public static OWLOntology buildReacto(String input_biopax, String outfilename, OWLOntology tbox) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
 
 		String outputformat = "RDFXML";
 		String base_ont_title = "Reactome Entity Ontology (REACTO)";
@@ -376,7 +376,7 @@ public class PhysicalEntityOntologyBuilder {
 		} 
 
 		go_cam.writeGoCAM_jena(outfilename, false, outputformat);
-
+		return go_cam.go_cam_ont;
 	}
 
 	
