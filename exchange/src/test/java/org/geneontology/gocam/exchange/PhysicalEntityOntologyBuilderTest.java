@@ -6,15 +6,22 @@ package org.geneontology.gocam.exchange;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.geneontology.gocam.exchange.PhysicalEntityOntologyBuilder.ReasonerImplementation;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.obolibrary.robot.CatalogXmlIRIMapper;
+import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
@@ -42,18 +49,64 @@ import com.google.common.collect.Sets;
  */
 public class PhysicalEntityOntologyBuilderTest {
 
-	static String input_biopax_file = "/Users/benjamingood/test/biopax/March2020_Homo_sapiens.owl";//"./src/test/resources/biopax/bmp.owl";
-	static String reacto_out = "./src/test/resources/ontology/reacto_test";
-	static String go_lego_other_file = "/Users/benjamingood/GitHub/go-ontology/src/ontology/extensions/go-lego-no-neo-no-reacto.owl";
-	static String catalog = "/Users/benjamingood/gocam_ontology/catalog-no-neo-no-reacto.xml";
-
+	static String input_biopax_file = "/tmp/reactome_biopax/Homo_sapiens.owl";
+	static String reacto_out = "/tmp/REACTO";
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		//download the latest reactome release
+		String reactome = "https://reactome.org/download/current/biopax.zip";
+		URL reactome_url = new URL(reactome);
+		File biopax = new File("/tmp/biopax.zip");
+		org.apache.commons.io.FileUtils.copyURLToFile(reactome_url, biopax);
+		if(reactome.endsWith(".zip")) {
+			//unGunzipFile();
+			unzip(biopax.getAbsolutePath(), "/tmp/reactome_biopax");
+		}
+		
 	}
 
+	private static void unzip(String zipFilePath, String destDir) {
+        File dir = new File(destDir);
+        // create output directory if it doesn't exist
+        if(!dir.exists()) dir.mkdirs();
+        FileInputStream fis;
+        //buffer for read and write data to file
+        byte[] buffer = new byte[1024];
+        try {
+            fis = new FileInputStream(zipFilePath);
+            ZipInputStream zis = new ZipInputStream(fis);
+            ZipEntry ze = zis.getNextEntry();
+            while(ze != null){
+                String fileName = ze.getName();
+                File newFile = new File(destDir + File.separator + fileName);
+                System.out.println("Unzipping to "+newFile.getAbsolutePath());
+                //create directories for sub directories in zip
+                new File(newFile.getParent()).mkdirs();
+                FileOutputStream fos = new FileOutputStream(newFile);
+                int len;
+                while ((len = zis.read(buffer)) > 0) {
+                fos.write(buffer, 0, len);
+                }
+                fos.close();
+                //close this ZipEntry
+                zis.closeEntry();
+                ze = zis.getNextEntry();
+            }
+            //close last ZipEntry
+            zis.closeEntry();
+            zis.close();
+            fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+    }
+
+
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -64,41 +117,44 @@ public class PhysicalEntityOntologyBuilderTest {
 	@Test
 	public void reasonerTest() {
 		try {
-			//OWLOntology go_lego_other = 
-			OWLOntologyManager	ontman = OWLManager.createOWLOntologyManager();				
-			OWLOntology go_lego_tbox = ontman.loadOntologyFromOntologyDocument(new File(go_lego_other_file));			
+			OWLOntologyManager	ontman = OWLManager.createOWLOntologyManager();		
+			System.out.println(" downloading go plus ");
+			OWLOntology go_lego_tbox = ontman.loadOntology(IRI.create("http://purl.obolibrary.org/obo/go/extensions/go-plus.owl"));			
 			System.out.println(" making reacto ");
-//			OWLOntology reacto = PhysicalEntityOntologyBuilder.buildReacto(input_biopax_file, reacto_out, go_lego_tbox);
-			OWLOntology reacto = ontman.loadOntologyFromOntologyDocument(new File("/Users/benjamingood/Downloads/reacto-3.owl"));
-			System.out.println(" loading go-lego for satisfiability test ");
-			//OWLOntology go_lego_other = reacto.getOWLOntologyManager().loadOntologyFromOntologyDocument(new File(go_lego_other_file));
-			System.out.println(" Adding "+go_lego_tbox.getAxiomCount()+" axioms from go-lego to reacto ");
-			
-			IRI lego_iri = IRI.create("http://purl.obolibrary.org/obo/go/extensions/go-lego.owl");
-			ontman.setIRIMappers(Sets.newHashSet(new CatalogXmlIRIMapper(catalog)));
-			OWLImportsDeclaration importDeclaration=ontman.getOWLDataFactory().getOWLImportsDeclaration(lego_iri);
-			ontman.applyChange(new AddImport(reacto, importDeclaration));
-			ontman.loadOntology(lego_iri);
-			
-//			reacto.getOWLOntologyManager().addAxioms(reacto, go_lego_tbox.getAxioms());
+			boolean add_imports = false;
+			OWLOntology reacto = PhysicalEntityOntologyBuilder.buildReacto(input_biopax_file, reacto_out, go_lego_tbox, add_imports);			
+			ontman.addAxioms(reacto, go_lego_tbox.getAxioms());
 			OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
 			System.out.println(" creating reacto reasoner ");
 			OWLReasoner reasoner = reasonerFactory.createReasoner(reacto);
 			reasoner.flush();
-			assertTrue("reacto plus go-lego is not consistent ", reasoner.isConsistent());
-			if(!reasoner.isConsistent()) {
-				Node<OWLClass> u = reasoner.getUnsatisfiableClasses();
-				System.out.println(u.getSize()+"inconsistent classes:");
-				for(OWLClass broken : u.getEntitiesMinusTop()) {
-					System.out.println(broken);
+			boolean consistent = reasoner.isConsistent();
+			boolean coherent = true;
+			Set<OWLClass> u = reasoner.getUnsatisfiableClasses().getEntities();
+			if(u.size()>1) {
+				coherent = false;
+				for(OWLClass broken : u) {
+					System.out.println("unsatisfiable class: "+broken);
 				}
 			}else {
-				System.out.println("reacto is consistent with go-lego");
+				System.out.println("reacto is coherent");
 			}
-		} catch (OWLOntologyCreationException e
-				//|OWLOntologyStorageException | RepositoryException | RDFParseException | RDFHandlerException | IOException e
-				) 
+			assertTrue("reacto plus go-plus is not consistent ", consistent);
+			assertTrue("reacto plus go-plus is not coherent (has an unsatisfiable class) ", coherent);
+		} catch (OWLOntologyCreationException e) 
 		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (OWLOntologyStorageException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RDFParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RDFHandlerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -107,4 +163,5 @@ public class PhysicalEntityOntologyBuilderTest {
 		}
 	}
 
+	
 }
