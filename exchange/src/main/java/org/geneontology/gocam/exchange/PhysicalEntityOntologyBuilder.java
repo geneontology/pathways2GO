@@ -102,7 +102,6 @@ public class PhysicalEntityOntologyBuilder {
 	final static boolean capture_taxon = true;
 	final static boolean capture_complex_stoichiometry = true;
 	final static boolean add_pro_logical_connections = false;
-	final static boolean add_imports = false;
 	GOLego golego;
 	String default_namespace_prefix;
 	String base_extra_info;
@@ -139,8 +138,8 @@ public class PhysicalEntityOntologyBuilder {
 	 */
 	public static void main(String[] args) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
 		//String pro_mapping = "/Users/benjamingood/gocam_ontology/REO/promapping.txt";
-		String input_biopax = 
-				"/Users/benjamingood/test/biopax/curator-Jan8-2020-Homo-sapiens.owl";
+		//TODO clear out this main.  Should run it from the command line client BioPaxtoGOCmdLine.java
+		String input_biopax = ""; //Users/benjamingood/test/biopax/curator-Jan8-2020-Homo-sapiens.owl
 
 		String outputformat = "RDFXML";
 		String outfilename = "/Users/benjamingood/gocam_ontology/REACTO";
@@ -172,18 +171,18 @@ public class PhysicalEntityOntologyBuilder {
 		OWLAnnotation time_anno = go_cam.df.getOWLAnnotation(GoCAM.version_info, go_cam.df.getOWLLiteral("Generated from Reactome biopax build: "+biopax_build_id+" on: "+now.toString()));
 		OWLAxiom timeannoaxiom = go_cam.df.getOWLAnnotationAssertionAxiom(ont_iri, time_anno);
 		go_cam.ontman.addAxiom(go_cam.go_cam_ont, timeannoaxiom);
-		
+		boolean add_imports = false;
 		if(add_imports) {
 			//add protein modification ontology
 			String mod_iri = "http://purl.obolibrary.org/obo/mod.owl";
 			OWLImportsDeclaration modImportDeclaration = go_cam.df.getOWLImportsDeclaration(IRI.create(mod_iri));
 			go_cam.ontman.applyChange(new AddImport(go_cam.go_cam_ont, modImportDeclaration));
 			//GO (for locations)
-			String go_iri = "http://purl.obolibrary.org/obo/GO.owl";
+			String go_iri = "http://purl.obolibrary.org/obo/extensions/go-plus.owl";
 			OWLImportsDeclaration goImportDeclaration = go_cam.df.getOWLImportsDeclaration(IRI.create(go_iri));
 			go_cam.ontman.applyChange(new AddImport(go_cam.go_cam_ont, goImportDeclaration));
 			//PRO (for proteins and complexes)
-			String pro_iri = "http://purl.obolibrary.org/obo/PRO.owl";
+			String pro_iri = "http://purl.obolibrary.org/obo/pro.owl";
 			OWLImportsDeclaration proImportDeclaration = go_cam.df.getOWLImportsDeclaration(IRI.create(pro_iri));
 			go_cam.ontman.applyChange(new AddImport(go_cam.go_cam_ont, proImportDeclaration));
 			//CHEBI for everything
@@ -210,8 +209,8 @@ public class PhysicalEntityOntologyBuilder {
 			go_cam.ontman.addAxiom(go_cam.go_cam_ont, proaxiom);
 		}
 		//add this in so shex validator works without needing to import all of chebi..
-		go_cam.addSubClassAssertion(GoCAM.chebi_molecular_entity, GoCAM.chemical_entity);
-		go_cam.addSubClassAssertion(GoCAM.chebi_protein, GoCAM.chebi_information_biomacromolecule);
+		//go_cam.addSubClassAssertion(GoCAM.chebi_molecular_entity, GoCAM.chemical_entity);
+		//go_cam.addSubClassAssertion(GoCAM.chebi_protein, GoCAM.chebi_information_biomacromolecule);
 		//build it all!  
 		//		if(local_catalogue_file!=null) {
 		//			ontman.setIRIMappers(Collections.singleton(new CatalogXmlIRIMapper(local_catalogue_file)));
@@ -267,7 +266,7 @@ public class PhysicalEntityOntologyBuilder {
 	}
 
 	
-	public static void buildReacto(String input_biopax, String outfilename, OWLOntology tbox) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
+	public static OWLOntology buildReacto(String input_biopax, String outfilename, OWLOntology tbox, boolean add_imports) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
 
 		String outputformat = "RDFXML";
 		String base_ont_title = "Reactome Entity Ontology (REACTO)";
@@ -298,11 +297,11 @@ public class PhysicalEntityOntologyBuilder {
 			OWLImportsDeclaration modImportDeclaration = go_cam.df.getOWLImportsDeclaration(IRI.create(mod_iri));
 			go_cam.ontman.applyChange(new AddImport(go_cam.go_cam_ont, modImportDeclaration));
 			//GO (for locations)
-			String go_iri = "http://purl.obolibrary.org/obo/GO.owl";
+			String go_iri = "http://purl.obolibrary.org/obo/go/extensions/go-plus.owl";
 			OWLImportsDeclaration goImportDeclaration = go_cam.df.getOWLImportsDeclaration(IRI.create(go_iri));
 			go_cam.ontman.applyChange(new AddImport(go_cam.go_cam_ont, goImportDeclaration));
 			//PRO (for proteins and complexes)
-			String pro_iri = "http://purl.obolibrary.org/obo/PRO.owl";
+			String pro_iri = "http://purl.obolibrary.org/obo/pr.owl";
 			OWLImportsDeclaration proImportDeclaration = go_cam.df.getOWLImportsDeclaration(IRI.create(pro_iri));
 			go_cam.ontman.applyChange(new AddImport(go_cam.go_cam_ont, proImportDeclaration));
 			//CHEBI for everything
@@ -328,10 +327,10 @@ public class PhysicalEntityOntologyBuilder {
 			OWLAxiom proaxiom = go_cam.df.getOWLAnnotationAssertionAxiom(ont_iri, pro_comment);
 			go_cam.ontman.addAxiom(go_cam.go_cam_ont, proaxiom);
 		}
-		//add this in so shex validator works without needing to import all of chebi..
-		go_cam.addSubClassAssertion(GoCAM.chebi_molecular_entity, GoCAM.chemical_entity);
-		go_cam.addSubClassAssertion(GoCAM.chebi_protein, GoCAM.chebi_information_biomacromolecule);
-
+//if no tbox is supplied use go-plus.  This is only really used to deal with roles.  It could likely be skipped without much damage, which would speed things up considerably
+		if(tbox==null) {
+			tbox = go_cam.ontman.loadOntology(IRI.create("http://purl.obolibrary.org/obo/go/extensions/go-plus.owl"));				
+		}
 		PhysicalEntityOntologyBuilder converter = new PhysicalEntityOntologyBuilder(new GOLego(tbox), base_short_namespace, base_extra_info, r);
 		for (PhysicalEntity entity : biopax_model.getObjects(PhysicalEntity.class)){		
 			String model_id = entity.hashCode()+"";
@@ -376,7 +375,7 @@ public class PhysicalEntityOntologyBuilder {
 		} 
 
 		go_cam.writeGoCAM_jena(outfilename, false, outputformat);
-
+		return go_cam.go_cam_ont;
 	}
 
 	
@@ -631,20 +630,15 @@ public class PhysicalEntityOntologyBuilder {
 						if(x.getDb().equals("ChEBI")) {
 							String chebi_uri = GoCAM.obo_iri + "CHEBI_"+x.getId();
 							OWLClass mlc_class = golego.getOboClass(chebi_uri, true);
-							go_cam.addUriAnnotations2Individual(e.getIRI(), GoCAM.canonical_record, mlc_class.getIRI());
+							go_cam.addUriAnnotations2Individual(e.getIRI(), GoCAM.canonical_record, mlc_class.getIRI());							
 							if(golego.isChebiRole(chebi_uri)) {
-								go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_role, null);									
-								//assert entity here is a chemical instance
-								go_cam.addSubclassAssertion(e, GoCAM.chemical_entity, null);
 								//connect it to the role
 								OWLClassExpression role_exp = go_cam.df.getOWLObjectSomeValuesFrom(GoCAM.has_role, (OWLClassExpression)mlc_class);
 								OWLAxiom eq_role = go_cam.df.getOWLEquivalentClassesAxiom(e, role_exp);
 								go_cam.ontman.addAxiom(go_cam.go_cam_ont, eq_role);
-								entity_type_set = true;
-							}else { //presumably its a chemical entity if not a role								
-								go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_entity, null);	
+							}
+							else { //presumably its a chemical entity if not a role								
 								go_cam.addSubclassAssertion(e, mlc_class, null);
-								entity_type_set = true;
 							}
 							if(!isa_set) {
 								go_cam.addUriAnnotations2Individual(e.getIRI(), GoCAM.canonical_record, IRI.create(chebi_uri));
@@ -767,15 +761,18 @@ public class PhysicalEntityOntologyBuilder {
 					OWLClass mlc_class = golego.getOboClass(chebi_uri, true);
 					go_cam.addUriAnnotations2Individual(e.getIRI(), GoCAM.canonical_record, mlc_class.getIRI());
 					if(golego.isChebiRole(chebi_uri)) {
-						go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_role, null);									
+						//if the chebi ontology is present this isnt needed
+						//go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_role, null);									
 						//assert entity here is a chemical instance
-						go_cam.addSubclassAssertion(e, GoCAM.chemical_entity, null);
+						//go_cam.addSubclassAssertion(e, GoCAM.chemical_entity, null);
 						//connect it to the role
 						OWLClassExpression role_exp = go_cam.df.getOWLObjectSomeValuesFrom(GoCAM.has_role, (OWLClassExpression)mlc_class);
 						OWLAxiom eq_role = go_cam.df.getOWLEquivalentClassesAxiom(e, role_exp);
 						go_cam.ontman.addAxiom(go_cam.go_cam_ont, eq_role);
-					}else { //presumably its a chemical entity if not a role								
-						go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_entity, null);	
+					}
+					else { //presumably its a chemical entity if not a role								
+						//not needed with chebi import
+						//go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_entity, null);	
 						go_cam.addSubclassAssertion(e, mlc_class, null);
 					}
 				}else {
