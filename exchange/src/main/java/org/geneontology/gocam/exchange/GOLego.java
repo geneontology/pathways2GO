@@ -106,6 +106,7 @@ public class GOLego {
 		OWLClass chebi_role = df.getOWLClass(IRI.create(obo_base+"CHEBI_50906"));
 		Set<OWLClass> roles = getSubClasses(chebi_role, false, golego_reasoner);
 		chebi_roles = new HashSet<String>();
+		chebi_roles.add(obo_base+"CHEBI_50906");
 		for(OWLClass r : roles) {
 			chebi_roles.add(r.getIRI().toString());
 		}
@@ -113,6 +114,7 @@ public class GOLego {
 		OWLClass chebi_chemical = df.getOWLClass(IRI.create(obo_base+"CHEBI_24431"));
 		Set<OWLClass> chemicals = getSubClasses(chebi_chemical, false,golego_reasoner);
 		chebi_chemicals = new HashSet<String>();
+		chebi_chemicals.add(obo_base+"CHEBI_24431");
 		for(OWLClass c : chemicals) {
 			chebi_chemicals.add(c.getIRI().toURI().toString());
 		}

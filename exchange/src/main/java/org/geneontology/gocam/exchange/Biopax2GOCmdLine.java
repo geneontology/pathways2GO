@@ -60,6 +60,7 @@ public class Biopax2GOCmdLine {
 		Options options = new Options();
 		options.addOption("b", true, "biopax pathway file to convert");
 		options.addOption("reacto", true, "if reacto, generate an ontology of all physical entities in the input biopax file. ");
+		options.addOption("chebi", true, "local chebi.owl file");
 
 		options.addOption("o", true, "output directory");
 		options.addOption("bg", true, "blazegraph output journal"); 
@@ -94,7 +95,15 @@ public class Biopax2GOCmdLine {
 			boolean add_imports = true;
 			OWLOntologyManager	ontman = OWLManager.createOWLOntologyManager();				
 			OWLOntology go_lego_tbox = ontman.loadOntologyFromOntologyDocument(new File(bp2g.go_lego_file));
-			PhysicalEntityOntologyBuilder.buildReacto(input_biopax, reacto_out, go_lego_tbox, add_imports);
+			OWLOntology chebi = null;
+			String chebi_file = null;
+			if(cmd.hasOption("chebi")) {
+				chebi_file = cmd.getOptionValue("chebi");
+			}
+			if(chebi_file!=null) {
+				chebi = ontman.loadOntologyFromOntologyDocument(new File(chebi_file));
+			}
+			PhysicalEntityOntologyBuilder.buildReacto(input_biopax, reacto_out, go_lego_tbox, add_imports, chebi);
 		}
 		//could chain them together if desired, but simple for now.  
 		else {

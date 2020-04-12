@@ -80,6 +80,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.reasoner.InferenceType;
+import org.semanticweb.owlapi.reasoner.NodeSet;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
@@ -103,6 +104,9 @@ public class PhysicalEntityOntologyBuilder {
 	final static boolean capture_complex_stoichiometry = true;
 	final static boolean add_pro_logical_connections = false;
 	GOLego golego;
+	static OWLOntology chebi;
+	static OWLReasoner chebi_reasoner;
+	static Set<String> missing_chebi;
 	String default_namespace_prefix;
 	String base_extra_info;
 	Map<String, OWLClassExpression> id_class_map;
@@ -116,15 +120,22 @@ public class PhysicalEntityOntologyBuilder {
 	 * @throws IOException 
 	 * 
 	 */
-	public PhysicalEntityOntologyBuilder(GOLego go_lego, String default_namespace_prefix_, String base_extra_info_, ReasonerImplementation reasoner_) throws IOException {
+	public PhysicalEntityOntologyBuilder(GOLego go_lego, String default_namespace_prefix_, String base_extra_info_, ReasonerImplementation reasoner_, OWLOntology chebi_in) throws IOException {
 		golego = go_lego;
 		default_namespace_prefix = default_namespace_prefix_;
 		base_extra_info = base_extra_info_;
 		id_class_map = new HashMap<String, OWLClassExpression>();
 		reasoner = reasoner_;
 		//get mappings to PRO on hand
-			pro_exact_map = PRO.readReact2PRO(null, "exact");
-			pro_isa_map = PRO.readReact2PRO(null, "is_a");
+		pro_exact_map = PRO.readReact2PRO(null, "exact");
+		pro_isa_map = PRO.readReact2PRO(null, "is_a");
+		//if we have a chebi, set up to use it.
+		if(chebi_in!=null) {
+			chebi = chebi_in;		
+			OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
+			chebi_reasoner = reasonerFactory.createReasoner(chebi);
+		}
+		missing_chebi = new HashSet<String>();
 	}
 
 	/**
@@ -149,7 +160,6 @@ public class PhysicalEntityOntologyBuilder {
 		String base_extra_info = "https://reactome.org/content/detail/";
 		String base_short_namespace = "Reactome";
 		ReasonerImplementation r = ReasonerImplementation.Elk;//ReasonerImplementation.Hermit; //
-
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileInputStream f = new FileInputStream(input_biopax);
 		Model biopax_model = handler.convertFromOWL(f);
@@ -162,8 +172,8 @@ public class PhysicalEntityOntologyBuilder {
 		boolean add_lego_import = false;
 		int n = 0;
 		String ont_uri = "http://purl.obolibrary.org/obo/go/extensions/reacto.owl";
-				//"https://github.com/geneontology/pathways2GO/raw/master/exchange/generated/plant-REO.owl";
-				//"https://github.com/geneontology/pathways2GO/raw/master/exchange/generated/REO.owl";
+		//"https://github.com/geneontology/pathways2GO/raw/master/exchange/generated/plant-REO.owl";
+		//"https://github.com/geneontology/pathways2GO/raw/master/exchange/generated/REO.owl";
 		IRI ont_iri = IRI.create(ont_uri);
 		GoCAM go_cam = new GoCAM(ont_iri, base_ont_title, base_contributor, null, base_provider, add_lego_import, null);
 		//Annotate the ontology		
@@ -217,7 +227,7 @@ public class PhysicalEntityOntologyBuilder {
 		//		}
 		OWLOntology tbox = go_cam.ontman.loadOntologyFromOntologyDocument(new File("/Users/benjamingood/gocam_ontology/go-plus.owl"));
 
-		PhysicalEntityOntologyBuilder converter = new PhysicalEntityOntologyBuilder(new GOLego(tbox), base_short_namespace, base_extra_info, r);
+		PhysicalEntityOntologyBuilder converter = new PhysicalEntityOntologyBuilder(new GOLego(tbox), base_short_namespace, base_extra_info, r, null);
 		for (PhysicalEntity entity : biopax_model.getObjects(PhysicalEntity.class)){		
 			String model_id = entity.hashCode()+"";
 			n++;
@@ -242,7 +252,7 @@ public class PhysicalEntityOntologyBuilder {
 			List<InferredAxiomGenerator<? extends OWLAxiom>> gens = 
 					new ArrayList<InferredAxiomGenerator<? extends OWLAxiom>>();
 			gens.add(new InferredSubClassAxiomGenerator());
-			gens.add(new InferredEquivalentClassAxiomGenerator());
+			//gens.add(new InferredEquivalentClassAxiomGenerator());
 			InferredOntologyGenerator iog = new InferredOntologyGenerator(reasoner, gens);
 			// Put the inferred axioms into a fresh empty ontology.
 			//OWLOntology infOnt = go_cam.ontman.createOntology();
@@ -265,14 +275,14 @@ public class PhysicalEntityOntologyBuilder {
 
 	}
 
-	
-	public static OWLOntology buildReacto(String input_biopax, String outfilename, OWLOntology tbox, boolean add_imports) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
+
+	public static OWLOntology buildReacto(String input_biopax, String outfilename, OWLOntology tbox, boolean add_imports, OWLOntology chebi_in) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
 
 		String outputformat = "RDFXML";
 		String base_ont_title = "Reactome Entity Ontology (REACTO)";
 		String base_extra_info = "https://reactome.org/content/detail/";
 		String base_short_namespace = "Reactome";
-		ReasonerImplementation r = ReasonerImplementation.Elk;
+		ReasonerImplementation r = null;// ReasonerImplementation.Elk;
 
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileInputStream f = new FileInputStream(input_biopax);
@@ -290,7 +300,7 @@ public class PhysicalEntityOntologyBuilder {
 		OWLAnnotation time_anno = go_cam.df.getOWLAnnotation(GoCAM.version_info, go_cam.df.getOWLLiteral("Generated from Reactome biopax build: "+biopax_build_id+" on: "+now.toString()));
 		OWLAxiom timeannoaxiom = go_cam.df.getOWLAnnotationAssertionAxiom(ont_iri, time_anno);
 		go_cam.ontman.addAxiom(go_cam.go_cam_ont, timeannoaxiom);
-		
+
 		if(add_imports) {
 			//add protein modification ontology
 			String mod_iri = "http://purl.obolibrary.org/obo/mod.owl";
@@ -327,19 +337,30 @@ public class PhysicalEntityOntologyBuilder {
 			OWLAxiom proaxiom = go_cam.df.getOWLAnnotationAssertionAxiom(ont_iri, pro_comment);
 			go_cam.ontman.addAxiom(go_cam.go_cam_ont, proaxiom);
 		}
-//if no tbox is supplied use go-plus.  This is only really used to deal with roles.  It could likely be skipped without much damage, which would speed things up considerably
+		//if no tbox is supplied use go-plus.  This is only really used to deal with roles.  It could likely be skipped without much damage, which would speed things up considerably
 		if(tbox==null) {
 			tbox = go_cam.ontman.loadOntology(IRI.create("http://purl.obolibrary.org/obo/go/extensions/go-plus.owl"));				
 		}
-		PhysicalEntityOntologyBuilder converter = new PhysicalEntityOntologyBuilder(new GOLego(tbox), base_short_namespace, base_extra_info, r);
+		PhysicalEntityOntologyBuilder converter = new PhysicalEntityOntologyBuilder(new GOLego(tbox), base_short_namespace, base_extra_info, r, chebi_in);
 		for (PhysicalEntity entity : biopax_model.getObjects(PhysicalEntity.class)){		
 			String model_id = entity.hashCode()+"";
 			n++;
 			converter.definePhysicalEntity(go_cam, entity, null, model_id);
 		}
-
+		//report chebi terms used in reactome not in goplus
+		if(chebi!=null) {
+			System.out.println("The following chebi terms are missing from the go-plus used to run this build.  They should probably be added.");
+			for(String missing : missing_chebi) {
+				Set<String> labels = Helper.getLabels(missing,chebi);
+				String label = "";
+				if(labels!=null) {
+					label = labels.iterator().next();
+				}				
+				System.out.println(missing+" ## "+label);
+			}
+		}
 		System.out.println(" running reasoner ");
-		if(!converter.reasoner.equals(ReasonerImplementation.none)) {
+		if(converter.reasoner!=null&&!converter.reasoner.equals(ReasonerImplementation.none)) {
 			OWLReasonerFactory reasonerFactory = null;
 			if(converter.reasoner.equals(ReasonerImplementation.Hermit)) {
 				reasonerFactory = new ReasonerFactory();
@@ -378,7 +399,7 @@ public class PhysicalEntityOntologyBuilder {
 		return go_cam.go_cam_ont;
 	}
 
-	
+
 
 	private OWLClassExpression definePhysicalEntity(GoCAM go_cam, PhysicalEntity entity, IRI this_iri, String model_id) throws IOException {
 
@@ -629,18 +650,49 @@ public class PhysicalEntityOntologyBuilder {
 					for(Xref x : e_xrefs) {
 						if(x.getDb().equals("ChEBI")) {
 							String chebi_uri = GoCAM.obo_iri + "CHEBI_"+x.getId();
-							OWLClass mlc_class = golego.getOboClass(chebi_uri, true);
+							OWLClass mlc_class = golego.getOboClass(chebi_uri, true);							
+							//does it exist in the golego we are working with?
+							boolean in_lego_chemical = golego.chebi_chemicals.contains(mlc_class.getIRI().toString());
+							boolean in_lego_role = golego.chebi_roles.contains(mlc_class.getIRI().toString());
+							boolean found_in_chebi = false;
+							//what is its root type in chebi?
+							if(chebi_reasoner!=null) {
+								NodeSet<OWLClass> supers = chebi_reasoner.getSuperClasses(mlc_class, false);
+								if(supers!=null) {
+									Set<OWLClass> s = supers.getFlattened();
+									OWLClass root = getChebiRoot(s);
+									if(root!=null) {
+										found_in_chebi = true;
+										//assert a (correct..) root type to protect against missing chebi information downstream
+										//e.g. goplus may not have this chebi term in it and we aren't currently importing all of chebi.  
+										go_cam.addSubclassAssertion(mlc_class, root, null);
+										entity_type_set = true;
+									}
+								}
+							}
+							if(!in_lego_chemical&&!in_lego_role) {
+								if(found_in_chebi) {
+									missing_chebi.add(chebi_uri);
+								}else {
+									if(chebi!=null) {
+										System.err.println("Could not find "+chebi_uri+" in loaded chebi: "+chebi.getAnnotations());
+										System.exit(-1);
+									}
+								}
+							}
 							go_cam.addUriAnnotations2Individual(e.getIRI(), GoCAM.canonical_record, mlc_class.getIRI());							
 							if(golego.isChebiRole(chebi_uri)) {
-								//connect it to the role
-								OWLClassExpression role_exp = go_cam.df.getOWLObjectSomeValuesFrom(GoCAM.has_role, (OWLClassExpression)mlc_class);
-								OWLAxiom eq_role = go_cam.df.getOWLEquivalentClassesAxiom(e, role_exp);
-								go_cam.ontman.addAxiom(go_cam.go_cam_ont, eq_role);
-							}
-							else { //presumably its a chemical entity if not a role								
-								go_cam.addSubclassAssertion(e, mlc_class, null);
+								addRoleClass(go_cam, e, mlc_class);
+								entity_type_set = true;
+							}else {
+								//not a role and otherwise unclassified, its a chemical
+								go_cam.addSubclassAssertion(e, GoCAM.chemical_entity, null);
+								entity_type_set = true;
 							}
 							if(!isa_set) {
+								//TODO this will likely come back up again.  Suspect the best thing to put here would be 
+								//an inferred GOCHE id like http://purl.obolibrary.org/obo/GOCHE_17654 
+								//more work to get there.. perhaps that could be done by Reactome
 								go_cam.addUriAnnotations2Individual(e.getIRI(), GoCAM.canonical_record, IRI.create(chebi_uri));
 							}
 							break;
@@ -761,19 +813,10 @@ public class PhysicalEntityOntologyBuilder {
 					OWLClass mlc_class = golego.getOboClass(chebi_uri, true);
 					go_cam.addUriAnnotations2Individual(e.getIRI(), GoCAM.canonical_record, mlc_class.getIRI());
 					if(golego.isChebiRole(chebi_uri)) {
-						//if the chebi ontology is present this isnt needed
-						//go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_role, null);									
-						//assert entity here is a chemical instance
-						//go_cam.addSubclassAssertion(e, GoCAM.chemical_entity, null);
-						//connect it to the role
-						OWLClassExpression role_exp = go_cam.df.getOWLObjectSomeValuesFrom(GoCAM.has_role, (OWLClassExpression)mlc_class);
-						OWLAxiom eq_role = go_cam.df.getOWLEquivalentClassesAxiom(e, role_exp);
-						go_cam.ontman.addAxiom(go_cam.go_cam_ont, eq_role);
-					}
-					else { //presumably its a chemical entity if not a role								
-						//not needed with chebi import
-						//go_cam.addSubclassAssertion(mlc_class, GoCAM.chemical_entity, null);	
-						go_cam.addSubclassAssertion(e, mlc_class, null);
+						addRoleClass(go_cam, e, mlc_class);
+					}else {
+						//not a role and otherwise unclassified, its a chemical
+						go_cam.addSubclassAssertion(e, GoCAM.chemical_entity, null);
 					}
 				}else {
 					//no chebi so we don't know what it is (for Noctua) aside from being some kind of chemical entity
@@ -788,15 +831,54 @@ public class PhysicalEntityOntologyBuilder {
 		return e;
 	}
 
+	private void addRoleClass(GoCAM go_cam, OWLClass e, OWLClass mlc_class) {
+		//handling the presence of a role (e.g. 'electron acceptor') as an entity
+		//by assuming its a chemical entity with that role (a la the definitions from the GOCHE ontology)
+		OWLClassExpression role_exp = go_cam.df.getOWLObjectSomeValuesFrom(GoCAM.has_role, (OWLClassExpression)mlc_class);
+		Set<OWLClassExpression> role_exps = new HashSet<OWLClassExpression>();
+		role_exps.add(role_exp); role_exps.add(GoCAM.chemical_entity);
+		OWLObjectIntersectionOf goche_like_role = go_cam.df.getOWLObjectIntersectionOf(role_exps);
+		OWLAxiom eq_role = go_cam.df.getOWLEquivalentClassesAxiom(e, goche_like_role);
+		go_cam.ontman.addAxiom(go_cam.go_cam_ont, eq_role);
+		//adding this redundant subclass to patch up uncertainty about what reasoner and tbox will be used 
+		go_cam.addSubclassAssertion(e, GoCAM.chemical_entity, null);
+	}
+
+	private OWLClass getChebiRoot(Set<OWLClass> types) {
+		OWLClass main_type = null;
+		if(types.contains(GoCAM.chebi_dna)) {
+			main_type = GoCAM.chebi_dna;
+		}else if(types.contains(GoCAM.chebi_mrna)) {
+			main_type = GoCAM.chebi_mrna;
+		}else if(types.contains(GoCAM.chebi_rna)) {
+			main_type = GoCAM.chebi_rna;
+		}else if(types.contains(GoCAM.chebi_trna_precursor)) {
+			main_type = GoCAM.chebi_trna_precursor;
+		}else if(types.contains(GoCAM.chebi_protein)) {
+			main_type = GoCAM.chebi_protein;
+		}else if(types.contains(GoCAM.chebi_information_biomacromolecule)) {
+			main_type = GoCAM.chebi_information_biomacromolecule;
+		}else if(types.contains(GoCAM.chemical_entity)) {
+			main_type = GoCAM.chemical_entity;
+		}else if(types.contains(GoCAM.chemical_role)) {
+			main_type = GoCAM.chemical_role;
+		}
+		return main_type;
+	}
+
 	private boolean checkForAndAddSet(GoCAM go_cam, String model_id, PhysicalEntity entity_set, OWLClass e) throws IOException {
 
 		boolean isa_set = false;
 		//its a set if it contains members
 		if(entity_set.getMemberPhysicalEntity()!=null&&entity_set.getMemberPhysicalEntity().size()>0) {
+			if(e.getIRI().toString().contentEquals("http://purl.obolibrary.org/obo/go/extensions/reacto.owl#REACTO_R-ALL-6788960")) {
+				System.out.println("test..");
+			}
 			isa_set = true;
 			Set<PhysicalEntity> parts_list = entity_set.getMemberPhysicalEntity();
 			Set<OWLClassExpression> owl_parts = new HashSet<OWLClassExpression>();
 			Set<String> types = new HashSet<String>();
+			Set<OWLClass> main_types = new HashSet<OWLClass>();
 			boolean reference_found = false;
 			for(PhysicalEntity part : parts_list) {
 				String iuphar_id = getDrugReferenceId(part);
@@ -812,7 +894,12 @@ public class PhysicalEntityOntologyBuilder {
 					OWLAnnotationValue v = anno.getValue();
 					com.google.common.base.Optional<IRI> oiri = v.asIRI();
 					if(oiri.isPresent()) {
-						go_cam.addUriAnnotations2Individual(e.getIRI(), GoCAM.canonical_record, anno.getValue().asIRI().get());
+						IRI canonical_iri = anno.getValue().asIRI().get();
+						go_cam.addUriAnnotations2Individual(e.getIRI(), GoCAM.canonical_record, canonical_iri);
+						OWLClass canon = go_cam.df.getOWLClass(canonical_iri);
+						if(isRootClass(canon)) {
+							main_types.add(canon);
+						}
 					}else if(v.asLiteral().isPresent()){
 						go_cam.addLiteralAnnotations2Individual(e.getIRI(), GoCAM.canonical_record, anno.getValue().asLiteral().get());
 					}
@@ -829,57 +916,62 @@ public class PhysicalEntityOntologyBuilder {
 					OWLAxiom eq_prot = go_cam.df.getOWLEquivalentClassesAxiom(e, one_part);
 					go_cam.ontman.addAxiom(go_cam.go_cam_ont, eq_prot);
 				}
-				Set<OWLClass> main_types = new HashSet<OWLClass>();
 				for(OWLClassExpression owlclasse : owl_parts) {
 					if(!owlclasse.isAnonymous()) {
 						OWLClass owlclass = owlclasse.asOWLClass();
-						if(isRootClass(owlclass)) {
-							main_types.add(owlclass);
-						}							
-						//get the class's direct superclass
-						for(OWLSubClassOfAxiom s : go_cam.go_cam_ont.getSubClassAxiomsForSubClass(owlclass)) {
-							//get the superclass's superclass
-							OWLClassExpression sc = s.getSuperClass();
-							if(!sc.isAnonymous()) {
-								if(isRootClass(sc.asOWLClass())) {
-									main_types.add(sc.asOWLClass());
+						for(OWLSubClassOfAxiom sca : go_cam.go_cam_ont.getSubClassAxiomsForSubClass(owlclass)) {
+							OWLClassExpression dad = sca.getSuperClass();
+							if(!dad.isAnonymous()) {
+								if(isRootClass(dad.asOWLClass())) {
+									main_types.add(dad.asOWLClass());
 								}
-								for(OWLSubClassOfAxiom ssca : go_cam.go_cam_ont.getSubClassAxiomsForSubClass(sc.asOWLClass())) {
-									OWLClassExpression ssc = ssca.getSuperClass();
-									if(!ssc.isAnonymous()) {
-										if(isRootClass(ssc.asOWLClass())) {
-											main_types.add(ssc.asOWLClass());
-										}			
+								//get the class's chebi superclasses
+								if(chebi_reasoner!=null) {
+									for(OWLClass parent : chebi_reasoner.getSuperClasses(dad, false).getFlattened()) {
+										if(isRootClass(parent.asOWLClass())) {
+											main_types.add(parent.asOWLClass());
+										}
+									}
+								}
+								//get the class's asserted superclasses from here in reacto 
+								for(OWLSubClassOfAxiom sca2 : go_cam.go_cam_ont.getSubClassAxiomsForSubClass((OWLClass) dad)) {
+									OWLClassExpression grampa = sca2.getSuperClass();
+									if(!grampa.isAnonymous()) {
+										if(isRootClass(grampa.asOWLClass())) {
+											main_types.add(grampa.asOWLClass());
+										}
 									}
 								}
 							}
 						}
 					}
 				}
-				if(main_types.size()>0) {
-					OWLClass main_type = GoCAM.continuant_class;
-					if(main_types.contains(GoCAM.chebi_dna)) {
-						main_type = GoCAM.chebi_dna;
-					}else if(main_types.contains(GoCAM.chebi_mrna)) {
-						main_type = GoCAM.chebi_mrna;
-					}else if(main_types.contains(GoCAM.chebi_rna)) {
-						main_type = GoCAM.chebi_rna;
-					}else if(main_types.contains(GoCAM.chebi_trna_precursor)) {
-						main_type = GoCAM.chebi_trna_precursor;
-					}else if(main_types.contains(GoCAM.chebi_protein)) {
-						main_type = GoCAM.chebi_protein;
-					}else if(main_types.contains(GoCAM.chebi_information_biomacromolecule)) {
-						main_type = GoCAM.chebi_information_biomacromolecule;
-					}else if(main_types.contains(GoCAM.go_complex)) {
-						main_type = GoCAM.go_complex;
-					}else if(main_types.contains(GoCAM.chemical_entity)) {
-						main_type = GoCAM.chemical_entity;
-					}
-					go_cam.addSubclassAssertion(e, main_type, null);					
-					if(!reference_found) {
-						go_cam.addUriAnnotations2Individual(e.getIRI(), GoCAM.canonical_record, main_type.getIRI());
-					}
+			}
+			if(main_types.size()>0) {
+				OWLClass main_type = GoCAM.continuant_class;
+				if(main_types.contains(GoCAM.chebi_dna)) {
+					main_type = GoCAM.chebi_dna;
+				}else if(main_types.contains(GoCAM.chebi_mrna)) {
+					main_type = GoCAM.chebi_mrna;
+				}else if(main_types.contains(GoCAM.chebi_rna)) {
+					main_type = GoCAM.chebi_rna;
+				}else if(main_types.contains(GoCAM.chebi_trna_precursor)) {
+					main_type = GoCAM.chebi_trna_precursor;
+				}else if(main_types.contains(GoCAM.chebi_protein)) {
+					main_type = GoCAM.chebi_protein;
+				}else if(main_types.contains(GoCAM.chebi_information_biomacromolecule)) {
+					main_type = GoCAM.chebi_information_biomacromolecule;
+				}else if(main_types.contains(GoCAM.go_complex)) {
+					main_type = GoCAM.go_complex;
+				}else if(main_types.contains(GoCAM.chemical_entity)) {
+					main_type = GoCAM.chemical_entity;
 				}
+				go_cam.addSubclassAssertion(e, main_type, null);					
+				if(!reference_found) {
+					go_cam.addUriAnnotations2Individual(e.getIRI(), GoCAM.canonical_record, main_type.getIRI());
+				}
+			}else {
+				System.err.println("no main types found for "+e);
 			}
 		}
 		return isa_set;
