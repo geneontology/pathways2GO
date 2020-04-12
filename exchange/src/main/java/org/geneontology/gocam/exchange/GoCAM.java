@@ -33,6 +33,7 @@ import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.biopax.paxtools.model.level3.PublicationXref;
 import org.biopax.paxtools.model.level3.Xref;
+import org.geneontology.gocam.exchange.QRunner.BindingInput;
 import org.geneontology.gocam.exchange.QRunner.ComplexInput;
 import org.geneontology.gocam.exchange.QRunner.InferredEnabler;
 import org.geneontology.gocam.exchange.QRunner.InferredOccursIn;
@@ -1020,22 +1021,29 @@ final long counterValue = instanceCounter.getAndIncrement();
 		String enabling_binding_rule = "Enabling Binding Rule";
 		Integer enabling_binding_count = r.checkInitCount(enabling_binding_rule, r);
 		Set<String> enabling_binding_pathways = r.checkInitPathways(enabling_binding_rule, r);		
-		Map<String, Set<String>> binders = qrunner.findProteinBindingReactions();	
+		Map<String, Set<BindingInput>> binders = qrunner.findProteinBindingReactions();	
 		Set<OWLAnnotation> annos = getDefaultAnnotations();
 		String explain1 = "Enabling Binding Rule. This enabled by relation was inferred because the input here was the output of the previous reaction in the pathway.";
 		annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain1)));	
 		if(binders!=null&&binders.size()>0) { 
 			for(String reaction_uri : binders.keySet()) {
-				Set<String> inputs = binders.get(reaction_uri);
+				Set<BindingInput> inputs = binders.get(reaction_uri);
 				if(inputs.size()==1) {
-					enabling_binding_count++;
-					//change the has input relation to a enabled by relation.  
-					OWLNamedIndividual reaction_instance = df.getOWLNamedIndividual(IRI.create(reaction_uri));
-					OWLNamedIndividual input_instance = df.getOWLNamedIndividual(IRI.create(inputs.iterator().next()));
-					//drop the has input 
-					applyAnnotatedTripleRemover(reaction_instance.getIRI(), has_input.getIRI(), input_instance.getIRI());
-					//add the enabled by					
-					addRefBackedObjectPropertyAssertion(reaction_instance, GoCAM.enabled_by, input_instance, Collections.singleton(model_id), GoCAM.eco_imported_auto, "Reactome", annos, model_id);
+					//make sure the input is a protein or a complex
+					BindingInput input = inputs.iterator().next();					
+					OWLClass thing_type = this.df.getOWLClass(IRI.create(input.input_type));
+					Set<OWLClass> entity_types = tbox_qrunner.getSuperClasses(thing_type, false);
+					explain1 += "And the input is a protein or complex ";
+					if(entity_types!=null&&(entity_types.contains(chebi_protein)||entity_types.contains(go_complex))) {
+						enabling_binding_count++;
+						//change the has input relation to a enabled by relation.  
+						OWLNamedIndividual reaction_instance = df.getOWLNamedIndividual(IRI.create(reaction_uri));
+						OWLNamedIndividual input_instance = this.makeAnnotatedIndividual(input.input_individual);
+						//drop the has input 
+						applyAnnotatedTripleRemover(reaction_instance.getIRI(), has_input.getIRI(), input_instance.getIRI());
+						//add the enabled by					
+						addRefBackedObjectPropertyAssertion(reaction_instance, GoCAM.enabled_by, input_instance, Collections.singleton(model_id), GoCAM.eco_imported_auto, "Reactome", annos, model_id);
+					}
 				}
 			}			
 			qrunner = new QRunner(go_cam_ont);

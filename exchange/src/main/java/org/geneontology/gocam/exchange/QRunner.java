@@ -882,8 +882,18 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		return tbox_class_reasoner.getSuperClasses(thing, direct).getFlattened();
 	}
 	
-	public Map<String, Set<String>> findProteinBindingReactions() {
-		Map<String, Set<String>> reaction_inputs = new HashMap<String, Set<String>>();
+	public class BindingInput {
+		String input_individual;
+		String input_type;
+		public BindingInput(String input_individual, String input_type) {
+			this.input_individual = input_individual;
+			this.input_type = input_type;
+		}
+		
+	}
+	
+	public Map<String, Set<BindingInput>> findProteinBindingReactions() {
+		Map<String, Set<BindingInput>> reaction_inputs = new HashMap<String, Set<BindingInput>>();
 		String query = null;
 		try {		
 			query = IOUtils.toString(QRunner.class.getResourceAsStream("query2update_binding.rq"), StandardCharsets.UTF_8);
@@ -898,12 +908,12 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			Resource reaction = qs.getResource("reaction"); 
 		//	Resource upstream_reaction = qs.getResource("upstream_reaction"); 
 			Resource input = qs.getResource("input"); 
-		//	Resource input_type = qs.getResource("input_type"); 
-			Set<String> inputs = reaction_inputs.get(reaction.getURI());
+			Resource input_type = qs.getResource("input_type"); 
+			Set<BindingInput> inputs = reaction_inputs.get(reaction.getURI());
 			if(inputs==null) {
-				inputs = new HashSet<String>();
+				inputs = new HashSet<BindingInput>();
 			}
-			inputs.add(input.getURI());
+			inputs.add(new BindingInput(input.getURI(), input_type.getURI()));
 			reaction_inputs.put(reaction.getURI(), inputs);
 		}
 		qe.close();
