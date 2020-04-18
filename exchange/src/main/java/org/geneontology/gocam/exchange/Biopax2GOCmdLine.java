@@ -92,7 +92,7 @@ public class Biopax2GOCmdLine {
 			System.exit(0);}
 
 		if(reacto_out!=null) {
-			boolean add_imports = true;
+			boolean add_imports = false;
 			OWLOntologyManager	ontman = OWLManager.createOWLOntologyManager();				
 			OWLOntology go_lego_tbox = ontman.loadOntologyFromOntologyDocument(new File(bp2g.go_lego_file));
 			OWLOntology chebi = null;

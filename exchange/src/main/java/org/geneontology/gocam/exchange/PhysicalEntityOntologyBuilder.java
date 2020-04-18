@@ -685,9 +685,10 @@ public class PhysicalEntityOntologyBuilder {
 								addRoleClass(go_cam, e, mlc_class);
 								entity_type_set = true;
 							}else {
-								//not a role and otherwise unclassified, its a chemical
-								go_cam.addSubclassAssertion(e, GoCAM.chemical_entity, null);
+								//ph
+								go_cam.addSubclassAssertion(e, mlc_class, null);
 								entity_type_set = true;
+								//System.err.println("physical entities typed: "+mlc_class);
 							}
 							if(!isa_set) {
 								//TODO this will likely come back up again.  Suspect the best thing to put here would be 

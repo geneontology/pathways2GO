@@ -11,10 +11,11 @@ script:
   - cd exchange; MAVEN_OPTS=-Xmx8g travis_wait 20 mvn clean test -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
   - git clone https://github.com/geneontology/minerva.git
   - cd minerva
-  - git checkout dev
+  - git checkout shapes
+  - MAVEN_OPTS=-Xmx8g travis_wait 20
   - ./build-cli.sh
   - cd minerva-cli/
   - pwd
   - ls ../../
-  - java -Xmx8g -jar bin/minerva-cli.jar --validate-go-cams --shex -c ../../src/test/resources/ontology/catalog-for-validation.xml -i ../../src/test/resources/gocam/ -golr http://noctua-golr.berkeleybop.org/ -r ./shape_report_shouldpass.txt -e ./shape_explanation_shouldpass.txt -travis
+  - java -Xmx8g -jar bin/minerva-cli.jar --validate-go-cams --shex --ontojournal /tmp/blazegraph.jnl -c ../../src/test/resources/ontology/catalog-for-validation.xml -i ../../src/test/resources/gocam/ -golr http://noctua-golr.berkeleybop.org/ -r ./shape_report_shouldpass.txt -e ./shape_explanation_shouldpass.txt -travis
 
