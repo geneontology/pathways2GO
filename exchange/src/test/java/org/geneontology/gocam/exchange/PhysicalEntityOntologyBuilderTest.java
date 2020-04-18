@@ -51,7 +51,7 @@ public class PhysicalEntityOntologyBuilderTest {
 
 	static String input_biopax_file = "/tmp/reactome_biopax/Homo_sapiens.owl";
 	static String reacto_out = "/tmp/REACTO";
-	static String chebi_location = "/Users/benjamingood/gocam_ontology/chebi.owl";
+	static String chebi_location = null;
 	
 	/**
 	* @throws java.lang.Exception
