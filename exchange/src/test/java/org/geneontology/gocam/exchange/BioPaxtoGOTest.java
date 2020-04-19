@@ -544,6 +544,59 @@ public class BioPaxtoGOTest {
 	}
 	
 	/**
+	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferEnablersForBinding()}.
+	 * Test that if: 
+	 * reaction1 is a binding reaction1 
+	 * 				with M as an input, 
+	 * 				M is a protein or complex, 
+	 * 				and M is the output of reaction2 
+	 * 					which is causally upstream of reaction1
+	 * then reaction1 is enabled by M
+	 * 	Pathway: Regulation of Glucokinase by Glucokinase Regulatory Protein
+	 * 	Reaction: glucokinase (GCK1) + glucokinase regulatory protein (GKRP) <=> GCK1:GKRP complex
+	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-170822
+	 */
+	@Test 
+	public final void testInferEnablerForBindingReaction() {
+		System.out.println("Testing infer regulates via output regulates");
+		TupleQueryResult result = null;
+		try {
+			result = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> "
+				+ "select ?M " + 
+				"where { " +          
+				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-170822/R-HSA-170824> } ." + 
+				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-170822/R-HSA-170825> } . " + 
+				"  ?reaction2 <http://purl.obolibrary.org/obo/RO_0002629> ?reaction1 ."
+				+ "?reaction1 <http://purl.obolibrary.org/obo/RO_0002333> ?entityM . "
+				+ "?entityM rdf:type ?M . "+
+				" ?reaction2 <http://purl.obolibrary.org/obo/RO_0002234> ?upstreamM . "
+				+ "?upstreamM rdf:type ?M . "
+				+ "filter(?M != owl:NamedIndividual) "+
+				"}"); 
+			int n = 0; String M = "";
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				M = bindingSet.getValue("M").stringValue();
+				System.out.println("Enabler type: "+M);
+				n++;
+			}
+			assertTrue("should have been 1, but got n results: "+n, n==1);
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		System.out.println("Done testing infer regulates via output regulates");
+	}
+	
+	/**
 	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#convertEntityRegulatorsToBindingFunctions()}.
 	 * Test that if reaction1 has_output M and reaction2 is regulated by M then reaction1 regulates reaction2
 	 * Use pathway Glycolysis R-HSA-70171 , reaction R-HSA-71670  

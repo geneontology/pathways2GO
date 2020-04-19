@@ -1043,6 +1043,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 						applyAnnotatedTripleRemover(reaction_instance.getIRI(), has_input.getIRI(), input_instance.getIRI());
 						//add the enabled by					
 						addRefBackedObjectPropertyAssertion(reaction_instance, GoCAM.enabled_by, input_instance, Collections.singleton(model_id), GoCAM.eco_imported_auto, "Reactome", annos, model_id);
+						//sloppily catch the pathway id
+						enabling_binding_pathways.add(model_id);
 					}
 				}
 			}			
