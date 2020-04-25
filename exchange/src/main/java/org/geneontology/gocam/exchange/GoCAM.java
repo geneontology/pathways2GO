@@ -223,7 +223,7 @@ public class GoCAM {
 
 		if(taxa!=null) {
 			for(String taxon : taxa) {
-				OWLAnnotation taxon_anno = df.getOWLAnnotation(in_taxon, df.getOWLLiteral(taxon));
+				OWLAnnotation taxon_anno = df.getOWLAnnotation(in_taxon, IRI.create(taxon));
 				OWLAxiom taxonaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, taxon_anno);
 				ontman.addAxiom(go_cam_ont, taxonaxiom);
 			}
