@@ -574,6 +574,7 @@ public class BioPaxtoGO {
 		OWLNamedIndividual pathway_e = go_cam.makeAnnotatedIndividual(pathway_iri);
 		go_cam.addLabel(pathway_e, pathway.getDisplayName());
 		go_cam.addDatabaseXref(pathway_e, model_id);
+		go_cam.addBiopaxType(pathway_e, pathway.getModelInterface().getCanonicalName());
 		//comments
 		for(String comment: pathway.getComment()) {
 			if(comment.startsWith("Authored:")||
@@ -792,6 +793,7 @@ public class BioPaxtoGO {
 		dbids.add(model_id);
 		//add entity to ontology, whatever it is
 		OWLNamedIndividual e = go_cam.makeAnnotatedIndividual(this_iri);
+		go_cam.addBiopaxType(e, entity.getModelInterface().getCanonicalName());
 		//check specifically for Reactome id
 		String reactome_entity_id = getEntityReferenceId(entity);
 		//add xrefs
