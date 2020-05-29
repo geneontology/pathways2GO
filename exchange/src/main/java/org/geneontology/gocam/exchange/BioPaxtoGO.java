@@ -1188,11 +1188,17 @@ public class BioPaxtoGO {
 								OWLNamedIndividual active_i = go_cam.makeAnnotatedIndividual(GoCAM.makeRandomIri(model_id));
 								go_cam.addTypeAssertion(active_i,  entity_class);
 								go_cam.addComment(active_i, "Active unit in "+controller_entity_id);
-								go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.has_part, active_i, dbids,  GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+								//per discussion in pathways2GO/issues/91 removing the connection to the complex
+								//go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.has_part, active_i, dbids,  GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 								active_units.add(active_i);
 							}
 						}
 						//define relationship between controller entity and reaction
+						
+						//per discussion in pathways2GO/issues/91 removing the connection to the and the complex individual
+						if(active_units!=null) {
+							go_cam.deleteOwlEntityAndAllReferencesToIt(controller_e);
+						}
 						//if catalysis then always enabled by
 						if(is_catalysis) {
 							//active unit known
