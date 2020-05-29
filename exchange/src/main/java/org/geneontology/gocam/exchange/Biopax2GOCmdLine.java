@@ -47,7 +47,7 @@ public class Biopax2GOCmdLine {
 		BioPaxtoGO bp2g = new BioPaxtoGO();
 		//parameters to set
 		String input_biopax = null; //"/Users/bgood/Desktop/test/biopax/Homo_sapiens_sept9_2019.owl";
-		String output_file_stub = null; //"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-"; 
+		String output_file_stub = ""; //"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-"; 
 		String output_blazegraph_journal =  null; //"/Users/bgood/noctua-config/blazegraph.jnl";  
 		String tag = ""; //unexpanded
 		String base_title = "title here";//"Will be replaced if a title can be found for the pathway in its annotations

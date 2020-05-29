@@ -121,7 +121,7 @@ public class BioPaxtoGO {
 	Model biopax_model; //The BioPAX model that is being converted.  
 	static boolean check_consistency = false; //set to true to execute an OWL consistency check each time a pathway is processed.  If inconsistent, it generates a report and halts the program
 	static boolean ignore_diseases = true; //If true, skips any pathway that has the word 'disease' in its name or any of its parent pathway's name 
-	static boolean add_lego_import = true; //If true, an OWL import statement bring in go-lego.owl is added to each generated model.  
+	static boolean add_lego_import = false; //If true, an OWL import statement bring in go-lego.owl is added to each generated model.  
 	static boolean save_inferences = false;  //If true, adds inferences to blazegraph journal
 	static boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
 	static boolean expand_subpathways = false;  //If true, add content from all lower level pathways.  This is generally a bad idea for high level nodes like 'Signaling Pathways'
@@ -574,7 +574,7 @@ public class BioPaxtoGO {
 		OWLNamedIndividual pathway_e = go_cam.makeAnnotatedIndividual(pathway_iri);
 		go_cam.addLabel(pathway_e, pathway.getDisplayName());
 		go_cam.addDatabaseXref(pathway_e, model_id);
-		go_cam.addBiopaxType(pathway_e, pathway.getModelInterface().getCanonicalName());
+		go_cam.addSkosNote(pathway_e, pathway.getModelInterface().getCanonicalName());
 		//comments
 		for(String comment: pathway.getComment()) {
 			if(comment.startsWith("Authored:")||
@@ -793,7 +793,7 @@ public class BioPaxtoGO {
 		dbids.add(model_id);
 		//add entity to ontology, whatever it is
 		OWLNamedIndividual e = go_cam.makeAnnotatedIndividual(this_iri);
-		go_cam.addBiopaxType(e, entity.getModelInterface().getCanonicalName());
+		go_cam.addSkosNote(e, entity.getModelInterface().getCanonicalName());
 		//check specifically for Reactome id
 		String reactome_entity_id = getEntityReferenceId(entity);
 		//add xrefs

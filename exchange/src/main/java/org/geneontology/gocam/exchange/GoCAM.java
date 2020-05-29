@@ -113,7 +113,7 @@ public class GoCAM {
 	public static IRI base_ont_iri;
 	public static OWLAnnotationProperty version_info, title_prop, contributor_prop, date_prop, skos_exact_match, skos_altlabel,  
 	state_prop, evidence_prop, provided_by_prop, x_prop, y_prop, rdfs_label, rdfs_comment, rdfs_seealso, source_prop, 
-	definition, database_cross_reference, canonical_record, iuphar_id, in_taxon, biopax_type;
+	definition, database_cross_reference, canonical_record, iuphar_id, in_taxon, skos_note;
 	public static OWLObjectProperty part_of, has_part, has_input, has_output, has_component, 
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in,
 	directly_positively_regulated_by, directly_negatively_regulated_by, involved_in_regulation_of, involved_in_negative_regulation_of, involved_in_positive_regulation_of,
@@ -196,9 +196,13 @@ public class GoCAM {
 
 		//TODO find a better way
 		if(add_lego_import) {
-			String lego_iri = "http://purl.obolibrary.org/obo/go/extensions/go-lego.owl";
+			String lego_iri = "http://purl.obolibrary.org/obo/go/extensions/go-lego-reacto.owl";
 			OWLImportsDeclaration legoImportDeclaration = df.getOWLImportsDeclaration(IRI.create(lego_iri));
 			ontman.applyChange(new AddImport(go_cam_ont, legoImportDeclaration));
+		}else {
+			OWLAnnotation tbox_anno = df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral("For logical inference, import the integrated tbox ontology http://purl.obolibrary.org/obo/go/extensions/go-lego-reacto.owl"));
+			OWLAxiom tboxaxiom = df.getOWLAnnotationAssertionAxiom(ont_iri, tbox_anno);
+			ontman.addAxiom(go_cam_ont, tboxaxiom);
 		}
 		//Annotate the ontology
 		OWLAnnotation title_anno = df.getOWLAnnotation(title_prop, df.getOWLLiteral(gocam_title));
@@ -233,7 +237,7 @@ public class GoCAM {
 
 	public void initializeClassesAndRelations() {
 		//Annotation properties for metadata and evidence
-		biopax_type = df.getOWLAnnotationProperty(IRI.create("http://geneontology.org/lego/biopax_type"));
+		skos_note = df.getOWLAnnotationProperty(IRI.create("http://www.w3.org/2004/02/skos/core#note"));
 		version_info = df.getOWLAnnotationProperty(IRI.create(OWL.versionInfo.getURI()));
 		title_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/title"));
 		contributor_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/contributor"));
@@ -637,12 +641,12 @@ public class GoCAM {
 		return;
 	}
 
-	public void addBiopaxType(OWLNamedIndividual entity, String bp_type_string) {
+	public void addSkosNote(OWLNamedIndividual entity, String bp_type_string) {
 		if(bp_type_string==null) {
 			return;
 		}
 		OWLLiteral bp_type_literal = df.getOWLLiteral(bp_type_string);
-		OWLAnnotation bp_type_anno = df.getOWLAnnotation(biopax_type, bp_type_literal);
+		OWLAnnotation bp_type_anno = df.getOWLAnnotation(skos_note, bp_type_literal);
 		OWLAxiom bp_type_axiom = df.getOWLAnnotationAssertionAxiom(entity.getIRI(), bp_type_anno);
 		ontman.addAxiom(go_cam_ont, bp_type_axiom);
 	}
