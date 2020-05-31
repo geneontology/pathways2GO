@@ -920,6 +920,27 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		return reaction_inputs; 
 	}
 	
-	
+	Set<String> getComplexesWithActiveUnits() {
+		Set<String> complexes = new HashSet<String>();
+		String findComplexesWithActiveUnits = 
+				"		 #find complexes that have an active unit \n" + 
+				"prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>  "
+				+ "prefix obo: <http://purl.obolibrary.org/obo/> \n" + 
+				"	select distinct ?complex \n" + 
+				"	where { \n" + 
+				"  VALUES ?prop {obo:RO_0002233 obo:RO_0002333}	" +  //# input or enabled by 
+                "       ?reaction ?prop ?active_part . " + 
+				"		?complex obo:BFO_0000051 ?active_part . " + 
+				"	}\n";
+		QueryExecution qe = QueryExecutionFactory.create(findComplexesWithActiveUnits, jena);
+		ResultSet results = qe.execSelect();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Resource complex = qs.getResource("complex"); 
+			complexes.add(complex.getURI());
+		}
+		qe.close();
+		return complexes;
+	}
 
 }

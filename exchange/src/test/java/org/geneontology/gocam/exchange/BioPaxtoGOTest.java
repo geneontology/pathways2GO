@@ -501,11 +501,9 @@ public class BioPaxtoGOTest {
 	
 	/**
 	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferRegulatesViaOutputRegulates()}.
-	 * Test that if reaction1 has_output M and reaction2 is regulated by M then reaction1 regulates reaction2
-	 * Use pathway R-HSA-4641262 , reactions R-HSA-201691 regulates R-HSA-201685 
-	 * 	Beta-catenin is released from the destruction complex
-	 * 	https://reactome.org/content/detail/R-HSA-4641262 
-	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-4641262
+	 * Test that if reaction1 has_output M and reaction2 is regulated by M 
+	 * then reaction1 provides direct input for a binding reaction that regulates reaction2
+	 * Use pathway R-HSA-1810476 RIP-mediated NFkB activation via ZBP1
 	 */
 	@Test 
 	public final void testInferRegulatesViaOutputRegulates() {
@@ -516,9 +514,9 @@ public class BioPaxtoGOTest {
 				"prefix obo: <http://purl.obolibrary.org/obo/> "
 				+ "select ?prop " + 
 				"where { " + 
-				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-4411364/R-HSA-4411351> } ." + 
-				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-4411364/R-HSA-4411372> } . " + 
-				"  ?reaction1 <http://purl.obolibrary.org/obo/RO_0002413> ?binding_reaction ."
+				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-1810476/R-HSA-168910> } ." + 
+				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-1810476/R-HSA-1810457> } . " + 
+				"  ?reaction1 <http://purl.obolibrary.org/obo/RO_0002413> ?binding_reaction . "
 				+ "?binding_reaction ?prop ?reaction2 . "+
 				"}"); 
 			int n = 0; String prop = null;
@@ -650,8 +648,7 @@ BP has_part R
 	/**
 	 * Test method for active site handling in {@link org.geneontology.gocam.exchange.BioPaxtoGO#defineReactionEntity}.
 	 * When reactome (this is a reactome specific hack) indicates in a Control object that a specific element of a complex
-	 * is the active controller (regulator, catalyst), then that part should be pulled out, linked to its parent via has_part and
-	 * used as the agent in the reaction.
+	 * is the active controller (regulator, catalyst), then that part should be used as the agent in the reaction.
 	 * This is also a test for {@link org.geneontology.gocam.exchange.GoCAM#convertEntityRegulatorsToBindingFunctions}
 	 * Use pathway R-HSA-4641262 , reaction = R-HSA-201685 
 	 * 	Beta-catenin is released from the destruction complex
@@ -669,8 +666,7 @@ BP has_part R
 				"where { " + 
 				"VALUES ?reaction { <http://model.geneontology.org/R-HSA-4641262/R-HSA-201677> } . " 
 				+ "?reaction obo:BFO_0000050 ?pathway . "
-				+ "?reaction obo:RO_0002333 ?active_part . "
-				+ "?larger_thing obo:BFO_0000051 ?active_part "+
+				+ "?reaction obo:RO_0002333 ?active_part . "+
 				"}");
 			int n = 0; String pathway = null;
 			while (result.hasNext()) {
@@ -719,7 +715,6 @@ BP has_part R
 				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-4641262/R-HSA-201677> } . "+
 				" ?reaction1 obo:RO_0002629 ?reaction2 . "
 				+ "?reaction2 obo:RO_0002333 ?active_part . "
-				+ "?larger_thing obo:BFO_0000051 ?active_part . "
 				+ "?reaction1 obo:BFO_0000050 ?pathway "+
 				
 				"}");
