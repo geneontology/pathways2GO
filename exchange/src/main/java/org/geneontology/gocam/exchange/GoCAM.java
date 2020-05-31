@@ -1039,7 +1039,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		Set<String> enabling_binding_pathways = r.checkInitPathways(enabling_binding_rule, r);		
 		Map<String, Set<BindingInput>> binders = qrunner.findProteinBindingReactions();	
 		Set<OWLAnnotation> annos = getDefaultAnnotations();
-		String explain1 = "Enabling Binding Rule. This enabled by relation was inferred because the input here was the output of the previous reaction in the pathway.";
+		String explain1 = "Enabling Binding Rule. This 'enabled by' relation was inferred because the input to this binding activity node was the output of the previous reaction in the pathway.";
 		annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain1)));	
 		if(binders!=null&&binders.size()>0) { 
 			for(String reaction_uri : binders.keySet()) {
