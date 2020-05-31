@@ -715,7 +715,6 @@ BP has_part R
 				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-4641262/R-HSA-201677> } . "+
 				" ?reaction1 obo:RO_0002629 ?reaction2 . "
 				+ "?reaction2 obo:RO_0002333 ?active_part . "
-			//	+ "?larger_thing obo:BFO_0000051 ?active_part . "
 				+ "?reaction1 obo:BFO_0000050 ?pathway "+
 				
 				"}");

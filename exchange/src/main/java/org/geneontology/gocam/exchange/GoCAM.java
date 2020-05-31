@@ -1025,6 +1025,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		r = inferRegulatesViaOutputEnables(model_id, r);
 		r = inferProvidesInput(model_id, r);
 		r = convertEntityRegulatorsToBindingFunctions(model_id, r);
+		deleteComplexesWithActiveUnits();
 		deleteLocations();
 		cleanOutUnconnectedNodes();
 		return r;
@@ -1507,6 +1508,19 @@ BP has_part R
 		return r;
 	}
 
+	private void deleteComplexesWithActiveUnits() {
+		Set<String> complexes = qrunner.getComplexesWithActiveUnits();
+		if(complexes.size()>0) {
+		for(String complex_uri : complexes) {
+			OWLNamedIndividual c = makeUnannotatedIndividual(complex_uri);
+			deleteOwlEntityAndAllReferencesToIt(c);
+		}
+		System.out.println("deleted "+complexes.size()+" complexes with active units.");
+		}else {
+			System.out.println("no complexes with active units found in pathway.");
+		}
+	}
+	
 	private void deleteLocations() {
 		System.out.println("Starting delete locations");
 		/**
