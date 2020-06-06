@@ -1,0 +1,20 @@
+PREFIX note: <http://www.w3.org/2004/02/skos/core#note>
+select ?biopax_type (count(distinct ?thing) as ?things) { 
+  ?thing note: ?biopax_type .
+}
+group by ?biopax_type 
+
+
+biopax_type	things
+org.biopax.paxtools.model.level3.BiochemicalReaction	12124
+org.biopax.paxtools.model.level3.Complex	17598
+org.biopax.paxtools.model.level3.Pathway	1815
+org.biopax.paxtools.model.level3.Protein	12391
+org.biopax.paxtools.model.level3.SmallMolecule	15722
+org.biopax.paxtools.model.level3.PhysicalEntity	1512
+org.biopax.paxtools.model.level3.Dna	1277
+org.biopax.paxtools.model.level3.Rna	270
+org.biopax.paxtools.model.level3.Degradation	17
+org.biopax.paxtools.model.level3.TemplateReaction	10 
+
+
