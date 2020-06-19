@@ -121,6 +121,7 @@ public class BioPaxtoGO {
 	Model biopax_model; //The BioPAX model that is being converted.  
 	static boolean check_consistency = false; //set to true to execute an OWL consistency check each time a pathway is processed.  If inconsistent, it generates a report and halts the program
 	static boolean ignore_diseases = true; //If true, skips any pathway that has the word 'disease' in its name or any of its parent pathway's name 
+	static boolean drop_drug_reactions = true; //If true, removes reactions that involve drugs (as determined by the presence of an IUPHAR id on the physical entity). 
 	static boolean add_lego_import = false; //If true, an OWL import statement bring in go-lego.owl is added to each generated model.  
 	static boolean save_inferences = false;  //If true, adds inferences to blazegraph journal
 	static boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
@@ -318,10 +319,10 @@ public class BioPaxtoGO {
 			}
 			//write results
 			if(split_by_pathway) {
-//				String n = currentPathway.getDisplayName();
-//				n = n.replaceAll("/", "-");	
-//				n = n.replaceAll(" ", "_");
-//				String outfilename = converted+n+".ttl";	
+				//				String n = currentPathway.getDisplayName();
+				//				n = n.replaceAll("/", "-");	
+				//				n = n.replaceAll(" ", "_");
+				//				String outfilename = converted+n+".ttl";	
 				String outfilename = file_output_path+model_id+".ttl";
 				wrapAndWrite(outfilename, go_cam, save_inferences, save2blazegraph, currentPathway.getDisplayName(), expand_subpathways, model_id);
 				//reset for next pathway.
@@ -414,7 +415,7 @@ public class BioPaxtoGO {
 		System.out.println("setting up rdf model for sparql rules");
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
 		//filter out reactions involving drugs
-		if(drug_process_ids!=null&&drug_process_ids.size()>0) {
+		if(drop_drug_reactions&&drug_process_ids!=null&&drug_process_ids.size()>0) {
 			System.out.println("Before drug reaction removal -  triples: "+go_cam.qrunner.nTriples());
 			int n_reactions_removed = go_cam.removeDrugReactions(reactome_id, drug_process_ids); 
 			System.out.println("After drug reaction removal  triples: "+go_cam.qrunner.nTriples()+"\nremoved "+n_reactions_removed+" reactions");
@@ -422,10 +423,11 @@ public class BioPaxtoGO {
 			System.out.println("No drugs detected");
 		}
 		//delete any stray drug individuals
-		System.out.println("Before drug removal -  triples: "+go_cam.qrunner.nTriples());
-		int n_drugs_removed = go_cam.removeDrugs(tbox_qrunner); 
-		System.out.println("After drug removal  triples: "+go_cam.qrunner.nTriples()+"\nremoved "+n_drugs_removed+" drugs");
-		
+		if(drop_drug_reactions) {
+			System.out.println("Before drug removal -  triples: "+go_cam.qrunner.nTriples());
+			int n_drugs_removed = go_cam.removeDrugs(tbox_qrunner); 
+			System.out.println("After drug removal  triples: "+go_cam.qrunner.nTriples()+"\nremoved "+n_drugs_removed+" drugs");
+		}
 		//infer new edges based on sparql matching
 		System.out.println("Before sparql inference -  triples: "+go_cam.qrunner.nTriples());
 		GoCAM.RuleResults rule_results = go_cam.applySparqlRules(reactome_id, tbox_qrunner);
@@ -645,14 +647,20 @@ public class BioPaxtoGO {
 					//attach child pathways
 				}
 				else if(process.getModelInterface().equals(Pathway.class)){
+					String child_model_id = getEntityReferenceId(process);
+					IRI child_pathway_iri = GoCAM.makeGoCamifiedIRI(child_model_id, child_model_id);
 					//different pathway - bridging relation.
 					if(add_subpathway_bridges){
-						String child_model_id = getEntityReferenceId(process);
-						IRI child_pathway_iri = GoCAM.makeGoCamifiedIRI(child_model_id, child_model_id);
 						OWLNamedIndividual child_pathway = go_cam.makeBridgingIndividual(child_pathway_iri);
 						go_cam.addRefBackedObjectPropertyAssertion(child_pathway, GoCAM.part_of, pathway_e, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+					}else if(expand_subpathways) {
+						//if we are not doing the bridging method but we are including subpathways, add them on here. 
+						OWLNamedIndividual child_pathway = go_cam.makeAnnotatedIndividual(child_pathway_iri);
+						go_cam.addRefBackedObjectPropertyAssertion(child_pathway, GoCAM.part_of, pathway_e, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+						String sub_pathway_id = getEntityReferenceId(process);
+						definePathwayEntity(go_cam, (Pathway)process, sub_pathway_id, expand_subpathways, add_components);
 					}
-					//leave them out unless bridging implemented.  
+					 
 				}
 				else {
 					System.out.println("Unknown Process !"+process.getDisplayName());
@@ -1194,7 +1202,7 @@ public class BioPaxtoGO {
 							}
 						}
 						//define relationship between controller entity and reaction
-						
+
 						//per discussion in pathways2GO/issues/91 removing the connection to the and the complex individual
 						//if(active_units!=null) {
 						//	go_cam.deleteOwlEntityAndAllReferencesToIt(controller_e);
