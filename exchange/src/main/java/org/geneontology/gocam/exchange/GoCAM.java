@@ -391,7 +391,7 @@ public class GoCAM {
 		negatively_regulates = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002212"));
 		addLabel(negatively_regulates, "negatively regulates");
 		positively_regulates = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002213"));
-		addLabel(positively_regulates, "positively regulateds");
+		addLabel(positively_regulates, "positively regulates");
 
 		directly_positively_regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002024"));
 		addLabel(directly_positively_regulated_by, "directly positively regulated by");
@@ -414,15 +414,20 @@ public class GoCAM {
 		addLabel(has_role, "has role");
 
 		has_target_end_location = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002339"));
+		addLabel(has_target_end_location, "has_target_end_location");
 		has_target_start_location = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002338"));
+		addLabel(has_target_start_location, "has_target_start_location");
 		contributes_to = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002326"));
+		addLabel(contributes_to, "contributes_to");
 		transports_or_maintains_localization_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002313"));
+		addLabel(transports_or_maintains_localization_of, "transports_or_maintains_localization_of");
 		//re-usable restrictions
 		taxon_human = df.getOWLObjectSomeValuesFrom(only_in_taxon, human);
-
 		//data properties
 		has_start = df.getOWLDataProperty(IRI.create(obo_iri + "has_start"));
+		addLabel(has_start, "has_start");
 		has_end = df.getOWLDataProperty(IRI.create(obo_iri + "has_end"));
+		addLabel(has_end, "has_end");
 	}
 
 	//	public GoCAMReport getGoCAMReport(){
