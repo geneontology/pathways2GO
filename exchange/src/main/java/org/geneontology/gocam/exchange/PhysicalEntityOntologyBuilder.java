@@ -396,6 +396,9 @@ public class PhysicalEntityOntologyBuilder {
 		} 
 
 		go_cam.writeGoCAM_jena(outfilename, false, outputformat);
+		
+		countPhysical(biopax_model);
+		
 		return go_cam.go_cam_ont;
 	}
 
