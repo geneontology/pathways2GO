@@ -1,0 +1,67 @@
+select ?complex ?comment ?uniprot 
+where {
+  ?complex rdfs:subClassOf ?restriction . 
+  ?restriction rdf:type owl:Restriction . 
+  ?restriction owl:onProperty <http://purl.obolibrary.org/obo/RO_0002180> . 
+  ?restriction  owl:qualifiedCardinality ?r . 
+  ?restriction owl:onClass ?reacto_protein . 
+  ?reacto_protein rdfs:subClassOf ?uniprot .
+  ?uniprot rdfs:subClassOf <http://purl.obolibrary.org/obo/CHEBI_36080> .
+  FILTER(regex(str(?uniprot), "uniprot", "i" )) . 
+  ?complex rdfs:comment ?comment 
+}
+
+select (count (distinct ?uniprot) as ?u)  
+where {
+  ?complex rdfs:subClassOf ?restriction . 
+  ?restriction rdf:type owl:Restriction . 
+  ?restriction owl:onProperty <http://purl.obolibrary.org/obo/RO_0002180> . 
+  ?restriction  owl:qualifiedCardinality ?r . 
+  ?restriction owl:onClass ?reacto_protein . 
+  ?reacto_protein rdfs:subClassOf ?uniprot .
+  ?uniprot rdfs:subClassOf <http://purl.obolibrary.org/obo/CHEBI_36080> .
+  FILTER(regex(str(?uniprot), "uniprot", "i" )) . 
+  ?complex <http://geneontology.org/lego/canonical_record> <http://purl.obolibrary.org/obo/GO_0032991> 
+}
+
+select ?uniprot 
+#(count (distinct ?uniprot) as ?u)  
+where {
+  ?complex rdfs:subClassOf ?restriction . 
+  ?restriction rdf:type owl:Restriction . 
+  ?restriction owl:onProperty <http://purl.obolibrary.org/obo/RO_0002180> . 
+  ?restriction  owl:qualifiedCardinality ?r . 
+  ?restriction owl:onClass ?reacto_protein . 
+  ?reacto_protein rdfs:subClassOf ?uniprot .
+  ?uniprot rdfs:subClassOf <http://purl.obolibrary.org/obo/CHEBI_36080> .
+  FILTER(!regex(str(?uniprot), "uniprot", "i" )) . 
+  #?complex <http://geneontology.org/lego/canonical_record> <http://purl.obolibrary.org/obo/GO_0032991> . 
+  ?complex_instance rdf:type ?complex . 
+  ?go_cam_instance rdf:type ?reacto_protein . 
+}
+
+
+#uniprot ids used as types of instances in models
+
+select 
+#?reacto_protein ?uniprot ?go_cam_instance 
+ (count (distinct ?uniprot) as ?u)  
+where {
+  #all things that are proteins and are uniprot = 11387
+  ?uniprot rdfs:subClassOf <http://purl.obolibrary.org/obo/CHEBI_36080> .
+  FILTER(regex(str(?uniprot), "uniprot", "i" )) . 
+  #subclasses of proteins = 24733, 36120 with * 
+  ?reacto_protein rdfs:subClassOf* ?uniprot . 
+  #?reacto_protein <http://geneontology.org/lego/canonical_record> ?uniprot . 
+  #instances subclasses of proteins - ?reacto_protein = 8933, ?go_cam_instance = 10571, uniprot = 3817 
+  ?go_cam_instance rdf:type ?reacto_protein . 
+  
+ # ?complex rdfs:subClassOf ?restriction . 
+ # ?restriction rdf:type owl:Restriction . 
+ # ?restriction owl:onProperty <http://purl.obolibrary.org/obo/RO_0002180> . 
+ # ?restriction  owl:qualifiedCardinality ?r . 
+ # ?restriction owl:onClass ?reacto_protein . 
+  #?complex <http://geneontology.org/lego/canonical_record> <http://purl.obolibrary.org/obo/GO_0032991> . 
+  #?complex_instance rdf:type ?complex . 
+  
+}

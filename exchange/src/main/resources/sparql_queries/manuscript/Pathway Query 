@@ -93,44 +93,20 @@ PREFIX GoProteinBinding: <http://purl.obolibrary.org/obo/GO_0005515>
 PREFIX GoBinding: <http://purl.obolibrary.org/obo/GO_0005488>
 PREFIX GoComplexBinding: <http://purl.obolibrary.org/obo/GO_0044877>
 
-select ?go_type (GROUP_CONCAT(DISTINCT ?go_type_label;separator=";") AS ?go_type_labels)  (count(distinct ?reaction) as ?reactions)
+select ?pathway_id ?pathway_name ?go_type (GROUP_CONCAT(DISTINCT ?go_type_label;separator=";") AS ?go_type_labels) (count(distinct ?reaction) as ?reactions) 
 where{
-  ?reaction xref: ?reaction_id . 
-  VALUES ?biopax_type {"org.biopax.paxtools.model.level3.BiochemicalReaction" 
-                       "org.biopax.paxtools.model.level3.Degradation" 
-                       "org.biopax.paxtools.model.level3.TemplateReaction" } 
-  ?reaction note: ?biopax_type .
-  ?reaction rdfs:label ?name .
-  ?reaction rdf:type ?go_type . 
+  VALUES ?biopax_type {"org.biopax.paxtools.model.level3.Pathway" } 
+  ?pathway note: ?biopax_type .
+  ?pathway xref: ?pathway_id .
+  ?pathway rdfs:label ?pathway_name .
+  ?pathway rdf:type ?go_type . 
   ?go_type rdfs:label ?go_type_label . 
   filter(?go_type != owl:NamedIndividual) .
-  ?reaction part_of: ?biological_process_node . 
-  ?biological_process_node xref: ?pathway_id . 
-optional {
-  ?biological_process_node rdf:type ?biological_process_type . 
-  filter(?biological_process_type != owl:NamedIndividual) .
-}
-optional {
-  ?reaction occurs_in: ?location_node . 
-  ?location_node rdf:type ?location_type . 
-  filter(?location_type != owl:NamedIndividual) .
-}
-optional {  
-  ?reaction has_input: ?input_node . 
-}
-optional {  
-  ?reaction has_output: ?output_node .
-}
-optional {    
-  ?reaction enabled_by: ?enabler_node 
-}
-optional {   
-  values ?causal {directly_negatively_regulates: directly_positively_regulates: causally_upstream_of: directly_provides_input_for: } 
-  ?reaction ?causal ?outgoing_node 
-}
-optional {   
-  values ?causal {directly_negatively_regulates: directly_positively_regulates: causally_upstream_of: directly_provides_input_for: } 
-  ?incoming_node ?causal ?reaction 
-}
-}
-group by ?go_type ?go_type_labels 
+  optional {?reaction part_of: ?pathway . } 
+ }
+group by ?pathway_id ?pathway_name ?biopax_type ?go_type ?go_type_labels 
+ 
+
+
+
+

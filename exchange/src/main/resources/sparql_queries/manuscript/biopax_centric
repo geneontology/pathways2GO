@@ -18,3 +18,28 @@ org.biopax.paxtools.model.level3.Degradation	17
 org.biopax.paxtools.model.level3.TemplateReaction	10 
 
 
+#unique uniprot records used
+PREFIX note: <http://www.w3.org/2004/02/skos/core#note>
+select ?note (count(distinct ?meta_class) as ?c)
+#(count (distinct ?meta_class) as ?c) 
+{ 
+  ?instance note: ?note . # 'org.biopax.paxtools.model.level3.PhysicalEntity'
+  values ?note {'org.biopax.paxtools.model.level3.Protein'} .  
+  ?instance rdf:type ?reacto . 
+  ?reacto <http://geneontology.org/lego/canonical_record> ?meta_class . 
+ # FILTER(regex(str(?meta_class), "uniprot", "i" ))
+} 
+group by ?note 
+
+#3677
+
+#unique small molecules
+PREFIX note: <http://www.w3.org/2004/02/skos/core#note>
+select distinct ?meta_class 
+{ 
+  ?instance note: 'org.biopax.paxtools.model.level3.SmallMolecule' .
+  ?instance rdf:type ?reacto . 
+  ?reacto <http://geneontology.org/lego/canonical_record> ?meta_class . 
+  FILTER(regex(str(?meta_class), "chebi", "i" ))
+}
+

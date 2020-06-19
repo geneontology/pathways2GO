@@ -93,7 +93,8 @@ PREFIX GoProteinBinding: <http://purl.obolibrary.org/obo/GO_0005515>
 PREFIX GoBinding: <http://purl.obolibrary.org/obo/GO_0005488>
 PREFIX GoComplexBinding: <http://purl.obolibrary.org/obo/GO_0044877>
 
-select ?pathway_id ?reaction_id ?name ?biopax_type ?go_type ?go_type_label ?biological_process_type ?bp_label ?location_type ?location_label 
+select ?pathway_id ?reaction_id ?name ?biopax_type ?go_type (GROUP_CONCAT(DISTINCT ?go_type_label;separator=";") AS ?go_type_labels) ?biological_process_type 
+(GROUP_CONCAT(DISTINCT ?bp_label;separator=";") AS ?bp_labels) ?location_type (GROUP_CONCAT(DISTINCT ?location_label;separator=";") AS ?location_labels) 
 (count(distinct ?input_node) as ?inputs) (count(distinct ?output_node) as ?outputs) (count(distinct ?enabler_node) as ?enablers) 
 (count(distinct ?outgoing_node) as ?outgoing) (count(distinct ?incoming_node) as ?incoming) 
 where{
@@ -137,6 +138,8 @@ optional {
   ?incoming_node ?causal ?reaction 
 }
 }
-group by ?pathway_id ?reaction_id ?name ?biopax_type ?go_type ?go_type_label ?biological_process_type ?bp_label ?location_type ?location_label 
+group by ?pathway_id ?reaction_id ?name ?biopax_type ?go_type ?go_type_labels ?biological_process_type ?bp_labels ?location_type ?location_labels  
  
+
+
 

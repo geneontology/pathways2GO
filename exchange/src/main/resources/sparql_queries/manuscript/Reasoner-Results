@@ -1,10 +1,10 @@
-BASE   <http://purl.obolibrary.org/obo/go/shapes/>
+# <http://arachne.geneontology.org/indirect_type> 
+
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX note: <http://www.w3.org/2004/02/skos/core#note>
 #metadata
 PREFIX bl: <https://w3id.org/biolink/vocab/>
 PREFIX contributor: <http://purl.org/dc/elements/1.1/contributor>
@@ -93,44 +93,22 @@ PREFIX GoProteinBinding: <http://purl.obolibrary.org/obo/GO_0005515>
 PREFIX GoBinding: <http://purl.obolibrary.org/obo/GO_0005488>
 PREFIX GoComplexBinding: <http://purl.obolibrary.org/obo/GO_0044877>
 
-select ?go_type (GROUP_CONCAT(DISTINCT ?go_type_label;separator=";") AS ?go_type_labels)  (count(distinct ?reaction) as ?reactions)
-where{
-  ?reaction xref: ?reaction_id . 
-  VALUES ?biopax_type {"org.biopax.paxtools.model.level3.BiochemicalReaction" 
-                       "org.biopax.paxtools.model.level3.Degradation" 
-                       "org.biopax.paxtools.model.level3.TemplateReaction" } 
-  ?reaction note: ?biopax_type .
-  ?reaction rdfs:label ?name .
-  ?reaction rdf:type ?go_type . 
-  ?go_type rdfs:label ?go_type_label . 
-  filter(?go_type != owl:NamedIndividual) .
-  ?reaction part_of: ?biological_process_node . 
-  ?biological_process_node xref: ?pathway_id . 
-optional {
-  ?biological_process_node rdf:type ?biological_process_type . 
-  filter(?biological_process_type != owl:NamedIndividual) .
+select ?reaction ?type ?type_label ?inferred_type ?inferred_type_label where {
+  ?reasoned <http://www.w3.org/ns/prov#wasDerivedFrom> ?asserted . 
+  graph ?asserted { 
+    ?reaction part_of: <http://model.geneontology.org/R-HSA-70171/R-HSA-70171> .
+    ?reaction rdf:type ?type .
+    filter(?type != owl:NamedIndividual) .
+    }
+   graph ?reasoned { 
+    ?reaction rdf:type ?inferred_type .    
+    filter(?inferred_type != owl:NamedIndividual) .
+    }
+    
+   MINUS { 
+     ?type rdfs:subClassOf* ?inferred_type .
+   } 
+    ?type rdfs:label ?type_label . 
+  	?inferred_type rdfs:label ?inferred_type_label . 
 }
-optional {
-  ?reaction occurs_in: ?location_node . 
-  ?location_node rdf:type ?location_type . 
-  filter(?location_type != owl:NamedIndividual) .
-}
-optional {  
-  ?reaction has_input: ?input_node . 
-}
-optional {  
-  ?reaction has_output: ?output_node .
-}
-optional {    
-  ?reaction enabled_by: ?enabler_node 
-}
-optional {   
-  values ?causal {directly_negatively_regulates: directly_positively_regulates: causally_upstream_of: directly_provides_input_for: } 
-  ?reaction ?causal ?outgoing_node 
-}
-optional {   
-  values ?causal {directly_negatively_regulates: directly_positively_regulates: causally_upstream_of: directly_provides_input_for: } 
-  ?incoming_node ?causal ?reaction 
-}
-}
-group by ?go_type ?go_type_labels 
+limit 20
