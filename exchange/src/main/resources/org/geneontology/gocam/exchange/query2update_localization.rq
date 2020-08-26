@@ -12,8 +12,8 @@ prefix skos: <http://www.w3.org/2004/02/skos/core#>
 
 select ?reaction  ?start_location_type ?end_location_type ?start_location ?end_location ?input ?input_thing_type ?output_thing_type ?thing_label ?pathway ?enabler   
 where {
-  	#reaction annotated to root (check for reasoning..)
-  	?reaction rdf:type obo:GO_0003674 .
+  	#reaction annotated to basically nothing
+  	?reaction rdf:type <http://purl.obolibrary.org/obo/go/extensions/reacto.owl#molecular_event> .
   	#has an output
    	?reaction obo:RO_0002234 ?output .
    	#with a location

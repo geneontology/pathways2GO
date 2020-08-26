@@ -133,7 +133,7 @@ public class GoCAM {
 	establishment_of_protein_localization, negative_regulation_of_molecular_function, positive_regulation_of_molecular_function,
 	chebi_mrna, chebi_rna, chebi_trna_precursor, chebi_dna, unfolded_protein, 
 	transport, protein_transport, human, 
-	union_set;
+	union_set, molecular_event;
 	public static OWLClassExpression taxon_human;
 
 	public OWLOntology go_cam_ont;
@@ -261,6 +261,7 @@ public class GoCAM {
 		//Will add classes and relations as we need them now. 
 		//TODO add something to validate that ids are correct..  
 		//classes	
+		molecular_event = df.getOWLClass(IRI.create("http://purl.obolibrary.org/obo/go/extensions/reacto.owl#molecular_event"));
 		human = df.getOWLClass(IRI.create(obo_iri+"NCBITaxon_9606"));
 		catalytic_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0003824"));
 		binding = df.getOWLClass(IRI.create(obo_iri+"GO_0005488"));
@@ -655,7 +656,7 @@ public class GoCAM {
 		OWLAxiom bp_type_axiom = df.getOWLAnnotationAssertionAxiom(entity.getIRI(), bp_type_anno);
 		ontman.addAxiom(go_cam_ont, bp_type_axiom);
 	}
-	
+
 	public void addLabel(OWLEntity entity, String label) {
 		if(label==null) {
 			return;
@@ -841,6 +842,13 @@ final long counterValue = instanceCounter.getAndIncrement();
 		//ontman.applyChanges();		
 	}
 
+
+	
+	public void removeType(OWLNamedIndividual individual, OWLClassExpression type) {
+		OWLClassAssertionAxiom isa_xrefedbp = df.getOWLClassAssertionAxiom(type, individual);
+		ontman.removeAxiom(go_cam_ont, isa_xrefedbp);		
+	}
+
 	String printLabels(OWLEntity i) {
 		String labels = "";
 		EntitySearcher.getAnnotationObjects(i, go_cam_ont, GoCAM.rdfs_label).
@@ -1023,8 +1031,9 @@ final long counterValue = instanceCounter.getAndIncrement();
 
 		RuleResults r = new RuleResults();
 		//NOTE that the order these are run matters.
-		r = inferEnablersForBinding(model_id, r, tbox_qrunner);
 		r = inferTransportProcess(model_id, r, tbox_qrunner);	//must be run before occurs_in and before deleteLocations	 
+		r = inferEnablersFromUpstream(model_id, r, tbox_qrunner);
+		r = inferMolecularFunctionFromEnablers(model_id, r, tbox_qrunner);
 		r = inferOccursInFromEntityLocations(model_id, r);
 		r = inferRegulatesViaOutputRegulates(model_id, r); //must be run before convertEntityRegulatorsToBindingFunctions
 		r = inferRegulatesViaOutputEnables(model_id, r);
@@ -1036,15 +1045,39 @@ final long counterValue = instanceCounter.getAndIncrement();
 		return r;
 	}
 
+	private RuleResults inferMolecularFunctionFromEnablers(String model_id, RuleResults r, QRunner tbox_qrunner) {
+		String enabling_function_rule = "If enabler then MF rule";
+		Integer enabling_function_count = r.checkInitCount(enabling_function_rule, r);
+		Set<String> enabling_function_pathways = r.checkInitPathways(enabling_function_rule, r);		
+		Set<String> newfunctions = qrunner.findEnabledMolecularEvents();
+		Set<OWLAnnotation> annos = getDefaultAnnotations();
+		String explain1 = "If enabler then MF rule. If a process has an enabled_by assertion, than the process is a molecular function.";
+		annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain1)));	
+		if(newfunctions!=null&&newfunctions.size()>0) { 
+			for(String reaction_uri : newfunctions) {
+				enabling_function_count++;
+				OWLNamedIndividual reaction_instance = df.getOWLNamedIndividual(IRI.create(reaction_uri));
+				//drop the asserted molecular event type
+				removeType(reaction_instance, GoCAM.molecular_event);
+				//add the function type
+				addTypeAssertion(reaction_instance, GoCAM.molecular_function);
+				//track the pathway id
+				enabling_function_pathways.add(model_id);
+			}			
+			qrunner = new QRunner(go_cam_ont);
+		}
+		r.rule_hitcount.put(enabling_function_rule, enabling_function_count);
+		r.rule_pathways.put(enabling_function_rule, enabling_function_pathways);
+		return r;
+	}
 
-
-	private RuleResults inferEnablersForBinding(String model_id, RuleResults r, QRunner tbox_qrunner) {
-		String enabling_binding_rule = "Enabling Binding Rule";
+	private RuleResults inferEnablersFromUpstream(String model_id, RuleResults r, QRunner tbox_qrunner) {
+		String enabling_binding_rule = "Upstream Enabler Rule";
 		Integer enabling_binding_count = r.checkInitCount(enabling_binding_rule, r);
 		Set<String> enabling_binding_pathways = r.checkInitPathways(enabling_binding_rule, r);		
-		Map<String, Set<BindingInput>> binders = qrunner.findProteinBindingReactions();	
+		Map<String, Set<BindingInput>> binders = qrunner.findMolecularEvents();
 		Set<OWLAnnotation> annos = getDefaultAnnotations();
-		String explain1 = "Enabling Binding Rule. This 'enabled by' relation was inferred because the input to this binding activity node was the output of the previous reaction in the pathway.";
+		String explain1 = "Upstream Enabler Rule. This 'enabled by' relation was inferred because the input to this event node was the output of the previous reaction in the pathway.";
 		annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain1)));	
 		if(binders!=null&&binders.size()>0) { 
 			for(String reaction_uri : binders.keySet()) {
@@ -1102,7 +1135,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 				}
 				transport_pathways.add(transport_reaction.pathway_uri);
 				OWLNamedIndividual reaction = this.makeAnnotatedIndividual(transport_reaction.reaction_uri);
-				OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(molecular_function, reaction);
+				OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(molecular_event, reaction);
 				ontman.removeAxiom(go_cam_ont, classAssertion);
 
 				String thing_type_uri = transport_reaction.thing_type_uri;
@@ -1113,7 +1146,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 				String explain = "Transporter Rule.  This reaction represents the activity of transporting ";
 				if(entity_types!=null&&entity_types.contains(chebi_protein)) {
 					addTypeAssertion(reaction, protein_transporter_activity);
-					explain+=" a protein.";
+					explain+=" a protein.";   
 				}else {
 					addTypeAssertion(reaction, transporter_activity);
 					if(entity_types.contains(go_complex)) {
@@ -1516,16 +1549,16 @@ BP has_part R
 	private void deleteComplexesWithActiveUnits() {
 		Set<String> complexes = qrunner.getComplexesWithActiveUnits();
 		if(complexes.size()>0) {
-		for(String complex_uri : complexes) {
-			OWLNamedIndividual c = makeUnannotatedIndividual(complex_uri);
-			deleteOwlEntityAndAllReferencesToIt(c);
-		}
-		System.out.println("deleted "+complexes.size()+" complexes with active units.");
+			for(String complex_uri : complexes) {
+				OWLNamedIndividual c = makeUnannotatedIndividual(complex_uri);
+				deleteOwlEntityAndAllReferencesToIt(c);
+			}
+			System.out.println("deleted "+complexes.size()+" complexes with active units.");
 		}else {
 			System.out.println("no complexes with active units found in pathway.");
 		}
 	}
-	
+
 	private void deleteLocations() {
 		System.out.println("Starting delete locations");
 		/**

@@ -115,11 +115,11 @@ public class BioPaxtoGO {
 		NoctuaCuration, 
 	}
 	boolean apply_layout = false; //If true, attempts a rational layout for Noctua based on the semantic structure of the model.  (Breaks down or larger models)
-	boolean generate_report = false; //If true, generates GoCAMReport and ReasonerReport objects after each model is created.  These are added to the GoMappingReport object that contains one report per pathway processed. 
+	boolean generate_report = true; //If true, generates GoCAMReport and ReasonerReport objects after each model is created.  These are added to the GoMappingReport object that contains one report per pathway processed. 
 	boolean explain_inconsistant_models = true; //If true, will output text explanations for OWL inconsistent models before halting.  
 	GoMappingReport report; //Captures details of mappings from input biopax pathways to output go-cams as well as information about the results of OWL reasoning on these models.   
 	Model biopax_model; //The BioPAX model that is being converted.  
-	static boolean check_consistency = false; //set to true to execute an OWL consistency check each time a pathway is processed.  If inconsistent, it generates a report and halts the program
+	static boolean check_consistency = true; //set to true to execute an OWL consistency check each time a pathway is processed.  If inconsistent, it generates a report and halts the program
 	static boolean ignore_diseases = true; //If true, skips any pathway that has the word 'disease' in its name or any of its parent pathway's name 
 	static boolean drop_drug_reactions = true; //If true, removes reactions that involve drugs (as determined by the presence of an IUPHAR id on the physical entity). 
 	static boolean add_lego_import = false; //If true, an OWL import statement bring in go-lego.owl is added to each generated model.  
@@ -336,7 +336,10 @@ public class BioPaxtoGO {
 			wrapAndWrite(file_output_path+".ttl", go_cam, save_inferences, save2blazegraph, file_output_path, expand_subpathways, null);		
 		}
 
-		System.out.println("done with file "+input_biopax);
+		System.out.println("done with file "+input_biopax+" ");
+		if(generate_report) {
+			report.writeReport(file_output_path+"_report_");
+		}
 	}
 
 	public static String getEntityReferenceId(Entity bp_entity) {
@@ -439,7 +442,7 @@ public class BioPaxtoGO {
 
 		WorkingMemory wm_with_tbox = null;
 		if(generate_report||apply_layout) {
-			wm_with_tbox = tbox_qrunner.arachne.createInferredModel(go_cam.go_cam_ont,true, true);	
+			wm_with_tbox = tbox_qrunner.arachne.createInferredModel(go_cam.go_cam_ont,false, false);	
 		}
 		if(generate_report) {
 			System.out.println("Report after local rules");
@@ -1305,22 +1308,23 @@ public class BioPaxtoGO {
 					}
 					//default to mf
 					if(!ecmapped) {
+						//and now we aren't doing this again
 						//try to infer protein binding or complex dissociation
-						ComplexFunction b = checkForComplexFunction(e, go_cam);
-						if(b.protein_complex_binding) {
-							go_cam.addTypeAssertion(e, GoCAM.protein_complex_binding);	
-						}else if(b.protein_binding) {
-							go_cam.addTypeAssertion(e, GoCAM.protein_binding);	
-						}else if(b.binding){
-							go_cam.addTypeAssertion(e, GoCAM.binding);
-						}
+//						ComplexFunction b = checkForComplexFunction(e, go_cam);
+//						if(b.protein_complex_binding) {
+//							go_cam.addTypeAssertion(e, GoCAM.protein_complex_binding);	
+//						}else if(b.protein_binding) {
+//							go_cam.addTypeAssertion(e, GoCAM.protein_binding);	
+//						}else if(b.binding){
+//							go_cam.addTypeAssertion(e, GoCAM.binding);
+//						}
 						//changing idea again here.  will handle these events downstream
 						//						else if(b.dissociation) {
 						//							go_cam.addTypeAssertion(e, GoCAM.protein_complex_dissassembly);
 						//						}
-						else {
-							go_cam.addTypeAssertion(e, GoCAM.molecular_function);	
-						}
+//						else {
+							go_cam.addTypeAssertion(e, GoCAM.molecular_event);	
+//						}
 					}
 				}
 				//The GO-CAM OWL for the reaction and all of its parts should now be assembled.  

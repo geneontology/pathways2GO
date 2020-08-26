@@ -120,7 +120,7 @@ public class BioPaxtoGOTest {
 				String name = biopax.getName();
 				if(name.contains(".owl")) { 
 					name = name.replaceAll(".owl", "-");
-					String this_output_file_stub = output_file_stub+name;
+					String this_output_file_stub = output_file_folder+name;
 					try {
 						bp2g.convert(biopax.getAbsolutePath(), this_output_file_stub, base_title, default_contributor, default_provider, tag, null, blaze, taxa);
 					} catch (OWLOntologyCreationException | OWLOntologyStorageException | RepositoryException
@@ -247,7 +247,7 @@ public class BioPaxtoGOTest {
 	/**
 	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferTransportProcess()}.
 	 * Test that transport processes are:
-	 *  correctly typed as localization
+	 *  correctly typed as transporter activity
 	 * 	have the proper starting and ending locations
 	 *  have the right number of inputs and outputs
 	 *  have an input that is also an output 
@@ -263,13 +263,14 @@ public class BioPaxtoGOTest {
 		try {
 			String query =
 					"prefix obo: <http://purl.obolibrary.org/obo/> "
-					+ "select ?type (count(distinct ?output) AS ?outputs) (count(distinct ?input) AS ?inputs) " + 
-					"where { " + 
+					+ "select ?type "
+				//	+ "(count(distinct ?output) AS ?outputs) (count(distinct ?input) AS ?inputs) " + 
+					+ "where { " + 
 					" VALUES ?reaction { <http://model.geneontology.org/R-HSA-201451/R-HSA-201472> } "
 					+ " ?reaction rdf:type ?type . " + 
-					"  filter(?type != owl:NamedIndividual) "
-					+ " ?reaction obo:RO_0002234 ?output . " + 
-					" ?reaction obo:RO_0002233 ?input . " + 
+					"  filter(?type != owl:NamedIndividual) "+
+				//  " ?reaction obo:RO_0002234 ?output . " + 
+				//	" ?reaction obo:RO_0002233 ?input . " + 
 					"  ?reaction obo:RO_0002339 ?endlocation . " + 
 					"  ?endlocation rdf:type <http://purl.obolibrary.org/obo/GO_0005654> . " + 
 					"  ?reaction obo:RO_0002338 ?startlocation . " + 
@@ -283,14 +284,14 @@ public class BioPaxtoGOTest {
 			while (result.hasNext()) {
 				BindingSet bindingSet = result.next();
 				type = bindingSet.getValue("type").stringValue();
-				outputs = Integer.parseInt(bindingSet.getValue("outputs").stringValue());
-				inputs = Integer.parseInt(bindingSet.getValue("inputs").stringValue());
+			//	outputs = Integer.parseInt(bindingSet.getValue("outputs").stringValue());
+			//	inputs = Integer.parseInt(bindingSet.getValue("inputs").stringValue());
 				n++;
 			}
 			assertTrue(n==1);
 			assertTrue(type.equals("http://purl.obolibrary.org/obo/GO_0005215"));
-			assertTrue(inputs==1);
-			assertTrue(outputs==1);
+			//assertTrue(inputs==1);
+			//assertTrue(outputs==1);
 		} catch (QueryEvaluationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -366,9 +367,8 @@ public class BioPaxtoGOTest {
 	}
 
 	/**
-	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferTransportProcess()}.
-	 * Test that dissociation processes are:
-	 * 	correctly typed: as protein complex disassembly GO_0032984  
+	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferMolecularFunctionFromEnablers()}.
+	 * Test that reactions typed as molecular events get converted to molecular functions when they have enablers assigned
 	 * Use reaction in Signaling By BMP R-HSA-201451
 	 * 	Phospho-R-Smad1/5/8 dissociates from the receptor complex
 	 * 	https://reactome.org/content/detail/R-HSA-201453
@@ -376,7 +376,7 @@ public class BioPaxtoGOTest {
 	 */
 	@Test
 	public final void testInferDissociationProcess() {
-		System.out.println("Testing dissociation reaction - should currently be a raw MF");
+		System.out.println("Testing a dissociation reaction - should currently be a raw MF");
 		TupleQueryResult result = null;
 		try {
 			result = blaze.runSparqlQuery(
@@ -555,8 +555,8 @@ public class BioPaxtoGOTest {
 	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-170822
 	 */
 	@Test 
-	public final void testInferEnablerForBindingReaction() {
-		System.out.println("Testing infer regulates via output regulates");
+	public final void testInferEnablersFromUpstream() {
+		System.out.println("Testing infer enabler from upstream output as an input");
 		TupleQueryResult result = null;
 		try {
 			result = blaze.runSparqlQuery(

@@ -295,6 +295,13 @@ public class PhysicalEntityOntologyBuilder {
 		String ont_uri = "http://purl.obolibrary.org/obo/go/extensions/reacto.owl";
 		IRI ont_iri = IRI.create(ont_uri);
 		GoCAM go_cam = new GoCAM(ont_iri, base_ont_title, base_contributor, null, base_provider, add_lego_import, null);
+		//add a placeholder class to the ontology for molecular events
+		String me_uri = "http://purl.obolibrary.org/obo/go/extensions/reacto.owl#molecular_event";
+		IRI me_iri = IRI.create(me_uri);
+		OWLClass me_class = go_cam.df.getOWLClass(me_iri);
+		go_cam.addLabel(me_class, "Molecular Event");
+		go_cam.addComment(me_class, "This class represents things happening in a biological context.  It might be a superclass of GO:Molecular Function that incorporates events that are enabled by specific gene products as well as those that are not.");
+		go_cam.addSubClassAssertion(me_class, GoCAM.process_class);
 		//Annotate the ontology		
 		LocalDateTime now = LocalDateTime.now();
 		OWLAnnotation time_anno = go_cam.df.getOWLAnnotation(GoCAM.version_info, go_cam.df.getOWLLiteral("Generated from Reactome biopax build: "+biopax_build_id+" on: "+now.toString()));
