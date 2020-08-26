@@ -133,7 +133,7 @@ public class GoCAM {
 	establishment_of_protein_localization, negative_regulation_of_molecular_function, positive_regulation_of_molecular_function,
 	chebi_mrna, chebi_rna, chebi_trna_precursor, chebi_dna, unfolded_protein, 
 	transport, protein_transport, human, 
-	union_set;
+	union_set, molecular_event;
 	public static OWLClassExpression taxon_human;
 
 	public OWLOntology go_cam_ont;
@@ -261,6 +261,7 @@ public class GoCAM {
 		//Will add classes and relations as we need them now. 
 		//TODO add something to validate that ids are correct..  
 		//classes	
+		molecular_event = df.getOWLClass(IRI.create("http://purl.obolibrary.org/obo/go/extensions/reacto.owl#molecular_event"));
 		human = df.getOWLClass(IRI.create(obo_iri+"NCBITaxon_9606"));
 		catalytic_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0003824"));
 		binding = df.getOWLClass(IRI.create(obo_iri+"GO_0005488"));
@@ -1023,8 +1024,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 
 		RuleResults r = new RuleResults();
 		//NOTE that the order these are run matters.
-		r = inferEnablersForBinding(model_id, r, tbox_qrunner);
 		r = inferTransportProcess(model_id, r, tbox_qrunner);	//must be run before occurs_in and before deleteLocations	 
+		r = inferEnablersFromUpstream(model_id, r, tbox_qrunner);
 		r = inferOccursInFromEntityLocations(model_id, r);
 		r = inferRegulatesViaOutputRegulates(model_id, r); //must be run before convertEntityRegulatorsToBindingFunctions
 		r = inferRegulatesViaOutputEnables(model_id, r);
@@ -1038,13 +1039,13 @@ final long counterValue = instanceCounter.getAndIncrement();
 
 
 
-	private RuleResults inferEnablersForBinding(String model_id, RuleResults r, QRunner tbox_qrunner) {
-		String enabling_binding_rule = "Enabling Binding Rule";
+	private RuleResults inferEnablersFromUpstream(String model_id, RuleResults r, QRunner tbox_qrunner) {
+		String enabling_binding_rule = "Upstream Enabler Rule";
 		Integer enabling_binding_count = r.checkInitCount(enabling_binding_rule, r);
 		Set<String> enabling_binding_pathways = r.checkInitPathways(enabling_binding_rule, r);		
-		Map<String, Set<BindingInput>> binders = qrunner.findProteinBindingReactions();	
+		Map<String, Set<BindingInput>> binders = qrunner.findMolecularEvents();
 		Set<OWLAnnotation> annos = getDefaultAnnotations();
-		String explain1 = "Enabling Binding Rule. This 'enabled by' relation was inferred because the input to this binding activity node was the output of the previous reaction in the pathway.";
+		String explain1 = "Upstream Enabler Rule. This 'enabled by' relation was inferred because the input to this event node was the output of the previous reaction in the pathway.";
 		annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain1)));	
 		if(binders!=null&&binders.size()>0) { 
 			for(String reaction_uri : binders.keySet()) {
@@ -1102,7 +1103,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 				}
 				transport_pathways.add(transport_reaction.pathway_uri);
 				OWLNamedIndividual reaction = this.makeAnnotatedIndividual(transport_reaction.reaction_uri);
-				OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(molecular_function, reaction);
+				OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(molecular_event, reaction);
 				ontman.removeAxiom(go_cam_ont, classAssertion);
 
 				String thing_type_uri = transport_reaction.thing_type_uri;
@@ -1113,7 +1114,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 				String explain = "Transporter Rule.  This reaction represents the activity of transporting ";
 				if(entity_types!=null&&entity_types.contains(chebi_protein)) {
 					addTypeAssertion(reaction, protein_transporter_activity);
-					explain+=" a protein.";
+					explain+=" a protein.";   
 				}else {
 					addTypeAssertion(reaction, transporter_activity);
 					if(entity_types.contains(go_complex)) {

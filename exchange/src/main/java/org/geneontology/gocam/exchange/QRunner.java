@@ -892,6 +892,34 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		
 	}
 	
+	public Map<String, Set<BindingInput>> findMolecularEvents() {
+		Map<String, Set<BindingInput>> reaction_inputs = new HashMap<String, Set<BindingInput>>();
+		String query = null;
+		try {		
+			query = IOUtils.toString(QRunner.class.getResourceAsStream("query2update_enabled_by_events.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL update from jar \n"+e);
+		}
+		QueryExecution qe = QueryExecutionFactory.create(query, jena);
+		ResultSet results = qe.execSelect();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			//?reaction ?upstream_reaction ?input ?input_type  
+			Resource reaction = qs.getResource("reaction"); 
+		//	Resource upstream_reaction = qs.getResource("upstream_reaction"); 
+			Resource input = qs.getResource("input"); 
+			Resource input_type = qs.getResource("input_type"); 
+			Set<BindingInput> inputs = reaction_inputs.get(reaction.getURI());
+			if(inputs==null) {
+				inputs = new HashSet<BindingInput>();
+			}
+			inputs.add(new BindingInput(input.getURI(), input_type.getURI()));
+			reaction_inputs.put(reaction.getURI(), inputs);
+		}
+		qe.close();
+		return reaction_inputs; 
+	}
+	
 	public Map<String, Set<BindingInput>> findProteinBindingReactions() {
 		Map<String, Set<BindingInput>> reaction_inputs = new HashMap<String, Set<BindingInput>>();
 		String query = null;

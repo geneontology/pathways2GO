@@ -410,8 +410,7 @@ public class GoCAMReport {
 			boolean no_manual_type = false;
 			boolean counted = false;
 			for(String type : function_types.get(function_node)) {
-				if(type.equals("http://purl.obolibrary.org/obo/GO_0003674")
-						||type.equals("http://purl.obolibrary.org/obo/GO_0005515")) {
+				if(type.equals("http://purl.obolibrary.org/obo/GO_0003674")) {
 					if(!counted) {
 						mf_unclassified++;
 					}
@@ -450,8 +449,7 @@ public class GoCAMReport {
 			boolean no_manual_type = false;
 			boolean counted = false;
 			for(String type : pathway_types.get(pathway_node)) {
-				if(type.equals("http://purl.obolibrary.org/obo/GO_0008150")||
-						type.equals("http://purl.obolibrary.org/obo/GO_0045184")) {
+				if(type.equals("http://purl.obolibrary.org/obo/GO_0008150")) {
 					if(!counted) {
 						bp_unclassified++;
 					}
