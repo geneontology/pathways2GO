@@ -367,9 +367,8 @@ public class BioPaxtoGOTest {
 	}
 
 	/**
-	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferTransportProcess()}.
-	 * Test that dissociation processes are:
-	 * 	correctly typed: as protein complex disassembly GO_0032984  
+	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferMolecularFunctionFromEnablers()}.
+	 * Test that reactions typed as molecular events get converted to molecular functions when they have enablers assigned
 	 * Use reaction in Signaling By BMP R-HSA-201451
 	 * 	Phospho-R-Smad1/5/8 dissociates from the receptor complex
 	 * 	https://reactome.org/content/detail/R-HSA-201453
@@ -377,7 +376,7 @@ public class BioPaxtoGOTest {
 	 */
 	@Test
 	public final void testInferDissociationProcess() {
-		System.out.println("Testing dissociation reaction - should currently be a raw MF");
+		System.out.println("Testing a dissociation reaction - should currently be a raw MF");
 		TupleQueryResult result = null;
 		try {
 			result = blaze.runSparqlQuery(
@@ -395,7 +394,7 @@ public class BioPaxtoGOTest {
 				n++;
 			}
 			assertTrue(n==1);
-			assertTrue(type.equals("http://purl.obolibrary.org/obo/go/extensions/reacto.owl#molecular_event"));
+			assertTrue(type.equals("http://purl.obolibrary.org/obo/GO_0003674"));
 		} catch (QueryEvaluationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

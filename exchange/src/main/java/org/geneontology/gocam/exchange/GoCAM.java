@@ -656,7 +656,7 @@ public class GoCAM {
 		OWLAxiom bp_type_axiom = df.getOWLAnnotationAssertionAxiom(entity.getIRI(), bp_type_anno);
 		ontman.addAxiom(go_cam_ont, bp_type_axiom);
 	}
-	
+
 	public void addLabel(OWLEntity entity, String label) {
 		if(label==null) {
 			return;
@@ -840,6 +840,13 @@ final long counterValue = instanceCounter.getAndIncrement();
 		OWLClassAssertionAxiom isa_xrefedbp = df.getOWLClassAssertionAxiom(type, individual);
 		ontman.addAxiom(go_cam_ont, isa_xrefedbp);
 		//ontman.applyChanges();		
+	}
+
+
+	
+	public void removeType(OWLNamedIndividual individual, OWLClassExpression type) {
+		OWLClassAssertionAxiom isa_xrefedbp = df.getOWLClassAssertionAxiom(type, individual);
+		ontman.removeAxiom(go_cam_ont, isa_xrefedbp);		
 	}
 
 	String printLabels(OWLEntity i) {
@@ -1026,6 +1033,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		//NOTE that the order these are run matters.
 		r = inferTransportProcess(model_id, r, tbox_qrunner);	//must be run before occurs_in and before deleteLocations	 
 		r = inferEnablersFromUpstream(model_id, r, tbox_qrunner);
+		r = inferMolecularFunctionFromEnablers(model_id, r, tbox_qrunner);
 		r = inferOccursInFromEntityLocations(model_id, r);
 		r = inferRegulatesViaOutputRegulates(model_id, r); //must be run before convertEntityRegulatorsToBindingFunctions
 		r = inferRegulatesViaOutputEnables(model_id, r);
@@ -1037,7 +1045,31 @@ final long counterValue = instanceCounter.getAndIncrement();
 		return r;
 	}
 
-
+	private RuleResults inferMolecularFunctionFromEnablers(String model_id, RuleResults r, QRunner tbox_qrunner) {
+		String enabling_function_rule = "If enabler then MF rule";
+		Integer enabling_function_count = r.checkInitCount(enabling_function_rule, r);
+		Set<String> enabling_function_pathways = r.checkInitPathways(enabling_function_rule, r);		
+		Set<String> newfunctions = qrunner.findEnabledMolecularEvents();
+		Set<OWLAnnotation> annos = getDefaultAnnotations();
+		String explain1 = "If enabler then MF rule. If a process has an enabled_by assertion, than the process is a molecular function.";
+		annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain1)));	
+		if(newfunctions!=null&&newfunctions.size()>0) { 
+			for(String reaction_uri : newfunctions) {
+				enabling_function_count++;
+				OWLNamedIndividual reaction_instance = df.getOWLNamedIndividual(IRI.create(reaction_uri));
+				//drop the asserted molecular event type
+				removeType(reaction_instance, GoCAM.molecular_event);
+				//add the function type
+				addTypeAssertion(reaction_instance, GoCAM.molecular_function);
+				//track the pathway id
+				enabling_function_pathways.add(model_id);
+			}			
+			qrunner = new QRunner(go_cam_ont);
+		}
+		r.rule_hitcount.put(enabling_function_rule, enabling_function_count);
+		r.rule_pathways.put(enabling_function_rule, enabling_function_pathways);
+		return r;
+	}
 
 	private RuleResults inferEnablersFromUpstream(String model_id, RuleResults r, QRunner tbox_qrunner) {
 		String enabling_binding_rule = "Upstream Enabler Rule";
@@ -1517,16 +1549,16 @@ BP has_part R
 	private void deleteComplexesWithActiveUnits() {
 		Set<String> complexes = qrunner.getComplexesWithActiveUnits();
 		if(complexes.size()>0) {
-		for(String complex_uri : complexes) {
-			OWLNamedIndividual c = makeUnannotatedIndividual(complex_uri);
-			deleteOwlEntityAndAllReferencesToIt(c);
-		}
-		System.out.println("deleted "+complexes.size()+" complexes with active units.");
+			for(String complex_uri : complexes) {
+				OWLNamedIndividual c = makeUnannotatedIndividual(complex_uri);
+				deleteOwlEntityAndAllReferencesToIt(c);
+			}
+			System.out.println("deleted "+complexes.size()+" complexes with active units.");
 		}else {
 			System.out.println("no complexes with active units found in pathway.");
 		}
 	}
-	
+
 	private void deleteLocations() {
 		System.out.println("Starting delete locations");
 		/**

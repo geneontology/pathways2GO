@@ -892,6 +892,25 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		
 	}
 	
+	public Set<String> findEnabledMolecularEvents() {
+		Set<String> reactions = new HashSet<String>();
+		String query = null;
+		try {		
+			query = IOUtils.toString(QRunner.class.getResourceAsStream("query2update_enabled_by_functions.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL update from jar \n"+e);
+		}
+		QueryExecution qe = QueryExecutionFactory.create(query, jena);
+		ResultSet results = qe.execSelect();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Resource reaction = qs.getResource("reaction"); 
+			reactions.add(reaction.getURI());
+		}
+		qe.close();
+		return reactions; 
+	}
+	
 	public Map<String, Set<BindingInput>> findMolecularEvents() {
 		Map<String, Set<BindingInput>> reaction_inputs = new HashMap<String, Set<BindingInput>>();
 		String query = null;
