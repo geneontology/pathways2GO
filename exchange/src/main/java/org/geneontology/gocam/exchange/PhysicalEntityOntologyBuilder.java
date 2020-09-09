@@ -302,6 +302,7 @@ public class PhysicalEntityOntologyBuilder {
 		go_cam.addLabel(me_class, "Molecular Event");
 		go_cam.addComment(me_class, "This class represents things happening in a biological context.  It might be a superclass of GO:Molecular Function that incorporates events that are enabled by specific gene products as well as those that are not.");
 		go_cam.addSubClassAssertion(me_class, GoCAM.process_class);
+		go_cam.addSubClassAssertion(GoCAM.molecular_function, me_class);
 		//Annotate the ontology		
 		LocalDateTime now = LocalDateTime.now();
 		OWLAnnotation time_anno = go_cam.df.getOWLAnnotation(GoCAM.version_info, go_cam.df.getOWLLiteral("Generated from Reactome biopax build: "+biopax_build_id+" on: "+now.toString()));
