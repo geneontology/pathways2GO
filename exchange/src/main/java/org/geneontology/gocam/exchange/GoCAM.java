@@ -1111,11 +1111,10 @@ final long counterValue = instanceCounter.getAndIncrement();
 
 	/**
 	 * Infer Transport reactions
-	 * If a reaction has not been provided with an rdf:type 
-	 * and the input entities are the same as the output entities
+	 * If the input entities are the same as the output entities
 	 * and the input entities have different locations from the output entities
 	 * then add has_target_end_location and has_target_start_location attributes to the reaction node
-	 * and add type 'transport'  
+	 * and, if no type has been asserted, add type 'transport'  
 	 * See: 'TCF dependent signaling in response to WNT' https://reactome.org/PathwayBrowser/#/R-HSA-201681&SEL=R-HSA-201669&PATH=R-HSA-162582,R-HSA-195721
 	 * (1 inference for reaction 'Beta-catenin translocates to the nucleus'
 	 *  Downstream dependency alert: do this before enabler inference step below since we don't want that rule to fire on transport reactions
@@ -1135,19 +1134,23 @@ final long counterValue = instanceCounter.getAndIncrement();
 				}
 				transport_pathways.add(transport_reaction.pathway_uri);
 				OWLNamedIndividual reaction = this.makeAnnotatedIndividual(transport_reaction.reaction_uri);
-				OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(molecular_event, reaction);
-				ontman.removeAxiom(go_cam_ont, classAssertion);
-
+				OWLClass reaction_type = df.getOWLClass(IRI.create(transport_reaction.reaction_type_uri));
+				boolean add_type = false;
+				if(reaction_type.equals(molecular_event)||reaction_type.equals(molecular_function)) {
+					OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(reaction_type, reaction);
+					ontman.removeAxiom(go_cam_ont, classAssertion);
+					add_type = true;
+				}
 				String thing_type_uri = transport_reaction.thing_type_uri;
 				OWLClass thing_type = this.df.getOWLClass(IRI.create(thing_type_uri));
 				OWLNamedIndividual thing = this.makeAnnotatedIndividual(transport_reaction.thing_uri);
 				Set<OWLClass> entity_types = tbox_qrunner.getSuperClasses(thing_type, false);
 				System.out.println(thing_type_uri+" types "+entity_types);
 				String explain = "Transporter Rule.  This reaction represents the activity of transporting ";
-				if(entity_types!=null&&entity_types.contains(chebi_protein)) {
+				if(add_type&&entity_types!=null&&entity_types.contains(chebi_protein)) {
 					addTypeAssertion(reaction, protein_transporter_activity);
 					explain+=" a protein.";   
-				}else {
+				}else if(add_type){
 					addTypeAssertion(reaction, transporter_activity);
 					if(entity_types.contains(go_complex)) {
 						explain+=" a complex.";
@@ -1319,8 +1322,8 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 			if(entity_label==null) {
 				entity_label = ir.entity_type_uri;
 			}
-			String explain = "Entity Regulation Rule 1.  The is relation was inferred because reaction1 has output "+entity_label+" and "
-					+ entity_label+" "+reg+" reaction2.  Note that this regulation is non-catalytic. ";
+			String explain = "Entity Regulation Rule 1.  This relation was inferred because reaction1 has an output "
+					+" that "+reg+" reaction2.  Note that this regulation is non-catalytic. ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 			//add the function provides input for binding function regulates function 
 			//make the MF node
