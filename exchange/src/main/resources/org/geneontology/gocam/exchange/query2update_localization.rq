@@ -11,8 +11,9 @@ prefix skos: <http://www.w3.org/2004/02/skos/core#>
 
 select ?reaction ?reaction_type ?start_location_type ?end_location_type ?start_location ?end_location ?input ?input_thing_type ?output_thing_type ?thing_label ?pathway ?enabler   
 where {
-  	#reaction annotated to basically nothing
-  	?reaction rdf:type ?reaction_type .
+  	#reaction annotated to any type
+  	?reaction rdf:type ?reaction_type . 
+  	filter(?reaction_type != <http://www.w3.org/2002/07/owl#NamedIndividual>) . 
   	#has an output
    	?reaction obo:RO_0002234 ?output .
    	#with a location

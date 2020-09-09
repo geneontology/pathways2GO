@@ -1119,7 +1119,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 * (1 inference for reaction 'Beta-catenin translocates to the nucleus'
 	 *  Downstream dependency alert: do this before enabler inference step below since we don't want that rule to fire on transport reactions
 	 */	
-	private RuleResults inferTransportProcess(String model_id, RuleResults r, QRunner tbox_qrunner) {
+	private RuleResults inferTransportProcess(String model_id, RuleResults r, QRunner tbox_qrunner) {		
 		String transport_rule = "Transporter Rule";
 		Integer transport_count = r.checkInitCount(transport_rule, r);
 		Set<String> transport_pathways = r.checkInitPathways(transport_rule, r);		
@@ -1168,11 +1168,11 @@ final long counterValue = instanceCounter.getAndIncrement();
 				addTypeAssertion(end_loc, end_loc_type);				
 				//add relations to enable deeper classification based on OWL axioms in BP branch
 				Set<OWLAnnotation> annos = getDefaultAnnotations();
-				String explain1 = "This relation was inferred because something that was an input to the reaction started out in the target location "+getaLabel(end_loc_type)
-				+ " and then, as a consequence of the reaction/process was transported to another location.";
+				String explain1 = "This relation was inferred because something that was an input to the reaction started out in the target location "+getaLabel(start_loc_type)
+				+ " and then, as a consequence of the reaction/process was transported to "+getaLabel(end_loc_type);
 				annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain1)));				
 				addRefBackedObjectPropertyAssertion(reaction, has_target_start_location, start_loc, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
-				String explain2 = "This relation was inferred because something that was an input to the reaction started one location "
+				String explain2 = "This relation was inferred because something that was an input to the reaction started in "+getaLabel(start_loc_type)
 						+ " and then, as a consequence of the reaction/process was transported to the target end location "+getaLabel(end_loc_type);
 				Set<OWLAnnotation> annos2 = getDefaultAnnotations();
 				annos2.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain2)));
