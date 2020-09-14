@@ -256,6 +256,10 @@ public class BioPaxtoGOTest {
 	 * 	https://reactome.org/content/detail/R-HSA-201472
 	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-201451
 	 */
+	
+	/**
+	 * nice example: R-HSA-997272 Reactome:unexpanded:Inhibition of voltage gated Ca2+ channels via Gbeta/gamma subunits
+	 */
 	@Test
 	public final void testInferLocalizationProcess() {
 		System.out.println("Testing localization inference");
@@ -554,7 +558,8 @@ public class BioPaxtoGOTest {
 	 * 	Reaction: glucokinase (GCK1) + glucokinase regulatory protein (GKRP) <=> GCK1:GKRP complex
 	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-170822
 	 */
-	@Test 
+//This test was taken out along with the corresponding rule - see https://github.com/geneontology/pathways2GO/issues/103	
+//	@Test 
 	public final void testInferEnablersFromUpstream() {
 		System.out.println("Testing infer enabler from upstream output as an input");
 		TupleQueryResult result = null;
