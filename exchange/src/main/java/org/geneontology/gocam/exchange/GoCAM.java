@@ -702,7 +702,7 @@ static final AtomicLong instanceCounter = new AtomicLong(0L);
 final long counterValue = instanceCounter.getAndIncrement();
 	 * @return
 	 */
-	public static IRI makeRandomIri(String model_base_id) {
+	public static IRI makeARandomIri(String model_base_id) {
 		String root = base_iri;
 		if(model_base_id!=null) {
 			root = base_iri+model_base_id+"/";
@@ -1177,7 +1177,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 				annos2.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain2)));
 				addRefBackedObjectPropertyAssertion(reaction, has_target_end_location, end_loc, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos2, model_id);
 				//needed to support inferences into the localization hierarchy
-				addRefBackedObjectPropertyAssertion(reaction, transports_or_maintains_localization_of, thing, Collections.singleton(model_id), GoCAM.eco_inferred_auto,"Reactome", annos2, model_id);
+				OWLNamedIndividual transported_thing = cloneIndividual(thing, model_id, true, false, false, true);
+				addRefBackedObjectPropertyAssertion(reaction, transports_or_maintains_localization_of, transported_thing, Collections.singleton(model_id), GoCAM.eco_inferred_auto,"Reactome", annos2, model_id);
 			}
 			//enabled by needs to know if there are any transport reactions as these should not be included
 			//hence reload graph from ontology
