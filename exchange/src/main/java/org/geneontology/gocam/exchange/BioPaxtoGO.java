@@ -130,7 +130,7 @@ public class BioPaxtoGO {
 	//leaving all false, limits the reactions captured in each pathway to those shown in a e.g. Reactome view of the pathway
 	boolean causal_recurse = false;  //if true this will follow BioPAX nextStep links to gather content from other pathways
 	boolean add_pathway_parents = false; //if true will add all pathways that contain each reaction.  (Reactions may be present in multiple pathways.)
-	boolean add_neighboring_events_from_other_pathways = false; //if true will pull in nextStep connections from other pathways.  Note that this is not recursive, will only go one level out.
+	boolean add_neighboring_events_from_other_pathways = true; //if true will pull in nextStep connections from other pathways.  Note that this is not recursive, will only go one level out.
 	boolean add_upstream_controller_events_from_other_pathways = false; //if true will add reactions from other pathways if one of their participants is a controller (catalyst or regulator) of a reaction in the current pathway.  
 	boolean add_subpathway_bridges = false; //this is groundwork for an approach that generates go-cams that reference members of other go-cams, here referencing other pathways.  
 	String default_namespace_prefix = "Reactome"; //this is used to generate curi structured references - e.g. Reactome:HSA-007
@@ -679,40 +679,41 @@ public class BioPaxtoGO {
 				Set<PathwayStep> steps = pathway.getPathwayOrder();
 				for(PathwayStep step1 : steps) {
 					Set<Process> events = step1.getStepProcess();
-					Set<PathwayStep> step2s = step1.getNextStep();
 					Set<PathwayStep> previousSteps = step1.getNextStepOf();
-					for(PathwayStep step2 : step2s) {
-						Set<Process> nextEvents = step2.getStepProcess();
-						for(Process event : events) {
-							for(Process nextEvent : nextEvents) {
-								//limit to relations between conversions - was biochemical reactions but see no reason 
-								//not to extend this to include e.g. degradation
-								if((event instanceof Interaction)&&(nextEvent instanceof Interaction)&&
-										!(event instanceof Control)&&!(nextEvent instanceof Control)) {
-									String event_id = getEntityReferenceId(event);
-									Set<Pathway> event_pathways = event.getPathwayComponentOf();
-									Set<Pathway> next_event_pathways = nextEvent.getPathwayComponentOf();
-									if((event_pathways.contains(pathway)&&next_event_pathways.contains(pathway))||
-											add_neighboring_events_from_other_pathways) {
-										String next_event_id = getEntityReferenceId(nextEvent);
-										IRI e1_iri = GoCAM.makeGoCamifiedIRI(model_id, event_id);
-										IRI e2_iri = GoCAM.makeGoCamifiedIRI(model_id, next_event_id);
-										OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(e1_iri);
-										OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(e2_iri);
-										go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.causally_upstream_of, e2, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
-										//in some cases, the reaction may connect off to a different pathway and hence not be caught in above loop to define reaction entities
-										//e.g. Recruitment of SET1 methyltransferase complex  -> APC promotes disassembly of beta-catenin transactivation complex
-										//are connected yet in different pathways
-										//if its been defined, ought to at least have a label
-										String l = go_cam.getaLabel(e2);
-										if(l!=null&&l.equals("")){
-											defineReactionEntity(go_cam, nextEvent, e2_iri, false, model_id, pathway_iri.toString());		
-										}
-									}
-								}
-							}
-						}
-					}
+//only looking at prev steps to avoid redundancy, should have everything.  
+//					Set<PathwayStep> step2s = step1.getNextStep();
+//					for(PathwayStep step2 : step2s) {
+//						Set<Process> nextEvents = step2.getStepProcess();
+//						for(Process event : events) {
+//							for(Process nextEvent : nextEvents) {
+//								//limit to relations between conversions - was biochemical reactions but see no reason 
+//								//not to extend this to include e.g. degradation
+//								if((event instanceof Interaction)&&(nextEvent instanceof Interaction)&&
+//										!(event instanceof Control)&&!(nextEvent instanceof Control)) {
+//									String event_id = getEntityReferenceId(event);
+//									Set<Pathway> event_pathways = event.getPathwayComponentOf();
+//									Set<Pathway> next_event_pathways = nextEvent.getPathwayComponentOf();
+//									if((event_pathways.contains(pathway)&&next_event_pathways.contains(pathway))||
+//											add_neighboring_events_from_other_pathways) {
+//										String next_event_id = getEntityReferenceId(nextEvent);
+//										IRI e1_iri = GoCAM.makeGoCamifiedIRI(model_id, event_id);
+//										IRI e2_iri = GoCAM.makeGoCamifiedIRI(model_id, next_event_id);
+//										OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(e1_iri);
+//										OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(e2_iri);
+//										go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.causally_upstream_of, e2, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+//										//in some cases, the reaction may connect off to a different pathway and hence not be caught in above loop to define reaction entities
+//										//e.g. Recruitment of SET1 methyltransferase complex  -> APC promotes disassembly of beta-catenin transactivation complex
+//										//are connected yet in different pathways
+//										//if its been defined, ought to at least have a label
+//										String l = go_cam.getaLabel(e2);
+//										if(l!=null&&l.equals("")){
+//											defineReactionEntity(go_cam, nextEvent, e2_iri, false, model_id, pathway_iri.toString());		
+//										}
+//									}
+//								}
+//							}
+//						}
+//					}
 					//adding in previous step (which may be from a different pathway)
 					for(PathwayStep prevStep : previousSteps) {
 						Set<Process> prevEvents = prevStep.getStepProcess();
@@ -725,8 +726,13 @@ public class BioPaxtoGO {
 										!(event instanceof Control)&&!(prevEvent instanceof Control)) {
 									Set<Pathway> event_pathways = event.getPathwayComponentOf();
 									Set<Pathway> prev_event_pathways = prevEvent.getPathwayComponentOf();
-									if((event_pathways.contains(pathway)&&prev_event_pathways.contains(pathway))||
-											add_neighboring_events_from_other_pathways) {							
+									String add_reaction = null;
+									if((event_pathways.contains(pathway)&&prev_event_pathways.contains(pathway))) {
+										add_reaction = "in_pathway";
+									}else if(add_neighboring_events_from_other_pathways) {	
+										add_reaction = "external_pathway";
+									}
+									if(add_reaction !=null) {
 										String prev_event_id = getEntityReferenceId(prevEvent);
 										IRI event_iri = GoCAM.makeGoCamifiedIRI(model_id, event_id);
 										IRI prevEvent_iri = GoCAM.makeGoCamifiedIRI(model_id, prev_event_id);
@@ -735,11 +741,14 @@ public class BioPaxtoGO {
 										go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.causally_upstream_of, e2, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 										//in some cases, the reaction may connect off to a different pathway and hence not be caught in above loop to define reaction entities
 										//e.g. Recruitment of SET1 methyltransferase complex  -> APC promotes disassembly of beta-catenin transactivation complex
-										//are connected yet in different pathways
-										//if its been defined, ought to at least have a label
-										String l = go_cam.getaLabel(e1);
-										if(l!=null && l.equals("")){
-											defineReactionEntity(go_cam, prevEvent, prevEvent_iri, false, model_id, pathway_iri.toString());		
+										//are connected yet in different pathways										
+										if(add_reaction.equals("external_pathway")){
+											String external_pathway_id = null;
+											for(Pathway external : prevEvent.getPathwayComponentOf()) {
+												external_pathway_id = getEntityReferenceId(external); 
+												go_cam.addComment(e1, "reaction from external pathway:"+external_pathway_id+" "+external.getDisplayName()); 
+											}
+											defineReactionEntity(go_cam, prevEvent, prevEvent_iri, false, external_pathway_id, pathway_iri.toString());		
 										}
 									}
 								}
