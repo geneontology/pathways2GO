@@ -5,15 +5,15 @@ prefix obo: <http://purl.obolibrary.org/obo/>
 prefix skos: <http://www.w3.org/2004/02/skos/core#>
 
 
-#If there is no specified GO molecular function term (except root MF GO:0003674), 
-#and the input entities are the same as the output entities
+#If the input entities are the same as the output entities
 #and the input entities have different locations from the output entities
 #then there may be some transport happening - (but for GO, only when there is something that enables the transport to happen)
 
-select ?reaction  ?start_location_type ?end_location_type ?start_location ?end_location ?input ?input_thing_type ?output_thing_type ?thing_label ?pathway ?enabler   
+select ?reaction ?reaction_type ?start_location_type ?end_location_type ?start_location ?end_location ?input ?input_thing_type ?output_thing_type ?thing_label ?pathway ?enabler   
 where {
-  	#reaction annotated to basically nothing
-  	?reaction rdf:type <http://purl.obolibrary.org/obo/go/extensions/reacto.owl#molecular_event> .
+  	#reaction annotated to any type
+  	?reaction rdf:type ?reaction_type . 
+  	filter(?reaction_type != <http://www.w3.org/2002/07/owl#NamedIndividual>) . 
   	#has an output
    	?reaction obo:RO_0002234 ?output .
    	#with a location

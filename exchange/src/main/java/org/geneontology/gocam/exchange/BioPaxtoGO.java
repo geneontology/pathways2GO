@@ -687,7 +687,8 @@ public class BioPaxtoGO {
 							for(Process nextEvent : nextEvents) {
 								//limit to relations between conversions - was biochemical reactions but see no reason 
 								//not to extend this to include e.g. degradation
-								if((event instanceof Conversion)&&(nextEvent instanceof Conversion)) {
+								if((event instanceof Interaction)&&(nextEvent instanceof Interaction)&&
+										!(event instanceof Control)&&!(nextEvent instanceof Control)) {
 									String event_id = getEntityReferenceId(event);
 									Set<Pathway> event_pathways = event.getPathwayComponentOf();
 									Set<Pathway> next_event_pathways = nextEvent.getPathwayComponentOf();
@@ -720,7 +721,8 @@ public class BioPaxtoGO {
 							for(Process prevEvent : prevEvents) {
 								//limit to relations between conversions - was biochemical reactions but see no reason 
 								//not to extend this to include e.g. degradation
-								if((event instanceof Conversion)&&(prevEvent instanceof Conversion)) {
+								if((event instanceof Interaction)&&(prevEvent instanceof Interaction)&&
+										!(event instanceof Control)&&!(prevEvent instanceof Control)) {
 									Set<Pathway> event_pathways = event.getPathwayComponentOf();
 									Set<Pathway> prev_event_pathways = prevEvent.getPathwayComponentOf();
 									if((event_pathways.contains(pathway)&&prev_event_pathways.contains(pathway))||
