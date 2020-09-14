@@ -119,21 +119,21 @@ public class BioPaxtoGO {
 	boolean explain_inconsistant_models = true; //If true, will output text explanations for OWL inconsistent models before halting.  
 	GoMappingReport report; //Captures details of mappings from input biopax pathways to output go-cams as well as information about the results of OWL reasoning on these models.   
 	Model biopax_model; //The BioPAX model that is being converted.  
-	static boolean check_consistency = true; //set to true to execute an OWL consistency check each time a pathway is processed.  If inconsistent, it generates a report and halts the program
-	static boolean ignore_diseases = true; //If true, skips any pathway that has the word 'disease' in its name or any of its parent pathway's name 
-	static boolean drop_drug_reactions = true; //If true, removes reactions that involve drugs (as determined by the presence of an IUPHAR id on the physical entity). 
-	static boolean add_lego_import = false; //If true, an OWL import statement bring in go-lego.owl is added to each generated model.  
-	static boolean save_inferences = false;  //If true, adds inferences to blazegraph journal
-	static boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
-	static boolean expand_subpathways = false;  //If true, add content from all lower level pathways.  This is generally a bad idea for high level nodes like 'Signaling Pathways'
+	boolean check_consistency = true; //set to true to execute an OWL consistency check each time a pathway is processed.  If inconsistent, it generates a report and halts the program
+	boolean ignore_diseases = true; //If true, skips any pathway that has the word 'disease' in its name or any of its parent pathway's name 
+	boolean drop_drug_reactions = true; //If true, removes reactions that involve drugs (as determined by the presence of an IUPHAR id on the physical entity). 
+	boolean add_lego_import = false; //If true, an OWL import statement bring in go-lego.owl is added to each generated model.  
+	boolean save_inferences = false;  //If true, adds inferences to blazegraph journal
+	boolean split_by_pathway = true; //keep to true unless you want one giant model for whatever you input
+	boolean expand_subpathways = false;  //If true, add content from all lower level pathways.  This is generally a bad idea for high level nodes like 'Signaling Pathways'
 	//these define the extent to which information from other pathways is brought into the pathway in question
 	//leaving all false, limits the reactions captured in each pathway to those shown in a e.g. Reactome view of the pathway
-	static boolean causal_recurse = false;  //if true this will follow BioPAX nextStep links to gather content from other pathways
-	static boolean add_pathway_parents = false; //if true will add all pathways that contain each reaction.  (Reactions may be present in multiple pathways.)
-	static boolean add_neighboring_events_from_other_pathways = false; //if true will pull in nextStep connections from other pathways.  Note that this is not recursive, will only go one level out.
-	static boolean add_upstream_controller_events_from_other_pathways = false; //if true will add reactions from other pathways if one of their participants is a controller (catalyst or regulator) of a reaction in the current pathway.  
-	static boolean add_subpathway_bridges = false; //this is groundwork for an approach that generates go-cams that reference members of other go-cams, here referencing other pathways.  
-	static String default_namespace_prefix = "Reactome"; //this is used to generate curi structured references - e.g. Reactome:HSA-007
+	boolean causal_recurse = false;  //if true this will follow BioPAX nextStep links to gather content from other pathways
+	boolean add_pathway_parents = false; //if true will add all pathways that contain each reaction.  (Reactions may be present in multiple pathways.)
+	boolean add_neighboring_events_from_other_pathways = false; //if true will pull in nextStep connections from other pathways.  Note that this is not recursive, will only go one level out.
+	boolean add_upstream_controller_events_from_other_pathways = false; //if true will add reactions from other pathways if one of their participants is a controller (catalyst or regulator) of a reaction in the current pathway.  
+	boolean add_subpathway_bridges = false; //this is groundwork for an approach that generates go-cams that reference members of other go-cams, here referencing other pathways.  
+	String default_namespace_prefix = "Reactome"; //this is used to generate curi structured references - e.g. Reactome:HSA-007
 	Set<String> drug_process_ids = new HashSet<String>(); 
 
 	public BioPaxtoGO(){
@@ -189,7 +189,7 @@ public class BioPaxtoGO {
 		String base_contributor = "https://orcid.org/0000-0002-7334-7852"; //Ben Good
 		String base_provider = "https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";
 		String tag = "unexpanded";
-		if(expand_subpathways) {
+		if(bp2g.expand_subpathways) {
 			tag = "expanded";
 		}	
 
