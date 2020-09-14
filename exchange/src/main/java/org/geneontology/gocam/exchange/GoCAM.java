@@ -1032,7 +1032,6 @@ final long counterValue = instanceCounter.getAndIncrement();
 		RuleResults r = new RuleResults();
 		//NOTE that the order these are run matters.
 		r = inferTransportProcess(model_id, r, tbox_qrunner);	//must be run before occurs_in and before deleteLocations	 
-		r = inferEnablersFromUpstream(model_id, r, tbox_qrunner);
 		r = inferMolecularFunctionFromEnablers(model_id, r, tbox_qrunner);
 		r = inferOccursInFromEntityLocations(model_id, r);
 		r = inferRegulatesViaOutputRegulates(model_id, r); //must be run before convertEntityRegulatorsToBindingFunctions
