@@ -370,49 +370,6 @@ public class BioPaxtoGOTest {
 		System.out.println("Done testing protein transport inference");
 	}
 
-	/**
-	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferMolecularFunctionFromEnablers()}.
-	 * Test that reactions typed as molecular events get converted to molecular functions when they have enablers assigned
-	 * Use reaction in Signaling By BMP R-HSA-201451
-	 * 	Phospho-R-Smad1/5/8 dissociates from the receptor complex
-	 * 	https://reactome.org/content/detail/R-HSA-201453
-	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-201451
-	 */
-	@Test
-	public final void testInferDissociationProcess() {
-		System.out.println("Testing a dissociation reaction - should currently be a raw MF");
-		TupleQueryResult result = null;
-		try {
-			result = blaze.runSparqlQuery(
-				"prefix obo: <http://purl.obolibrary.org/obo/> "
-				+ "select ?type " + 
-				"where { " + 
-				"VALUES ?reaction { <http://model.geneontology.org/R-HSA-201451/R-HSA-201453> }" + 
-				"  ?reaction rdf:type ?type .	" + 
-				"  filter(?type != owl:NamedIndividual) " + 
-				"} ");
-			int n = 0; String type = null; 
-			while (result.hasNext()) {
-				BindingSet bindingSet = result.next();
-				type = bindingSet.getValue("type").stringValue();
-				n++;
-			}
-			assertTrue(n==1);
-			assertTrue(type.equals("http://purl.obolibrary.org/obo/GO_0003674"));
-		} catch (QueryEvaluationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				result.close();
-			} catch (QueryEvaluationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		System.out.println("Done testing dissociation ");
-	}
-	
 
 	/**
 	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferOccursInFromEntityLocations()}.
