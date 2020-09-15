@@ -882,7 +882,8 @@ public class BioPaxtoGO {
 								break;
 							}
 							if(location_term!=null) {
-								OWLNamedIndividual loc_e = go_cam.makeAnnotatedIndividual(GoCAM.makeRandomIri(model_id));
+								String loc_i_id = getEntityReferenceId(entity)+uri.hashCode();
+								OWLNamedIndividual loc_e = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRIstring(model_id, loc_i_id));
 								go_cam.addLabel(xref_go_loc, location_term);
 								go_cam.addTypeAssertion(loc_e, xref_go_loc);
 								go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.located_in, loc_e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);		
@@ -966,7 +967,7 @@ public class BioPaxtoGO {
 				Set<OWLNamedIndividual> process_participants = new HashSet<OWLNamedIndividual>();
 				for(Entity interactor : interactors) {				
 					if(interactor instanceof PhysicalEntity) {
-						IRI i_iri = GoCAM.makeRandomIri(model_id);
+						IRI i_iri = GoCAM.makeGoCamifiedIRI(model_id, entity.hashCode()+"_interactor_"+interactor.hashCode());
 						OWLNamedIndividual i_entity = go_cam.df.getOWLNamedIndividual(i_iri);
 						defineReactionEntity(go_cam, interactor, i_iri, true, model_id, root_pathway_iri);		
 						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_participant, i_entity, dbids, GoCAM.eco_imported_auto,  default_namespace_prefix,go_cam.getDefaultAnnotations(), model_id);
@@ -1207,7 +1208,9 @@ public class BioPaxtoGO {
 								IRI entity_class_iri = IRI.create(GoCAM.reacto_base_iri+active_site_stable_id);
 								OWLClass entity_class = go_cam.df.getOWLClass(entity_class_iri); 
 								//make a new individual - hmm.. check for conflict
-								OWLNamedIndividual active_i = go_cam.makeAnnotatedIndividual(GoCAM.makeRandomIri(model_id));
+								String active_id = getEntityReferenceId(controller)+"_"+active_site_stable_id;
+								IRI active_iri = GoCAM.makeGoCamifiedIRI(model_id, active_id);
+								OWLNamedIndividual active_i = go_cam.makeAnnotatedIndividual(active_iri);
 								go_cam.addTypeAssertion(active_i,  entity_class);
 								go_cam.addComment(active_i, "Active unit in "+controller_entity_id);
 								//per discussion in pathways2GO/issues/91 removing the connection to the complex
