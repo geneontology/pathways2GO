@@ -48,7 +48,7 @@ public class BioPaxtoGOTest {
 	//use default values for testing
 	static BioPaxtoGO bp2g = new BioPaxtoGO(); 
 	//parameters to set
-	static String input_biopax = "./src/test/resources/biopax/"; 
+	static String input_biopax = "./src/test/resources/tmp/"; 
 	static String output_file_folder = "./src/test/resources/gocam/"; 
 	static String output_file_stub = "./src/test/resources/gocam/test-"; 
 	static String output_blazegraph_journal = "./src/test/resources/gocam/blazegraph.jnl"; //"/Users/bgood/noctua-config/blazegraph.jnl"; //
@@ -604,7 +604,7 @@ BP has_part R
 				e.printStackTrace();
 			}
 		}
-		System.out.println("Done testing infer regulates via output regulates");
+		System.out.println("Done testing testConvertEntityRegulatorsToBindingFunctions");
 	}
 	
 	/**

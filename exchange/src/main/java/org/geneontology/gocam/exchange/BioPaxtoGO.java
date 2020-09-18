@@ -735,21 +735,27 @@ public class BioPaxtoGO {
 									if(add_reaction !=null) {
 										String prev_event_id = getEntityReferenceId(prevEvent);
 										IRI event_iri = GoCAM.makeGoCamifiedIRI(model_id, event_id);
-										IRI prevEvent_iri = GoCAM.makeGoCamifiedIRI(model_id, prev_event_id);
-										OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(prevEvent_iri);
-										OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(event_iri);
-										go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.causally_upstream_of, e2, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+										IRI prevEvent_iri = null;
+										OWLNamedIndividual e1 = null;
 										//in some cases, the reaction may connect off to a different pathway and hence not be caught in above loop to define reaction entities
 										//e.g. Recruitment of SET1 methyltransferase complex  -> APC promotes disassembly of beta-catenin transactivation complex
-										//are connected yet in different pathways										
-										if(add_reaction.equals("external_pathway")){
+										//are connected yet in different pathways
+										if(add_reaction.equals("external_pathway")) {
 											String external_pathway_id = null;
 											for(Pathway external : prevEvent.getPathwayComponentOf()) {
 												external_pathway_id = getEntityReferenceId(external); 
+												prevEvent_iri = GoCAM.makeGoCamifiedIRI(external_pathway_id, prev_event_id);
+												e1 = go_cam.df.getOWLNamedIndividual(prevEvent_iri);
 												go_cam.addComment(e1, "reaction from external pathway:"+external_pathway_id+" "+external.getDisplayName()); 
+												break;
 											}
 											defineReactionEntity(go_cam, prevEvent, prevEvent_iri, false, external_pathway_id, pathway_iri.toString());		
-										}
+										}else {
+											prevEvent_iri = GoCAM.makeGoCamifiedIRI(model_id, prev_event_id);
+											e1 = go_cam.df.getOWLNamedIndividual(prevEvent_iri);
+										}										
+										OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(event_iri);
+										go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.causally_upstream_of, e2, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);										
 									}
 								}
 							} 

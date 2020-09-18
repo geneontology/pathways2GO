@@ -1039,7 +1039,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		r = inferProvidesInput(model_id, r);
 		r = convertEntityRegulatorsToBindingFunctions(model_id, r);
 		deleteComplexesWithActiveUnits();
-		deleteLocations();
+		deleteDisallowedRelations();
 		cleanOutUnconnectedNodes();
 		return r;
 	}
@@ -1444,7 +1444,13 @@ R enabled_by E2
 BP has_part R
 	 * @return 
 	 */
-	private RuleResults convertEntityRegulatorsToBindingFunctions(String model_id, RuleResults r) {		 
+	private RuleResults convertEntityRegulatorsToBindingFunctions(String model_id, RuleResults r) {		
+		if(model_id.equals("R-HSA-159236")) {
+			Set<String> out = qrunner.describe("http://model.geneontology.org/R-HSA-159236/R-HSA-75097", true);
+			Set<String> in = qrunner.describe("http://model.geneontology.org/R-HSA-159236/R-HSA-75097", false);
+			System.out.println("test 123 ");
+			
+		}
 		String entity_regulator_rule = "Entity Regulator Rule";
 		Integer entity_regulator_count = r.checkInitCount(entity_regulator_rule, r);
 		Set<String> entity_regulator_pathways = r.checkInitPathways(entity_regulator_rule, r);
@@ -1467,8 +1473,11 @@ BP has_part R
 			Set<InferredRegulator> regs = reaction_regulators.get(reaction_uri);
 			if(!regs.isEmpty()) {
 				InferredRegulator base = regs.iterator().next();
-				entity_regulator_pathways.add(base.pathway_uri);
-				OWLNamedIndividual pathway = makeUnannotatedIndividual(base.pathway_uri);
+				OWLNamedIndividual pathway = null;
+				if(base.pathway_uri!=null) {
+					entity_regulator_pathways.add(base.pathway_uri);
+					pathway = makeUnannotatedIndividual(base.pathway_uri);
+				}
 				//now get the actual regulating entities
 				Set<String> regulating_entities = new HashSet<String>();
 				for(InferredRegulator er : reaction_regulators.get(reaction_uri)) {
@@ -1502,10 +1511,13 @@ BP has_part R
 
 					if(er.enabler_uri!=null) {
 						IRI new_enabler_node_iri = IRI.create(makeGoCamifiedIRIstring(model_id, reaction.hashCode()+"_regulator_enabler_"+er.enabler_uri.hashCode()+"_"+regulator.hashCode()));						
-						OWLNamedIndividual enabler = cloneIndividual(er.enabler_uri, model_id, true, true, false, true, new_enabler_node_iri);
+						OWLNamedIndividual enabler = cloneIndividual(er.enabler_uri, model_id, true, false, false, true, new_enabler_node_iri);
 						addRefBackedObjectPropertyAssertion(binding_node, has_input, enabler, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
 						//delete the cloned enable relation
 						applyAnnotatedTripleRemover(reaction.getIRI(), enabled_by.getIRI(), enabler.getIRI());
+						//just in case the enabler was double inserted as a controller
+						applyAnnotatedTripleRemover(enabler.getIRI(), prop_for_deletion.getIRI(), reaction.getIRI());
+						applyAnnotatedTripleRemover(IRI.create(er.enabler_uri), prop_for_deletion.getIRI(), reaction.getIRI());
 					}
 					//make a BP node
 					IRI new_bp_node_iri = makeGoCamifiedIRI(model_id, reaction.hashCode()+"_regulator_bp_"+regulator_prop.hashCode()+"_"+regulator.hashCode());
@@ -1513,7 +1525,9 @@ BP has_part R
 					addComment(bp_node, "Produced by Entity Regulator Rule");
 					addTypeAssertion(bp_node, bp_class);
 					addRefBackedObjectPropertyAssertion(binding_node, part_of, bp_node, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
-					addRefBackedObjectPropertyAssertion(bp_node, regulator_prop, pathway, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);					
+					if(pathway!=null) {
+						addRefBackedObjectPropertyAssertion(bp_node, regulator_prop, pathway, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);					
+					}
 					//delete the original entity regulates process relation 
 					applyAnnotatedTripleRemover(regulator.getIRI(), prop_for_deletion.getIRI(), reaction.getIRI());
 				}
@@ -1538,7 +1552,7 @@ BP has_part R
 		}
 	}
 
-	private void deleteLocations() {
+	private void deleteDisallowedRelations() {
 		System.out.println("Starting delete locations");
 		/**
 		 * Rule Noctua 1 : Delete all location assertions if for noctua curation
@@ -1554,6 +1568,10 @@ BP has_part R
 				OWLNamedIndividual o = a.getObject().asOWLNamedIndividual();
 				applyAnnotatedTripleRemover(s.getIRI(), located_in.getIRI(), o.getIRI());
 				deleteOwlEntityAndAllReferencesToIt(o);
+			}else if(p.equals(involved_in_positive_regulation_of)||p.equals(involved_in_negative_regulation_of)) {
+				OWLNamedIndividual s = a.getSubject().asOWLNamedIndividual();
+				OWLNamedIndividual o = a.getObject().asOWLNamedIndividual();
+				applyAnnotatedTripleRemover(s.getIRI(), p.asOWLObjectProperty().getIRI(), o.getIRI());
 			}
 		}			
 		qrunner = new QRunner(go_cam_ont); 
