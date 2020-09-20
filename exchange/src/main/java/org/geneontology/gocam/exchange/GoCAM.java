@@ -31,6 +31,7 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
+import org.apache.log4j.Logger;
 import org.biopax.paxtools.model.level3.PublicationXref;
 import org.biopax.paxtools.model.level3.Xref;
 import org.geneontology.gocam.exchange.QRunner.BindingInput;
@@ -105,6 +106,7 @@ import scala.collection.JavaConverters;
  *
  */
 public class GoCAM {
+	private static final Logger logger = Logger.getLogger(GoCAM.class);
 	public static final String base_iri = "http://model.geneontology.org/";
 	public static final IRI go_lego_iri = IRI.create("http://purl.obolibrary.org/obo/go/extensions/go-lego.owl");
 	public static final IRI obo_iri = IRI.create("http://purl.obolibrary.org/obo/");
@@ -1139,6 +1141,13 @@ final long counterValue = instanceCounter.getAndIncrement();
 					OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(reaction_type, reaction);
 					ontman.removeAxiom(go_cam_ont, classAssertion);
 					add_type = true;
+				}else {
+					Set<OWLClass> mf_types = tbox_qrunner.getSuperClasses(reaction_type, false);
+					if(mf_types!=null&&(!mf_types.contains(transporter_activity))) {
+						//don't do anything if it has a type that isn't a subclass of transporter activity
+						logger.info("skipping over transport on non-transport reaction "+transport_reaction.reaction_uri);
+						continue;
+					}
 				}
 				String thing_type_uri = transport_reaction.thing_type_uri;
 				OWLClass thing_type = this.df.getOWLClass(IRI.create(thing_type_uri));
@@ -1445,12 +1454,6 @@ BP has_part R
 	 * @return 
 	 */
 	private RuleResults convertEntityRegulatorsToBindingFunctions(String model_id, RuleResults r) {		
-		if(model_id.equals("R-HSA-159236")) {
-			Set<String> out = qrunner.describe("http://model.geneontology.org/R-HSA-159236/R-HSA-75097", true);
-			Set<String> in = qrunner.describe("http://model.geneontology.org/R-HSA-159236/R-HSA-75097", false);
-			System.out.println("test 123 ");
-			
-		}
 		String entity_regulator_rule = "Entity Regulator Rule";
 		Integer entity_regulator_count = r.checkInitCount(entity_regulator_rule, r);
 		Set<String> entity_regulator_pathways = r.checkInitPathways(entity_regulator_rule, r);
