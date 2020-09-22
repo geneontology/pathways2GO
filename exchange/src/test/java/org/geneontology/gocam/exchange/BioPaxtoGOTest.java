@@ -583,7 +583,7 @@ BP has_part R
 				+ " ?binding_reaction <http://purl.obolibrary.org/obo/RO_0002212> ?reaction1 . " //
 				+ "?binding_reaction rdf:type <http://purl.obolibrary.org/obo/GO_0005488> . "
 				+ "?binding_reaction <http://purl.obolibrary.org/obo/RO_0002233> ?input1 . "
-				+ "?binding_reaction <http://purl.obolibrary.org/obo/RO_0002233> ?input2 . "
+				+ "?binding_reaction <http://purl.obolibrary.org/obo/RO_0002333> ?input2 . "
 				+ "filter(?input1 != ?input2) "
 				+"}"); 
 			int n = 0; 
