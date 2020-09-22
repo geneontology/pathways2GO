@@ -1508,19 +1508,22 @@ BP has_part R
 					IRI new_mf_node_iri = makeGoCamifiedIRI(model_id, reaction.hashCode()+"_regulator_"+regulator_prop.hashCode()+"_"+regulator.hashCode());
 					OWLNamedIndividual binding_node = makeAnnotatedIndividual(new_mf_node_iri);
 					addComment(binding_node, "Produced by Entity Regulator Rule");					
-					addTypeAssertion(binding_node, binding);
+				
 					addRefBackedObjectPropertyAssertion(binding_node, has_input, regulator, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
 					addRefBackedObjectPropertyAssertion(binding_node, regulator_prop, reaction, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
 
 					if(er.enabler_uri!=null) {
+						addTypeAssertion(binding_node, binding);
 						IRI new_enabler_node_iri = IRI.create(makeGoCamifiedIRIstring(model_id, reaction.hashCode()+"_regulator_enabler_"+er.enabler_uri.hashCode()+"_"+regulator.hashCode()));						
 						OWLNamedIndividual enabler = cloneIndividual(er.enabler_uri, model_id, true, false, false, true, new_enabler_node_iri);
-						addRefBackedObjectPropertyAssertion(binding_node, has_input, enabler, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+						addRefBackedObjectPropertyAssertion(binding_node, enabled_by, enabler, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
 						//delete the cloned enable relation
 						applyAnnotatedTripleRemover(reaction.getIRI(), enabled_by.getIRI(), enabler.getIRI());
 						//just in case the enabler was double inserted as a controller
 						applyAnnotatedTripleRemover(enabler.getIRI(), prop_for_deletion.getIRI(), reaction.getIRI());
 						applyAnnotatedTripleRemover(IRI.create(er.enabler_uri), prop_for_deletion.getIRI(), reaction.getIRI());
+					}else {
+						addTypeAssertion(binding_node, molecular_event);
 					}
 					//make a BP node
 					IRI new_bp_node_iri = makeGoCamifiedIRI(model_id, reaction.hashCode()+"_regulator_bp_"+regulator_prop.hashCode()+"_"+regulator.hashCode());
