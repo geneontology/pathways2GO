@@ -7,9 +7,9 @@ prefix skos: <http://www.w3.org/2004/02/skos/core#>
 
 #get all the locations of entities involved in something
 
-select ?pathway ?reaction ?location_instance ?location_type ?entity ?relation  
+select ?reaction ?location_instance ?location_type ?entity ?relation  
 where {
-  	?reaction obo:BFO_0000050 ?pathway . 
+  	#optional {?reaction obo:BFO_0000050 ?pathway } . 
   	#reaction with inputs/outputs/enablers/regulators/etc.  
   	#{
   	?reaction ?relation ?entity . 

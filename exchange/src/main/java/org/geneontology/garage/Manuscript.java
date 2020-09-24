@@ -31,7 +31,7 @@ import org.geneontology.gocam.exchange.BioPaxtoGO;
 public class Manuscript {
 
 	public static void main(String[] args) throws IOException {
-		String out = "/Users/benjamingood/test/manuscript/causal_comparison.txt";
+		String out = "/Users/benjamingood/test/reactome_report-sept20/causal_comparison.txt";
 		//count the go-cam causal connections
 		Map<String, Integer> pathway_causal = new HashMap<String, Integer>();
 		Map<String, Set<String>> pathway_causalpairs = new HashMap<String, Set<String>>();

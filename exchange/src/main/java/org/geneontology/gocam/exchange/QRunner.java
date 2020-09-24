@@ -694,10 +694,13 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		Map<String, InferredOccursIn> reaction_locinfo = new HashMap<String, InferredOccursIn>();
 		while (results.hasNext()) {
 			QuerySolution qs = results.next();
-			Resource pathway = qs.getResource("pathway");
-			String pathway_uri = pathway.getURI();
 			Resource reaction = qs.getResource("reaction");
 			String reaction_uri = reaction.getURI();
+			Resource pathway = qs.getResource("pathway");
+			String pathway_uri = null;
+			if(pathway!=null) {
+				pathway_uri = pathway.getURI();
+			}
 			Resource relation = qs.getResource("relation");
 			String relation_uri = relation.getURI();
 			Resource location_instance = qs.getResource("location_instance"); 
