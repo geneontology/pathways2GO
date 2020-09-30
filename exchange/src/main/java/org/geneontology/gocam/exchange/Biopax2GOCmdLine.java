@@ -71,7 +71,7 @@ public class Biopax2GOCmdLine {
 		options.addOption("go", true, "Location of primary GO file. Use GOPlus for inference. ");
 		options.addOption("tp", true, "Exact name of a specific pathway to test - e.g. \"Signaling by MP\".  Other pathways in the biopax input file will be ignored. Default is that all pathways are processed");
 		options.addOption("c", true, "Catalog file for tbox");
-
+		options.addOption("nosplit", false, "If present, do not split the input biopax file into its constituent pathways where one pathway becomes one go-cam model.  Make one big model.");
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = parser.parse( options, args);
@@ -152,7 +152,15 @@ public class Biopax2GOCmdLine {
 			else {
 				System.out.println("Warning, no catalog file provided for for go-lego.   Specify one with -c catalog.xml");
 			}
-			
+			if(cmd.hasOption("nosplit")) {
+				bp2g.split_by_pathway = false;
+				bp2g.check_consistency = false;
+				bp2g.generate_report = false;
+				bp2g.add_pathway_parents = false;
+				bp2g.add_neighboring_events_from_other_pathways = true;
+			}else {
+				bp2g.split_by_pathway = true;
+			}
 			//initialize the rules for inference		
 			OWLOntology tbox = ontman.loadOntologyFromOntologyDocument(new File(bp2g.go_lego_file));
 			bp2g.golego = new GOLego(tbox);

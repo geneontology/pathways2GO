@@ -245,6 +245,109 @@ public class BioPaxtoGOTest {
 	}
 	
 	/**
+	 * Make sure that the same reaction in different pathways is identical at the RDF level
+	 * Support integration when viewing the whole collection in SPARQL
+	 * Examples: 
+	 * reaction R-HSA-190326 in pathway R-HSA-190322 Signaling by FGFR4 
+	 * and reaction R-HSA-190326 in pathway R-HSA-5654228 Phospholipase C-mediated cascade; FGFR4 
+	 * 
+	 * reaction R-HSA-169680 in pathway R-HSA-2029485 Role of phospholipids in phagocytosis
+	 * reaction R-HSA-169680 in pathway R-HSA-422356 Regulation of insulin secretion
+	 */
+	@Test
+	public final void testIdentfierAssignment() {
+		System.out.println("Testing identifier assignment consistency");
+		String pathway_1 = "<http://model.geneontology.org/R-HSA-1606322>";
+		String reaction_1 = "<http://model.geneontology.org/R-HSA-1591234>";
+		String pathway_2 = "<http://model.geneontology.org/R-HSA-1606341>";
+		Set<String> prop_value_1 = new HashSet<String>();
+		Set<String> prop_value_2 = new HashSet<String>();
+		String all_reaction_q = "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n" + 
+				"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" + 
+				"#model metadata\n" + 
+				"PREFIX metago: <http://model.geneontology.org/>\n" + 
+				"PREFIX lego: <http://geneontology.org/lego/> \n" + 
+				"#model data\n" + 
+				"PREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>\n" + 
+				"PREFIX occurs_in: <http://purl.obolibrary.org/obo/BFO_0000066>\n" + 
+				"PREFIX enabled_by: <http://purl.obolibrary.org/obo/RO_0002333>\n" + 
+				"PREFIX has_input: <http://purl.obolibrary.org/obo/RO_0002233>\n" + 
+				"PREFIX has_output: <http://purl.obolibrary.org/obo/RO_0002234>\n" + 
+				"PREFIX causally_upstream_of: <http://purl.obolibrary.org/obo/RO_0002411>\n" + 
+				"PREFIX provides_direct_input_for: <http://purl.obolibrary.org/obo/RO_0002413>\n" + 
+				"PREFIX directly_positively_regulates: <http://purl.obolibrary.org/obo/RO_0002629>\n" + 
+				"\n" + 
+				"SELECT  distinct ?reaction ?reaction_prop ?reaction_value  \n" + 
+				"WHERE {\n" + 
+				"  #other graph <http://model.geneontology.org/R-HSA-1606341>  1606341 1606322\n" + 
+				"  GRAPH pathway_id {  \n" + 
+				"        ?id <http://purl.org/dc/elements/1.1/title> ?pathway_title . \n" + 
+				"    	reaction_id ?reaction_prop ?reaction_value . \n" + 
+				"    }\n" + 
+				"  } \n";
+		TupleQueryResult result = null;
+		try {
+			
+			String q1 = all_reaction_q.replace("pathway_id", pathway_1);
+			q1 = q1.replace("reaction_id", reaction_1);
+			result = blaze.runSparqlQuery(q1);
+			
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				String prop = bindingSet.getValue("reaction_prop").stringValue();
+				String value = bindingSet.getValue("reaction_value").stringValue();
+				if(!prop.equals("http://purl.obolibrary.org/obo/BFO_0000050")
+						&&!prop.equals("http://purl.org/dc/elements/1.1/contributor")) {
+					prop_value_1.add(prop+":"+value);
+				}
+			}
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		result = null;
+		try {
+			
+			String q2 = all_reaction_q.replace("pathway_id", pathway_2);
+			q2 = q2.replace("reaction_id", reaction_1);
+			result = blaze.runSparqlQuery(q2);
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				String prop = bindingSet.getValue("reaction_prop").stringValue();
+				String value = bindingSet.getValue("reaction_value").stringValue();
+				if(!prop.equals("http://purl.obolibrary.org/obo/BFO_0000050")
+						&&!prop.equals("http://purl.org/dc/elements/1.1/contributor")
+						&&!prop.equals("http://purl.obolibrary.org/obo/RO_0002411")) {
+					prop_value_2.add(prop+":"+value);
+				}
+			}
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		Set<String> tmp1 = new HashSet<String>(prop_value_1);
+		prop_value_1.removeAll(prop_value_2);
+		prop_value_2.removeAll(tmp1);
+		assertTrue("diff values:\n\t"+prop_value_1+"\n"+prop_value_2, prop_value_1.size()==0);
+		
+	}
+	
+	
+	/**
 	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferTransportProcess()}.
 	 * Test that transport processes are:
 	 *  correctly typed as transporter activity
@@ -256,6 +359,10 @@ public class BioPaxtoGOTest {
 	 * 	https://reactome.org/content/detail/R-HSA-201472
 	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-201451
 	 */
+	
+	/**
+	 * nice example: R-HSA-997272 Reactome:unexpanded:Inhibition of voltage gated Ca2+ channels via Gbeta/gamma subunits
+	 */
 	@Test
 	public final void testInferLocalizationProcess() {
 		System.out.println("Testing localization inference");
@@ -266,7 +373,7 @@ public class BioPaxtoGOTest {
 					+ "select ?type "
 				//	+ "(count(distinct ?output) AS ?outputs) (count(distinct ?input) AS ?inputs) " + 
 					+ "where { " + 
-					" VALUES ?reaction { <http://model.geneontology.org/R-HSA-201451/R-HSA-201472> } "
+					" VALUES ?reaction { <http://model.geneontology.org/R-HSA-201472> } "
 					+ " ?reaction rdf:type ?type . " + 
 					"  filter(?type != owl:NamedIndividual) "+
 				//  " ?reaction obo:RO_0002234 ?output . " + 
@@ -326,7 +433,7 @@ public class BioPaxtoGOTest {
 					"prefix obo: <http://purl.obolibrary.org/obo/> "
 					+ "select ?type (count(distinct ?output) AS ?outputs) (count(distinct ?input) AS ?inputs) " + 
 					"where { " + 
-					" VALUES ?reaction { <http://model.geneontology.org/R-HSA-201681/R-HSA-201669> } "
+					" VALUES ?reaction { <http://model.geneontology.org/R-HSA-201669> } "
 					+ " ?reaction rdf:type ?type . " + 
 					"  filter(?type != owl:NamedIndividual) "
 					+ " ?reaction obo:RO_0002234 ?output . " + 
@@ -366,49 +473,6 @@ public class BioPaxtoGOTest {
 		System.out.println("Done testing protein transport inference");
 	}
 
-	/**
-	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferMolecularFunctionFromEnablers()}.
-	 * Test that reactions typed as molecular events get converted to molecular functions when they have enablers assigned
-	 * Use reaction in Signaling By BMP R-HSA-201451
-	 * 	Phospho-R-Smad1/5/8 dissociates from the receptor complex
-	 * 	https://reactome.org/content/detail/R-HSA-201453
-	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-201451
-	 */
-	@Test
-	public final void testInferDissociationProcess() {
-		System.out.println("Testing a dissociation reaction - should currently be a raw MF");
-		TupleQueryResult result = null;
-		try {
-			result = blaze.runSparqlQuery(
-				"prefix obo: <http://purl.obolibrary.org/obo/> "
-				+ "select ?type " + 
-				"where { " + 
-				"VALUES ?reaction { <http://model.geneontology.org/R-HSA-201451/R-HSA-201453> }" + 
-				"  ?reaction rdf:type ?type .	" + 
-				"  filter(?type != owl:NamedIndividual) " + 
-				"} ");
-			int n = 0; String type = null; 
-			while (result.hasNext()) {
-				BindingSet bindingSet = result.next();
-				type = bindingSet.getValue("type").stringValue();
-				n++;
-			}
-			assertTrue(n==1);
-			assertTrue(type.equals("http://purl.obolibrary.org/obo/GO_0003674"));
-		} catch (QueryEvaluationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				result.close();
-			} catch (QueryEvaluationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		System.out.println("Done testing dissociation ");
-	}
-	
 
 	/**
 	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferOccursInFromEntityLocations()}.
@@ -427,7 +491,7 @@ public class BioPaxtoGOTest {
 				"prefix obo: <http://purl.obolibrary.org/obo/> "
 				+ "select ?locationclass " + 
 				"where { " + 
-				"VALUES ?reaction { <http://model.geneontology.org/R-HSA-201451/R-HSA-201422> }" + 
+				"VALUES ?reaction { <http://model.geneontology.org/R-HSA-201422> }" + 
 				"  ?reaction obo:BFO_0000066 ?location . "
 				+ "?location rdf:type ?locationclass " + 
 				"  filter(?locationclass != owl:NamedIndividual)" + 
@@ -472,7 +536,7 @@ public class BioPaxtoGOTest {
 				"prefix obo: <http://purl.obolibrary.org/obo/> "
 				+ "select ?locationclass " + 
 				"where { " + 
-				"VALUES ?reaction { <http://model.geneontology.org/R-HSA-201451/R-HSA-201425> }" + 
+				"VALUES ?reaction { <http://model.geneontology.org/R-HSA-201425> }" + 
 				"  ?reaction obo:BFO_0000066 ?location . "
 				+ "?location rdf:type ?locationclass " + 
 				"  filter(?locationclass != owl:NamedIndividual)" + 
@@ -514,8 +578,8 @@ public class BioPaxtoGOTest {
 				"prefix obo: <http://purl.obolibrary.org/obo/> "
 				+ "select ?prop " + 
 				"where { " + 
-				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-1810476/R-HSA-168910> } ." + 
-				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-1810476/R-HSA-1810457> } . " + 
+				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-168910> } ." + 
+				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-1810457> } . " + 
 				"  ?reaction1 <http://purl.obolibrary.org/obo/RO_0002413> ?binding_reaction . "
 				+ "?binding_reaction ?prop ?reaction2 . "+
 				"}"); 
@@ -554,7 +618,8 @@ public class BioPaxtoGOTest {
 	 * 	Reaction: glucokinase (GCK1) + glucokinase regulatory protein (GKRP) <=> GCK1:GKRP complex
 	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-170822
 	 */
-	@Test 
+//This test was taken out along with the corresponding rule - see https://github.com/geneontology/pathways2GO/issues/103	
+//	@Test 
 	public final void testInferEnablersFromUpstream() {
 		System.out.println("Testing infer enabler from upstream output as an input");
 		TupleQueryResult result = null;
@@ -563,8 +628,8 @@ public class BioPaxtoGOTest {
 				"prefix obo: <http://purl.obolibrary.org/obo/> "
 				+ "select ?M " + 
 				"where { " +          
-				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-170822/R-HSA-170824> } ." + 
-				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-170822/R-HSA-170825> } . " + 
+				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-170824> } ." + 
+				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-170825> } . " + 
 				"  ?reaction2 <http://purl.obolibrary.org/obo/RO_0002629> ?reaction1 ."
 				+ "?reaction1 <http://purl.obolibrary.org/obo/RO_0002333> ?entityM . "
 				+ "?entityM rdf:type ?M . "+
@@ -617,11 +682,11 @@ BP has_part R
 			result = blaze.runSparqlQuery(
 				"select distinct ?binding_reaction " + 
 				"where { " + 
-				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-70171/R-HSA-71670> } ."  
+				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-71670> } ."  
 				+ " ?binding_reaction <http://purl.obolibrary.org/obo/RO_0002212> ?reaction1 . " //
 				+ "?binding_reaction rdf:type <http://purl.obolibrary.org/obo/GO_0005488> . "
 				+ "?binding_reaction <http://purl.obolibrary.org/obo/RO_0002233> ?input1 . "
-				+ "?binding_reaction <http://purl.obolibrary.org/obo/RO_0002233> ?input2 . "
+				+ "?binding_reaction <http://purl.obolibrary.org/obo/RO_0002333> ?input2 . "
 				+ "filter(?input1 != ?input2) "
 				+"}"); 
 			int n = 0; 
@@ -642,7 +707,7 @@ BP has_part R
 				e.printStackTrace();
 			}
 		}
-		System.out.println("Done testing infer regulates via output regulates");
+		System.out.println("Done testing testConvertEntityRegulatorsToBindingFunctions");
 	}
 	
 	/**
@@ -664,7 +729,7 @@ BP has_part R
 				"prefix obo: <http://purl.obolibrary.org/obo/> "
 				+ "select ?pathway " + 
 				"where { " + 
-				"VALUES ?reaction { <http://model.geneontology.org/R-HSA-4641262/R-HSA-201677> } . " 
+				"VALUES ?reaction { <http://model.geneontology.org/R-HSA-201677> } . " 
 				+ "?reaction obo:BFO_0000050 ?pathway . "
 				+ "?reaction obo:RO_0002333 ?active_part . "+
 				"}");
@@ -711,8 +776,8 @@ BP has_part R
 				"prefix obo: <http://purl.obolibrary.org/obo/> "
 				+ "select ?pathway " + 
 				"where { " + 
-				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-4641262/R-HSA-1504186> } . "+ 
-				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-4641262/R-HSA-201677> } . "+
+				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-1504186> } . "+ 
+				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-201677> } . "+
 				" ?reaction1 obo:RO_0002629 ?reaction2 . "
 				+ "?reaction2 obo:RO_0002333 ?active_part . "
 				+ "?reaction1 obo:BFO_0000050 ?pathway "+
@@ -762,8 +827,8 @@ BP has_part R
 				"prefix obo: <http://purl.obolibrary.org/obo/> "
 				+ "select ?pathway " + 
 				"where { " + 
-				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-4641262/R-HSA-201677> } . "+ 
-				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-4641262/R-HSA-201691> } . "+
+				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-201677> } . "+ 
+				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-201691> } . "+
 				" ?reaction1 obo:RO_0002413 ?reaction2 . "
 				+ "?reaction1 obo:BFO_0000050 ?pathway "+				
 				"}");

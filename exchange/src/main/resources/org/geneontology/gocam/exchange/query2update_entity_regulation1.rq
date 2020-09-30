@@ -15,16 +15,16 @@ prefix skos: <http://www.w3.org/2004/02/skos/core#>
 #R enabled_by E2
 #BP has_part R
 
-select ?reaction ?prop ?pathway ?enabler ?regulator 
+select ?regulator ?prop ?reaction ?pathway ?enabler 
 where {
-   ?reaction obo:BFO_0000050 ?pathway . 
-   #RO_0002429 involved_in_positive_regulation_of
-   #obo:RO_0002430  involved_in_negative_regulation_of 
+   VALUES ?prop {obo:RO_0002430 obo:RO_0002429} . 
    ?regulator ?prop  ?reaction .   
-    		VALUES ?prop { obo:RO_0002430 obo:RO_0002429} . 
+   OPTIONAL {?reaction obo:BFO_0000050 ?pathway . }   
    OPTIONAL {?reaction obo:RO_0002333 ?enabler .  }
 }
 
+   #RO_0002429 involved_in_positive_regulation_of
+   #obo:RO_0002430  involved_in_negative_regulation_of 
 # RO_0002024  directly positively regulated by 
 # RO_0002023  directly negatively regulated by 
 # RO_0002334 regulated by

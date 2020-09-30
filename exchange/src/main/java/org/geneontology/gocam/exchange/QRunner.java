@@ -527,6 +527,29 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		return ir;
 	}
 	
+	//R-HSA-4641262/R-HSA-201685
+	Set<String> describe(String uri, boolean out) {
+		Set<String> prop_val = new HashSet<String>();
+		String query = "select ?p_out ?target where {"
+				+ "<"+uri+"> ?p_out ?target . "
+				+ "}";
+		if(!out) {
+			query = "select ?p_out ?target where {"
+					+ " ?target ?p_out <"+uri+"> "
+					+ "}";
+		}
+		QueryExecution qe = QueryExecutionFactory.create(query, jena);
+		ResultSet results = qe.execSelect();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			String p_out = qs.getResource("p_out").getLocalName();
+			String target = qs.get("target").toString();
+			prop_val.add(p_out+"::"+target);
+		}
+		qe.close();
+		return prop_val;
+	}
+	
 	Set<InferredRegulator> getInferredAnonymousRegulators() {
 		Set<InferredRegulator> irs = new HashSet<InferredRegulator>();
 		String query = null;
@@ -542,10 +565,9 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			QuerySolution qs = results.next();
 			Resource reaction = qs.getResource("reaction"); 
 			Resource property = qs.getResource("prop");
-			Resource pathway = qs.getResource("pathway");
 			Resource regulator = qs.getResource("regulator");
-			
-			String pathway_uri = "";
+			String pathway_uri = null;
+			Resource pathway = qs.getResource("pathway");			
 			if(pathway!=null) {
 				pathway_uri = pathway.getURI();
 			}
@@ -556,7 +578,10 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			}else {
 				ir.enabler_uri = null;
 			}
-			irs.add(ir);
+			//skip cases where the enabler is also a controller.  One is enough.  
+			if(regulator.getURI()!=ir.enabler_uri) {
+				irs.add(ir);
+			}
 		}
 		qe.close();
 		return irs;
@@ -669,10 +694,13 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		Map<String, InferredOccursIn> reaction_locinfo = new HashMap<String, InferredOccursIn>();
 		while (results.hasNext()) {
 			QuerySolution qs = results.next();
-			Resource pathway = qs.getResource("pathway");
-			String pathway_uri = pathway.getURI();
 			Resource reaction = qs.getResource("reaction");
 			String reaction_uri = reaction.getURI();
+			Resource pathway = qs.getResource("pathway");
+			String pathway_uri = null;
+			if(pathway!=null) {
+				pathway_uri = pathway.getURI();
+			}
 			Resource relation = qs.getResource("relation");
 			String relation_uri = relation.getURI();
 			Resource location_instance = qs.getResource("location_instance"); 
