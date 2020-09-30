@@ -115,7 +115,7 @@ public class GoCAM {
 	public static IRI base_ont_iri;
 	public static OWLAnnotationProperty version_info, title_prop, contributor_prop, date_prop, skos_exact_match, skos_altlabel,  
 	state_prop, evidence_prop, provided_by_prop, x_prop, y_prop, rdfs_label, rdfs_comment, rdfs_seealso, source_prop, 
-	definition, database_cross_reference, canonical_record, iuphar_id, in_taxon, skos_note;
+	definition, database_cross_reference, canonical_record, iuphar_id, in_taxon, skos_note, skos_narrower;
 	public static OWLObjectProperty part_of, has_part, has_input, has_output, has_component, 
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in,
 	directly_positively_regulated_by, directly_negatively_regulated_by, involved_in_regulation_of, involved_in_negative_regulation_of, involved_in_positive_regulation_of,
@@ -240,6 +240,7 @@ public class GoCAM {
 	public void initializeClassesAndRelations() {
 		//Annotation properties for metadata and evidence
 		skos_note = df.getOWLAnnotationProperty(IRI.create("http://www.w3.org/2004/02/skos/core#note"));
+		skos_narrower = df.getOWLAnnotationProperty(IRI.create("http://www.w3.org/2004/02/skos/core#narrower"));
 		version_info = df.getOWLAnnotationProperty(IRI.create(OWL.versionInfo.getURI()));
 		title_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/title"));
 		contributor_prop = df.getOWLAnnotationProperty(IRI.create("http://purl.org/dc/elements/1.1/contributor"));

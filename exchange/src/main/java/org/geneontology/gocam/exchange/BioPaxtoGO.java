@@ -134,7 +134,7 @@ public class BioPaxtoGO {
 	boolean add_pathway_parents = false; //if true will add all pathways that contain each reaction.  (Reactions may be present in multiple pathways.)
 	boolean add_neighboring_events_from_other_pathways = true; //if true will pull in nextStep connections from other pathways.  Note that this is not recursive, will only go one level out.
 	boolean add_upstream_controller_events_from_other_pathways = false; //if true will add reactions from other pathways if one of their participants is a controller (catalyst or regulator) of a reaction in the current pathway.  
-	boolean add_subpathway_bridges = false; //this is groundwork for an approach that generates go-cams that reference members of other go-cams, here referencing other pathways.  
+	boolean add_subpathway_bridges = true; //this is groundwork for an approach that generates go-cams that reference members of other go-cams, here referencing other pathways.  
 	String default_namespace_prefix = "Reactome"; //this is used to generate curi structured references - e.g. Reactome:HSA-007
 	Set<String> drug_process_ids = new HashSet<String>(); 
 
@@ -626,8 +626,26 @@ public class BioPaxtoGO {
 		}
 		//store mappings
 		report.bp2go_bp.put(pathway, mappedgo);
-
+		
 		if(add_components) {
+			//different pathway - bridging relation.
+			if(add_subpathway_bridges){
+				for(Process process : pathway.getPathwayComponentOf()) {
+					//add pathway part of pathway relations
+					//mainly for global, sparql view of data
+					if(process instanceof Pathway) {
+						String super_pathway_id = getEntityReferenceId(process);
+						IRI super_pathway_iri = null;
+						if(super_pathway_id!=null) {
+							super_pathway_iri = GoCAM.makeGoCamifiedIRI(super_pathway_id, super_pathway_id);
+						}else {
+							super_pathway_iri = GoCAM.makeARandomIri(model_id);
+						}
+						//don't use part_of as reactome uses pathway hierarchy for general grouping, isa, and part of relations.
+						go_cam.addUriAnnotations2Individual(pathway_e.getIRI(), GoCAM.skos_narrower, super_pathway_iri);
+					}
+				}
+			} 
 			//define the pieces of the pathway
 			//Process subsumes Pathway and Interaction (which is usually a reaction).  
 			//A pathway may have either or both reaction or pathway components.  
@@ -662,11 +680,7 @@ public class BioPaxtoGO {
 				else if(process.getModelInterface().equals(Pathway.class)){
 					String child_model_id = getEntityReferenceId(process);
 					IRI child_pathway_iri = GoCAM.makeGoCamifiedIRI(null, child_model_id);
-					//different pathway - bridging relation.
-					if(add_subpathway_bridges){
-						OWLNamedIndividual child_pathway = go_cam.makeBridgingIndividual(child_pathway_iri);
-						go_cam.addRefBackedObjectPropertyAssertion(child_pathway, GoCAM.part_of, pathway_e, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
-					}else if(expand_subpathways) {
+					if(expand_subpathways) {
 						//if we are not doing the bridging method but we are including subpathways, add them on here. 
 						OWLNamedIndividual child_pathway = go_cam.makeAnnotatedIndividual(child_pathway_iri);
 						go_cam.addRefBackedObjectPropertyAssertion(child_pathway, GoCAM.part_of, pathway_e, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
