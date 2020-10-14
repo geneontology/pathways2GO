@@ -386,9 +386,6 @@ public class BioPaxtoGO {
 				}
 			}
 		}
-		if(!reactome) {
-			System.out.println("non-reactome ");
-		}
 		return id;
 	}
 
@@ -448,21 +445,14 @@ public class BioPaxtoGO {
 	 */
 	private void wrapAndWrite(String outfilename, GoCAM go_cam, boolean save_inferences, boolean save2blazegraph, String pathwayname, boolean expand_subpathways, String reactome_id) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {		
 		//set up a sparqlable kb in sync with ontology
-		System.out.println("setting up rdf model for sparql rules");
 		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
 		//filter out reactions involving drugs
 		if(drop_drug_reactions&&drug_process_ids!=null&&drug_process_ids.size()>0) {
-			System.out.println("Before drug reaction removal -  triples: "+go_cam.qrunner.nTriples());
-			int n_reactions_removed = go_cam.removeDrugReactions(reactome_id, drug_process_ids); 
-			System.out.println("After drug reaction removal  triples: "+go_cam.qrunner.nTriples()+"\nremoved "+n_reactions_removed+" reactions");
-		}else {
-			System.out.println("No drugs detected");
+			go_cam.removeDrugReactions(reactome_id, drug_process_ids); 
 		}
 		//delete any stray drug individuals
 		if(drop_drug_reactions) {
-			System.out.println("Before drug removal -  triples: "+go_cam.qrunner.nTriples());
-			int n_drugs_removed = go_cam.removeDrugs(tbox_qrunner); 
-			System.out.println("After drug removal  triples: "+go_cam.qrunner.nTriples()+"\nremoved "+n_drugs_removed+" drugs");
+			go_cam.removeDrugs(tbox_qrunner); 
 		}
 		//infer new edges based on sparql matching
 		System.out.println("Before sparql inference -  triples: "+go_cam.qrunner.nTriples());
@@ -907,13 +897,12 @@ public class BioPaxtoGO {
 
 			Set<String> drug_ids = Helper.getAnnotations(entity_class, tbox_qrunner.tbox_class_reasoner.getRootOntology(), GoCAM.iuphar_id);
 			if(drug_ids!=null&&drug_ids.size()>0) {
-				System.out.println("Drug found for "+entity_class+" "+drug_ids);
 				Set<Interaction> entity_processes = entity.getParticipantOf();
 				for(Interaction process : entity_processes) {
 					if(process instanceof Conversion) {
 						String process_id = getEntityReferenceId(process);
 						if(process_id!=null) {
-							drug_process_ids.add(model_id+"/"+process_id);
+							drug_process_ids.add(process_id);
 						}
 					}
 				}

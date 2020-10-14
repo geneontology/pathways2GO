@@ -134,13 +134,8 @@ public class ArachneAccessor {
 	 * @return
 	 */
 	public WorkingMemory createInferredModel(OWLOntology abox_ontology, boolean add_property_definitions, boolean add_class_definitions) {
-		long mark = System.currentTimeMillis();
 		Set<Statement> statements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(abox_ontology)).asJava();		
-		System.out.println("step 1 "+(System.currentTimeMillis()-mark));
-		mark = System.currentTimeMillis();
 		Set<Triple> triples = statements.stream().map(s -> Bridge.tripleFromJena(s.asTriple())).collect(Collectors.toSet());
-		System.out.println("step 2 "+(System.currentTimeMillis()-mark));
-		mark = System.currentTimeMillis();
 		try {
 			if(add_property_definitions) {
 				for(OWLOntology tbox_ontology : this.tbox_ontologies) {
@@ -148,8 +143,6 @@ public class ArachneAccessor {
 					Set<Statement> propStatements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(propOntology)).asJava();
 					triples.addAll(propStatements.stream().map(s -> Bridge.tripleFromJena(s.asTriple())).collect(Collectors.toSet()));
 				}
-				System.out.println("step 3 "+(System.currentTimeMillis()-mark));
-				mark = System.currentTimeMillis();
 			}
 			if(add_class_definitions) {
 				for(OWLOntology tbox_ontology : this.tbox_ontologies) {
@@ -157,18 +150,12 @@ public class ArachneAccessor {
 					Set<Statement> tboxStatements = JavaConverters.setAsJavaSetConverter(SesameJena.ontologyAsTriples(tboxOntology)).asJava();
 					triples.addAll(tboxStatements.stream().map(s -> Bridge.tripleFromJena(s.asTriple())).collect(Collectors.toSet()));
 				}
-				System.out.println("step 4 "+(System.currentTimeMillis()-mark));
-				mark = System.currentTimeMillis();
 			}
 		} catch (OWLOntologyCreationException e) {
 			System.out.println("Couldn't add rbox or tbox statements to triples.");
 			System.out.println(e);
 		}
-		//	System.out.println("triples before reasoning: "+triples.size());
 		WorkingMemory wm = ruleEngine.processTriples(JavaConverters.asScalaSetConverter(triples).asScala());
-		System.out.println("step 5 "+(System.currentTimeMillis()-mark));
-		mark = System.currentTimeMillis();
-		//	System.out.println("triples after reasoning: "+wm.facts().size());
 		return wm; 
 	}
 

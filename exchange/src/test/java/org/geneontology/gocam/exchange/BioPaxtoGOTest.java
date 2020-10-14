@@ -432,29 +432,23 @@ public class BioPaxtoGOTest {
 		try {
 			String query =
 					"prefix obo: <http://purl.obolibrary.org/obo/> "
-					+ "select ?type "
-				//	+ "(count(distinct ?output) AS ?outputs) (count(distinct ?input) AS ?inputs) " + 
+					+ "select distinct ?type "
 					+ "where { " + 
 					" VALUES ?reaction { <http://model.geneontology.org/R-HSA-201472> } "
 					+ " ?reaction rdf:type ?type . " + 
 					"  filter(?type != owl:NamedIndividual) "+
-				//  " ?reaction obo:RO_0002234 ?output . " + 
-				//	" ?reaction obo:RO_0002233 ?input . " + 
 					"  ?reaction obo:RO_0002339 ?endlocation . " + 
 					"  ?endlocation rdf:type <http://purl.obolibrary.org/obo/GO_0005654> . " + 
 					"  ?reaction obo:RO_0002338 ?startlocation . " + 
 					"  ?startlocation rdf:type <http://purl.obolibrary.org/obo/GO_0005829> . "
 					+ "?input rdf:type ?entityclass . "
 					+ "?output rdf:type ?entityclass ." + 
-					"}"
-				+" group by ?type ";
+					"}";
 			result = blaze.runSparqlQuery(query);
-			int n = 0; String type = null; int outputs = 0; int inputs = 0;
+			int n = 0; String type = null; 
 			while (result.hasNext()) {
 				BindingSet bindingSet = result.next();
 				type = bindingSet.getValue("type").stringValue();
-			//	outputs = Integer.parseInt(bindingSet.getValue("outputs").stringValue());
-			//	inputs = Integer.parseInt(bindingSet.getValue("inputs").stringValue());
 				n++;
 			}
 			assertTrue(n==1);

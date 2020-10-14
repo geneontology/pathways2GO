@@ -31,6 +31,7 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.biopax.paxtools.model.level3.PublicationXref;
 import org.biopax.paxtools.model.level3.Xref;
@@ -238,6 +239,7 @@ public class GoCAM {
 
 
 	public void initializeClassesAndRelations() {
+		logger.setLevel((Level) Level.DEBUG); 
 		//Annotation properties for metadata and evidence
 		skos_note = df.getOWLAnnotationProperty(IRI.create("http://www.w3.org/2004/02/skos/core#note"));
 		skos_narrower = df.getOWLAnnotationProperty(IRI.create("http://www.w3.org/2004/02/skos/core#narrower"));
@@ -765,9 +767,6 @@ final long counterValue = instanceCounter.getAndIncrement();
 		annos.addAll(getDefaultAnnotations());//prepare the database annotations like pubmed ids 
 		String source_id = source.toString().replace("http://model.geneontology.org/", "").replaceAll("<", "").replaceAll(">", "");
 		String prop_id = prop.toString().replace("http://purl.obolibrary.org/obo/", "").replaceAll("<", "").replaceAll(">", "");
-		if(prop_id.contentEquals("BFO_0000050")) {
-			System.out.println();
-		}
 		String target_id = target.toString().replace("http://model.geneontology.org/", "").replaceAll("<", "").replaceAll(">", "")+"_"+namespace_prefix;
 		if(ids!=null) {			
 			for(String id : ids) {
@@ -1049,15 +1048,25 @@ final long counterValue = instanceCounter.getAndIncrement();
 
 		RuleResults r = new RuleResults();
 		//NOTE that the order these are run matters.
+		logger.debug("running transport process inference");
 		r = inferTransportProcess(model_id, r, tbox_qrunner);	//must be run before occurs_in and before deleteLocations	 
+		logger.debug("infering molecular function if enablers present");
 		r = inferMolecularFunctionFromEnablers(model_id, r, tbox_qrunner);
+		logger.debug("inferring occurs in from entity locations");
 		r = inferOccursInFromEntityLocations(model_id, r);
+		logger.debug("inferring regulates from output regulates");
 		r = inferRegulatesViaOutputRegulates(model_id, r); //must be run before convertEntityRegulatorsToBindingFunctions
+		logger.debug("inferring regulates from output enables");
 		r = inferRegulatesViaOutputEnables(model_id, r);
+		logger.debug("inferring provides input for");
 		r = inferProvidesInput(model_id, r);
+		logger.debug("converting entity regulators to (not)binding events");
 		r = convertEntityRegulatorsToBindingFunctions(model_id, r);
+		logger.debug("deleting complexes with active units");
 		deleteComplexesWithActiveUnits();
+		logger.debug("deleting disallowed relations like that between a non-gene product molecular and the reaction it regulates");
 		deleteDisallowedRelations();
+		logger.debug("clean up any stray individuals");
 		cleanOutUnconnectedNodes();
 		return r;
 	}
@@ -1161,7 +1170,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 					Set<OWLClass> mf_types = tbox_qrunner.getSuperClasses(reaction_type, false);
 					if(mf_types!=null&&(!mf_types.contains(transporter_activity))) {
 						//don't do anything if it has a type that isn't a subclass of transporter activity
-						logger.info("skipping over transport on non-transport reaction "+transport_reaction.reaction_uri);
+						logger.debug("skipping over transport on non-transport reaction "+transport_reaction.reaction_uri);
 						continue;
 					}
 				}
@@ -1574,9 +1583,6 @@ BP has_part R
 				OWLNamedIndividual c = makeUnannotatedIndividual(complex_uri);
 				deleteOwlEntityAndAllReferencesToIt(c);
 			}
-			System.out.println("deleted "+complexes.size()+" complexes with active units.");
-		}else {
-			System.out.println("no complexes with active units found in pathway.");
 		}
 	}
 

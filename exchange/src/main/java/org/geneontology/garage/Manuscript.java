@@ -341,9 +341,9 @@ public class Manuscript {
 
 	public static Set<PathwayStep> getSteps(Pathway currentPathway, boolean instep) {
 		String pathway_id = BioPaxtoGO.getEntityReferenceId(currentPathway);
-		if(pathway_id.equals("R-HSA-3232118")) {
-			System.out.println("");
-		}
+//		if(pathway_id.equals("R-HSA-3232118")) {
+//			System.out.println("");
+//		}
 		Set<PathwayStep> allsteps = new HashSet<PathwayStep>();
 		for(PathwayStep step : currentPathway.getPathwayOrder()) {
 			Set<PathwayStep> steps = null;

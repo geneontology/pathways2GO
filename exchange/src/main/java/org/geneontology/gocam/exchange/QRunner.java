@@ -126,7 +126,7 @@ public class QRunner {
 	}
 
 	public QRunner(OWLOntology abox) {
-		System.out.println("Setting up Jena model for query.  Only including input Abox ontology, no reasoning");
+		//Setting up Jena model for query.  Only including input Abox ontology, no reasoning
 		jena = makeJenaModel(abox, null);
 	}
 
