@@ -231,7 +231,7 @@ public class PhysicalEntityOntologyBuilder {
 		for (PhysicalEntity entity : biopax_model.getObjects(PhysicalEntity.class)){		
 			String model_id = entity.hashCode()+"";
 			n++;
-			//System.out.println(n+" defining "+entity.getDisplayName()+" "+entity.getModelInterface()+" "+entity.getUri());
+			//System.out.println(n+" defining "+BioPaxtoGO.getBioPaxName(entity)+" "+entity.getModelInterface()+" "+entity.getUri());
 			converter.definePhysicalEntity(go_cam, entity, null, model_id);
 		}
 
@@ -460,7 +460,7 @@ public class PhysicalEntityOntologyBuilder {
 			}
 		}
 		//tag the class with a basic upper level type	
-		String entity_name = entity.getDisplayName();
+		String entity_name = BioPaxtoGO.getBioPaxName(entity);
 		for(String label : entity.getName()) {
 			go_cam.addAltLabel(e, label);
 		}
@@ -596,7 +596,7 @@ public class PhysicalEntityOntologyBuilder {
 					//not used in reactome
 					SequenceRegionVocabulary region_type = feature.getFeatureLocationType();
 					if(region_type!=null) {
-						System.out.println("region type used for first time, investigate: "+entity.getDisplayName());
+						System.out.println("region type used for first time, investigate: "+BioPaxtoGO.getBioPaxName(entity));
 						System.exit(0);
 					}
 
@@ -653,7 +653,7 @@ public class PhysicalEntityOntologyBuilder {
 				}
 			}else if(entity.getModelInterface().equals(Protein.class)) {
 				go_cam.addSubclassAssertion(e, GoCAM.chebi_protein, null);	
-				//System.out.println("non uniprot protein detected: "+entity.getDisplayName());
+				//System.out.println("non uniprot protein detected: "+BioPaxtoGO.getBioPaxName(entity));
 			}else { //entity is just PhysicalEntity.class
 				Set<Xref> e_xrefs = entity.getXref();
 				boolean entity_type_set = false;
@@ -715,7 +715,7 @@ public class PhysicalEntityOntologyBuilder {
 					//everything is at least a continuant...
 					go_cam.addSubclassAssertion(e, GoCAM.continuant_class, null);	
 					go_cam.addUriAnnotations2Individual(e.getIRI(), GoCAM.canonical_record, GoCAM.continuant_class.getIRI());					
-					System.out.println("unclassified entity\t"+e+"\t"+entity.getDisplayName());
+					System.out.println("unclassified entity\t"+e+"\t"+BioPaxtoGO.getBioPaxName(entity));
 				}
 			}
 		}
@@ -1046,7 +1046,7 @@ public class PhysicalEntityOntologyBuilder {
 			}else if(bp_entity.getModelInterface().equals(DnaRegion.class)){
 				r = ((DnaRegion) bp_entity).getEntityReference();
 			}else if(bp_entity.getModelInterface().equals(PhysicalEntity.class)) {
-				//System.err.println("Can not access EntityReference for untyped physical entity: "+bp_entity.getDisplayName());
+				//System.err.println("Can not access EntityReference for untyped physical entity: "+bp_BioPaxtoGO.getBioPaxName(entity));
 			}
 			if(r!=null) {
 				Set<Xref> erefs = r.getXref();
@@ -1060,7 +1060,7 @@ public class PhysicalEntityOntologyBuilder {
 			return null;
 		}
 		//		if(id!=null) {
-		//			System.out.println("found drug id "+id+" "+bp_entity.getDisplayName());
+		//			System.out.println("found drug id "+id+" "+bp_BioPaxtoGO.getBioPaxName(entity));
 		//		}
 		return id;
 	}
