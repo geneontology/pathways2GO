@@ -47,27 +47,142 @@ public class Manuscript {
 
 	BigdataSailRepository alldata_repo;
 
-
+	public static String prefixes = 
+			"prefix dc: <http://purl.org/dc/elements/1.1/>\n" + 
+			"prefix obo: <http://purl.obolibrary.org/obo/> \n" + 
+			"prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" + 
+			"prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>  \n" + 
+			"prefix skos: <http://www.w3.org/2004/02/skos/core#>\n" + 
+			"prefix canonical: <http://geneontology.org/lego/canonical_record> \n" + 
+			"PREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>\n" + 
+			"PREFIX has_part: <http://purl.obolibrary.org/obo/BFO_0000051>\n" + 
+			"PREFIX occurs_in: <http://purl.obolibrary.org/obo/BFO_0000066>\n" + 
+			"PREFIX enabled_by: <http://purl.obolibrary.org/obo/RO_0002333>\n" + 
+			"PREFIX has_input: <http://purl.obolibrary.org/obo/RO_0002233>\n" + 
+			"PREFIX has_output: <http://purl.obolibrary.org/obo/RO_0002234>\n" + 
+			"PREFIX event: <http://purl.obolibrary.org/obo/go/extensions/reacto.owl#molecular_event>\n" + 
+			"PREFIX GoInformationBiomacromolecule: <http://purl.obolibrary.org/obo/CHEBI_33695>\n" + 
+			"PREFIX GoProtein: <http://purl.obolibrary.org/obo/CHEBI_36080>\n" + 
+			"PREFIX GoProteinContainingComplex: <http://purl.obolibrary.org/obo/GO_0032991>\n" + 
+			"PREFIX GoCellularComponent: <http://purl.obolibrary.org/obo/GO_0005575>\n" + 
+			"PREFIX GoBiologicalProcess: <http://purl.obolibrary.org/obo/GO_0008150>\n" + 
+			"PREFIX GoMolecularFunction: <http://purl.obolibrary.org/obo/GO_0003674>\n" + 
+			"PREFIX GoChemicalEntity: <http://purl.obolibrary.org/obo/CHEBI_24431>\n" + 
+			"PREFIX TransporterActivity: <http://purl.obolibrary.org/obo/GO_0005215> \n" + 
+			"PREFIX xref: <http://www.geneontology.org/formats/oboInOwl#hasDbXref>\n" + 
+			"PREFIX causally_upstream_of: <http://purl.obolibrary.org/obo/RO_0002411>\n" + 
+			"\n";
 
 	public Manuscript(String bg_jnl) {
 		this.alldata_repo = initializeRepository(bg_jnl);
 	}
 
 	public static void main(String[] args) throws IOException {
-		Manuscript m = new Manuscript("/Users/benjamingood/blazegraph/reactome-oct82020-lego.jnl");
+		Manuscript m = new Manuscript("/Users/benjamingood/blazegraph/blazegraph.jnl"); //reactome-oct82020-lego
+		m.runCounts();
+		m.buildVenn("/Users/benjamingood/test/manuscript/venn_data/");
 		
-		String reaction_uri = "http://model.geneontology.org/R-HSA-70501";
-		String reaction_label =  "Pyruvate + CO2 + ATP => ADP + Orthophosphate + Oxaloacetate";
-		int depth = 0;
-		int max_depth = 4;
-		String stopstring = "insulin";
-		Set<Edge> edges = m.recurseUpstream(null, reaction_uri, reaction_label, depth, max_depth, stopstring);
-		FileWriter f = new FileWriter("/Users/benjamingood/test/manuscript/pyruvate.txt");
-		f.write("source_id\tsource_label\tedge_id\tedge_label\ttarget_id\ttarget_label\n");
-		for(Edge e : edges) {
-			f.write(e.source_id+"\t"+e.source_label+"\t"+e.edge_id+"\t"+e.edge_label+"\t"+e.target_id+"\t"+e.target_label+"\n");
+	}
+	private void runCounts() {
+	}	
+	
+	private void buildVenn(String outfolder) throws IOException {
+		String no_enabler_q =  
+				prefixes+
+				"select distinct ?r  {\n" + 
+				"  { ?reaction rdf:type GoMolecularFunction: } "
+				+ "UNION { ?reaction rdf:type event:} . 	\n" + 
+				"  ?reaction xref: ?r . \n" + 
+				"    minus{?reaction enabled_by: ?enabler} \n" + 
+				"  	\n" + 
+				"}";
+		Set<String> no_enablers = runSingleResultQuery(no_enabler_q);
+		String no_function_q =  
+				prefixes+
+				"select distinct ?r where  { \n" + 
+				"  ?reaction xref: ?r .   \n" + 
+				"  ?reaction rdf:type event: .\n" + 
+				"  minus{?reaction rdf:type GoMolecularFunction:}\n" + 
+				"}\n" + 
+				"";
+		Set<String> no_function = runSingleResultQuery(no_function_q);
+		
+		String no_location_q = 
+				prefixes+
+				"select distinct ?r  {\n" + 
+				"  	?reaction xref: ?r .\n" + 
+				"    { ?reaction rdf:type GoMolecularFunction:} UNION {?reaction rdf:type event:} # get all the converted reactions\n" + 
+				"    minus{?reaction occurs_in: ?location} \n" + 
+				"}\n";
+		Set<String> no_occurs = runSingleResultQuery(no_location_q);
+		
+		String no_causal_q = 
+				prefixes+
+				"select distinct ?r where{\n" + 
+				"{ ?reaction rdf:type GoMolecularFunction:} UNION {?reaction rdf:type event:} # get all the converted reactions\n" + 
+				"	?reaction xref: ?r . \n" + 
+				"  minus  { \n" + 
+				"    { \n" + 
+				"      ?up_reaction obo:RO_0002411 ?reaction .\n" + 
+				"      ?up_reaction xref: ?xref2 . } \n" + 
+				"  UNION {\n" + 
+				"    ?reaction obo:RO_0002411 ?down_reaction . \n" + 
+				"     ?down_reaction xref: ?xref3 }\n" + 
+				"      }\n" + 
+				"}\n";
+		Set<String> no_causal = runSingleResultQuery(no_causal_q);
+		
+		System.out.println("no enablers "+no_enablers.size()+"\nno function "+no_function.size()+"\nno location "+no_occurs.size()+"\nno causal "+no_causal.size());
+		String enablers_out = outfolder+"no_enablers.txt";
+		FileWriter f = new FileWriter(enablers_out);
+		for(String r : no_enablers) {
+			f.write(r+"\n");
 		}
 		f.close();
+		String functions_out = outfolder+"no_function.txt";
+		f = new FileWriter(functions_out);
+		for(String r : no_function) {
+			f.write(r+"\n");
+		}
+		f.close();
+		String location_out = outfolder+"no_location.txt";
+		f = new FileWriter(location_out);
+		for(String r : no_occurs) {
+			f.write(r+"\n");
+		}
+		f.close();
+		String causal_out = outfolder+"no_causal.txt";
+		f = new FileWriter(causal_out);
+		for(String r : no_causal) {
+			f.write(r+"\n");
+		}
+		f.close();
+	}
+
+	private Set<String> runSingleResultQuery(String query) throws IOException{
+		Set<String> results = new HashSet<String>();
+		try {
+			BigdataSailRepositoryConnection connection = alldata_repo.getReadOnlyConnection();
+			try {
+				
+				TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
+				TupleQueryResult result = tupleQuery.evaluate();
+				while (result.hasNext()) {
+					BindingSet binding = result.next();
+					Value r = binding.getValue("r");
+					results.add(r.stringValue());
+				}
+			} catch (MalformedQueryException e) {
+				throw new IOException(e);
+			} catch (QueryEvaluationException e) {
+				throw new IOException(e);
+			} finally {
+				connection.close();
+			}
+		} catch (RepositoryException e) {
+			throw new IOException(e);
+		}
+		return results;
 	}
 	
 	public static void getCausalComparison() throws IOException {
@@ -419,6 +534,21 @@ public class Manuscript {
 	    } 
 	}
 
+	public void testCausalRecurse() throws IOException {
+		String reaction_uri = "http://model.geneontology.org/R-HSA-70501";
+		String reaction_label =  "Pyruvate + CO2 + ATP => ADP + Orthophosphate + Oxaloacetate";
+		int depth = 0;
+		int max_depth = 4;
+		String stopstring = "insulin";
+		Set<Edge> edges = recurseUpstream(null, reaction_uri, reaction_label, depth, max_depth, stopstring);
+		FileWriter f = new FileWriter("/Users/benjamingood/test/manuscript/pyruvate.txt");
+		f.write("source_id\tsource_label\tedge_id\tedge_label\ttarget_id\ttarget_label\n");
+		for(Edge e : edges) {
+			f.write(e.source_id+"\t"+e.source_label+"\t"+e.edge_id+"\t"+e.edge_label+"\t"+e.target_id+"\t"+e.target_label+"\n");
+		}
+		f.close();
+	}
+	
 	public Set<Edge> recurseUpstream(Set<Edge> edges, String reaction_uri, String reaction_label, int depth, int max_depth, String stopstring) throws IOException{
 		if(edges == null) {
 			edges = new HashSet<Edge>();
