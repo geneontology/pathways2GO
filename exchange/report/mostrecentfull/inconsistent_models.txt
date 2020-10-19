@@ -1,4 +1,0 @@
-Model Name
-/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-Mitotic_Prophase.ttl
-/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-M_Phase.ttl
-/Users/bgood/reactome-go-cam-models/human/reactome-homosapiens-Mitotic_Anaphase.ttl

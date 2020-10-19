@@ -51,7 +51,6 @@ import org.biopax.paxtools.model.level3.UnificationXref;
 import org.biopax.paxtools.model.level3.XReferrable;
 import org.biopax.paxtools.model.level3.Xref;
 import org.geneontology.gocam.exchange.BioPaxtoGO.ImportStrategy;
-import org.geneontology.gocam.exchange.idmapping.IdMapper;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
@@ -805,18 +804,6 @@ public class PhysicalEntityOntologyBuilder {
 					if(db.contains("chebi")) {
 						chebi_id = xref.getId().replace(":", "_");
 						break; //TODO just stop at one for now
-					}
-				}
-				//if no chebis look at any other ids and try to convert
-				if(chebi_id==null) {
-					for(Xref xref : p_xrefs) {
-						String database = xref.getDb();
-						String id = xref.getId();
-						String map = IdMapper.map2chebi(database, id);
-						if(map!=null) {
-							chebi_id = map;
-							break;
-						}
 					}
 				}
 				if(chebi_id!=null) {			

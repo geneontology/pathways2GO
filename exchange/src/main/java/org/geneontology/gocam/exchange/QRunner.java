@@ -30,7 +30,6 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
-import org.geneontology.garage.App;
 import org.geneontology.jena.SesameJena;
 import org.geneontology.rules.engine.Explanation;
 import org.geneontology.rules.engine.Triple;
@@ -828,52 +827,6 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		qe.close();
 		complexes.addAll(reaction_property_complexes.values());
 		return complexes;
-	}
-	
-	int deleteEntityLocations() {
-		int n = 0;
-		String update = null;
-		String count = null;
-		try {
-			update = IOUtils.toString(QRunner.class.getResourceAsStream("delete_entity_locations.rq"), StandardCharsets.UTF_8);
-			count = IOUtils.toString(QRunner.class.getResourceAsStream("count_located_in.rq"), StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			System.out.println("Could not load SPARQL update from jar \n"+e);
-		}
-		//before
-		int n_before = count(count);
-		UpdateAction.parseExecute(update, jena) ;
-		int n_after = count(count);
-		n= n_after-n_before;
-		return n;
-	}
-	
-	int deleteCellularComponentTyping() {
-		int n = nTriples();
-		String update = null;
-		try {
-			update = IOUtils.toString(QRunner.class.getResourceAsStream("delete_type_super_cc.rq"), StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			System.out.println("Could not load SPARQL update from jar \n"+e);
-		}
-		UpdateAction.parseExecute(update, jena) ;
-		int n_after = nTriples();
-		n= n-n_after;
-		return n;
-	}
-	
-	void deletePathwayHasPart() {
-		String update1 = null;
-		String update2 = null;
-		try {
-			update1 = IOUtils.toString(QRunner.class.getResourceAsStream("delete_process_has_part_evidence.rq"), StandardCharsets.UTF_8);
-			update2 = IOUtils.toString(QRunner.class.getResourceAsStream("delete_process_has_part_relations.rq"), StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			System.out.println("Could not load SPARQL update from jar \n"+e);
-		}
-		UpdateAction.parseExecute(update1, jena) ;
-		UpdateAction.parseExecute(update2, jena) ;
-		return;
 	}
 	
 	int count(String sparql_count_query) {

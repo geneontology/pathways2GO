@@ -291,32 +291,6 @@ public class Manuscript {
 		f.close();
 	}
 
-	private Set<String> runSingleResultQuery(String query) throws IOException{
-		Set<String> results = new HashSet<String>();
-		try {
-			BigdataSailRepositoryConnection connection = alldata_repo.getReadOnlyConnection();
-			try {
-				
-				TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
-				TupleQueryResult result = tupleQuery.evaluate();
-				while (result.hasNext()) {
-					BindingSet binding = result.next();
-					Value r = binding.getValue("r");
-					results.add(r.stringValue());
-				}
-			} catch (MalformedQueryException e) {
-				throw new IOException(e);
-			} catch (QueryEvaluationException e) {
-				throw new IOException(e);
-			} finally {
-				connection.close();
-			}
-		} catch (RepositoryException e) {
-			throw new IOException(e);
-		}
-		return results;
-	}
-	
 	private void getCausalComparison(String gocamdir, String input_biopax, String outfolder) throws IOException {
 		Map<String, String> prop_label = new HashMap<String, String>();
 		prop_label.put("RO_0002413","provides_direct_input_for");		
@@ -486,6 +460,33 @@ public class Manuscript {
 		System.out.println("pathways "+np+" total biopax links "+total_links+" cross pathway links "+missing+" captured links "+caught);
 	}
 
+	
+	private Set<String> runSingleResultQuery(String query) throws IOException{
+		Set<String> results = new HashSet<String>();
+		try {
+			BigdataSailRepositoryConnection connection = alldata_repo.getReadOnlyConnection();
+			try {
+				
+				TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
+				TupleQueryResult result = tupleQuery.evaluate();
+				while (result.hasNext()) {
+					BindingSet binding = result.next();
+					Value r = binding.getValue("r");
+					results.add(r.stringValue());
+				}
+			} catch (MalformedQueryException e) {
+				throw new IOException(e);
+			} catch (QueryEvaluationException e) {
+				throw new IOException(e);
+			} finally {
+				connection.close();
+			}
+		} catch (RepositoryException e) {
+			throw new IOException(e);
+		}
+		return results;
+	}
+	
 	public static Set<String> getStepPairs(Pathway currentPathway, boolean internal_only){
 		Set<String> r1r2 = new HashSet<String>();
 		String pathway_id = BioPaxtoGO.getEntityReferenceId(currentPathway);
