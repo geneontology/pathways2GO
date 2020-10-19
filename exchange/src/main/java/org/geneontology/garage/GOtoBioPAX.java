@@ -1,4 +1,4 @@
-package org.geneontology.gocam.exchange;
+package org.geneontology.garage;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,6 +39,8 @@ import org.biopax.paxtools.model.level3.RelationshipXref;
 import org.biopax.paxtools.model.level3.SmallMolecule;
 import org.biopax.paxtools.model.level3.SmallMoleculeReference;
 import org.biopax.paxtools.model.level3.UnificationXref;
+import org.geneontology.gocam.exchange.GoCAM;
+import org.geneontology.gocam.exchange.Helper;
 import org.geneontology.rules.util.ArachneOWLReasoner;
 import org.geneontology.rules.util.ArachneOWLReasonerFactory;
 import org.geneontology.whelk.owlapi.WhelkOWLReasoner;

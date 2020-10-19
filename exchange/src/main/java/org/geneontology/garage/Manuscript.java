@@ -47,38 +47,259 @@ public class Manuscript {
 
 	BigdataSailRepository alldata_repo;
 
-
+	public static String prefixes = 
+			"prefix dc: <http://purl.org/dc/elements/1.1/>\n" + 
+			"prefix obo: <http://purl.obolibrary.org/obo/> \n" + 
+			"prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" + 
+			"prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>  \n" + 
+			"prefix skos: <http://www.w3.org/2004/02/skos/core#>\n" + 
+			"prefix canonical: <http://geneontology.org/lego/canonical_record> \n" + 
+			"PREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>\n" + 
+			"PREFIX has_part: <http://purl.obolibrary.org/obo/BFO_0000051>\n" + 
+			"PREFIX occurs_in: <http://purl.obolibrary.org/obo/BFO_0000066>\n" + 
+			"PREFIX enabled_by: <http://purl.obolibrary.org/obo/RO_0002333>\n" + 
+			"PREFIX has_input: <http://purl.obolibrary.org/obo/RO_0002233>\n" + 
+			"PREFIX has_output: <http://purl.obolibrary.org/obo/RO_0002234>\n" + 
+			"PREFIX event: <http://purl.obolibrary.org/obo/go/extensions/reacto.owl#molecular_event>\n" + 
+			"PREFIX GoInformationBiomacromolecule: <http://purl.obolibrary.org/obo/CHEBI_33695>\n" + 
+			"PREFIX GoProtein: <http://purl.obolibrary.org/obo/CHEBI_36080>\n" + 
+			"PREFIX GoProteinContainingComplex: <http://purl.obolibrary.org/obo/GO_0032991>\n" + 
+			"PREFIX GoCellularComponent: <http://purl.obolibrary.org/obo/GO_0005575>\n" + 
+			"PREFIX GoBiologicalProcess: <http://purl.obolibrary.org/obo/GO_0008150>\n" + 
+			"PREFIX GoMolecularFunction: <http://purl.obolibrary.org/obo/GO_0003674>\n" + 
+			"PREFIX GoChemicalEntity: <http://purl.obolibrary.org/obo/CHEBI_24431>\n" + 
+			"PREFIX TransporterActivity: <http://purl.obolibrary.org/obo/GO_0005215> \n" + 
+			"PREFIX xref: <http://www.geneontology.org/formats/oboInOwl#hasDbXref>\n" + 
+			"PREFIX causally_upstream_of: <http://purl.obolibrary.org/obo/RO_0002411>\n" + 
+			"\n";
 
 	public Manuscript(String bg_jnl) {
 		this.alldata_repo = initializeRepository(bg_jnl);
 	}
 
 	public static void main(String[] args) throws IOException {
-		Manuscript m = new Manuscript("/Users/benjamingood/blazegraph/reactome-oct82020-lego.jnl");
+		Manuscript m = new Manuscript("/Users/benjamingood/blazegraph/blazegraph.jnl"); //reactome-oct82020-lego
+		m.runCounts();
+		//m.buildVenn("/Users/benjamingood/test/manuscript/venn_data/");
+		//m.getCausalComparison("/Users/benjamingood/test/reactome/", 
+		//		"/Users/benjamingood/test/biopax/June2020_Homo_sapiens.owl",
+		//		 "/Users/benjamingood/test/manuscript/");
+	}
+	
+	private void runCounts() throws NumberFormatException, IOException {
+		String n_reactions_q = "select (count(distinct ?reaction) as ?r) {\n" + 
+				"  {?reaction rdf:type event:}\n" + 
+				"  UNION\n" + 
+				"  {?reaction rdf:type GoMolecularFunction:} \n" + 
+				"  ?reaction xref: ?xref \n" + 
+				"}\n";
+		String n_mf_reactions_q = "select (count(distinct ?reaction) as ?r) {\n" + 
+				"  ?reaction rdf:type GoMolecularFunction: . \n" + 
+				"  ?reaction xref: ?xref \n" + 
+				"}\n";
+		String n_me_reactions_q = "select (count(distinct ?reaction) as ?r)  where  { \n" + 
+				"  ?reaction xref: ?xref .   \n" + 
+				"  ?reaction rdf:type event: .\n" + 
+				"  minus{?reaction rdf:type GoMolecularFunction:}\n" + 
+				"}\n";
+		String n_reactions_with_enabler_q = "select (count(distinct ?reaction) as ?r)   {\n" + 
+				"  	?reaction xref: ?xref . \n" + 
+				"    ?reaction enabled_by: ?enabler . \n" + 
+				"  	{       ?reaction rdf:type GoMolecularFunction:   }\n" + 
+				"    UNION \n" + 
+				"    {     ?reaction rdf:type event:}  \n" + 
+				"}\n";
+		String n_reactions_no_enabler_q = "select (count(distinct ?reaction) as ?r)   {\n" + 
+				"  	?reaction xref: ?xref . \n" + 
+				"    minus{?reaction enabled_by: ?enabler} \n" + 
+				"  	{       ?reaction rdf:type GoMolecularFunction:  }\n" + 
+				"    UNION \n" + 
+				"    {     ?reaction rdf:type event:}\n" + 
+				"}\n";
+		String n_reactions_mf_no_enabler_q = "select (count(distinct ?reaction) as ?r)   {\n" + 
+				"  	?reaction xref: ?xref .\n" + 
+				"    ?reaction rdf:type GoMolecularFunction: . \n" + 
+				"    minus{?reaction enabled_by: ?enabler} \n" + 
+				"}\n";
+		String reactions_with_bp_q = "select (count(distinct ?reaction) as ?r)  { \n" + 
+				"	?reaction xref: ?xref . # ensure we don't count generated binding nodes - only direct conversions\n" + 
+				"    { ?reaction rdf:type GoMolecularFunction:} UNION {?reaction rdf:type event:} # get all the converted reactions\n" + 
+				"  graph ?graph {	\n" + 
+				"    #minus{?reaction enabled_by: ?enabler}\n" + 
+				"    #minus{?reaction occurs_in: ?location } . \n" + 
+				"   	?reaction part_of: ?bp . \n" + 
+				"   	?bp rdf:type ?bpclass .\n" + 
+				"    filter(?bpclass != owl:NamedIndividual ) . \n" + 
+				"    filter(?bpclass != GoBiologicalProcess: ) \n" + 
+				"   }\n" + 
+				"}\n";
+		String reactions_with_causal_q = "select (count(distinct ?reaction) as ?r)  where  { \n" + 
+				"    { ?reaction rdf:type GoMolecularFunction:} UNION {?reaction rdf:type event:} # get all the converted reactions\n" + 
+				"    {  ?reaction xref: ?xref . \n" + 
+				"      ?up_reaction obo:RO_0002411 ?reaction .\n" + 
+				"      ?up_reaction xref: ?xref2 . } \n" + 
+				"  UNION {\n" + 
+				"    ?reaction xref: ?xref . \n" + 
+				"    ?reaction obo:RO_0002411 ?down_reaction . \n" + 
+				"     ?down_reaction xref: ?xref3 }\n" + 
+				"}\n";
+		String n_reactions_no_causal_q = "select (count(distinct ?reaction) as ?r) where{\n" + 
+				"{ ?reaction rdf:type GoMolecularFunction:} UNION {?reaction rdf:type event:} # get all the converted reactions\n" + 
+				"	?reaction xref: ?xref . \n" + 
+				"  minus  { \n" + 
+				"    { \n" + 
+				"      ?up_reaction obo:RO_0002411 ?reaction .\n" + 
+				"      ?up_reaction xref: ?xref2 . } \n" + 
+				"  UNION {\n" + 
+				"    ?reaction obo:RO_0002411 ?down_reaction . \n" + 
+				"     ?down_reaction xref: ?xref3 }\n" + 
+				"      }\n" + 
+				"}\n";
+		String n_reactions_no_occurs_in_q = "select (count(distinct ?reaction) as ?r)   {\n" + 
+				"  	?reaction xref: ?xref .\n" + 
+				"    { ?reaction rdf:type GoMolecularFunction:} UNION {?reaction rdf:type event:} # get all the converted reactions\n" + 
+				"    minus{?reaction occurs_in: ?location} \n" + 
+				"}\n";
+		String n_reactions_with_occurs_in_q = "select (count(distinct ?reaction) as ?r)   {\n" + 
+				"  	?reaction xref: ?xref .\n" + 
+				"    { ?reaction rdf:type GoMolecularFunction:} UNION {?reaction rdf:type event:} # get all the converted reactions\n" + 
+				"    ?reaction occurs_in: ?location \n" + 
+				"}\n";
+		String n_reactions_with_part_of_q = "select (count(distinct ?reaction) as ?r)   {\n" + 
+				"  	?reaction xref: ?xref .\n" + 
+				"    { ?reaction rdf:type GoMolecularFunction:} UNION {?reaction rdf:type event:} # get all the converted reactions\n" + 
+				"    ?reaction part_of: ?bp \n" + 
+				"}\n";
+		String n_reactions_complete_q = "select (count(distinct ?reaction) as ?r)  where  { \n" + 
+				" #graph ?graph {	\n" + 
+				"    { ?reaction rdf:type GoMolecularFunction:} UNION {?reaction rdf:type event:} # get all the converted reactions\n" + 
+				"    {  ?reaction xref: ?xref . \n" + 
+				"      ?up_reaction obo:RO_0002411 ?reaction .\n" + 
+				"      ?up_reaction xref: ?xref2 . } \n" + 
+				"  UNION {\n" + 
+				"    ?reaction xref: ?xref . \n" + 
+				"    ?reaction obo:RO_0002411 ?down_reaction . \n" + 
+				"     ?down_reaction xref: ?xref3 }\n" + 
+				"    ?reaction enabled_by: ?enabler . \n" + 
+				"    ?reaction occurs_in: ?location  . \n" + 
+				"   	?reaction part_of: ?bp . \n" + 
+				"   	?bp rdf:type ?bpclass .\n" + 
+				"    filter(?bpclass != owl:NamedIndividual ) . \n" + 
+				"    filter(?bpclass != GoBiologicalProcess: ) \n" + 
+				"}\n";
+		int n_reactions, n_mf_reactions, n_me_reactions, n_reactions_with_enabler, n_reactions_no_enabler;
+		int n_reactions_mf_no_enabler, n_reactions_with_bp, n_reactions_with_causal, n_reactions_no_causal;
+		int n_reactions_no_occurs_in, n_reactions_with_part_of, n_reactions_no_part_of, n_reactions_complete;
 		
-		String reaction_uri = "http://model.geneontology.org/R-HSA-70501";
-		String reaction_label =  "Pyruvate + CO2 + ATP => ADP + Orthophosphate + Oxaloacetate";
-		int depth = 0;
-		int max_depth = 4;
-		String stopstring = "insulin";
-		Set<Edge> edges = m.recurseUpstream(null, reaction_uri, reaction_label, depth, max_depth, stopstring);
-		FileWriter f = new FileWriter("/Users/benjamingood/test/manuscript/pyruvate.txt");
-		f.write("source_id\tsource_label\tedge_id\tedge_label\ttarget_id\ttarget_label\n");
-		for(Edge e : edges) {
-			f.write(e.source_id+"\t"+e.source_label+"\t"+e.edge_id+"\t"+e.edge_label+"\t"+e.target_id+"\t"+e.target_label+"\n");
+		n_reactions = Integer.parseInt(runSingleResultQuery(prefixes+" "+n_reactions_q).iterator().next());
+		System.out.println("n_reactions "+n_reactions);
+		n_mf_reactions = Integer.parseInt(runSingleResultQuery(prefixes+" "+n_mf_reactions_q).iterator().next());
+		System.out.println("n_mf_reactions "+n_mf_reactions);
+		n_me_reactions = Integer.parseInt(runSingleResultQuery(prefixes+" "+n_me_reactions_q).iterator().next());
+		System.out.println("n_me_reactions "+n_me_reactions);
+		n_reactions_with_enabler = Integer.parseInt(runSingleResultQuery(prefixes+" "+n_reactions_with_enabler_q).iterator().next());
+		System.out.println("n_reactions_with_enabler "+n_reactions_with_enabler);		
+		n_reactions_no_enabler = Integer.parseInt(runSingleResultQuery(prefixes+" "+n_reactions_no_enabler_q).iterator().next());
+		System.out.println("n_reactions_no_enabler "+n_reactions_no_enabler);
+		n_reactions_mf_no_enabler = Integer.parseInt(runSingleResultQuery(prefixes+" "+n_reactions_mf_no_enabler_q).iterator().next());
+		System.out.println("n_reactions_mf_no_enabler "+n_reactions_mf_no_enabler);
+		
+		n_reactions_with_bp = Integer.parseInt(runSingleResultQuery(prefixes+" "+reactions_with_bp_q).iterator().next());
+		System.out.println("n_reactions_with (non-root) bp "+n_reactions_with_bp);
+		System.out.println("n_reactions_with no (non-root) bp "+(n_reactions - n_reactions_with_bp));
+		
+		n_reactions_with_causal = Integer.parseInt(runSingleResultQuery(prefixes+" "+reactions_with_causal_q).iterator().next());
+		System.out.println("n_reactions with causal "+n_reactions_with_causal);		
+		n_reactions_no_causal = Integer.parseInt(runSingleResultQuery(prefixes+" "+n_reactions_no_causal_q).iterator().next());
+		System.out.println("n_reactions with no causal "+n_reactions_no_causal);
+		n_reactions_no_occurs_in = Integer.parseInt(runSingleResultQuery(prefixes+" "+n_reactions_no_occurs_in_q).iterator().next());
+		System.out.println("n_reactions_no_occurs_in "+n_reactions_no_occurs_in);	
+		n_reactions_complete = Integer.parseInt(runSingleResultQuery(prefixes+" "+n_reactions_complete_q).iterator().next());
+		System.out.println("n_reactions_complete "+n_reactions_complete);		
+	}	
+	
+	private void buildVenn(String outfolder) throws IOException {
+		String no_enabler_q =  
+				prefixes+
+				"select distinct ?r  {\n" + 
+				"  { ?reaction rdf:type GoMolecularFunction: } "
+				+ "UNION { ?reaction rdf:type event:} . 	\n" + 
+				"  ?reaction xref: ?r . \n" + 
+				"    minus{?reaction enabled_by: ?enabler} \n" + 
+				"  	\n" + 
+				"}";
+		Set<String> no_enablers = runSingleResultQuery(no_enabler_q);
+		String no_function_q =  
+				prefixes+
+				"select distinct ?r where  { \n" + 
+				"  ?reaction xref: ?r .   \n" + 
+				"  ?reaction rdf:type event: .\n" + 
+				"  minus{?reaction rdf:type GoMolecularFunction:}\n" + 
+				"}\n" + 
+				"";
+		Set<String> no_function = runSingleResultQuery(no_function_q);
+		
+		String no_location_q = 
+				prefixes+
+				"select distinct ?r  {\n" + 
+				"  	?reaction xref: ?r .\n" + 
+				"    { ?reaction rdf:type GoMolecularFunction:} UNION {?reaction rdf:type event:} # get all the converted reactions\n" + 
+				"    minus{?reaction occurs_in: ?location} \n" + 
+				"}\n";
+		Set<String> no_occurs = runSingleResultQuery(no_location_q);
+		
+		String no_causal_q = 
+				prefixes+
+				"select distinct ?r where{\n" + 
+				"{ ?reaction rdf:type GoMolecularFunction:} UNION {?reaction rdf:type event:} # get all the converted reactions\n" + 
+				"	?reaction xref: ?r . \n" + 
+				"  minus  { \n" + 
+				"    { \n" + 
+				"      ?up_reaction obo:RO_0002411 ?reaction .\n" + 
+				"      ?up_reaction xref: ?xref2 . } \n" + 
+				"  UNION {\n" + 
+				"    ?reaction obo:RO_0002411 ?down_reaction . \n" + 
+				"     ?down_reaction xref: ?xref3 }\n" + 
+				"      }\n" + 
+				"}\n";
+		Set<String> no_causal = runSingleResultQuery(no_causal_q);
+		
+		System.out.println("no enablers "+no_enablers.size()+"\nno function "+no_function.size()+"\nno location "+no_occurs.size()+"\nno causal "+no_causal.size());
+		String enablers_out = outfolder+"no_enablers.txt";
+		FileWriter f = new FileWriter(enablers_out);
+		for(String r : no_enablers) {
+			f.write(r+"\n");
+		}
+		f.close();
+		String functions_out = outfolder+"no_function.txt";
+		f = new FileWriter(functions_out);
+		for(String r : no_function) {
+			f.write(r+"\n");
+		}
+		f.close();
+		String location_out = outfolder+"no_location.txt";
+		f = new FileWriter(location_out);
+		for(String r : no_occurs) {
+			f.write(r+"\n");
+		}
+		f.close();
+		String causal_out = outfolder+"no_causal.txt";
+		f = new FileWriter(causal_out);
+		for(String r : no_causal) {
+			f.write(r+"\n");
 		}
 		f.close();
 	}
-	
-	public static void getCausalComparison() throws IOException {
+
+	private void getCausalComparison(String gocamdir, String input_biopax, String outfolder) throws IOException {
 		Map<String, String> prop_label = new HashMap<String, String>();
 		prop_label.put("RO_0002413","provides_direct_input_for");		
 		prop_label.put("RO_0002629", "directly_positively_regulates");
 		prop_label.put("RO_0002630", "directly_negatively_regulates"); 
 		prop_label.put("RO_0002411", "causally_upstream_of");
 
-		String out = "/Users/benjamingood/test/manuscript/causal_comparison.txt";
-		String network = "/Users/benjamingood/test/manuscript/reaction_network_asserted_in_pathways.txt";
+		String out = outfolder+"causal_comparison.txt";
+		String network = outfolder+"reaction_network_asserted_in_pathways.txt";
 		FileWriter net_writer = new FileWriter(network);
 		net_writer.write("source\tsource label\tproperty\tproperty label\ttarget\ttarget_label\n");
 
@@ -87,8 +308,6 @@ public class Manuscript {
 		Map<String, Set<String>> pathway_causalpairs = new HashMap<String, Set<String>>();
 		Map<String, Map<String, Integer>> pathway_rel_count = new HashMap<String, Map<String, Integer>>();
 		SortedSet<String> causal_props = new TreeSet<String>();
-		String gocamdir = //"/Users/benjamingood/GitHub/noctua_exchange/exchange/src/test/resources/gocam/";
-				"/Users/benjamingood/test/reactome/";
 		File gf = new File(gocamdir);
 		if(gf.isDirectory()) {
 			for(File file : gf.listFiles()) {
@@ -190,7 +409,6 @@ public class Manuscript {
 		FileWriter writer = new FileWriter(out);
 		//count the pathway steps 
 		BioPAXIOHandler handler = new SimpleIOHandler();
-		String input_biopax = "/Users/benjamingood/test/biopax/June2020_Homo_sapiens.owl";
 		FileInputStream f = new FileInputStream(input_biopax);
 		Model biopax_model = handler.convertFromOWL(f);
 		//	Map<String, Integer> pathway_instepcount = new HashMap<String, Integer>();
@@ -225,16 +443,6 @@ public class Manuscript {
 				missing+=m;
 				caught+=pathway_causal.get(pathway_id);
 				total_links+=all_pairs.size();
-				if(m+pathway_causal.get(pathway_id)!=all_pairs.size()) {
-					System.out.println(pathway_id+"\t"+all_pairs.size()+"\t"+internal_pairs.size()+"\t"+pathway_causal.get(pathway_id)+"\t"+m+"\t");
-					Set<String> extra_causal = new HashSet<String>(pathway_causalpairs.get(pathway_id));
-					extra_causal.removeAll(internal_pairs);
-					System.out.println(pathway_id+" oddity - extra causal "+extra_causal);
-					Set<String> extra_internal = new HashSet<String>(internal_pairs);
-					extra_internal.removeAll(pathway_causalpairs.get(pathway_id));
-					System.out.println(pathway_id+" oddity - extra internal "+extra_internal);
-					System.out.println();
-				}
 				writer.write(pathway_id+"\t"+all_pairs.size()+"\t"+internal_pairs.size()+"\t"+pathway_causal.get(pathway_id)+"\t"+m+"\t");
 				for(String causal_prop : causal_props) {
 					int in_c = 0;
@@ -249,22 +457,36 @@ public class Manuscript {
 			}
 		}
 		writer.close();
-		System.out.println("pathways "+np+" total links "+total_links+" missing links "+missing+" captured links "+caught);
-
-		//report
-		//		for(String pathway_id : pathway_instepcount.keySet()) {
-		//			Integer reactome_insteps = pathway_instepcount.get(pathway_id);
-		//			Integer reactome_outsteps = pathway_outstepcount.get(pathway_id);
-		//			Integer reactome_allsteps = pathway_allstepcount.get(pathway_id);
-		//			Integer gocam_causal = pathway_causal.get(pathway_id);
-		//			Integer reactome_steps_internal = pathway_internalstepcount.get(pathway_id);			
-		//			System.out.println(pathway_id+"\t"+reactome_allsteps+"\t"+reactome_insteps+"\t"+reactome_outsteps+"\t"+reactome_steps_internal+"\t"+gocam_causal);
-		//			if(gocam_causal!=reactome_steps_internal) {
-		//				System.out.println(" Oddity "+pathway_id);
-		//			}
-		//		}
+		System.out.println("pathways "+np+" total biopax links "+total_links+" cross pathway links "+missing+" captured links "+caught);
 	}
 
+	
+	private Set<String> runSingleResultQuery(String query) throws IOException{
+		Set<String> results = new HashSet<String>();
+		try {
+			BigdataSailRepositoryConnection connection = alldata_repo.getReadOnlyConnection();
+			try {
+				
+				TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
+				TupleQueryResult result = tupleQuery.evaluate();
+				while (result.hasNext()) {
+					BindingSet binding = result.next();
+					Value r = binding.getValue("r");
+					results.add(r.stringValue());
+				}
+			} catch (MalformedQueryException e) {
+				throw new IOException(e);
+			} catch (QueryEvaluationException e) {
+				throw new IOException(e);
+			} finally {
+				connection.close();
+			}
+		} catch (RepositoryException e) {
+			throw new IOException(e);
+		}
+		return results;
+	}
+	
 	public static Set<String> getStepPairs(Pathway currentPathway, boolean internal_only){
 		Set<String> r1r2 = new HashSet<String>();
 		String pathway_id = BioPaxtoGO.getEntityReferenceId(currentPathway);
@@ -385,120 +607,7 @@ public class Manuscript {
 		return pathway_id;
 	}
 
-	class Edge{
-		String source_id;
-		String target_id;
-		String source_label;
-		String target_label;
-		String edge_id;
-		String edge_label;
-		public Edge(String source_id, String target_id, String source_label, String target_label, String edge_id,
-				String edge_label) {
-			super();
-			this.source_id = source_id;
-			this.target_id = target_id;
-			this.source_label = source_label;
-			this.target_label = target_label;
-			this.edge_id = edge_id;
-			this.edge_label = edge_label;
-		}
-		//ignore dangling labels
-		@Override
-	    public boolean equals(Object o) { 
-	        if (o == this) { 
-	            return true; 
-	        } 
-	        if (!(o instanceof Edge)) { 
-	            return false; 
-	        } 
-	        Edge c = (Edge) o; 
-	         
-	        String triple = source_id+edge_id+target_id;
-	        String c_triple = c.source_id+c.edge_id+c.target_id;
-	        return(triple.equals(c_triple));
-	    } 
-	}
-
-	public Set<Edge> recurseUpstream(Set<Edge> edges, String reaction_uri, String reaction_label, int depth, int max_depth, String stopstring) throws IOException{
-		if(edges == null) {
-			edges = new HashSet<Edge>();
-		}
-		Set<Edge> new_edges = getUpstream(reaction_uri, reaction_label);
-		edges.addAll(new_edges);
-		depth++;
-		for(Edge e : new_edges) {
-			if((!e.target_label.contains(stopstring))
-				&&(depth<max_depth)) {
-				recurseUpstream(edges, e.source_id, e.source_label, depth, max_depth, stopstring);
-			}
-		}
-		return edges;
-	}
 	
-	public Set<Edge> getUpstream(String reaction_uri, String reaction_label) throws IOException {
-		Set<Edge> edges = new HashSet<Edge>();
-		try {
-			BigdataSailRepositoryConnection connection = alldata_repo.getReadOnlyConnection();
-			try {
-				String query = ""
-						+ "prefix dc: <http://purl.org/dc/elements/1.1/>\n" + 
-						"prefix obo: <http://purl.obolibrary.org/obo/> \n" + 
-						"prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" + 
-						"prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>  \n" + 
-						"prefix skos: <http://www.w3.org/2004/02/skos/core#>\n" + 
-						"prefix canonical: <http://geneontology.org/lego/canonical_record> \n" + 
-						"PREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>\n" + 
-						"PREFIX has_part: <http://purl.obolibrary.org/obo/BFO_0000051>\n" + 
-						"PREFIX occurs_in: <http://purl.obolibrary.org/obo/BFO_0000066>\n" + 
-						"PREFIX enabled_by: <http://purl.obolibrary.org/obo/RO_0002333>\n" + 
-						"PREFIX has_input: <http://purl.obolibrary.org/obo/RO_0002233>\n" + 
-						"PREFIX has_output: <http://purl.obolibrary.org/obo/RO_0002234>\n" + 
-						"PREFIX event: <http://purl.obolibrary.org/obo/go/extensions/reacto.owl#molecular_event>\n" + 
-						"PREFIX GoInformationBiomacromolecule: <http://purl.obolibrary.org/obo/CHEBI_33695>\n" + 
-						"PREFIX GoProtein: <http://purl.obolibrary.org/obo/CHEBI_36080>\n" + 
-						"PREFIX GoProteinContainingComplex: <http://purl.obolibrary.org/obo/GO_0032991>\n" + 
-						"PREFIX GoCellularComponent: <http://purl.obolibrary.org/obo/GO_0005575>\n" + 
-						"PREFIX GoBiologicalProcess: <http://purl.obolibrary.org/obo/GO_0008150>\n" + 
-						"PREFIX GoMolecularFunction: <http://purl.obolibrary.org/obo/GO_0003674>\n" + 
-						"PREFIX GoChemicalEntity: <http://purl.obolibrary.org/obo/CHEBI_24431>\n" + 
-						"PREFIX TransporterActivity: <http://purl.obolibrary.org/obo/GO_0005215> \n" + 
-						"PREFIX xref: <http://www.geneontology.org/formats/oboInOwl#hasDbXref>\n" + 
-						"PREFIX causally_upstream_of: <http://purl.obolibrary.org/obo/RO_0002411>\n" + 
-						"\n" + 
-						""
-						+ "select distinct ?reaction ?reaction_label ?pathway ?pathway_label {\n" + 
-						"  ?reaction causally_upstream_of:* <"+reaction_uri+"> . " + //#\"Pyruvate + CO2 + ATP => ADP + Orthophosphate + Oxaloacetate\"\n" + 
-						"  ?reaction part_of: ?pathway . \n" + 
-						"  ?pathway rdfs:label ?pathway_label .\n" + 
-						"  ?reaction rdfs:label ?reaction_label .  \n" + 
-						"} ";
-				TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
-				TupleQueryResult result = tupleQuery.evaluate();
-				while (result.hasNext()) {
-					BindingSet binding = result.next();
-					Value r = binding.getValue("reaction");
-					Value r_label = binding.getValue("reaction_label");
-					Value p = binding.getValue("pathway");		
-					Value p_label = binding.getValue("pathway_label");
-					String edge_id = "upstream_of";
-					String edge_label = "causally upstream of";
-					Edge e = new Edge(r.stringValue(), reaction_uri, r_label.stringValue(),reaction_label, edge_id, edge_label);
-					edges.add(e);
-					Edge p_e = new Edge(r.stringValue(), p.stringValue(), r_label.stringValue(),p_label.stringValue(), "part_of", "part of");
-					edges.add(p_e);
-				}
-			} catch (MalformedQueryException e) {
-				throw new IOException(e);
-			} catch (QueryEvaluationException e) {
-				throw new IOException(e);
-			} finally {
-				connection.close();
-			}
-		} catch (RepositoryException e) {
-			throw new IOException(e);
-		}
-		return edges;
-	}
 
 	private BigdataSailRepository initializeRepository(String pathToJournal) {
 		try {

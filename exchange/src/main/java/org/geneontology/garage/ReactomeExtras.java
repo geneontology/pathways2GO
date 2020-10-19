@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.geneontology.gocam.exchange;
+package org.geneontology.garage;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

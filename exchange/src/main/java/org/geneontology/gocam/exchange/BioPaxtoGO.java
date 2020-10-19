@@ -65,7 +65,6 @@ import org.biopax.paxtools.model.level3.TemplateReaction;
 import org.biopax.paxtools.model.level3.UnificationXref;
 import org.biopax.paxtools.model.level3.XReferrable;
 import org.biopax.paxtools.model.level3.Xref;
-import org.geneontology.gocam.exchange.idmapping.IdMapper;
 import org.geneontology.rules.engine.Explanation;
 import org.geneontology.rules.engine.Node;
 import org.geneontology.rules.engine.Rule;
