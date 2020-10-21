@@ -79,11 +79,85 @@ public class Manuscript {
 
 	public static void main(String[] args) throws IOException {
 		Manuscript m = new Manuscript("/Users/benjamingood/blazegraph/blazegraph.jnl"); //reactome-oct82020-lego
-		m.runCounts();
+		//m.runCounts();
 		//m.buildVenn("/Users/benjamingood/test/manuscript/venn_data/");
 		//m.getCausalComparison("/Users/benjamingood/test/reactome/", 
 		//		"/Users/benjamingood/test/biopax/June2020_Homo_sapiens.owl",
 		//		 "/Users/benjamingood/test/manuscript/");
+		m.getInterestingInferences("/Users/benjamingood/test/manuscript/mf_inferences.txt");
+	}
+	
+	private void getInterestingInferences(String out) throws IOException {
+		String mf_inferences_q = 
+				prefixes+""
+			+ " select distinct ?mfi ?mfi_label (count (distinct ?xref) as ?n_reactions) { \n" + 
+				"	?reaction xref: ?xref . \n" + 
+				"    ?reaction rdfs:label ?rlabel . \n" + 
+				"    ?reaction rdf:type GoMolecularFunction: . \n" + 
+				"  graph ?asserted {\n" + 
+				"    ?reaction rdf:type ?mf . \n" + 
+				"  }\n" + 
+				"  filter(?mf != owl:NamedIndividual) . \n" + 
+				"  filter(?asserted != <”http://model.geneontology.org/inferences”>) . \n" + 
+				"  \n" + 
+				"  graph <”http://model.geneontology.org/inferences”> {	\n" + 
+				"   	?reaction rdf:type ?mfi . \n" + 
+				"   }\n" + 
+				"   filter(?mfi != owl:NamedIndividual) . \n" + 
+				"   filter(?mfi != ?mf) . \n" + 
+				"  minus{?mf rdfs:subClassOf* ?mfi} .\n" + 
+				"  ?mfi rdfs:label ?mfi_label . \n" + 
+				"}\n" + 
+				"group by ?mfi ?mfi_label ";
+		try {
+			BigdataSailRepositoryConnection connection = alldata_repo.getReadOnlyConnection();
+			try {
+			FileWriter f = new FileWriter(out);	
+				TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, mf_inferences_q);
+				TupleQueryResult result = tupleQuery.evaluate();
+				while (result.hasNext()) {
+					BindingSet binding = result.next();
+					Value mfi = binding.getValue("mfi");
+					Value mfi_label = binding.getValue("mfi_label");
+					Value n_reactions = binding.getValue("n_reactions");
+					f.write(mfi.stringValue()+"\t"+mfi_label.stringValue()+"\t"+n_reactions.stringValue()+"\n");
+				}
+			f.close();
+			String n_reactions_q = "select (count (distinct ?xref) as ?n_reactions) { \n" + 
+					"	?reaction xref: ?xref . \n" + 
+					"    ?reaction rdfs:label ?rlabel . \n" + 
+					"    ?reaction rdf:type GoMolecularFunction: . \n" + 
+					"  graph ?asserted {\n" + 
+					"    ?reaction rdf:type ?mf . \n" + 
+					"  }\n" + 
+					"  filter(?mf != owl:NamedIndividual) . \n" + 
+					"  filter(?asserted != <”http://model.geneontology.org/inferences”>) . \n" + 
+					"  \n" + 
+					"  graph <”http://model.geneontology.org/inferences”> {	\n" + 
+					"   	?reaction rdf:type ?mfi . \n" + 
+					"   }\n" + 
+					"   filter(?mfi != owl:NamedIndividual) . \n" + 
+					"   filter(?mfi != ?mf) . \n" + 
+					"  minus{?mf rdfs:subClassOf* ?mfi} .\n" + 
+					"  ?mfi rdfs:label ?mfi_label . \n" + 
+					"}";
+			tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, n_reactions_q);
+			result = tupleQuery.evaluate();
+			while (result.hasNext()) {
+				BindingSet binding = result.next();
+				Value n_reactions = binding.getValue("n_reactions");
+				System.out.println("n reactions with non-parent inferred MF "+n_reactions);
+			}
+			} catch (MalformedQueryException e) {
+				throw new IOException(e);
+			} catch (QueryEvaluationException e) {
+				throw new IOException(e);
+			} finally {
+				connection.close();
+			}
+		} catch (RepositoryException e) {
+			throw new IOException(e);
+		}
 	}
 	
 	private void runCounts() throws NumberFormatException, IOException {
