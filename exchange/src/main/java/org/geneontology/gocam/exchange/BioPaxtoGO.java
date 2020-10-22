@@ -115,6 +115,7 @@ public class BioPaxtoGO {
 	enum ImportStrategy {
 		NoctuaCuration, 
 	}
+	boolean add_bp_from_pathway_parents = false;  //sometimes subpathways do not have BP annotation while parents do. Turning this on assumes that subpathway means subclass and adds parent BP as type for subpathway nodes missing BP annotation.
 	boolean apply_layout = false; //If true, attempts a rational layout for Noctua based on the semantic structure of the model.  (Breaks down or larger models)
 	boolean generate_report = true; //If true, generates GoCAMReport and ReasonerReport objects after each model is created.  These are added to the GoMappingReport object that contains one report per pathway processed. 
 	boolean explain_inconsistant_models = true; //If true, will output text explanations for OWL inconsistent models before halting.  
@@ -724,40 +725,6 @@ public class BioPaxtoGO {
 				for(PathwayStep step1 : steps) {
 					Set<Process> events = step1.getStepProcess();
 					Set<PathwayStep> previousSteps = step1.getNextStepOf();
-					//only looking at prev steps to avoid redundancy, should have everything.  
-					//					Set<PathwayStep> step2s = step1.getNextStep();
-					//					for(PathwayStep step2 : step2s) {
-					//						Set<Process> nextEvents = step2.getStepProcess();
-					//						for(Process event : events) {
-					//							for(Process nextEvent : nextEvents) {
-					//								//limit to relations between conversions - was biochemical reactions but see no reason 
-					//								//not to extend this to include e.g. degradation
-					//								if((event instanceof Interaction)&&(nextEvent instanceof Interaction)&&
-					//										!(event instanceof Control)&&!(nextEvent instanceof Control)) {
-					//									String event_id = getEntityReferenceId(event);
-					//									Set<Pathway> event_pathways = event.getPathwayComponentOf();
-					//									Set<Pathway> next_event_pathways = nextEvent.getPathwayComponentOf();
-					//									if((event_pathways.contains(pathway)&&next_event_pathways.contains(pathway))||
-					//											add_neighboring_events_from_other_pathways) {
-					//										String next_event_id = getEntityReferenceId(nextEvent);
-					//										IRI e1_iri = GoCAM.makeGoCamifiedIRI(model_id, event_id);
-					//										IRI e2_iri = GoCAM.makeGoCamifiedIRI(model_id, next_event_id);
-					//										OWLNamedIndividual e1 = go_cam.df.getOWLNamedIndividual(e1_iri);
-					//										OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(e2_iri);
-					//										go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.causally_upstream_of, e2, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
-					//										//in some cases, the reaction may connect off to a different pathway and hence not be caught in above loop to define reaction entities
-					//										//e.g. Recruitment of SET1 methyltransferase complex  -> APC promotes disassembly of beta-catenin transactivation complex
-					//										//are connected yet in different pathways
-					//										//if its been defined, ought to at least have a label
-					//										String l = go_cam.getaLabel(e2);
-					//										if(l!=null&&l.equals("")){
-					//											defineReactionEntity(go_cam, nextEvent, e2_iri, false, model_id, pathway_iri.toString());		
-					//										}
-					//									}
-					//								}
-					//							}
-					//						}
-					//					}
 					//adding in previous step (which may be from a different pathway)
 					for(PathwayStep prevStep : previousSteps) {
 						Set<Process> prevEvents = prevStep.getStepProcess();
@@ -810,14 +777,59 @@ public class BioPaxtoGO {
 		}
 		Collection<OWLClassExpression> types = EntitySearcher.getTypes(pathway_e, go_cam.go_cam_ont);				
 		if(types.isEmpty()) { 
-			//default to bp
-			go_cam.addTypeAssertion(pathway_e, GoCAM.bp_class);	
+			//check parent pathways for types
+			if(add_bp_from_pathway_parents) {
+				Set<OWLClass> gos = getClosestParentWithGO(pathway);
+				if(gos!=null) {
+					for(OWLClass go : gos) {
+						go_cam.addTypeAssertion(pathway_e, go);
+						//String golabel = tbox_qrunner.getLabel(go.getIRI().toString());
+						String golabel = Helper.getaLabel(go, tbox_qrunner.tbox_class_reasoner.getRootOntology());
+						System.out.println("inferred bp\t"+pathway.getDisplayName()+"\t"+model_id+"\t"+go+"\t"+golabel);
+					}
+				}else {	//default to bp
+					go_cam.addTypeAssertion(pathway_e, GoCAM.bp_class);	
+				}
+			}else {
+				go_cam.addTypeAssertion(pathway_e, GoCAM.bp_class);	
+			}
 		}
-
 		return pathway_e;
 	}
 
+	private Set<OWLClass> getClosestParentWithGO(Pathway p){
+		Set<OWLClass> gos = getGOFromRelationXref(p);
+		if(gos.size()>0) {
+			return gos;
+		}else {
+			for(Pathway parent : p.getPathwayComponentOf()) {
+				gos = getClosestParentWithGO(parent);
+				if(gos!=null&&gos.size()>0) {
+					return gos;
+				}
+			}
+		}
+		return null;
+	}
 
+	private Set<OWLClass> getGOFromRelationXref(Entity e) {
+		Set<OWLClass> go = new HashSet<OWLClass>();
+		Set<Xref> xrefs = e.getXref();	
+		for(Xref xref : xrefs) {
+			//dig out any xreferenced GO processes and assign them as types
+			if(xref.getModelInterface().equals(RelationshipXref.class)) {
+				RelationshipXref r = (RelationshipXref)xref;	    			  
+				String db = r.getDb().toLowerCase();
+				if(db.contains("gene ontology")) {
+					String goid = r.getId().replaceAll(":", "_");
+					String uri = GoCAM.obo_iri + goid;					
+					OWLClass goc = golego.getOboClass(uri, true);
+					go.add(goc);
+				}
+			}
+		}
+		return go;
+	}
 
 
 	private String getUniprotProteinId(Protein protein) {
