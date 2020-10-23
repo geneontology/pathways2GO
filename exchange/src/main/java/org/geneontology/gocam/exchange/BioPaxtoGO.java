@@ -108,6 +108,7 @@ import org.semarglproject.vocab.OWL;
  */
 public class BioPaxtoGO {
 	String go_lego_file;
+	String base_provider;
 	GOLego golego; //The fully axiomitized Gene Ontology. Used in multiple places for different purposes. 
 	String blazegraph_output_journal;//Generated models will be stored both as files and as entries in this blazegraph journal.  Note this is ready for use in a Noctua/Minerva instance without any further processing.
 	QRunner tbox_qrunner;
@@ -189,7 +190,7 @@ public class BioPaxtoGO {
 
 		String base_title = "title here";//"Will be replaced if a title can be found for the pathway in its annotations
 		String base_contributor = "https://orcid.org/0000-0002-7334-7852"; //Ben Good
-		String base_provider = "https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";
+		bp2g.base_provider = "https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";
 		String tag = "unexpanded";
 		if(bp2g.expand_subpathways) {
 			tag = "expanded";
@@ -214,7 +215,7 @@ public class BioPaxtoGO {
 		bp2g.tbox_qrunner = new QRunner(Collections.singleton(bp2g.golego.golego_ont), null, bp2g.golego.golego_reasoner, true, false, false);
 		Set<String> taxa = new HashSet<String>();
 		taxa.add("http://purl.obolibrary.org/obo/NCBITaxon_9606");
-		bp2g.convert(input_biopax, converted, base_title, base_contributor, base_provider, tag, test_pathways, blaze, taxa);
+		bp2g.convert(input_biopax, converted, base_title, base_contributor, bp2g.base_provider, tag, test_pathways, blaze, taxa);
 
 	} 
 
@@ -223,13 +224,14 @@ public class BioPaxtoGO {
 			String file_output_path, 
 			String base_title, 
 			String base_contributor, 
-			String base_provider, 
+			String base_provider_i, 
 			String tag, 
 			Set<String> test_pathway_names,
 			Blazer blaze,
 			Set<String> taxa) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException  {
 		//set for writing metadata
 		String datasource = "";
+		base_provider = base_provider_i;
 		if(base_provider.equals("https://reactome.org")) {
 			datasource = "Reactome";
 		}else if(base_provider.equals("https://www.wikipathways.org/")) {
@@ -265,7 +267,7 @@ public class BioPaxtoGO {
 			if(test_pathway_names!=null&&!test_pathway_names.contains(go_cam.name)) {
 				continue;
 			}
-			if(!keepPathway(currentPathway, base_provider)){ //Pathway Commons contains a lot of content free stubs when viewed this way
+			if(!keepPathway(currentPathway)){ //Pathway Commons contains a lot of content free stubs when viewed this way
 				System.out.println("Skipping pathway: "+getBioPaxName(currentPathway));
 				continue;
 			}
@@ -394,7 +396,7 @@ public class BioPaxtoGO {
 	 * @param pathway
 	 * @return
 	 */
-	boolean keepPathway(Pathway pathway, String base_provider) {
+	boolean keepPathway(Pathway pathway) {
 		boolean keep = false;
 		if(base_provider.equals("https://reactome.org")) {
 			//default to keeping all reactome content
@@ -418,6 +420,26 @@ public class BioPaxtoGO {
 		return keep;
 	}
 
+	boolean keepReaction(Interaction reaction) {
+		boolean keep = true;
+		if(ignore_diseases) {
+			//is all the pathways the reaction is in are disease pathways, 
+			//don't keep it			
+			boolean all_disease = false;
+			for(Pathway pathway : reaction.getPathwayComponentOf()) {
+				if(keepPathway(pathway)) {
+					return true; //found a non-disease parent pathway, stop
+				}else {
+					all_disease = true;
+				}
+			}
+			if(all_disease) {
+				keep = false;
+			}
+		}
+		return keep;
+	}
+	
 	Set<Pathway> getPathwayParents(Pathway pathway, Set<Pathway> parents){
 		if(parents==null) {
 			parents = new HashSet<Pathway>();
@@ -741,7 +763,13 @@ public class BioPaxtoGO {
 									if((event_pathways.contains(pathway)&&prev_event_pathways.contains(pathway))) {
 										add_reaction = "in_pathway";
 									}else if(add_neighboring_events_from_other_pathways) {	
-										add_reaction = "external_pathway";
+										//test if there is any reason to avoid this reaction
+										//e.g. from a banned pathway.  
+										if(keepReaction((Interaction)prevEvent)) {
+											add_reaction = "external_pathway";
+										}else {
+											add_reaction = null;
+										}
 									}
 									if(add_reaction !=null) {
 										String prev_event_id = getEntityReferenceId(prevEvent);
@@ -868,7 +896,7 @@ public class BioPaxtoGO {
 	 * @return
 	 * @throws IOException 
 	 */
-	private void defineReactionEntity(GoCAM go_cam, Entity entity, IRI this_iri, boolean follow_controllers, String model_id, String root_pathway_iri) throws IOException {
+	private void defineReactionEntity(GoCAM go_cam, Entity entity, IRI this_iri, boolean follow_controllers, String model_id, String root_pathway_iri) throws IOException {		
 		String entity_id = getEntityReferenceId(entity);
 		if(this_iri==null) {			
 			this_iri = GoCAM.makeGoCamifiedIRI(null, entity_id);

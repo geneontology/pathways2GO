@@ -243,8 +243,70 @@ public class BioPaxtoGOTest {
 			
 		}
 	}
-	// R-HSA-9674015 
-	
+
+//	R-HSA-163359	
+	@Test
+	public final void testDiseaseReactionDeletion() {
+		System.out.println("test removal of stray disease reactions coming in from causal relation");
+		String pathway = "<http://model.geneontology.org/R-HSA-163359>";
+		String reaction_delete = "<http://model.geneontology.org/R-HSA-9660819>";
+		String reaction_present = "<http://model.geneontology.org/R-HSA-163617>";
+		String all_reaction_q =  
+				"SELECT  distinct ?reaction ?reaction_prop ?reaction_value  \n" + 
+				"WHERE {\n" + 
+				"  GRAPH pathway_id {  \n" + 
+				"    	reaction_id ?reaction_prop ?reaction_value . \n" + 
+				"    }\n" + 
+				"  } \n";
+		TupleQueryResult result = null;
+		int n = 0;
+		try {			
+			String q1 = all_reaction_q.replace("pathway_id", pathway);
+			q1 = q1.replace("reaction_id", reaction_delete);
+			result = blaze.runSparqlQuery(q1);			
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				n++;
+			}
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		assertTrue("disease reaction "+reaction_delete+" not deleted", n==0);
+		n = 0;
+		result = null;
+		try {
+			
+			String q2 = all_reaction_q.replace("pathway_id", pathway);
+			q2 = q2.replace("reaction_id", reaction_present);
+			result = blaze.runSparqlQuery(q2);
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				n++;
+			}
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		assertTrue("reaction "+reaction_present+" not present", n>0);
+
+	}	
+
+	// R-HSA-9674015 	
 	@Test
 	public final void testDrugReactionDeletion() {
 		System.out.println("removal of drug reactions");
