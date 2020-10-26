@@ -239,7 +239,7 @@ public class GoCAM {
 
 
 	public void initializeClassesAndRelations() {
-		logger.setLevel((Level) Level.DEBUG); 
+		logger.setLevel((Level) Level.ERROR); 
 		//Annotation properties for metadata and evidence
 		skos_note = df.getOWLAnnotationProperty(IRI.create("http://www.w3.org/2004/02/skos/core#note"));
 		skos_narrower = df.getOWLAnnotationProperty(IRI.create("http://www.w3.org/2004/02/skos/core#narrower"));
@@ -1178,7 +1178,6 @@ final long counterValue = instanceCounter.getAndIncrement();
 				OWLClass thing_type = this.df.getOWLClass(IRI.create(thing_type_uri));
 				OWLNamedIndividual thing = this.makeAnnotatedIndividual(transport_reaction.thing_uri);
 				Set<OWLClass> entity_types = tbox_qrunner.getSuperClasses(thing_type, false);
-				System.out.println(thing_type_uri+" types "+entity_types);
 				String explain = "Transporter Rule.  This reaction represents the activity of transporting ";
 				if(add_type&&entity_types!=null&&entity_types.contains(chebi_protein)) {
 					addTypeAssertion(reaction, protein_transporter_activity);
