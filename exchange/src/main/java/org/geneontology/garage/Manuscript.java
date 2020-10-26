@@ -43,6 +43,26 @@ import com.bigdata.rdf.sail.BigdataSail;
 import com.bigdata.rdf.sail.BigdataSailRepository;
 import com.bigdata.rdf.sail.BigdataSailRepositoryConnection;
 
+
+/**
+ * Collection of methods used to generate content for Pathway2GO manuscript and presentations.
+ * Prior to running these operations, a blazegraph journal containing the generated go-cam model collection,
+ * go-lego , and reacto ontologies must be prepared with inferences added.  The steps for doing this are:
+ * 1) Obtain the blazegraph journal generated as part of the pathways2go procedure.  This has the go-cams in it
+ * 2) Add the go-lego-reacto.owl contents into that journal. Using blazegraph-runner https://github.com/balhoff/blazegraph-runner
+ *   > bin/blazegraph-runner load --journal=../blazegraph.jnl --use-ontology-graph=true --informat=rdfxml ./go-lego-reacto.owl
+ * 3) Add inferences using Arachne via blazegraph-runner
+ *   > bin/blazegraph-runner reason --journal=../blazegraph.jnl --ontology="http://purl.obolibrary.org/obo/go/extensions/go-lego-reacto.owl" --source-graphs-query=../graphs.rq --target-graph=”http://model.geneontology.org/inferences” --merge-sources=false --parallelism=8 --reasoner=arachne
+ *  where the 'graphs.rq' file contains the query:
+SELECT DISTINCT ?source_graph
+WHERE {
+  GRAPH ?source_graph { ?s ?p ?o . }
+FILTER (?source_graph != <http://model.geneontology.org/inferences> )
+}
+*  4) 
+ * @author benjamingood
+ *
+ */
 public class Manuscript {
 
 	BigdataSailRepository alldata_repo;
@@ -78,13 +98,13 @@ public class Manuscript {
 	}
 
 	public static void main(String[] args) throws IOException {
-		Manuscript m = new Manuscript("/Users/benjamingood/blazegraph/blazegraph.jnl"); //reactome-oct82020-lego
+		Manuscript m = new Manuscript("/Users/benjamingood/blazegraph/reactome-lego-reasoned-oct23-2020.jnl"); 
 		//m.runCounts();
-		//m.buildVenn("/Users/benjamingood/test/manuscript/venn_data/");
-		//m.getCausalComparison("/Users/benjamingood/test/reactome/", 
-		//		"/Users/benjamingood/test/biopax/June2020_Homo_sapiens.owl",
-		//		 "/Users/benjamingood/test/manuscript/");
-		m.getInterestingInferences("/Users/benjamingood/test/manuscript/mf_inferences.txt");
+		//m.buildVenn("/Users/benjamingood/test/manuscript/reactome-report-oct23/venn_data/");
+		m.getCausalComparison("/Users/benjamingood/test/reactome/", 
+				"/Users/benjamingood/test/biopax/June2020_Homo_sapiens.owl",
+				 "/Users/benjamingood/test/manuscript/reactome-report-oct23/");
+		//m.getInterestingInferences("/Users/benjamingood/test/manuscript/mf_inferences.txt");
 	}
 	
 	private void getInterestingInferences(String out) throws IOException {
@@ -261,10 +281,33 @@ public class Manuscript {
 				"    filter(?bpclass != owl:NamedIndividual ) . \n" + 
 				"    filter(?bpclass != GoBiologicalProcess: ) \n" + 
 				"}\n";
+		String n_binding_reactions_q = "select (count(distinct ?reaction) as ?r) where { \n" + 
+				"  ?reaction xref: ?xref . \n" + 
+				"  ?reaction rdf:type event: . \n" + 
+				"  minus { ?reaction rdf:type GoMolecularFunction:} .\n" + 
+				"  {  select ?reaction (count (distinct ?input) as ?inputs) (count (distinct ?output) as ?outputs)    {\n" + 
+				"      ?reaction has_input: ?input . \n" + 
+				"      ?reaction has_output: ?output .  \n" + 
+				"      } group by ?reaction \n" + 
+				"   }\n" + 
+				"  filter(?inputs > ?outputs ) .  \n" + 
+				"}\n";
+		String n_dissociation_reactions_q = "select (count(distinct ?reaction) as ?r) where { \n" + 
+				"  ?reaction xref: ?xref . \n" + 
+				"  ?reaction rdf:type event: . \n" + 
+				"  minus { ?reaction rdf:type GoMolecularFunction:} .\n" + 
+				"  {  select ?reaction (count (distinct ?input) as ?inputs) (count (distinct ?output) as ?outputs)    {\n" + 
+				"      ?reaction has_input: ?input . \n" + 
+				"      ?reaction has_output: ?output .  \n" + 
+				"      } group by ?reaction \n" + 
+				"   }\n" + 
+				"  filter(?inputs < ?outputs ) .  \n" + 
+				"}\n";
+		
 		int n_reactions, n_mf_reactions, n_me_reactions, n_reactions_with_enabler, n_reactions_no_enabler;
 		int n_reactions_mf_no_enabler, n_reactions_with_bp, n_reactions_with_causal, n_reactions_no_causal;
 		int n_reactions_no_occurs_in, n_reactions_with_part_of, n_reactions_no_part_of, n_reactions_complete;
-		
+		int n_binding, n_dissociation;
 		n_reactions = Integer.parseInt(runSingleResultQuery(prefixes+" "+n_reactions_q).iterator().next());
 		System.out.println("n_reactions "+n_reactions);
 		n_mf_reactions = Integer.parseInt(runSingleResultQuery(prefixes+" "+n_mf_reactions_q).iterator().next());
@@ -276,12 +319,10 @@ public class Manuscript {
 		n_reactions_no_enabler = Integer.parseInt(runSingleResultQuery(prefixes+" "+n_reactions_no_enabler_q).iterator().next());
 		System.out.println("n_reactions_no_enabler "+n_reactions_no_enabler);
 		n_reactions_mf_no_enabler = Integer.parseInt(runSingleResultQuery(prefixes+" "+n_reactions_mf_no_enabler_q).iterator().next());
-		System.out.println("n_reactions_mf_no_enabler "+n_reactions_mf_no_enabler);
-		
+		System.out.println("n_reactions_mf_no_enabler "+n_reactions_mf_no_enabler);		
 		n_reactions_with_bp = Integer.parseInt(runSingleResultQuery(prefixes+" "+reactions_with_bp_q).iterator().next());
 		System.out.println("n_reactions_with (non-root) bp "+n_reactions_with_bp);
 		System.out.println("n_reactions_with no (non-root) bp "+(n_reactions - n_reactions_with_bp));
-		
 		n_reactions_with_causal = Integer.parseInt(runSingleResultQuery(prefixes+" "+reactions_with_causal_q).iterator().next());
 		System.out.println("n_reactions with causal "+n_reactions_with_causal);		
 		n_reactions_no_causal = Integer.parseInt(runSingleResultQuery(prefixes+" "+n_reactions_no_causal_q).iterator().next());
@@ -289,7 +330,12 @@ public class Manuscript {
 		n_reactions_no_occurs_in = Integer.parseInt(runSingleResultQuery(prefixes+" "+n_reactions_no_occurs_in_q).iterator().next());
 		System.out.println("n_reactions_no_occurs_in "+n_reactions_no_occurs_in);	
 		n_reactions_complete = Integer.parseInt(runSingleResultQuery(prefixes+" "+n_reactions_complete_q).iterator().next());
-		System.out.println("n_reactions_complete "+n_reactions_complete);		
+		System.out.println("n_reactions_complete "+n_reactions_complete);	
+		
+		n_binding = Integer.parseInt(runSingleResultQuery(prefixes+" "+n_binding_reactions_q).iterator().next());
+		System.out.println("n_binding "+n_binding);
+		n_dissociation = Integer.parseInt(runSingleResultQuery(prefixes+" "+n_dissociation_reactions_q).iterator().next());
+		System.out.println("n_dissociation "+n_dissociation);
 	}	
 	
 	private void buildVenn(String outfolder) throws IOException {
@@ -454,11 +500,6 @@ public class Manuscript {
 								net_writer.write(net_row);
 								causal_count++;
 								String causal_prop = prop.getLocalName();
-								//								if(binding_reaction!=null) {
-								//									causal_prop = "provides_input_for_binding_regulates";
-								//								}else {
-								//									causal_prop = prop.getLocalName();
-								//								}
 								causal_props.add(causal_prop);
 								Integer rel_count_n = rel_count.get(causal_prop);
 								if(rel_count_n==null) {
