@@ -27,7 +27,14 @@ import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 
 /**
  * Convert biopax pathways into GO-CAMs from the command line.  
- * Example parameters: -b "/test/biopax/Homo_sapiens_sept9_2019.owl" -o "/test/go_cams/reactome/reactome-homosapiens-" -bg "/blazegraph.jnl" -tag "unexpanded" -dc "https://orcid.org/0000-0002-7334-7852" -dp "https://reactome.org" -go "/gocam_ontology/go-plus.owl" -lego "/test/go-lego-test.owl" -tp "Glycolysis"
+ * Example parameters: 
+-b ./June2020_Homo_sapiens.owl
+-o ./reactome/
+-bg ./blazegraph.jnl 
+-tag unexpanded 
+-dc https://orcid.org/0000-0002-7334-7852 
+-dp https://reactome.org 
+-lego ./go-lego-reacto.owl
  * @author bgood
  *
  */

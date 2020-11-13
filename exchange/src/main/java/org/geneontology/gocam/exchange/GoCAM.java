@@ -1055,7 +1055,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		logger.debug("inferring occurs in from entity locations");
 		r = inferOccursInFromEntityLocations(model_id, r);
 		logger.debug("inferring regulates from output regulates");
-		r = inferRegulatesViaOutputRegulates(model_id, r); //must be run before convertEntityRegulatorsToBindingFunctions
+		r = inferRegulatesViaOutputRegulates(model_id, r); //must be run before convertEntityRegulatorsToBindingFunctions		
 		logger.debug("inferring regulates from output enables");
 		r = inferRegulatesViaOutputEnables(model_id, r);
 		logger.debug("inferring provides input for");
@@ -1064,7 +1064,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		r = convertEntityRegulatorsToBindingFunctions(model_id, r);
 		logger.debug("deleting complexes with active units");
 		deleteComplexesWithActiveUnits();
-		logger.debug("deleting disallowed relations like that between a non-gene product molecular and the reaction it regulates");
+		logger.debug("deleting disallowed relations like that between a non-gene product molecular and the reaction it regulates");		
 		deleteDisallowedRelations();
 		logger.debug("clean up any stray individuals");
 		cleanOutUnconnectedNodes();
