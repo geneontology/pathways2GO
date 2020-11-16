@@ -136,7 +136,7 @@ public class GoCAM {
 	establishment_of_protein_localization, negative_regulation_of_molecular_function, positive_regulation_of_molecular_function,
 	chebi_mrna, chebi_rna, chebi_trna_precursor, chebi_dna, unfolded_protein, 
 	transport, protein_transport, human, 
-	union_set, molecular_event;
+	molecular_event;
 	public static OWLClassExpression taxon_human;
 
 	public OWLOntology go_cam_ont;
@@ -282,29 +282,19 @@ public class GoCAM {
 		protein_transporter_activity = df.getOWLClass(IRI.create(obo_iri+"GO_0140318"));
 		protein_transport = df.getOWLClass(IRI.create(obo_iri+"GO_0015031"));
 		transport = df.getOWLClass(IRI.create(obo_iri+"GO_0006810"));
-		union_set = df.getOWLClass(IRI.create("http://placeholder/union_set"));
-		addLabel(union_set, "Unordered collection");
 		chemical_role =df.getOWLClass(IRI.create(obo_iri+"CHEBI_50906"));
-		addLabel(chemical_role, "chemical role");
 		//biological process
 		bp_class = df.getOWLClass(IRI.create(obo_iri + "GO_0008150")); 
-		addLabel(bp_class, "Biological Process");
 		//molecular function GO:0003674
 		molecular_function = df.getOWLClass(IRI.create(obo_iri + "GO_0003674")); 
-		addLabel(molecular_function, "Molecular Function");
 		//cellular component
 		cc_class =  df.getOWLClass(IRI.create(obo_iri + "GO_0005575"));
-		addLabel(cc_class, "Cellular Component");
 		//continuant 
 		continuant_class = df.getOWLClass(IRI.create(obo_iri + "BFO_0000002")); 
-		addLabel(continuant_class, "Continuant");
 		//occurent
-		process_class =  df.getOWLClass(IRI.create(obo_iri + "BFO_0000015")); 
-		addLabel(process_class, "Process");		
+		process_class =  df.getOWLClass(IRI.create(obo_iri + "BFO_0000015")); 	
 		//complex GO_0032991
-		go_complex = df.getOWLClass(IRI.create(obo_iri + "GO_0032991")); 
-		addLabel(go_complex, "protein-containing complex");		
-		//http://purl.obolibrary.org/obo/ECO_0000313
+		go_complex = df.getOWLClass(IRI.create(obo_iri + "GO_0032991")); 	
 		//"A type of imported information that is used in an automatic assertion."
 		eco_imported_auto = df.getOWLClass(IRI.create(obo_iri + "ECO_0000313")); 
 		//"A type of evidence that is based on work performed by a person or group prior to a use by a different person or group."
@@ -312,155 +302,66 @@ public class GoCAM {
 		//ECO_0000363 "A type of evidence based on computational logical inference that is used in automatic assertion."
 		eco_inferred_auto = df.getOWLClass(IRI.create(obo_iri + "ECO_0000363")); 		
 		chebi_molecular_entity = df.getOWLClass(IRI.create(obo_iri + "CHEBI_23367"));
-		addLabel(chebi_molecular_entity, "molecular entity");
 		//proteins and genes as they are in neo
 		chebi_protein = df.getOWLClass(IRI.create(obo_iri + "CHEBI_36080"));
-		addLabel(chebi_protein, "chebi protein");
 		chebi_information_biomacromolecule = df.getOWLClass(IRI.create(obo_iri + "CHEBI_33695"));
-		addLabel(chebi_information_biomacromolecule, "chebi information biomacromolecule"); 
 		chemical_entity =df.getOWLClass(IRI.create(obo_iri+"CHEBI_24431"));
-		addLabel(chemical_entity, "chemical entity");
 		chebi_mrna = df.getOWLClass(IRI.create(obo_iri+"CHEBI_33699"));
 		chebi_rna = df.getOWLClass(IRI.create(obo_iri+"CHEBI_33697"));
 		chebi_trna_precursor = df.getOWLClass(IRI.create(obo_iri+"CHEBI_10668"));
 		chebi_dna = df.getOWLClass(IRI.create(obo_iri+"CHEBI_16991"));
 		unfolded_protein = df.getOWLClass(IRI.create(obo_iri+"HINO_0008749"));
-		addLabel(unfolded_protein, "unfolded protein");
 		//part of
 		part_of = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000050"));
-		addLabel(part_of, "part of"); 
 		//has part
 		has_part = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000051"));
-		addLabel(has_part, "has part");
 		//has_component - use when you want to specify an exact cardinality - e.g. 5 and only 5 fingers.
 		has_component = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002180"));
 		addLabel(has_component, "has component");
 		//http://purl.obolibrary.org/obo/RO_0002160
 		only_in_taxon = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002160"));
-		addLabel(only_in_taxon, "only in taxon");
 		//has input 
 		has_input = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002233"));
-		addLabel(has_input, "has input");
 		//has output 
 		has_output = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002234"));
-		addLabel(has_output, "has output");
 		//directly provides input for (process to process)
 		provides_direct_input_for = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002413"));
-		addLabel(provides_direct_input_for, "directly provides input for (process to process)");
 		//RO_0002408 directly inhibits (process to process)
 		directly_inhibits = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002408"));
-		addLabel(directly_inhibits, "directly inhibits (process to process)");
 		//RO_0002406 directly activates (process to process)
 		directly_activates = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002406"));
-		addLabel(directly_activates, "directly activates (process to process)");
 		//BFO_0000066 occurs in (note that it can only be used for occurents in occurents)
-		//RO_0002434 
 		interacts_with = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002434")); 
-		addLabel(interacts_with, "interacts with");
 		has_participant  = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0000057")); 
-		addLabel(has_participant, "has participant");
 		functionally_related_to  = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002328")); 
-		addLabel(functionally_related_to, "functionally related to");
-
-		//http://purl.obolibrary.org/obo/RO_0002305
 		causally_upstream_of  = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002411"));
-		addLabel(causally_upstream_of, "causally upstream of");
 		causally_upstream_of_negative_effect  = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002305"));
-		addLabel(causally_upstream_of_negative_effect, "causally upstream of with a negative effect");
 		causally_upstream_of_positive_effect  = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002304"));
-		addLabel(causally_upstream_of_positive_effect, "causally upstream of with a positive effect");
-
 		occurs_in = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000066"));
-		addLabel(occurs_in, "occurs in");
-		//RO_0001025
 		located_in = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0001025"));
-		addLabel(located_in, "located in");		
-		//RO_0002333 enabled by
 		enabled_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002333"));
-		addLabel(enabled_by, "enabled by");
-		//RO_0002327
 		enables = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002327"));
-		addLabel(enables, "enables");
-		//RO_0002334 regulated by (processual) 
 		regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002334"));
-		addLabel(regulated_by, "regulated by");
-		//RO_0002335 negatively regulated by
-		//RO_0002336 positively regulated by
-		//directly negatively regulated by RO_0002023
-		//directly positively regulated by RO_0002024
 		directly_negatively_regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002023"));
-		addLabel(directly_negatively_regulated_by, "directly negatively regulated by");
-		//RO_0002630
 		directly_negatively_regulates = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002630"));
-		addLabel(directly_negatively_regulates, "directly negatively regulates");
-
 		negatively_regulates = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002212"));
-		addLabel(negatively_regulates, "negatively regulates");
 		positively_regulates = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002213"));
-		addLabel(positively_regulates, "positively regulates");
-
 		directly_positively_regulated_by = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002024"));
-		addLabel(directly_positively_regulated_by, "directly positively regulated by");
-
 		directly_positively_regulates = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002629"));
-		addLabel(directly_positively_regulates, "directly positively regulates");
-
-		//RO_0002430 involved_in_negative_regulation_of
-		//RO_0002429 involved_in_positive_regulation_of
 		involved_in_negative_regulation_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002430"));
-		addLabel(involved_in_negative_regulation_of, "involved in negative regulation_of");
 		involved_in_positive_regulation_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002429"));
-		addLabel(involved_in_positive_regulation_of, "involved in positive regulation_of");
-
 		involved_in_regulation_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002428"));
-		addLabel(involved_in_regulation_of, "involved in regulation of");
-
-		//RO:0000087
 		has_role = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0000087"));
-		addLabel(has_role, "has role");
-
 		has_target_end_location = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002339"));
-		addLabel(has_target_end_location, "has_target_end_location");
 		has_target_start_location = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002338"));
-		addLabel(has_target_start_location, "has_target_start_location");
 		contributes_to = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002326"));
-		addLabel(contributes_to, "contributes_to");
 		transports_or_maintains_localization_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002313"));
-		addLabel(transports_or_maintains_localization_of, "transports_or_maintains_localization_of");
 		//re-usable restrictions
 		taxon_human = df.getOWLObjectSomeValuesFrom(only_in_taxon, human);
 		//data properties
 		has_start = df.getOWLDataProperty(IRI.create(obo_iri + "has_start"));
-		addLabel(has_start, "has_start");
 		has_end = df.getOWLDataProperty(IRI.create(obo_iri + "has_end"));
-		addLabel(has_end, "has_end");
 	}
-
-	//	public GoCAMReport getGoCAMReport(){
-	//		GoCAMReport class_report = new GoCAMReport();
-	//		for(OWLIndividual mf : EntitySearcher.getIndividuals(molecular_function, go_cam_ont)) {
-	//			class_report.mf_count++;
-	//			class_report.mf_labels.add(this.getaLabel((OWLEntity) mf));
-	//		}
-	//		for(OWLIndividual bp : EntitySearcher.getIndividuals(bp_class, go_cam_ont)) {
-	//			class_report.bp_count++;
-	//			class_report.bp_labels.add(this.getaLabel((OWLEntity) bp));
-	//		}
-	//		for(OWLIndividual cc : EntitySearcher.getIndividuals(cc_class, go_cam_ont)) {
-	//			class_report.cc_count++;
-	//			class_report.cc_labels.add(this.getaLabel((OWLEntity) cc));
-	//		}		
-	//		for(OWLIndividual complex : EntitySearcher.getIndividuals(go_complex, go_cam_ont)) {
-	//			class_report.complex_count++;
-	//			class_report.complex_labels.add(this.getaLabel((OWLEntity) complex));
-	//		}
-	//		
-	//		class_report.mf_unclassified = countUnclassifiedRDF(molecular_function, go_cam_ont);
-	//		class_report.bp_unclassified = countUnclassifiedRDF(bp_class, go_cam_ont);
-	//		class_report.cc_unclassified = countUnclassifiedRDF(cc_class, go_cam_ont);
-	//		class_report.complex_unclassified = countUnclassifiedRDF(go_complex, go_cam_ont);
-	//		return class_report;
-	//	}
 
 	public int countUnclassifiedRDF(OWLClass root_class, OWLOntology ont) {
 		int un = 0; 
