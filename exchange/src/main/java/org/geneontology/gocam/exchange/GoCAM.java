@@ -317,7 +317,6 @@ public class GoCAM {
 		has_part = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000051"));
 		//has_component - use when you want to specify an exact cardinality - e.g. 5 and only 5 fingers.
 		has_component = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002180"));
-		addLabel(has_component, "has component");
 		//http://purl.obolibrary.org/obo/RO_0002160
 		only_in_taxon = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002160"));
 		//has input 
