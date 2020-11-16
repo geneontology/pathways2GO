@@ -973,7 +973,6 @@ public class BioPaxtoGO {
 							if(location_term!=null) {
 								String loc_i_id = getEntityReferenceId(entity)+"_"+uref.getId().replaceAll(":", "_");
 								OWLNamedIndividual loc_e = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRIstring(null, loc_i_id));
-								go_cam.addLabel(xref_go_loc, location_term);
 								go_cam.addTypeAssertion(loc_e, xref_go_loc);
 								go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.located_in, loc_e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);		
 								if(strategy == ImportStrategy.NoctuaCuration) {
