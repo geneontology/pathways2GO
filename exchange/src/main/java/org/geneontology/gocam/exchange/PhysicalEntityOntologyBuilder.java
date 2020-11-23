@@ -115,6 +115,7 @@ public class PhysicalEntityOntologyBuilder {
 	}
 	Map<String, Set<String>> pro_exact_map; 
 	Map<String, Set<String>> pro_isa_map;
+	BioPaxtoGO bp2go;
 	/**
 	 * @throws IOException 
 	 * 
@@ -135,6 +136,7 @@ public class PhysicalEntityOntologyBuilder {
 			chebi_reasoner = reasonerFactory.createReasoner(chebi);
 		}
 		missing_chebi = new HashSet<String>();
+		bp2go = new BioPaxtoGO();
 	}
 
 	/**
@@ -162,8 +164,6 @@ public class PhysicalEntityOntologyBuilder {
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileInputStream f = new FileInputStream(input_biopax);
 		Model biopax_model = handler.convertFromOWL(f);
-
-		countPhysical(biopax_model);
 
 		String biopax_build_id = biopax_model.getXmlBase();
 		String base_contributor = "https://orcid.org/0000-0002-7334-7852";
@@ -271,11 +271,11 @@ public class PhysicalEntityOntologyBuilder {
 		} 
 
 		go_cam.writeGoCAM_jena(outfilename, false, outputformat);
-
+		converter.countPhysical(biopax_model);
 	}
 
 
-	public static OWLOntology buildReacto(String input_biopax, String outfilename, OWLOntology tbox, boolean add_imports, OWLOntology chebi_in) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
+	public OWLOntology buildReacto(String input_biopax, String outfilename, OWLOntology tbox, boolean add_imports, OWLOntology chebi_in) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
 
 		String outputformat = "RDFXML";
 		String base_ont_title = "Reactome Entity Ontology (REACTO)";
@@ -413,7 +413,7 @@ public class PhysicalEntityOntologyBuilder {
 
 	private OWLClassExpression definePhysicalEntity(GoCAM go_cam, PhysicalEntity entity, IRI this_iri, String model_id) throws IOException {
 
-		String entity_id = BioPaxtoGO.getEntityReferenceId(entity);
+		String entity_id = bp2go.getEntityReferenceId(entity);
 		if(id_class_map.containsKey(entity_id)) {
 			return id_class_map.get(entity_id);
 		}		
@@ -1052,7 +1052,7 @@ public class PhysicalEntityOntologyBuilder {
 		return id;
 	}
 
-	public static void countPhysical(Model biopax_model) throws IOException {
+	public void countPhysical(Model biopax_model) throws IOException {
 		int n_all = 0; int n_complex = 0; int n_sets = 0; int n_protein = 0; int n_small_molecule = 0;
 		int n_all_pro = 0; int n_complex_pro = 0; int n_sets_pro = 0; int n_protein_pro = 0; int n_small_molecule_pro = 0;
 		int n_dna = 0; int n_rna = 0; int n_dna_region = 0;  int n_rna_region = 0;
@@ -1069,7 +1069,7 @@ public class PhysicalEntityOntologyBuilder {
 		for (PhysicalEntity e : biopax_model.getObjects(PhysicalEntity.class)){		
 			n_all++;
 			boolean in_pro = false;
-			String id = BioPaxtoGO.getEntityReferenceId(e);
+			String id = bp2go.getEntityReferenceId(e);
 			if(any_map.containsKey(id)) {
 				n_all_pro++;
 				in_pro = true;
@@ -1106,7 +1106,7 @@ public class PhysicalEntityOntologyBuilder {
 			}else {
 				isa_set = false;
 			}
-			physical_ref.put(BioPaxtoGO.getEntityReferenceId(e)+"\t"+drug_id+"\t"+isa_set, e.getDisplayName()+"\t"+e.getModelInterface());
+			physical_ref.put(bp2go.getEntityReferenceId(e)+"\t"+drug_id+"\t"+isa_set, e.getDisplayName()+"\t"+e.getModelInterface());
 
 			if(e instanceof Complex) {
 				n_complex++;

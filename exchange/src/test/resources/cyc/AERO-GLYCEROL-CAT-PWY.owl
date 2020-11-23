@@ -1,0 +1,1066 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+ xml:base="http://pathway.yeastgenome.org/YEAST/pathway-biopax?type=3%38object=AERO-GLYCEROL-CAT-PWY"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema#"
+ xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#"
+>
+ <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://www.biopax.org/release/biopax-level3.owl"/>
+ <rdfs:comment>This%32BioPAX%32Level%323%32output%32for%32organism%32Saccharomyces%3732cerevisiae%44%32pathway%32glycerol%3732degradation%10was%32automatically%32generated%32from%32URL%32http%58%47%47pathway%46yeastgenome%46org%47YEAST%47pathway%45biopax%63type%613%3738object%61AERO%45GLYCEROL%45CAT%45PWY%32on%3201%45Nov%452018%32%3216%5816%5836%46%32%32Note%32that%32all%32IDs%32are%32auto%45generated%44%10and%32are%32valid%32in%32the%32scope%32of%32this%32file%32only%46%32%32If%32the%32data%32is%32regenerated%32at%32some%32later%10time%44%32or%32data%32for%32another%32pathway%32is%32generated%32from%32this%32same%32site%44%32there%32are%32no%32%10guarantees%32that%32the%32same%32IDs%32will%32refer%32to%32the%32same%32objects%46%32%32To%32retrieve%32a%32file%32%10containing%32a%32complete%32list%32of%32pathways%32for%32this%32organism%32in%32BioPAX%32format%44%32please%10visit%32http%58%47%47biocyc%46org%47download%45flatfiles%46shtml</rdfs:comment>
+ </owl:Ontology>
+  <bp:UnificationXref rdf:ID="UnificationXref778742">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YHL032C-MONOMER</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778740">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-1229</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778735">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ADP</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778734">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">53-59-8</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778733">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">6022</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778732">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00008</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LIGAND-compound</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778731">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:16761</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778726">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ATP</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778725">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">5957</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778724">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00002</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LIGAND-compound</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778723">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:15422</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778718">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GLYCEROL</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778717">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C03454</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LIGAND-compound</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778715">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GLYCEROL-KIN-RXN</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778711">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">4932</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NCBI Taxonomy</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778709">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YIL155C-MONOMER</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778707">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-1251</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778702">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DIHYDROXY-ACETONE-PHOSPHATE</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778701">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">57-04-5</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778700">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">668</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778699">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00111</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LIGAND-compound</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778698">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:16108</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778693">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">FADH2</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778692">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1910-41-4</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778687">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GLYCEROL-3P</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778686">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">57-03-4</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778685">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00093</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LIGAND-compound</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778684">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">439162</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778683">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:15978</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778678">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">FAD</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778677">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">146-14-5</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778676">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00016</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LIGAND-compound</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778675">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">439154</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778674">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:16238</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778672">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GO:0005829</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GO</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778670">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GLYC3PDEHYDROG-RXN</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref778666">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">AERO-GLYCEROL-CAT-PWY</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:PublicationXref rdf:ID="PublicationXref778665">
+    <bp:year rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1977</bp:year>
+    <bp:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Isolation and characterization of Saccharomyces cerevisiae mutants defective in glycerol catabolism.</bp:title>
+    <bp:source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">J Bacteriol 129(3);1335-42</bp:source>
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">191434</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:db>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sprague GF</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Cronan JE</bp:author>
+  </bp:PublicationXref>
+  <bp:Stoichiometry rdf:ID="Stoichiometry778738">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:SmallMolecule rdf:ID="SmallMolecule778737">
+        <bp:xref rdf:resource="#UnificationXref778735"/>
+        <bp:xref rdf:resource="#UnificationXref778734"/>
+        <bp:xref rdf:resource="#UnificationXref778733"/>
+        <bp:xref rdf:resource="#UnificationXref778732"/>
+        <bp:xref rdf:resource="#UnificationXref778731"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ADP</bp:standardName>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine pyrophosphate</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine 5&apos;-pyrophosphate</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-5&apos;-diphosphate</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-diphosphate</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-5-diphosphate</bp:name>
+        <bp:entityReference>
+          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference778730">
+            <bp:xref rdf:resource="#UnificationXref778735"/>
+            <bp:xref rdf:resource="#UnificationXref778734"/>
+            <bp:xref rdf:resource="#UnificationXref778733"/>
+            <bp:xref rdf:resource="#UnificationXref778732"/>
+            <bp:xref rdf:resource="#UnificationXref778731"/>
+            <bp:structure>
+              <bp:ChemicalStructure rdf:ID="ChemicalStructure778736">
+                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CML</bp:structureFormat>
+                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string"> &lt;cml&gt;
+  &lt;molecule id=&quot;ADP&quot; title=&quot;ADP&quot; dictRef=&quot;dictADP&quot;&gt;
+   &lt;atomArray&gt;
+    &lt;atom id=&quot;ADP-atom1&quot; elementType=&quot;C&quot; x2=&quot;0.6623&quot; y2=&quot;-0.17049&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom2&quot; elementType=&quot;N&quot; x2=&quot;0.28197&quot; y2=&quot;0.02295&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom3&quot; elementType=&quot;N&quot; x2=&quot;0.46557&quot; y2=&quot;-0.26885&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom4&quot; elementType=&quot;O&quot; x2=&quot;-0.77705&quot; y2=&quot;-0.78689&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom5&quot; elementType=&quot;O&quot; x2=&quot;-0.36721&quot; y2=&quot;-0.34098&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom6&quot; elementType=&quot;C&quot; x2=&quot;0.46557&quot; y2=&quot;-0.65902&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom7&quot; elementType=&quot;C&quot; x2=&quot;0.22951&quot; y2=&quot;-0.54426&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom8&quot; elementType=&quot;C&quot; x2=&quot;0.87541&quot; y2=&quot;-0.61967&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom9&quot; elementType=&quot;O&quot; x2=&quot;-1.0&quot; y2=&quot;-0.54426&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom10&quot; elementType=&quot;O&quot; x2=&quot;-0.77705&quot; y2=&quot;-0.34098&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom11&quot; elementType=&quot;O&quot; x2=&quot;0.88525&quot; y2=&quot;-0.97705&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom12&quot; elementType=&quot;P&quot; x2=&quot;-0.36721&quot; y2=&quot;-0.54426&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom13&quot; elementType=&quot;N&quot; x2=&quot;0.46557&quot; y2=&quot;0.34426&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom14&quot; elementType=&quot;N&quot; x2=&quot;0.87541&quot; y2=&quot;-0.21639&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom15&quot; elementType=&quot;P&quot; x2=&quot;-0.77705&quot; y2=&quot;-0.54426&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom16&quot; elementType=&quot;C&quot; x2=&quot;0.99672&quot; y2=&quot;-0.04262&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom17&quot; elementType=&quot;O&quot; x2=&quot;0.53115&quot; y2=&quot;-1.0&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom18&quot; elementType=&quot;O&quot; x2=&quot;-0.57049&quot; y2=&quot;-0.54426&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom19&quot; elementType=&quot;O&quot; x2=&quot;-0.1541&quot; y2=&quot;-0.54426&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom20&quot; elementType=&quot;C&quot; x2=&quot;0.46557&quot; y2=&quot;0.12131&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom21&quot; elementType=&quot;O&quot; x2=&quot;0.65574&quot; y2=&quot;-0.47541&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom22&quot; elementType=&quot;C&quot; x2=&quot;0.6623&quot; y2=&quot;0.02295&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom23&quot; elementType=&quot;C&quot; x2=&quot;0.81311&quot; y2=&quot;-0.86557&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom24&quot; elementType=&quot;H&quot; x2=&quot;0.39344&quot; y2=&quot;-0.77377&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom25&quot; elementType=&quot;N&quot; x2=&quot;0.85246&quot; y2=&quot;0.10492&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom26&quot; elementType=&quot;C&quot; x2=&quot;0.28197&quot; y2=&quot;-0.17049&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom27&quot; elementType=&quot;O&quot; x2=&quot;-0.36721&quot; y2=&quot;-0.78689&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom28&quot; elementType=&quot;C&quot; x2=&quot;0.53115&quot; y2=&quot;-0.86557&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom29&quot; elementType=&quot;H&quot; x2=&quot;0.77377&quot; y2=&quot;-0.7377&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom30&quot; elementType=&quot;H&quot; x2=&quot;0.92459&quot; y2=&quot;-0.74426&quot;/&gt;
+    &lt;atom id=&quot;ADP-atom31&quot; elementType=&quot;H&quot; x2=&quot;0.60328&quot; y2=&quot;-0.75082&quot;/&gt;
+   &lt;/atomArray&gt;
+   &lt;bondArray&gt;
+    &lt;bond id=&quot;ADP-bond1&quot; atomRefs=&quot;ADP-atom31 ADP-atom28&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond2&quot; atomRefs=&quot;ADP-atom30 ADP-atom8&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond3&quot; atomRefs=&quot;ADP-atom29 ADP-atom23&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond4&quot; atomRefs=&quot;ADP-atom28 ADP-atom23&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond5&quot; atomRefs=&quot;ADP-atom27 ADP-atom12&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond6&quot; atomRefs=&quot;ADP-atom26 ADP-atom3&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond7&quot; atomRefs=&quot;ADP-atom25 ADP-atom16&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond8&quot; atomRefs=&quot;ADP-atom24 ADP-atom6&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond9&quot; atomRefs=&quot;ADP-atom1 ADP-atom22&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond10&quot; atomRefs=&quot;ADP-atom22 ADP-atom25&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond11&quot; atomRefs=&quot;ADP-atom21 ADP-atom8&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond12&quot; atomRefs=&quot;ADP-atom22 ADP-atom20&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond13&quot; atomRefs=&quot;ADP-atom19 ADP-atom7&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond14&quot; atomRefs=&quot;ADP-atom18 ADP-atom12&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond15&quot; atomRefs=&quot;ADP-atom17 ADP-atom28&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond16&quot; atomRefs=&quot;ADP-atom16 ADP-atom14&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond17&quot; atomRefs=&quot;ADP-atom15 ADP-atom18&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond18&quot; atomRefs=&quot;ADP-atom13 ADP-atom20&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond19&quot; atomRefs=&quot;ADP-atom12 ADP-atom19&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond20&quot; atomRefs=&quot;ADP-atom11 ADP-atom23&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond21&quot; atomRefs=&quot;ADP-atom10 ADP-atom15&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond22&quot; atomRefs=&quot;ADP-atom9 ADP-atom15&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond23&quot; atomRefs=&quot;ADP-atom8 ADP-atom14&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond24&quot; atomRefs=&quot;ADP-atom8 ADP-atom23&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond25&quot; atomRefs=&quot;ADP-atom7 ADP-atom6&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond26&quot; atomRefs=&quot;ADP-atom6 ADP-atom21&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond27&quot; atomRefs=&quot;ADP-atom6 ADP-atom28&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond28&quot; atomRefs=&quot;ADP-atom5 ADP-atom12&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond29&quot; atomRefs=&quot;ADP-atom4 ADP-atom15&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond30&quot; atomRefs=&quot;ADP-atom3 ADP-atom1&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond31&quot; atomRefs=&quot;ADP-atom2 ADP-atom26&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond32&quot; atomRefs=&quot;ADP-atom20 ADP-atom2&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;ADP-bond33&quot; atomRefs=&quot;ADP-atom14 ADP-atom1&quot; order=&quot;A&quot;/&gt;
+   &lt;/bondArray&gt;
+   &lt;formula concise=&quot;C 10 H 15 N 5 O 10 P 2&quot; formalCharge=&quot;-3&quot;/&gt;
+   &lt;float title=&quot;molecularWeight&quot; units=&quot;g/mol&quot;&gt;427.203&lt;/float&gt;
+   &lt;string title=&quot;smiles&quot;&gt;c23(n(C1(C(O)(C(C(O1)(COP(=O)(OP(O)(O)=O)O)[H])(O)[H])[H])[H])cnc(c(ncn2)N)3)&lt;/string&gt;
+  &lt;/molecule&gt;
+ &lt;/cml&gt;
+</bp:structureData>
+              </bp:ChemicalStructure>
+            </bp:structure>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ADP</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine pyrophosphate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine 5&apos;-pyrophosphate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-5&apos;-diphosphate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-diphosphate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-5-diphosphate</bp:name>
+            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">427.203</bp:molecularWeight>
+          </bp:SmallMoleculeReference>
+        </bp:entityReference>
+        <bp:dataSource>
+          <bp:Provenance rdf:ID="Provenance778667">
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NIL</bp:name>
+          </bp:Provenance>
+        </bp:dataSource>
+        <bp:cellularLocation>
+          <bp:CellularLocationVocabulary rdf:ID="CellularLocationVocabulary778671">
+            <bp:xref rdf:resource="#UnificationXref778672"/>
+            <bp:term rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GO:0005829</bp:term>
+          </bp:CellularLocationVocabulary>
+        </bp:cellularLocation>
+      </bp:SmallMolecule>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry778729">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:SmallMolecule rdf:ID="SmallMolecule778728">
+        <bp:xref rdf:resource="#UnificationXref778726"/>
+        <bp:xref rdf:resource="#UnificationXref778725"/>
+        <bp:xref rdf:resource="#UnificationXref778724"/>
+        <bp:xref rdf:resource="#UnificationXref778723"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ATP</bp:standardName>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenylpyrophosphate</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-triphosphate</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-5&apos;-triphosphate</bp:name>
+        <bp:entityReference>
+          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference778722">
+            <bp:xref rdf:resource="#UnificationXref778726"/>
+            <bp:xref rdf:resource="#UnificationXref778725"/>
+            <bp:xref rdf:resource="#UnificationXref778724"/>
+            <bp:xref rdf:resource="#UnificationXref778723"/>
+            <bp:structure>
+              <bp:ChemicalStructure rdf:ID="ChemicalStructure778727">
+                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CML</bp:structureFormat>
+                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string"> &lt;cml&gt;
+  &lt;molecule id=&quot;ATP&quot; title=&quot;ATP&quot; dictRef=&quot;dictATP&quot;&gt;
+   &lt;atomArray&gt;
+    &lt;atom id=&quot;ATP-atom1&quot; elementType=&quot;C&quot; x2=&quot;0.9971347&quot; y2=&quot;-0.16905439&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom2&quot; elementType=&quot;P&quot; x2=&quot;-0.4641834&quot; y2=&quot;-0.68767905&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom3&quot; elementType=&quot;O&quot; x2=&quot;-1.0&quot; y2=&quot;-0.68767905&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom4&quot; elementType=&quot;N&quot; x2=&quot;0.8767909&quot; y2=&quot;-0.022922575&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom5&quot; elementType=&quot;O&quot; x2=&quot;-0.12320912&quot; y2=&quot;-0.5071633&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom6&quot; elementType=&quot;H&quot; x2=&quot;0.5616046&quot; y2=&quot;-0.8538682&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom7&quot; elementType=&quot;H&quot; x2=&quot;0.6418339&quot; y2=&quot;-0.7851003&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom8&quot; elementType=&quot;O&quot; x2=&quot;-0.12320912&quot; y2=&quot;-0.8653295&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom9&quot; elementType=&quot;O&quot; x2=&quot;-0.4641834&quot; y2=&quot;-0.8653295&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom10&quot; elementType=&quot;C&quot; x2=&quot;0.5616046&quot; y2=&quot;-0.7449857&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom11&quot; elementType=&quot;N&quot; x2=&quot;0.8939829&quot; y2=&quot;-0.3409742&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom12&quot; elementType=&quot;C&quot; x2=&quot;0.6418339&quot; y2=&quot;-0.89111745&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom13&quot; elementType=&quot;O&quot; x2=&quot;-0.4641834&quot; y2=&quot;-0.5071633&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom14&quot; elementType=&quot;C&quot; x2=&quot;0.8939829&quot; y2=&quot;-0.739255&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom15&quot; elementType=&quot;C&quot; x2=&quot;0.82234967&quot; y2=&quot;-0.89111745&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom16&quot; elementType=&quot;N&quot; x2=&quot;0.4068768&quot; y2=&quot;-0.10315186&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom17&quot; elementType=&quot;C&quot; x2=&quot;0.4068768&quot; y2=&quot;-0.29226357&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom18&quot; elementType=&quot;N&quot; x2=&quot;0.5587393&quot; y2=&quot;-0.3925501&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom19&quot; elementType=&quot;N&quot; x2=&quot;0.5587393&quot; y2=&quot;0.17478514&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom20&quot; elementType=&quot;O&quot; x2=&quot;0.82234967&quot; y2=&quot;-1.0&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom21&quot; elementType=&quot;C&quot; x2=&quot;0.72206306&quot; y2=&quot;-0.10315186&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom22&quot; elementType=&quot;C&quot; x2=&quot;0.72206306&quot; y2=&quot;-0.29226357&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom23&quot; elementType=&quot;C&quot; x2=&quot;0.5587393&quot; y2=&quot;-0.0028653145&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom24&quot; elementType=&quot;O&quot; x2=&quot;0.6418339&quot; y2=&quot;-1.0&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom25&quot; elementType=&quot;P&quot; x2=&quot;-0.12320912&quot; y2=&quot;-0.68767905&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom26&quot; elementType=&quot;H&quot; x2=&quot;0.82234967&quot; y2=&quot;-0.7851003&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom27&quot; elementType=&quot;O&quot; x2=&quot;-0.81948423&quot; y2=&quot;-0.8653295&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom28&quot; elementType=&quot;H&quot; x2=&quot;0.8939829&quot; y2=&quot;-0.8481375&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom29&quot; elementType=&quot;C&quot; x2=&quot;0.36389685&quot; y2=&quot;-0.68767905&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom30&quot; elementType=&quot;O&quot; x2=&quot;0.7306591&quot; y2=&quot;-0.66762173&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom31&quot; elementType=&quot;O&quot; x2=&quot;-0.29226357&quot; y2=&quot;-0.68767905&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom32&quot; elementType=&quot;O&quot; x2=&quot;-0.81948423&quot; y2=&quot;-0.5071633&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom33&quot; elementType=&quot;O&quot; x2=&quot;0.05157602&quot; y2=&quot;-0.68767905&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom34&quot; elementType=&quot;P&quot; x2=&quot;-0.81948423&quot; y2=&quot;-0.68767905&quot;/&gt;
+    &lt;atom id=&quot;ATP-atom35&quot; elementType=&quot;O&quot; x2=&quot;-0.63610315&quot; y2=&quot;-0.68767905&quot;/&gt;
+   &lt;/atomArray&gt;
+   &lt;bondArray&gt;
+    &lt;bond id=&quot;ATP-bond1&quot; atomRefs=&quot;ATP-atom35 ATP-atom2&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond2&quot; atomRefs=&quot;ATP-atom34 ATP-atom35&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond3&quot; atomRefs=&quot;ATP-atom33 ATP-atom29&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond4&quot; atomRefs=&quot;ATP-atom32 ATP-atom34&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond5&quot; atomRefs=&quot;ATP-atom31 ATP-atom25&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond6&quot; atomRefs=&quot;ATP-atom30 ATP-atom14&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond7&quot; atomRefs=&quot;ATP-atom29 ATP-atom10&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond8&quot; atomRefs=&quot;ATP-atom28 ATP-atom14&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond9&quot; atomRefs=&quot;ATP-atom27 ATP-atom34&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond10&quot; atomRefs=&quot;ATP-atom26 ATP-atom15&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond11&quot; atomRefs=&quot;ATP-atom25 ATP-atom33&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond12&quot; atomRefs=&quot;ATP-atom24 ATP-atom12&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond13&quot; atomRefs=&quot;ATP-atom23 ATP-atom16&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond14&quot; atomRefs=&quot;ATP-atom22 ATP-atom21&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond15&quot; atomRefs=&quot;ATP-atom21 ATP-atom4&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond16&quot; atomRefs=&quot;ATP-atom21 ATP-atom23&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond17&quot; atomRefs=&quot;ATP-atom20 ATP-atom15&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond18&quot; atomRefs=&quot;ATP-atom19 ATP-atom23&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond19&quot; atomRefs=&quot;ATP-atom18 ATP-atom22&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond20&quot; atomRefs=&quot;ATP-atom17 ATP-atom18&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond21&quot; atomRefs=&quot;ATP-atom16 ATP-atom17&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond22&quot; atomRefs=&quot;ATP-atom14 ATP-atom15&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond23&quot; atomRefs=&quot;ATP-atom14 ATP-atom11&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond24&quot; atomRefs=&quot;ATP-atom13 ATP-atom2&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond25&quot; atomRefs=&quot;ATP-atom12 ATP-atom15&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond26&quot; atomRefs=&quot;ATP-atom11 ATP-atom22&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond27&quot; atomRefs=&quot;ATP-atom10 ATP-atom12&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond28&quot; atomRefs=&quot;ATP-atom10 ATP-atom30&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond29&quot; atomRefs=&quot;ATP-atom9 ATP-atom2&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond30&quot; atomRefs=&quot;ATP-atom8 ATP-atom25&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond31&quot; atomRefs=&quot;ATP-atom7 ATP-atom12&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond32&quot; atomRefs=&quot;ATP-atom6 ATP-atom10&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond33&quot; atomRefs=&quot;ATP-atom5 ATP-atom25&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond34&quot; atomRefs=&quot;ATP-atom4 ATP-atom1&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond35&quot; atomRefs=&quot;ATP-atom3 ATP-atom34&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond36&quot; atomRefs=&quot;ATP-atom2 ATP-atom31&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ATP-bond37&quot; atomRefs=&quot;ATP-atom1 ATP-atom11&quot; order=&quot;A&quot;/&gt;
+   &lt;/bondArray&gt;
+   &lt;formula concise=&quot;C 10 H 16 N 5 O 13 P 3&quot; formalCharge=&quot;-4&quot;/&gt;
+   &lt;float title=&quot;molecularWeight&quot; units=&quot;g/mol&quot;&gt;507.183&lt;/float&gt;
+   &lt;string title=&quot;smiles&quot;&gt;c1(n(c2(ncnc(N)c(n1)2))C3(C(C([H])(C([H])(O3)COP(=O)(O)OP(O)(=O)OP(O)(O)=O)O)(O)[H])([H]))&lt;/string&gt;
+  &lt;/molecule&gt;
+ &lt;/cml&gt;
+</bp:structureData>
+              </bp:ChemicalStructure>
+            </bp:structure>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ATP</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenylpyrophosphate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-triphosphate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-5&apos;-triphosphate</bp:name>
+            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">507.183</bp:molecularWeight>
+          </bp:SmallMoleculeReference>
+        </bp:entityReference>
+        <bp:dataSource rdf:resource="#Provenance778667"/>
+        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary778671"/>
+      </bp:SmallMolecule>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry778721">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:SmallMolecule rdf:ID="SmallMolecule778720">
+        <bp:xref rdf:resource="#UnificationXref778718"/>
+        <bp:xref rdf:resource="#UnificationXref778717"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glycerol</bp:standardName>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1,2,3-trihydroxypropane</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glycerin</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1,2,3-trihydroxypropanol</bp:name>
+        <bp:entityReference>
+          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference778716">
+            <bp:xref rdf:resource="#UnificationXref778718"/>
+            <bp:xref rdf:resource="#UnificationXref778717"/>
+            <bp:structure>
+              <bp:ChemicalStructure rdf:ID="ChemicalStructure778719">
+                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CML</bp:structureFormat>
+                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string"> &lt;cml&gt;
+  &lt;molecule id=&quot;GLYCEROL&quot; title=&quot;glycerol&quot; dictRef=&quot;dictGLYCEROL&quot;&gt;
+   &lt;atomArray&gt;
+    &lt;atom id=&quot;GLYCEROL-atom1&quot; elementType=&quot;C&quot; x2=&quot;-0.00165&quot; y2=&quot;-0.42149&quot;/&gt;
+    &lt;atom id=&quot;GLYCEROL-atom2&quot; elementType=&quot;C&quot; x2=&quot;0.49752&quot; y2=&quot;-0.13058&quot;/&gt;
+    &lt;atom id=&quot;GLYCEROL-atom3&quot; elementType=&quot;O&quot; x2=&quot;-1.0&quot; y2=&quot;-0.42149&quot;/&gt;
+    &lt;atom id=&quot;GLYCEROL-atom4&quot; elementType=&quot;O&quot; x2=&quot;-0.00165&quot; y2=&quot;-1.0&quot;/&gt;
+    &lt;atom id=&quot;GLYCEROL-atom5&quot; elementType=&quot;O&quot; x2=&quot;0.99669&quot; y2=&quot;-0.42149&quot;/&gt;
+    &lt;atom id=&quot;GLYCEROL-atom6&quot; elementType=&quot;C&quot; x2=&quot;-0.50083&quot; y2=&quot;-0.13058&quot;/&gt;
+   &lt;/atomArray&gt;
+   &lt;bondArray&gt;
+    &lt;bond id=&quot;GLYCEROL-bond1&quot; atomRefs=&quot;GLYCEROL-atom6 GLYCEROL-atom1&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;GLYCEROL-bond2&quot; atomRefs=&quot;GLYCEROL-atom5 GLYCEROL-atom2&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;GLYCEROL-bond3&quot; atomRefs=&quot;GLYCEROL-atom4 GLYCEROL-atom1&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;GLYCEROL-bond4&quot; atomRefs=&quot;GLYCEROL-atom3 GLYCEROL-atom6&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;GLYCEROL-bond5&quot; atomRefs=&quot;GLYCEROL-atom2 GLYCEROL-atom1&quot; order=&quot;1&quot;/&gt;
+   &lt;/bondArray&gt;
+   &lt;formula concise=&quot;C 3 H 8 O 3&quot; formalCharge=&quot;0&quot;/&gt;
+   &lt;float title=&quot;molecularWeight&quot; units=&quot;g/mol&quot;&gt;92.094&lt;/float&gt;
+   &lt;string title=&quot;smiles&quot;&gt;C(CO)(O)CO&lt;/string&gt;
+  &lt;/molecule&gt;
+ &lt;/cml&gt;
+</bp:structureData>
+              </bp:ChemicalStructure>
+            </bp:structure>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glycerol</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1,2,3-trihydroxypropane</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glycerin</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1,2,3-trihydroxypropanol</bp:name>
+            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">92.094</bp:molecularWeight>
+          </bp:SmallMoleculeReference>
+        </bp:entityReference>
+        <bp:dataSource rdf:resource="#Provenance778667"/>
+        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary778671"/>
+      </bp:SmallMolecule>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry778705">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:SmallMolecule rdf:ID="SmallMolecule778704">
+        <bp:xref rdf:resource="#UnificationXref778702"/>
+        <bp:xref rdf:resource="#UnificationXref778701"/>
+        <bp:xref rdf:resource="#UnificationXref778700"/>
+        <bp:xref rdf:resource="#UnificationXref778699"/>
+        <bp:xref rdf:resource="#UnificationXref778698"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dihydroxy-acetone-phosphate</bp:standardName>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DHAP</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glycerone-phosphate</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dihydroxyacetone 3-phosphate</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dihydroxyacetone-P</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">di-OH-acetone-P</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dihydroxyacetone-phosphate</bp:name>
+        <bp:entityReference>
+          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference778697">
+            <bp:xref rdf:resource="#UnificationXref778702"/>
+            <bp:xref rdf:resource="#UnificationXref778701"/>
+            <bp:xref rdf:resource="#UnificationXref778700"/>
+            <bp:xref rdf:resource="#UnificationXref778699"/>
+            <bp:xref rdf:resource="#UnificationXref778698"/>
+            <bp:structure>
+              <bp:ChemicalStructure rdf:ID="ChemicalStructure778703">
+                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CML</bp:structureFormat>
+                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string"> &lt;cml&gt;
+  &lt;molecule id=&quot;DIHYDROXY-ACETONE-PHOSPHATE&quot; title=&quot;dihydroxy-acetone-phosphate&quot; dictRef=&quot;dictDIHYDROXY-ACETONE-PHOSPHATE&quot;&gt;
+   &lt;atomArray&gt;
+    &lt;atom id=&quot;DIHYDROXY-ACETONE-PHOSPHATE-atom1&quot; elementType=&quot;O&quot; x2=&quot;0.60784&quot; y2=&quot;-1.0&quot;/&gt;
+    &lt;atom id=&quot;DIHYDROXY-ACETONE-PHOSPHATE-atom2&quot; elementType=&quot;O&quot; x2=&quot;-1.0&quot; y2=&quot;-0.53922&quot;/&gt;
+    &lt;atom id=&quot;DIHYDROXY-ACETONE-PHOSPHATE-atom3&quot; elementType=&quot;P&quot; x2=&quot;0.60784&quot; y2=&quot;-0.61111&quot;/&gt;
+    &lt;atom id=&quot;DIHYDROXY-ACETONE-PHOSPHATE-atom4&quot; elementType=&quot;O&quot; x2=&quot;-0.38562&quot; y2=&quot;-0.21242&quot;/&gt;
+    &lt;atom id=&quot;DIHYDROXY-ACETONE-PHOSPHATE-atom5&quot; elementType=&quot;C&quot; x2=&quot;-0.38562&quot; y2=&quot;-0.60131&quot;/&gt;
+    &lt;atom id=&quot;DIHYDROXY-ACETONE-PHOSPHATE-atom6&quot; elementType=&quot;O&quot; x2=&quot;0.19608&quot; y2=&quot;-0.61111&quot;/&gt;
+    &lt;atom id=&quot;DIHYDROXY-ACETONE-PHOSPHATE-atom7&quot; elementType=&quot;C&quot; x2=&quot;-0.68954&quot; y2=&quot;-0.77451&quot;/&gt;
+    &lt;atom id=&quot;DIHYDROXY-ACETONE-PHOSPHATE-atom8&quot; elementType=&quot;O&quot; x2=&quot;0.99673&quot; y2=&quot;-0.61111&quot;/&gt;
+    &lt;atom id=&quot;DIHYDROXY-ACETONE-PHOSPHATE-atom9&quot; elementType=&quot;O&quot; x2=&quot;0.60784&quot; y2=&quot;-0.22222&quot;/&gt;
+    &lt;atom id=&quot;DIHYDROXY-ACETONE-PHOSPHATE-atom10&quot; elementType=&quot;C&quot; x2=&quot;-0.07843&quot; y2=&quot;-0.77451&quot;/&gt;
+   &lt;/atomArray&gt;
+   &lt;bondArray&gt;
+    &lt;bond id=&quot;DIHYDROXY-ACETONE-PHOSPHATE-bond1&quot; atomRefs=&quot;DIHYDROXY-ACETONE-PHOSPHATE-atom10 DIHYDROXY-ACETONE-PHOSPHATE-atom6&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;DIHYDROXY-ACETONE-PHOSPHATE-bond2&quot; atomRefs=&quot;DIHYDROXY-ACETONE-PHOSPHATE-atom9 DIHYDROXY-ACETONE-PHOSPHATE-atom3&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;DIHYDROXY-ACETONE-PHOSPHATE-bond3&quot; atomRefs=&quot;DIHYDROXY-ACETONE-PHOSPHATE-atom8 DIHYDROXY-ACETONE-PHOSPHATE-atom3&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;DIHYDROXY-ACETONE-PHOSPHATE-bond4&quot; atomRefs=&quot;DIHYDROXY-ACETONE-PHOSPHATE-atom7 DIHYDROXY-ACETONE-PHOSPHATE-atom5&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;DIHYDROXY-ACETONE-PHOSPHATE-bond5&quot; atomRefs=&quot;DIHYDROXY-ACETONE-PHOSPHATE-atom6 DIHYDROXY-ACETONE-PHOSPHATE-atom3&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;DIHYDROXY-ACETONE-PHOSPHATE-bond6&quot; atomRefs=&quot;DIHYDROXY-ACETONE-PHOSPHATE-atom5 DIHYDROXY-ACETONE-PHOSPHATE-atom10&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;DIHYDROXY-ACETONE-PHOSPHATE-bond7&quot; atomRefs=&quot;DIHYDROXY-ACETONE-PHOSPHATE-atom4 DIHYDROXY-ACETONE-PHOSPHATE-atom5&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;DIHYDROXY-ACETONE-PHOSPHATE-bond8&quot; atomRefs=&quot;DIHYDROXY-ACETONE-PHOSPHATE-atom2 DIHYDROXY-ACETONE-PHOSPHATE-atom7&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;DIHYDROXY-ACETONE-PHOSPHATE-bond9&quot; atomRefs=&quot;DIHYDROXY-ACETONE-PHOSPHATE-atom1 DIHYDROXY-ACETONE-PHOSPHATE-atom3&quot; order=&quot;1&quot;/&gt;
+   &lt;/bondArray&gt;
+   &lt;formula concise=&quot;C 3 H 7 O 6 P 1&quot; formalCharge=&quot;0&quot;/&gt;
+   &lt;float title=&quot;molecularWeight&quot; units=&quot;g/mol&quot;&gt;170.058&lt;/float&gt;
+   &lt;string title=&quot;smiles&quot;&gt;OP(OCC(=O)CO)(O)=O&lt;/string&gt;
+  &lt;/molecule&gt;
+ &lt;/cml&gt;
+</bp:structureData>
+              </bp:ChemicalStructure>
+            </bp:structure>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dihydroxy-acetone-phosphate</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DHAP</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glycerone-phosphate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dihydroxyacetone 3-phosphate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dihydroxyacetone-P</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">di-OH-acetone-P</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dihydroxyacetone-phosphate</bp:name>
+            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">170.058</bp:molecularWeight>
+          </bp:SmallMoleculeReference>
+        </bp:entityReference>
+        <bp:dataSource rdf:resource="#Provenance778667"/>
+        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary778671"/>
+      </bp:SmallMolecule>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry778696">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:SmallMolecule rdf:ID="SmallMolecule778695">
+        <bp:xref rdf:resource="#UnificationXref778693"/>
+        <bp:xref rdf:resource="#UnificationXref778692"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">FADH&lt;SUB&gt;2&lt;/SUB&gt;</bp:standardName>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">flavin adenine dinucleotide reduced</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1,5-dihydro-FAD</bp:name>
+        <bp:entityReference>
+          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference778691">
+            <bp:xref rdf:resource="#UnificationXref778693"/>
+            <bp:xref rdf:resource="#UnificationXref778692"/>
+            <bp:structure>
+              <bp:ChemicalStructure rdf:ID="ChemicalStructure778694">
+                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CML</bp:structureFormat>
+                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string"> &lt;cml&gt;
+  &lt;molecule id=&quot;FADH2&quot; title=&quot;FADH2&quot; dictRef=&quot;dictFADH2&quot;&gt;
+   &lt;atomArray&gt;
+    &lt;atom id=&quot;FADH2-atom1&quot; elementType=&quot;N&quot; x2=&quot;0.057660624&quot; y2=&quot;-0.74958813&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom2&quot; elementType=&quot;C&quot; x2=&quot;-1.0&quot; y2=&quot;-0.4892916&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom3&quot; elementType=&quot;N&quot; x2=&quot;0.5914333&quot; y2=&quot;0.33113673&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom4&quot; elementType=&quot;C&quot; x2=&quot;-0.70016474&quot; y2=&quot;-0.8352553&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom5&quot; elementType=&quot;C&quot; x2=&quot;-0.24217463&quot; y2=&quot;-0.74958813&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom6&quot; elementType=&quot;C&quot; x2=&quot;0.7364086&quot; y2=&quot;0.5848435&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom7&quot; elementType=&quot;O&quot; x2=&quot;0.7397035&quot; y2=&quot;0.05107084&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom8&quot; elementType=&quot;O&quot; x2=&quot;-0.55189455&quot; y2=&quot;-0.26523888&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom9&quot; elementType=&quot;C&quot; x2=&quot;0.057660624&quot; y2=&quot;-0.5782537&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom10&quot; elementType=&quot;C&quot; x2=&quot;-0.09719934&quot; y2=&quot;-0.8352553&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom11&quot; elementType=&quot;O&quot; x2=&quot;-0.23558484&quot; y2=&quot;0.15650742&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom12&quot; elementType=&quot;C&quot; x2=&quot;-0.8583196&quot; y2=&quot;-0.74958813&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom13&quot; elementType=&quot;H&quot; x2=&quot;-0.09390445&quot; y2=&quot;-0.3443163&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom14&quot; elementType=&quot;C&quot; x2=&quot;-0.38714993&quot; y2=&quot;0.021416804&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom15&quot; elementType=&quot;N&quot; x2=&quot;0.8846787&quot; y2=&quot;0.34102142&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom16&quot; elementType=&quot;C&quot; x2=&quot;0.8846787&quot; y2=&quot;-0.021416804&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom17&quot; elementType=&quot;O&quot; x2=&quot;-0.10378913&quot; y2=&quot;0.32125205&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom18&quot; elementType=&quot;O&quot; x2=&quot;0.087314665&quot; y2=&quot;0.15650742&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom19&quot; elementType=&quot;O&quot; x2=&quot;0.6540362&quot; y2=&quot;-0.23558484&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom20&quot; elementType=&quot;N&quot; x2=&quot;-0.3937397&quot; y2=&quot;-0.4925865&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom21&quot; elementType=&quot;O&quot; x2=&quot;0.40691927&quot; y2=&quot;0.15650742&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom22&quot; elementType=&quot;C&quot; x2=&quot;-0.38714993&quot; y2=&quot;-0.26523888&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom23&quot; elementType=&quot;O&quot; x2=&quot;-0.55189455&quot; y2=&quot;0.021416804&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom24&quot; elementType=&quot;C&quot; x2=&quot;-0.55189455&quot; y2=&quot;-0.5782537&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom25&quot; elementType=&quot;N&quot; x2=&quot;-0.3937397&quot; y2=&quot;-0.8352553&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom26&quot; elementType=&quot;C&quot; x2=&quot;0.6540362&quot; y2=&quot;-0.13673806&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom27&quot; elementType=&quot;O&quot; x2=&quot;-0.10378913&quot; y2=&quot;-0.008237232&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom28&quot; elementType=&quot;O&quot; x2=&quot;-0.55189455&quot; y2=&quot;-0.123558484&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom29&quot; elementType=&quot;C&quot; x2=&quot;-0.38714993&quot; y2=&quot;-0.123558484&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom30&quot; elementType=&quot;H&quot; x2=&quot;-0.3937397&quot; y2=&quot;-0.97693574&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom31&quot; elementType=&quot;N&quot; x2=&quot;0.5848435&quot; y2=&quot;0.82866555&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom32&quot; elementType=&quot;C&quot; x2=&quot;0.5815486&quot; y2=&quot;0.15650742&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom33&quot; elementType=&quot;C&quot; x2=&quot;-0.55189455&quot; y2=&quot;-0.74958813&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom34&quot; elementType=&quot;C&quot; x2=&quot;0.4431631&quot; y2=&quot;0.4003295&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom35&quot; elementType=&quot;O&quot; x2=&quot;0.24876441&quot; y2=&quot;0.32125205&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom36&quot; elementType=&quot;C&quot; x2=&quot;0.9967051&quot; y2=&quot;0.4925865&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom37&quot; elementType=&quot;H&quot; x2=&quot;0.8846787&quot; y2=&quot;-0.12026359&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom38&quot; elementType=&quot;O&quot; x2=&quot;-0.09719934&quot; y2=&quot;-1.0&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom39&quot; elementType=&quot;C&quot; x2=&quot;0.7364086&quot; y2=&quot;0.41680396&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom40&quot; elementType=&quot;N&quot; x2=&quot;-0.09719934&quot; y2=&quot;-0.4925865&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom41&quot; elementType=&quot;C&quot; x2=&quot;0.5848435&quot; y2=&quot;0.66392094&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom42&quot; elementType=&quot;C&quot; x2=&quot;-0.8583196&quot; y2=&quot;-0.5782537&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom43&quot; elementType=&quot;N&quot; x2=&quot;0.8714992&quot; y2=&quot;0.64415157&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom44&quot; elementType=&quot;C&quot; x2=&quot;-0.24217463&quot; y2=&quot;-0.5782537&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom45&quot; elementType=&quot;O&quot; x2=&quot;0.20263591&quot; y2=&quot;-0.49917626&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom46&quot; elementType=&quot;P&quot; x2=&quot;-0.10378913&quot; y2=&quot;0.15650742&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom47&quot; elementType=&quot;O&quot; x2=&quot;0.8056013&quot; y2=&quot;-0.23558484&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom48&quot; elementType=&quot;N&quot; x2=&quot;0.4431631&quot; y2=&quot;0.5782537&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom49&quot; elementType=&quot;C&quot; x2=&quot;-0.70016474&quot; y2=&quot;-0.4925865&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom50&quot; elementType=&quot;C&quot; x2=&quot;-0.9967051&quot; y2=&quot;-0.84184515&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom51&quot; elementType=&quot;P&quot; x2=&quot;0.24876441&quot; y2=&quot;0.15650742&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom52&quot; elementType=&quot;C&quot; x2=&quot;0.8056013&quot; y2=&quot;-0.13673806&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom53&quot; elementType=&quot;C&quot; x2=&quot;-0.38714993&quot; y2=&quot;0.15650742&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom54&quot; elementType=&quot;O&quot; x2=&quot;0.24876441&quot; y2=&quot;-0.008237232&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom55&quot; elementType=&quot;H&quot; x2=&quot;0.6540362&quot; y2=&quot;-0.03789127&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom56&quot; elementType=&quot;H&quot; x2=&quot;0.2125206&quot; y2=&quot;-0.84514004&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom57&quot; elementType=&quot;C&quot; x2=&quot;-0.28830314&quot; y2=&quot;-0.38056013&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom58&quot; elementType=&quot;C&quot; x2=&quot;0.5815486&quot; y2=&quot;-0.021416804&quot;/&gt;
+    &lt;atom id=&quot;FADH2-atom59&quot; elementType=&quot;H&quot; x2=&quot;0.8056013&quot; y2=&quot;-0.03789127&quot;/&gt;
+   &lt;/atomArray&gt;
+   &lt;bondArray&gt;
+    &lt;bond id=&quot;FADH2-bond1&quot; atomRefs=&quot;FADH2-atom59 FADH2-atom52&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond2&quot; atomRefs=&quot;FADH2-atom58 FADH2-atom7&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond3&quot; atomRefs=&quot;FADH2-atom58 FADH2-atom26&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond4&quot; atomRefs=&quot;FADH2-atom57 FADH2-atom22&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond5&quot; atomRefs=&quot;FADH2-atom55 FADH2-atom26&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond6&quot; atomRefs=&quot;FADH2-atom54 FADH2-atom51&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond7&quot; atomRefs=&quot;FADH2-atom53 FADH2-atom11&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond8&quot; atomRefs=&quot;FADH2-atom51 FADH2-atom21&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond9&quot; atomRefs=&quot;FADH2-atom50 FADH2-atom12&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond10&quot; atomRefs=&quot;FADH2-atom49 FADH2-atom42&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond11&quot; atomRefs=&quot;FADH2-atom48 FADH2-atom34&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond12&quot; atomRefs=&quot;FADH2-atom47 FADH2-atom52&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond13&quot; atomRefs=&quot;FADH2-atom46 FADH2-atom18&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond14&quot; atomRefs=&quot;FADH2-atom45 FADH2-atom9&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond15&quot; atomRefs=&quot;FADH2-atom44 FADH2-atom40&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond16&quot; atomRefs=&quot;FADH2-atom44 FADH2-atom20&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond17&quot; atomRefs=&quot;FADH2-atom43 FADH2-atom36&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond18&quot; atomRefs=&quot;FADH2-atom42 FADH2-atom12&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond19&quot; atomRefs=&quot;FADH2-atom41 FADH2-atom48&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond20&quot; atomRefs=&quot;FADH2-atom40 FADH2-atom9&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond21&quot; atomRefs=&quot;FADH2-atom40 FADH2-atom13&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond22&quot; atomRefs=&quot;FADH2-atom39 FADH2-atom6&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond23&quot; atomRefs=&quot;FADH2-atom38 FADH2-atom10&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond24&quot; atomRefs=&quot;FADH2-atom37 FADH2-atom16&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond25&quot; atomRefs=&quot;FADH2-atom36 FADH2-atom15&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond26&quot; atomRefs=&quot;FADH2-atom35 FADH2-atom51&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond27&quot; atomRefs=&quot;FADH2-atom34 FADH2-atom3&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond28&quot; atomRefs=&quot;FADH2-atom33 FADH2-atom24&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond29&quot; atomRefs=&quot;FADH2-atom32 FADH2-atom58&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond30&quot; atomRefs=&quot;FADH2-atom31 FADH2-atom41&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond31&quot; atomRefs=&quot;FADH2-atom29 FADH2-atom14&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond32&quot; atomRefs=&quot;FADH2-atom28 FADH2-atom29&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond33&quot; atomRefs=&quot;FADH2-atom27 FADH2-atom46&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond34&quot; atomRefs=&quot;FADH2-atom26 FADH2-atom52&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond35&quot; atomRefs=&quot;FADH2-atom25 FADH2-atom33&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond36&quot; atomRefs=&quot;FADH2-atom25 FADH2-atom5&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond37&quot; atomRefs=&quot;FADH2-atom25 FADH2-atom30&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond38&quot; atomRefs=&quot;FADH2-atom24 FADH2-atom49&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond39&quot; atomRefs=&quot;FADH2-atom24 FADH2-atom20&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond40&quot; atomRefs=&quot;FADH2-atom23 FADH2-atom14&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond41&quot; atomRefs=&quot;FADH2-atom22 FADH2-atom29&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond42&quot; atomRefs=&quot;FADH2-atom21 FADH2-atom32&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond43&quot; atomRefs=&quot;FADH2-atom20 FADH2-atom57&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond44&quot; atomRefs=&quot;FADH2-atom19 FADH2-atom26&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond45&quot; atomRefs=&quot;FADH2-atom18 FADH2-atom51&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond46&quot; atomRefs=&quot;FADH2-atom17 FADH2-atom46&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond47&quot; atomRefs=&quot;FADH2-atom16 FADH2-atom15&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond48&quot; atomRefs=&quot;FADH2-atom16 FADH2-atom52&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond49&quot; atomRefs=&quot;FADH2-atom15 FADH2-atom39&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond50&quot; atomRefs=&quot;FADH2-atom14 FADH2-atom53&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond51&quot; atomRefs=&quot;FADH2-atom12 FADH2-atom4&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond52&quot; atomRefs=&quot;FADH2-atom11 FADH2-atom46&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond53&quot; atomRefs=&quot;FADH2-atom10 FADH2-atom5&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond54&quot; atomRefs=&quot;FADH2-atom9 FADH2-atom1&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond55&quot; atomRefs=&quot;FADH2-atom8 FADH2-atom22&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond56&quot; atomRefs=&quot;FADH2-atom7 FADH2-atom16&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond57&quot; atomRefs=&quot;FADH2-atom6 FADH2-atom43&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond58&quot; atomRefs=&quot;FADH2-atom6 FADH2-atom41&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond59&quot; atomRefs=&quot;FADH2-atom5 FADH2-atom44&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond60&quot; atomRefs=&quot;FADH2-atom4 FADH2-atom33&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond61&quot; atomRefs=&quot;FADH2-atom3 FADH2-atom39&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond62&quot; atomRefs=&quot;FADH2-atom2 FADH2-atom42&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond63&quot; atomRefs=&quot;FADH2-atom1 FADH2-atom10&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FADH2-bond64&quot; atomRefs=&quot;FADH2-atom1 FADH2-atom56&quot; order=&quot;1&quot;/&gt;
+   &lt;/bondArray&gt;
+   &lt;formula concise=&quot;C 27 H 35 N 9 O 15 P 2&quot; formalCharge=&quot;0&quot;/&gt;
+   &lt;float title=&quot;molecularWeight&quot; units=&quot;g/mol&quot;&gt;787.572&lt;/float&gt;
+   &lt;string title=&quot;smiles&quot;&gt;n6([H])(c(c4(c(N(CC(O)C(O)C(COP(=O)(O)OP(=O)(OCC1(C(O)(C(C(O1)(n2(c3(ncnc(c(nc2)3)N)))[H])(O)[H])[H]))O)O)c5(cc(C)c(cc(N([H])4)5)C))n([H])c6=O))=O)&lt;/string&gt;
+  &lt;/molecule&gt;
+ &lt;/cml&gt;
+</bp:structureData>
+              </bp:ChemicalStructure>
+            </bp:structure>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">FADH&lt;SUB&gt;2&lt;/SUB&gt;</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">flavin adenine dinucleotide reduced</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1,5-dihydro-FAD</bp:name>
+            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">787.572</bp:molecularWeight>
+          </bp:SmallMoleculeReference>
+        </bp:entityReference>
+        <bp:dataSource rdf:resource="#Provenance778667"/>
+        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary778671"/>
+      </bp:SmallMolecule>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry778690">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:SmallMolecule rdf:ID="SmallMolecule778689">
+        <bp:xref rdf:resource="#UnificationXref778687"/>
+        <bp:xref rdf:resource="#UnificationXref778686"/>
+        <bp:xref rdf:resource="#UnificationXref778685"/>
+        <bp:xref rdf:resource="#UnificationXref778684"/>
+        <bp:xref rdf:resource="#UnificationXref778683"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glycerol-3-phosphate</bp:standardName>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glycerol-3-P</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sn-glycerol-3-phosphate</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">&amp;alpha;-glycerophosphate</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glycerol-1-phosphate</bp:name>
+        <bp:entityReference>
+          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference778682">
+            <bp:xref rdf:resource="#UnificationXref778687"/>
+            <bp:xref rdf:resource="#UnificationXref778686"/>
+            <bp:xref rdf:resource="#UnificationXref778685"/>
+            <bp:xref rdf:resource="#UnificationXref778684"/>
+            <bp:xref rdf:resource="#UnificationXref778683"/>
+            <bp:structure>
+              <bp:ChemicalStructure rdf:ID="ChemicalStructure778688">
+                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CML</bp:structureFormat>
+                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string"> &lt;cml&gt;
+  &lt;molecule id=&quot;GLYCEROL-3P&quot; title=&quot;glycerol-3-phosphate&quot; dictRef=&quot;dictGLYCEROL-3P&quot;&gt;
+   &lt;atomArray&gt;
+    &lt;atom id=&quot;GLYCEROL-3P-atom1&quot; elementType=&quot;O&quot; x2=&quot;-0.06931&quot; y2=&quot;0.43564&quot;/&gt;
+    &lt;atom id=&quot;GLYCEROL-3P-atom2&quot; elementType=&quot;O&quot; x2=&quot;-1.0&quot; y2=&quot;-0.29703&quot;/&gt;
+    &lt;atom id=&quot;GLYCEROL-3P-atom3&quot; elementType=&quot;P&quot; x2=&quot;0.63036&quot; y2=&quot;-0.63036&quot;/&gt;
+    &lt;atom id=&quot;GLYCEROL-3P-atom4&quot; elementType=&quot;O&quot; x2=&quot;0.25413&quot; y2=&quot;-0.88779&quot;/&gt;
+    &lt;atom id=&quot;GLYCEROL-3P-atom5&quot; elementType=&quot;C&quot; x2=&quot;-0.07261&quot; y2=&quot;-0.26073&quot;/&gt;
+    &lt;atom id=&quot;GLYCEROL-3P-atom6&quot; elementType=&quot;O&quot; x2=&quot;0.36964&quot; y2=&quot;-0.26073&quot;/&gt;
+    &lt;atom id=&quot;GLYCEROL-3P-atom7&quot; elementType=&quot;C&quot; x2=&quot;-0.72277&quot; y2=&quot;0.06271&quot;/&gt;
+    &lt;atom id=&quot;GLYCEROL-3P-atom8&quot; elementType=&quot;C&quot; x2=&quot;-0.33003&quot; y2=&quot;0.06271&quot;/&gt;
+    &lt;atom id=&quot;GLYCEROL-3P-atom9&quot; elementType=&quot;O&quot; x2=&quot;0.9967&quot; y2=&quot;-0.35974&quot;/&gt;
+    &lt;atom id=&quot;GLYCEROL-3P-atom10&quot; elementType=&quot;O&quot; x2=&quot;0.90099&quot; y2=&quot;-1.0&quot;/&gt;
+   &lt;/atomArray&gt;
+   &lt;bondArray&gt;
+    &lt;bond id=&quot;GLYCEROL-3P-bond1&quot; atomRefs=&quot;GLYCEROL-3P-atom10 GLYCEROL-3P-atom3&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;GLYCEROL-3P-bond2&quot; atomRefs=&quot;GLYCEROL-3P-atom9 GLYCEROL-3P-atom3&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;GLYCEROL-3P-bond3&quot; atomRefs=&quot;GLYCEROL-3P-atom8 GLYCEROL-3P-atom5&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;GLYCEROL-3P-bond4&quot; atomRefs=&quot;GLYCEROL-3P-atom7 GLYCEROL-3P-atom8&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;GLYCEROL-3P-bond5&quot; atomRefs=&quot;GLYCEROL-3P-atom6 GLYCEROL-3P-atom3&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;GLYCEROL-3P-bond6&quot; atomRefs=&quot;GLYCEROL-3P-atom5 GLYCEROL-3P-atom6&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;GLYCEROL-3P-bond7&quot; atomRefs=&quot;GLYCEROL-3P-atom4 GLYCEROL-3P-atom3&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;GLYCEROL-3P-bond8&quot; atomRefs=&quot;GLYCEROL-3P-atom2 GLYCEROL-3P-atom7&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;GLYCEROL-3P-bond9&quot; atomRefs=&quot;GLYCEROL-3P-atom1 GLYCEROL-3P-atom8&quot; order=&quot;1&quot;/&gt;
+   &lt;/bondArray&gt;
+   &lt;formula concise=&quot;C 3 H 9 O 6 P 1&quot; formalCharge=&quot;0&quot;/&gt;
+   &lt;float title=&quot;molecularWeight&quot; units=&quot;g/mol&quot;&gt;172.074&lt;/float&gt;
+   &lt;string title=&quot;smiles&quot;&gt;OC(CO)COP(O)(=O)O&lt;/string&gt;
+  &lt;/molecule&gt;
+ &lt;/cml&gt;
+</bp:structureData>
+              </bp:ChemicalStructure>
+            </bp:structure>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glycerol-3-phosphate</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glycerol-3-P</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sn-glycerol-3-phosphate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">&amp;alpha;-glycerophosphate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glycerol-1-phosphate</bp:name>
+            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">172.074</bp:molecularWeight>
+          </bp:SmallMoleculeReference>
+        </bp:entityReference>
+        <bp:dataSource rdf:resource="#Provenance778667"/>
+        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary778671"/>
+      </bp:SmallMolecule>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry778681">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:SmallMolecule rdf:ID="SmallMolecule778680">
+        <bp:xref rdf:resource="#UnificationXref778678"/>
+        <bp:xref rdf:resource="#UnificationXref778677"/>
+        <bp:xref rdf:resource="#UnificationXref778676"/>
+        <bp:xref rdf:resource="#UnificationXref778675"/>
+        <bp:xref rdf:resource="#UnificationXref778674"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">FAD</bp:standardName>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">flavin adenine dinucleotide oxidized</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">flavin adenine dinucleotide</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">flavitan</bp:name>
+        <bp:entityReference>
+          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference778673">
+            <bp:xref rdf:resource="#UnificationXref778678"/>
+            <bp:xref rdf:resource="#UnificationXref778677"/>
+            <bp:xref rdf:resource="#UnificationXref778676"/>
+            <bp:xref rdf:resource="#UnificationXref778675"/>
+            <bp:xref rdf:resource="#UnificationXref778674"/>
+            <bp:structure>
+              <bp:ChemicalStructure rdf:ID="ChemicalStructure778679">
+                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CML</bp:structureFormat>
+                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string"> &lt;cml&gt;
+  &lt;molecule id=&quot;FAD&quot; title=&quot;FAD&quot; dictRef=&quot;dictFAD&quot;&gt;
+   &lt;atomArray&gt;
+    &lt;atom id=&quot;FAD-atom1&quot; elementType=&quot;N&quot; x2=&quot;0.05610561&quot; y2=&quot;-0.7491749&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom2&quot; elementType=&quot;C&quot; x2=&quot;0.44224423&quot; y2=&quot;0.40264025&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom3&quot; elementType=&quot;N&quot; x2=&quot;0.5907591&quot; y2=&quot;0.33333334&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom4&quot; elementType=&quot;N&quot; x2=&quot;-0.0990099&quot; y2=&quot;-0.49174917&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom5&quot; elementType=&quot;C&quot; x2=&quot;-0.24422443&quot; y2=&quot;-0.7491749&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom6&quot; elementType=&quot;N&quot; x2=&quot;0.88448846&quot; y2=&quot;0.34323433&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom7&quot; elementType=&quot;O&quot; x2=&quot;-0.23762377&quot; y2=&quot;0.15841584&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom8&quot; elementType=&quot;O&quot; x2=&quot;-0.55775577&quot; y2=&quot;-0.2640264&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom9&quot; elementType=&quot;C&quot; x2=&quot;-1.0&quot; y2=&quot;-0.48844886&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom10&quot; elementType=&quot;C&quot; x2=&quot;-0.0990099&quot; y2=&quot;-0.8349835&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom11&quot; elementType=&quot;O&quot; x2=&quot;0.24752475&quot; y2=&quot;0.32343236&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom12&quot; elementType=&quot;C&quot; x2=&quot;-0.8613861&quot; y2=&quot;-0.7491749&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom13&quot; elementType=&quot;C&quot; x2=&quot;-0.8613861&quot; y2=&quot;-0.57755774&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom14&quot; elementType=&quot;C&quot; x2=&quot;-0.39273927&quot; y2=&quot;0.02310231&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom15&quot; elementType=&quot;C&quot; x2=&quot;0.5841584&quot; y2=&quot;0.6666667&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom16&quot; elementType=&quot;C&quot; x2=&quot;0.9966997&quot; y2=&quot;0.4950495&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom17&quot; elementType=&quot;O&quot; x2=&quot;-0.105610564&quot; y2=&quot;0.32343236&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom18&quot; elementType=&quot;O&quot; x2=&quot;0.08580858&quot; y2=&quot;0.15841584&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom19&quot; elementType=&quot;C&quot; x2=&quot;0.05610561&quot; y2=&quot;-0.57755774&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom20&quot; elementType=&quot;C&quot; x2=&quot;0.6138614&quot; y2=&quot;0.15841584&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom21&quot; elementType=&quot;N&quot; x2=&quot;-0.39933994&quot; y2=&quot;-0.49174917&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom22&quot; elementType=&quot;C&quot; x2=&quot;-0.39273927&quot; y2=&quot;-0.2640264&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom23&quot; elementType=&quot;P&quot; x2=&quot;-0.105610564&quot; y2=&quot;0.15841584&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom24&quot; elementType=&quot;C&quot; x2=&quot;-0.55775577&quot; y2=&quot;-0.57755774&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom25&quot; elementType=&quot;C&quot; x2=&quot;0.6138614&quot; y2=&quot;-0.013201321&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom26&quot; elementType=&quot;C&quot; x2=&quot;0.6831683&quot; y2=&quot;-0.15181518&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom27&quot; elementType=&quot;O&quot; x2=&quot;-0.105610564&quot; y2=&quot;-0.0066006603&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom28&quot; elementType=&quot;C&quot; x2=&quot;-0.7029703&quot; y2=&quot;-0.8349835&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom29&quot; elementType=&quot;O&quot; x2=&quot;0.7491749&quot; y2=&quot;0.0660066&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom30&quot; elementType=&quot;O&quot; x2=&quot;0.4059406&quot; y2=&quot;0.15841584&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom31&quot; elementType=&quot;C&quot; x2=&quot;-0.39273927&quot; y2=&quot;-0.122112215&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom32&quot; elementType=&quot;C&quot; x2=&quot;-0.24422443&quot; y2=&quot;-0.57755774&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom33&quot; elementType=&quot;C&quot; x2=&quot;-0.55775577&quot; y2=&quot;-0.7491749&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom34&quot; elementType=&quot;N&quot; x2=&quot;-0.39933994&quot; y2=&quot;-0.8349835&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom35&quot; elementType=&quot;H&quot; x2=&quot;0.22112212&quot; y2=&quot;-0.8547855&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom36&quot; elementType=&quot;O&quot; x2=&quot;-0.55775577&quot; y2=&quot;0.02310231&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom37&quot; elementType=&quot;C&quot; x2=&quot;-0.7029703&quot; y2=&quot;-0.49174917&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom38&quot; elementType=&quot;C&quot; x2=&quot;0.7359736&quot; y2=&quot;0.41914192&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom39&quot; elementType=&quot;H&quot; x2=&quot;0.88448846&quot; y2=&quot;-0.11221122&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom40&quot; elementType=&quot;O&quot; x2=&quot;0.6831683&quot; y2=&quot;-0.24752475&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom41&quot; elementType=&quot;C&quot; x2=&quot;0.7986799&quot; y2=&quot;-0.15181518&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom42&quot; elementType=&quot;N&quot; x2=&quot;0.88448846&quot; y2=&quot;0.6468647&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom43&quot; elementType=&quot;C&quot; x2=&quot;0.7359736&quot; y2=&quot;0.5874587&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom44&quot; elementType=&quot;O&quot; x2=&quot;0.20132013&quot; y2=&quot;-0.50165015&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom45&quot; elementType=&quot;H&quot; x2=&quot;0.7986799&quot; y2=&quot;-0.052805282&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom46&quot; elementType=&quot;O&quot; x2=&quot;0.7986799&quot; y2=&quot;-0.25082508&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom47&quot; elementType=&quot;N&quot; x2=&quot;0.44224423&quot; y2=&quot;0.5808581&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom48&quot; elementType=&quot;O&quot; x2=&quot;-0.55775577&quot; y2=&quot;-0.122112215&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom49&quot; elementType=&quot;C&quot; x2=&quot;-0.9966997&quot; y2=&quot;-0.84158415&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom50&quot; elementType=&quot;P&quot; x2=&quot;0.24752475&quot; y2=&quot;0.15841584&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom51&quot; elementType=&quot;O&quot; x2=&quot;-0.0990099&quot; y2=&quot;-1.0&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom52&quot; elementType=&quot;C&quot; x2=&quot;-0.39273927&quot; y2=&quot;0.15841584&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom53&quot; elementType=&quot;O&quot; x2=&quot;0.24752475&quot; y2=&quot;-0.0066006603&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom54&quot; elementType=&quot;H&quot; x2=&quot;0.6831683&quot; y2=&quot;-0.04950495&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom55&quot; elementType=&quot;C&quot; x2=&quot;-0.29372936&quot; y2=&quot;-0.37953794&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom56&quot; elementType=&quot;C&quot; x2=&quot;0.88448846&quot; y2=&quot;-0.013201321&quot;/&gt;
+    &lt;atom id=&quot;FAD-atom57&quot; elementType=&quot;N&quot; x2=&quot;0.5841584&quot; y2=&quot;0.83168316&quot;/&gt;
+   &lt;/atomArray&gt;
+   &lt;bondArray&gt;
+    &lt;bond id=&quot;FAD-bond1&quot; atomRefs=&quot;FAD-atom57 FAD-atom15&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond2&quot; atomRefs=&quot;FAD-atom56 FAD-atom41&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond3&quot; atomRefs=&quot;FAD-atom56 FAD-atom6&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond4&quot; atomRefs=&quot;FAD-atom55 FAD-atom22&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond5&quot; atomRefs=&quot;FAD-atom54 FAD-atom26&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond6&quot; atomRefs=&quot;FAD-atom53 FAD-atom50&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond7&quot; atomRefs=&quot;FAD-atom52 FAD-atom7&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond8&quot; atomRefs=&quot;FAD-atom51 FAD-atom10&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond9&quot; atomRefs=&quot;FAD-atom50 FAD-atom30&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond10&quot; atomRefs=&quot;FAD-atom49 FAD-atom12&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond11&quot; atomRefs=&quot;FAD-atom48 FAD-atom31&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond12&quot; atomRefs=&quot;FAD-atom47 FAD-atom2&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond13&quot; atomRefs=&quot;FAD-atom46 FAD-atom41&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond14&quot; atomRefs=&quot;FAD-atom45 FAD-atom41&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond15&quot; atomRefs=&quot;FAD-atom44 FAD-atom19&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond16&quot; atomRefs=&quot;FAD-atom43 FAD-atom42&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond17&quot; atomRefs=&quot;FAD-atom43 FAD-atom15&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond18&quot; atomRefs=&quot;FAD-atom42 FAD-atom16&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond19&quot; atomRefs=&quot;FAD-atom40 FAD-atom26&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond20&quot; atomRefs=&quot;FAD-atom39 FAD-atom56&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond21&quot; atomRefs=&quot;FAD-atom38 FAD-atom43&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond22&quot; atomRefs=&quot;FAD-atom37 FAD-atom13&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond23&quot; atomRefs=&quot;FAD-atom36 FAD-atom14&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond24&quot; atomRefs=&quot;FAD-atom34 FAD-atom5&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond25&quot; atomRefs=&quot;FAD-atom33 FAD-atom24&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond26&quot; atomRefs=&quot;FAD-atom33 FAD-atom34&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond27&quot; atomRefs=&quot;FAD-atom32 FAD-atom21&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond28&quot; atomRefs=&quot;FAD-atom32 FAD-atom4&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond29&quot; atomRefs=&quot;FAD-atom31 FAD-atom14&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond30&quot; atomRefs=&quot;FAD-atom30 FAD-atom20&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond31&quot; atomRefs=&quot;FAD-atom29 FAD-atom56&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond32&quot; atomRefs=&quot;FAD-atom28 FAD-atom33&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond33&quot; atomRefs=&quot;FAD-atom27 FAD-atom23&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond34&quot; atomRefs=&quot;FAD-atom26 FAD-atom41&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond35&quot; atomRefs=&quot;FAD-atom25 FAD-atom26&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond36&quot; atomRefs=&quot;FAD-atom25 FAD-atom29&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond37&quot; atomRefs=&quot;FAD-atom24 FAD-atom37&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond38&quot; atomRefs=&quot;FAD-atom23 FAD-atom18&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond39&quot; atomRefs=&quot;FAD-atom22 FAD-atom31&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond40&quot; atomRefs=&quot;FAD-atom21 FAD-atom55&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond41&quot; atomRefs=&quot;FAD-atom21 FAD-atom24&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond42&quot; atomRefs=&quot;FAD-atom20 FAD-atom25&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond43&quot; atomRefs=&quot;FAD-atom19 FAD-atom4&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond44&quot; atomRefs=&quot;FAD-atom18 FAD-atom50&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond45&quot; atomRefs=&quot;FAD-atom17 FAD-atom23&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond46&quot; atomRefs=&quot;FAD-atom16 FAD-atom6&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond47&quot; atomRefs=&quot;FAD-atom15 FAD-atom47&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond48&quot; atomRefs=&quot;FAD-atom14 FAD-atom52&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond49&quot; atomRefs=&quot;FAD-atom13 FAD-atom12&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond50&quot; atomRefs=&quot;FAD-atom12 FAD-atom28&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond51&quot; atomRefs=&quot;FAD-atom11 FAD-atom50&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond52&quot; atomRefs=&quot;FAD-atom10 FAD-atom1&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond53&quot; atomRefs=&quot;FAD-atom10 FAD-atom5&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond54&quot; atomRefs=&quot;FAD-atom9 FAD-atom13&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond55&quot; atomRefs=&quot;FAD-atom8 FAD-atom22&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond56&quot; atomRefs=&quot;FAD-atom7 FAD-atom23&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond57&quot; atomRefs=&quot;FAD-atom6 FAD-atom38&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond58&quot; atomRefs=&quot;FAD-atom5 FAD-atom32&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond59&quot; atomRefs=&quot;FAD-atom3 FAD-atom38&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond60&quot; atomRefs=&quot;FAD-atom2 FAD-atom3&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond61&quot; atomRefs=&quot;FAD-atom1 FAD-atom19&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;FAD-bond62&quot; atomRefs=&quot;FAD-atom1 FAD-atom35&quot; order=&quot;1&quot;/&gt;
+   &lt;/bondArray&gt;
+   &lt;formula concise=&quot;C 27 H 33 N 9 O 15 P 2&quot; formalCharge=&quot;0&quot;/&gt;
+   &lt;float title=&quot;molecularWeight&quot; units=&quot;g/mol&quot;&gt;785.556&lt;/float&gt;
+   &lt;string title=&quot;smiles&quot;&gt;N1([H])(C(N=c5(c(C1=O)nc6(cc(c(C)cc(n(CC(O)C(C(COP(=O)(OP(=O)(OCC4(OC([H])(n3(c2(ncnc(c2nc3)N)))C(C4(O)[H])([H])O))O)O)O)O)5)6)C)))=O)&lt;/string&gt;
+  &lt;/molecule&gt;
+ &lt;/cml&gt;
+</bp:structureData>
+              </bp:ChemicalStructure>
+            </bp:structure>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">FAD</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">flavin adenine dinucleotide oxidized</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">flavin adenine dinucleotide</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">flavitan</bp:name>
+            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">785.556</bp:molecularWeight>
+          </bp:SmallMoleculeReference>
+        </bp:entityReference>
+        <bp:dataSource rdf:resource="#Provenance778667"/>
+        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary778671"/>
+      </bp:SmallMolecule>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:BiochemicalPathwayStep rdf:ID="BiochemicalPathwayStep778713">
+    <bp:stepProcess>
+      <bp:Catalysis rdf:ID="Catalysis778739">
+        <bp:xref rdf:resource="#UnificationXref778740"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glycerol kinase</bp:standardName>
+        <bp:dataSource rdf:resource="#Provenance778667"/>
+        <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+        <bp:controller>
+          <bp:Protein rdf:ID="Protein778743">
+            <bp:xref rdf:resource="#UnificationXref778742"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glycerol kinase</bp:standardName>
+            <bp:entityReference>
+              <bp:ProteinReference rdf:ID="ProteinReference778741">
+                <bp:organism>
+                  <bp:BioSource rdf:ID="BioSource778710">
+                    <bp:xref rdf:resource="#UnificationXref778711"/>
+                    <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Saccharomyces cerevisiae</bp:name>
+                  </bp:BioSource>
+                </bp:organism>
+                <bp:sequence rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MFPSLFRLVVFSKRYIFRSSQRLYTSLKQEQSRMSKIMEDLRSDYVPLIASIDVGTTSSRCILFNRWGQDVSKHQIEYSTSASKGKIGVSGLRRPSTAPARETPNAGDIKTSGKPIFSAEGYAIQETKFLKIEELDLDFHNEPTLKFPKPGWVECHPQKLLVNVVQCLASSLLSLQTINSERVANGLPPYKVICMGIANMRETTILWSRRTGKPIVNYGIVWNDTRTIKIVRDKWQNTSVDRQLQLRQKTGLPLLSTYFSCSKLRWFLDNEPLCTKAYEENDLMFGTVDTWLIYQLTKQKAFVSDVTNASRTGFMNLSTLKYDNELLEFWGIDKNLIHMPEIVSSSQYYGDFGIPDWIMEKLHDSPKTVLRDLVKRNLPIQGCLGDQSASMVGQLAYKPGAAKCTYGTGCFLLYNTGTKKLISQHGALTTLAFWFPHLQEYGGQKPELSKPHFALEGSVAVAGAVVQWLRDNLRLIDKSEDVGPIASTVPDSGGVVFVPAFSGLFAPYWDPDARATIMGMSQFTTASHIARAAVEGVCFQARAILKAMSSDAFGEGSKDRDFLEEISDVTYEKSPLSVLAVDGGMSRSNEVMQIQADILGPCVKVRRSPTAECTALGAAIAANMAFKDVNERPLWKDLHDVKKWVFYNGMEKNEQISPEAHPNLKIFRSESDDAERRKHWKYWEVAVERSKGWLKDIEGEHEQVLENFQ</bp:sequence>
+                <bp:xref rdf:resource="#UnificationXref778742"/>
+                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glycerol kinase</bp:standardName>
+              </bp:ProteinReference>
+            </bp:entityReference>
+            <bp:dataSource rdf:resource="#Provenance778667"/>
+          </bp:Protein>
+        </bp:controller>
+        <bp:controlled>
+          <bp:BiochemicalReaction rdf:ID="BiochemicalReaction778714">
+            <bp:xref rdf:resource="#UnificationXref778715"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glycerol + ATP  &amp;rarr;  glycerol-3-phosphate + ADP</bp:standardName>
+            <bp:right rdf:resource="#SmallMolecule778689"/>
+            <bp:right rdf:resource="#SmallMolecule778737"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry778738"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry778690"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry778729"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry778721"/>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ATP:glycerol 3-phosphotransferase</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Glycerokinase</bp:name>
+            <bp:left rdf:resource="#SmallMolecule778720"/>
+            <bp:left rdf:resource="#SmallMolecule778728"/>
+            <bp:eCNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2.7.1.30</bp:eCNumber>
+            <bp:dataSource rdf:resource="#Provenance778667"/>
+          </bp:BiochemicalReaction>
+        </bp:controlled>
+      </bp:Catalysis>
+    </bp:stepProcess>
+    <bp:stepDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LEFT-TO-RIGHT</bp:stepDirection>
+    <bp:stepConversion rdf:resource="#BiochemicalReaction778714"/>
+    <bp:nextStep>
+      <bp:BiochemicalPathwayStep rdf:ID="BiochemicalPathwayStep778668">
+        <bp:stepProcess>
+          <bp:Catalysis rdf:ID="Catalysis778706">
+            <bp:xref rdf:resource="#UnificationXref778707"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glycerol-3-phosphate dehydrogenase</bp:standardName>
+            <bp:dataSource rdf:resource="#Provenance778667"/>
+            <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+            <bp:controller>
+              <bp:Protein rdf:ID="Protein778712">
+                <bp:xref rdf:resource="#UnificationXref778709"/>
+                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glycerol-3-phosphate dehydrogenase</bp:standardName>
+                <bp:entityReference>
+                  <bp:ProteinReference rdf:ID="ProteinReference778708">
+                    <bp:organism rdf:resource="#BioSource778710"/>
+                    <bp:sequence rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MFSVTRRRAAGAAAAMATATGTLYWMTSQGDRPLVHNDPSYMVQFPTAAPPQVSRRDLLDRLAKTHQFDVLIIGGGATGTGCALDAATRGLNVALVEKGDFASGTSSKSTKMIHGGVRYLEKAFWEFSKAQLDLVIEALNERKHLINTAPHLCTVLPILIPIYSTWQVPYIYMGCKFYDFFAGSQNLKKSYLLSKSATVEKAPMLTTDNLKASLVYHDGSFNDSRLNATLAITAVENGATVLNYVEVQKLIKDPTSGKVIGAEARDVETNELVRINAKCVVNATGPYSDAILQMDRNPSGLPDSPLNDNSKIKSTFNQIAVMDPKMVIPSIGVHIVLPSFYCPKDMGLLDVRTSDGRVMFFLPWQGKVLAGTTDIPLKQVPENPMPTEADIQDILKELQHYIEFPVKREDVLSAWAGVRPLVRDPRTIPADGKKGSATQGVVRSHFLFTSDNGLITIAGGKWTTYRQMAEETVDKVVEVGGFHNLKPCHTRDIKLAGAEEWTQNYVALLAQNYHLSSKMSNYLVQNYGTRSSIICEFFKESMENKLPLSLADKENNVIYSSEENNLVNFDTFRYPFTIGELKYSMQYEYCRTPLDFLLRRTRFAFLDAKEALNAVHATVKVMGDEFNWSEKKRQWELEKTVNFIKTFGV</bp:sequence>
+                    <bp:xref rdf:resource="#UnificationXref778709"/>
+                    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glycerol-3-phosphate dehydrogenase</bp:standardName>
+                  </bp:ProteinReference>
+                </bp:entityReference>
+                <bp:dataSource rdf:resource="#Provenance778667"/>
+              </bp:Protein>
+            </bp:controller>
+            <bp:controlled>
+              <bp:BiochemicalReaction rdf:ID="BiochemicalReaction778669">
+                <bp:xref rdf:resource="#UnificationXref778670"/>
+                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">FAD + glycerol-3-phosphate  &amp;rarr;  FADH&lt;SUB&gt;2&lt;/SUB&gt; + dihydroxy-acetone-phosphate</bp:standardName>
+                <bp:right rdf:resource="#SmallMolecule778695"/>
+                <bp:right rdf:resource="#SmallMolecule778704"/>
+                <bp:participantStoichiometry rdf:resource="#Stoichiometry778705"/>
+                <bp:participantStoichiometry rdf:resource="#Stoichiometry778696"/>
+                <bp:participantStoichiometry rdf:resource="#Stoichiometry778690"/>
+                <bp:participantStoichiometry rdf:resource="#Stoichiometry778681"/>
+                <bp:left rdf:resource="#SmallMolecule778680"/>
+                <bp:left rdf:resource="#SmallMolecule778689"/>
+                <bp:eCNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1.1.99.5</bp:eCNumber>
+                <bp:dataSource rdf:resource="#Provenance778667"/>
+              </bp:BiochemicalReaction>
+            </bp:controlled>
+          </bp:Catalysis>
+        </bp:stepProcess>
+        <bp:stepDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LEFT-TO-RIGHT</bp:stepDirection>
+        <bp:stepConversion rdf:resource="#BiochemicalReaction778669"/>
+      </bp:BiochemicalPathwayStep>
+    </bp:nextStep>
+  </bp:BiochemicalPathwayStep>
+  <bp:Pathway rdf:ID="Pathway778664">
+    <bp:xref rdf:resource="#UnificationXref778666"/>
+    <bp:xref rdf:resource="#PublicationXref778665"/>
+    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glycerol degradation</bp:standardName>
+    <bp:pathwayOrder rdf:resource="#BiochemicalPathwayStep778713"/>
+    <bp:pathwayOrder rdf:resource="#BiochemicalPathwayStep778668"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis778739"/>
+    <bp:pathwayComponent rdf:resource="#BiochemicalReaction778714"/>
+    <bp:pathwayComponent rdf:resource="#BiochemicalReaction778669"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis778706"/>
+    <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aerobic glycerol catabolism</bp:name>
+    <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glycerol catabolism</bp:name>
+    <bp:dataSource rdf:resource="#Provenance778667"/>
+    <bp:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Under aerobic conditions, S. cerevisiae is able to utilize glycerol as a sole carbon and energy source. Glycerol
+degradation is a two-step process; the first step of glycerol phosphorylation occurs in the cytosol, then glycerol-3-phosphate enters the 
+motichondrion where the second step of conversion to dihydroxyacetone is catalyzed |CITS:[191434]|. Dihydroxyacetone
+is then returned to the cytosol where it enters into either glycolysis or gluconeogenesis. The genes encoding
+the enzymes catalyzing glycerol catabolism, GUT1 and GUT2, are carbon source regulated; gene expression is repressed
+when cells are grown on fermentable carbon sources such as glucose and upregulated on non-fermentable
+carbon sources such as glycerol or ethanol |CITS:[191434]|, |CITS:[10536147]|, |CITS:[11142398]|.
+On non-fermentable carbon sources, GUT1 transcription is induced by the transcriptional activators Adr1p, Ino2p and Ino4p |CITS:[10536147]|, while GUT2 regulation 
+requires the protein kinase Snf1p and the transcriptional activating Hap2p/Hap3p/Hap4p/Hap5p complex
+|CITS:[11142398]|. Conversely, the negative regulator Opi1p facilitates GUT1 and GUT2 repression |CITS:[10536147]|, |CITS:[11142398]|. 
+</bp:comment>
+  </bp:Pathway>
+</rdf:RDF>

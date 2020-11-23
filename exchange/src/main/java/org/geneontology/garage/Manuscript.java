@@ -66,6 +66,7 @@ FILTER (?source_graph != <http://model.geneontology.org/inferences> )
 public class Manuscript {
 
 	BigdataSailRepository alldata_repo;
+	BioPaxtoGO bp2go;
 
 	public static String prefixes = 
 			"prefix dc: <http://purl.org/dc/elements/1.1/>\n" + 
@@ -95,6 +96,7 @@ public class Manuscript {
 
 	public Manuscript(String bg_jnl) {
 		this.alldata_repo = initializeRepository(bg_jnl);
+		bp2go = new BioPaxtoGO();
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -547,7 +549,7 @@ public class Manuscript {
 		}
 		writer.write(header+"\n");
 		for (Pathway currentPathway : biopax_model.getObjects(Pathway.class)){
-			String pathway_id = BioPaxtoGO.getEntityReferenceId(currentPathway);
+			String pathway_id = bp2go.getEntityReferenceId(currentPathway);
 			Set<String> all_pairs = getStepPairs(currentPathway, false);
 			pathway_allstepcount.put(pathway_id, all_pairs.size());
 			Set<String> internal_pairs = getStepPairs(currentPathway, true);
@@ -602,9 +604,9 @@ public class Manuscript {
 		return results;
 	}
 	
-	public static Set<String> getStepPairs(Pathway currentPathway, boolean internal_only){
+	public Set<String> getStepPairs(Pathway currentPathway, boolean internal_only){
 		Set<String> r1r2 = new HashSet<String>();
-		String pathway_id = BioPaxtoGO.getEntityReferenceId(currentPathway);
+		String pathway_id = bp2go.getEntityReferenceId(currentPathway);
 		for(PathwayStep step1 : currentPathway.getPathwayOrder()) {
 			Set<Process> processes1 = step1.getStepProcess();
 			String r1 = null;
@@ -612,7 +614,7 @@ public class Manuscript {
 				if(p instanceof Control || p instanceof Pathway) {
 					continue;
 				}
-				r1=BioPaxtoGO.getEntityReferenceId(p);
+				r1=bp2go.getEntityReferenceId(p);
 			}
 			//all the nextsteps!  (commented out to support global comparisons and not double count the same edge from different pathway start points)
 			//			Set<PathwayStep> step2s = step1.getNextStep();
@@ -649,10 +651,10 @@ public class Manuscript {
 						}
 						if(internal_only) {
 							if(inPathway(p, currentPathway)) {
-								r0 = BioPaxtoGO.getEntityReferenceId(p);
+								r0 = bp2go.getEntityReferenceId(p);
 							}
 						}else {
-							r0 = BioPaxtoGO.getEntityReferenceId(p);
+							r0 = bp2go.getEntityReferenceId(p);
 						}					
 					}
 					if(r0!=null&&r1!=null) {
@@ -676,8 +678,8 @@ public class Manuscript {
 	}
 
 
-	public static Set<PathwayStep> getSteps(Pathway currentPathway, boolean instep) {
-		String pathway_id = BioPaxtoGO.getEntityReferenceId(currentPathway);
+	public Set<PathwayStep> getSteps(Pathway currentPathway, boolean instep) {
+		String pathway_id = bp2go.getEntityReferenceId(currentPathway);
 //		if(pathway_id.equals("R-HSA-3232118")) {
 //			System.out.println("");
 //		}
