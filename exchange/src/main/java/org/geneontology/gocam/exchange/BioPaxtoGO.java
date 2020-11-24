@@ -1453,23 +1453,30 @@ public class BioPaxtoGO {
 					}
 					//default to mf
 					if(!ecmapped) {
-						//and now we aren't doing this again
-						//try to infer protein binding or complex dissociation
-						//						ComplexFunction b = checkForComplexFunction(e, go_cam);
-						//						if(b.protein_complex_binding) {
-						//							go_cam.addTypeAssertion(e, GoCAM.protein_complex_binding);	
-						//						}else if(b.protein_binding) {
-						//							go_cam.addTypeAssertion(e, GoCAM.protein_binding);	
-						//						}else if(b.binding){
-						//							go_cam.addTypeAssertion(e, GoCAM.binding);
-						//						}
-						//changing idea again here.  will handle these events downstream
-						//						else if(b.dissociation) {
-						//							go_cam.addTypeAssertion(e, GoCAM.protein_complex_dissassembly);
-						//						}
-						//						else {
-						go_cam.addTypeAssertion(e, GoCAM.molecular_event);	
-						//						}
+						boolean mapped = false;
+						if(sssom!=null) {
+							String subject_id = sssom.contractUri(entity.getUri());
+							//paxtools seems to eat the # ...  
+							subject_id = subject_id.replace("BiochemicalReaction", "#BiochemicalReaction");
+							SSSOM.Mapping mapping = sssom.getBestMatch(subject_id, 0.5);
+							if(mapping!=null) {
+								String class_iri = sssom.expandId(mapping.object_id);
+								OWLClass mapped_class = go_cam.df.getOWLClass(IRI.create(class_iri));
+								//go_cam.addTypeAssertion(pathway_e, mapped_class);	
+								//TODO further development of sssom and evidence ontology could produce a useful evidence block here
+								String comment = "This type assertion was computed with: "+mapping.mapping_tool+" with confidence "+mapping.confidence;
+								go_cam.addComment(e, comment);
+								//add some annotations to the assertion. (this is not viewable in noctua graph editor)
+								Set<OWLAnnotation> annotations = new HashSet<OWLAnnotation>();
+								annotations.add(go_cam.df.getOWLAnnotation(GoCAM.rdfs_comment, go_cam.df.getOWLLiteral(comment)));
+								OWLClassAssertionAxiom isa = go_cam.df.getOWLClassAssertionAxiom(mapped_class, e, annotations);
+								go_cam.ontman.addAxiom(go_cam.go_cam_ont, isa);						
+								mapped = true;
+							}
+						}
+						if(!mapped) {
+							go_cam.addTypeAssertion(e, GoCAM.molecular_event);	
+						}
 					}
 				}
 				//The GO-CAM OWL for the reaction and all of its parts should now be assembled.  
