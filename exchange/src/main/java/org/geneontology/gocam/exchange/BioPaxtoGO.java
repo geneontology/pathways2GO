@@ -828,7 +828,7 @@ public class BioPaxtoGO {
 				}else {	//default to bp
 					go_cam.addTypeAssertion(pathway_e, GoCAM.bp_class);	
 				}
-			}else {
+			}else {				
 				go_cam.addTypeAssertion(pathway_e, GoCAM.bp_class);	
 			}
 		}
