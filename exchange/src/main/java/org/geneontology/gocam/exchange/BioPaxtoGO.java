@@ -115,6 +115,7 @@ public class BioPaxtoGO {
 	GOLego golego; //The fully axiomitized Gene Ontology. Used in multiple places for different purposes. 
 	String blazegraph_output_journal;//Generated models will be stored both as files and as entries in this blazegraph journal.  Note this is ready for use in a Noctua/Minerva instance without any further processing.
 	QRunner tbox_qrunner;
+	SSSOM sssom; // this represents a mapping from some rdf node (e.g. a pathway instance) to another (e.g. a GO class), its an option for estimating classifications when none are provided
 	ImportStrategy strategy;
 	enum ImportStrategy {
 		NoctuaCuration, 
@@ -829,7 +830,22 @@ public class BioPaxtoGO {
 					go_cam.addTypeAssertion(pathway_e, GoCAM.bp_class);	
 				}
 			}else {				
-				go_cam.addTypeAssertion(pathway_e, GoCAM.bp_class);	
+				boolean mapped = false;
+				if(sssom!=null) { //meaning we have an inferred set of mappings to check on
+					String subject_id = sssom.contractUri(pathway.getUri());
+					//paxtools seems to eat the # ...  
+					subject_id = subject_id.replace("Pathway", "#Pathway");
+					SSSOM.Mapping mapping = sssom.getBestMatch(subject_id, 0.5);
+					if(mapping!=null) {
+						String class_iri = sssom.expandId(mapping.object_id);
+						OWLClass mapped_class = go_cam.df.getOWLClass(IRI.create(class_iri));
+						go_cam.addTypeAssertion(pathway_e, mapped_class);	
+						mapped = true;
+					}
+				}//no mapping, default to root
+				if(!mapped) {
+					go_cam.addTypeAssertion(pathway_e, GoCAM.bp_class);	
+				}
 			}
 		}
 		return pathway_e;

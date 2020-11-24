@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.geneontology.garage;
+package org.geneontology.gocam.exchange;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -22,7 +22,7 @@ public class SSSOM {
 	Map<String, String> curie_map;
 	Set<Mapping> mappings; 
 	
-	class Mapping{
+	public class Mapping{
 		String subject_id;
 		String subject_label;
 		String predicate_id;
@@ -104,10 +104,34 @@ public class SSSOM {
 		return smap;
 	}
 	
+	Mapping getBestMatch(String subject_id, double cutoff) {
+		Set<Mapping> smaps = lookupBySubjectId(subject_id, cutoff);
+		double best = 0;
+		Mapping smap = null;
+		for(Mapping m: smaps){
+			if(m.confidence>best) {
+				best = m.confidence;
+				smap = m;
+			}
+		}
+		return smap;
+	}
+	
 	String expandId(String id) {
 		String[] cols = id.split(":");
 		String expanded = curie_map.get(cols[0])+cols[1];		
 		return expanded;
+	}
+	
+	String contractUri(String uri) {
+		String contracted = "";
+		for(String shortprefix : curie_map.keySet()) {
+			String longprefix = curie_map.get(shortprefix);
+			if(uri.startsWith(longprefix)) {
+				contracted = uri.replace(longprefix,shortprefix+":");
+			}
+		}
+		return contracted;
 	}
 	/**
 	 * @param args
@@ -120,6 +144,9 @@ public class SSSOM {
 		for(Mapping m : smaps) {
 			System.out.println(sssom.expandId(m.subject_id)+"\t"+m.subject_label+" mapped to "+m.object_label+"\n\tobject id "+m.object_id+"\n\t\t"+sssom.expandId(m.object_id));
 		}
+		Mapping best = sssom.getBestMatch("yeastpathway:type=3%38object=GLYCLEAV-PWY#Pathway785728", 0.5);
+		System.out.println("\nbest "+best.confidence+" "+best.object_id+" "+best.object_label);
+		System.out.println(sssom.expandId(best.subject_id)+"\t"+sssom.contractUri(sssom.expandId(best.subject_id)));
 	}
 
 }
