@@ -25,6 +25,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import org.biopax.paxtools.io.BioPAXIOHandler;
@@ -168,8 +169,13 @@ public class BioPaxtoGO {
 			datasource = "Reactome";
 		}else if(base_provider.equals("https://www.wikipathways.org/")) {
 			datasource = "Wikipathways";
+			default_namespace_prefix = "wikipathways";
 		}else if(base_provider.equals("https://www.pathwaycommons.org/")) {
 			datasource = "Pathway Commons";
+			default_namespace_prefix = "pathwaycommons";
+		}else if(base_provider.equals("https://yeastgenome.org")) {
+			datasource = "Saccharomyces Genome Database";
+			default_namespace_prefix = "SGD";
 		}
 		//will determine how classes for physical entities are handled
 		if(entityStrategy.equals(EntityStrategy.YeastCyc)) {
@@ -263,7 +269,13 @@ public class BioPaxtoGO {
 				String contributor_link = base_provider;
 				//See if there is a specific pathway reference to allow a direct link
 				model_id = getEntityReferenceId(currentPathway);
-				contributor_link = "https://reactome.org/content/detail/"+model_id;
+				if(base_provider.equals("https://reactome.org")) {
+					contributor_link = "https://reactome.org/content/detail/"+model_id;
+				}else if(base_provider.equals("https://yeastgenome.org")) {
+					contributor_link = "https://pathway.yeastgenome.org/YEAST/NEW-IMAGE?object="+model_id;
+				}else {
+					contributor_link = base_provider+"/"+model_id;					
+				}
 				//check for datasource (seen commonly in Pathway Commons)
 				Set<Provenance> datasources = currentPathway.getDataSource();
 				for(Provenance prov : datasources) {
@@ -894,7 +906,7 @@ public class BioPaxtoGO {
 	 * @return
 	 * @throws IOException 
 	 */
-	private void defineReactionEntity(GoCAM go_cam, Entity entity, IRI this_iri, boolean follow_controllers, String model_id, String root_pathway_iri) throws IOException {		
+	private void defineReactionEntity(GoCAM go_cam, Entity entity, IRI this_iri, boolean follow_controllers, String model_id, String root_pathway_iri) throws IOException {				
 		String entity_id = getEntityReferenceId(entity);
 		if(this_iri==null) {
 			if(entity_id!=null) {
@@ -1143,6 +1155,9 @@ public class BioPaxtoGO {
 					for(PhysicalEntity input : inputs) {
 						IRI i_iri = null;
 						String input_id = getEntityReferenceId(input);
+						if(input_id==null){ //failed to find a chebi reference
+							input_id = UUID.randomUUID().toString();
+						}
 						i_iri = GoCAM.makeGoCamifiedIRI(null, input_id+"_"+entity_id);
 						OWLNamedIndividual input_entity = go_cam.df.getOWLNamedIndividual(i_iri);
 						defineReactionEntity(go_cam, input, i_iri, true, model_id, root_pathway_iri);
@@ -1152,6 +1167,9 @@ public class BioPaxtoGO {
 					for(PhysicalEntity output : outputs) {
 						IRI o_iri = null;
 						String output_id = getEntityReferenceId(output);
+						if(output_id==null) {
+							output_id = UUID.randomUUID().toString();
+						}
 						o_iri = GoCAM.makeGoCamifiedIRI(null, output_id+"_"+entity_id);
 						OWLNamedIndividual output_entity = go_cam.df.getOWLNamedIndividual(o_iri);
 						defineReactionEntity(go_cam, output, o_iri, true, model_id, root_pathway_iri);

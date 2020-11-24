@@ -178,17 +178,23 @@ public class Biopax2GOCmdLine {
 			}else {
 				bp2g.split_by_pathway = true;
 			}
+			//TODO generalize this!  
+			Set<String> taxa = new HashSet<String>();			
 			if(cmd.hasOption("e")) {
 				String entity_strategy = cmd.getOptionValue("e");
 				if(entity_strategy.equalsIgnoreCase("REACTO")) {
 					bp2g.entityStrategy = EntityStrategy.REACTO; 
+					taxa.add("http://purl.obolibrary.org/obo/NCBITaxon_9606");
 				}else if(entity_strategy.equalsIgnoreCase("YeastCyc")) {
 					bp2g.entityStrategy = EntityStrategy.YeastCyc; 
+					taxa.add("http://purl.obolibrary.org/obo/NCBITaxon_559292");
 				}else {
 					System.out.println("If specifying entity resolution strategy with -e, please select either REACTO or YeastCyc");
 				}
 			}
-			
+			if(taxa.size()==0) {
+				taxa.add("http://purl.obolibrary.org/obo/NCBITaxon_9606");
+			}
 			//initialize the rules for inference		
 			OWLOntology tbox = ontman.loadOntologyFromOntologyDocument(new File(bp2g.go_lego_file));
 			bp2g.golego = new GOLego(tbox);
@@ -197,15 +203,12 @@ public class Biopax2GOCmdLine {
 			
 			File dir = new File(input_biopax);
 			File[] directoryListing = dir.listFiles();
-			//TODO generalize this!  
-			Set<String> taxa = new HashSet<String>();
-			taxa.add("http://purl.obolibrary.org/obo/NCBITaxon_9606");
 			
 			//run through all files
 			if (directoryListing != null) {
 				for (File biopax : directoryListing) {
 					String name = biopax.getName();
-					if(name.contains(".owl")||name.contains(".xml")||name.contains("biopax")) { 
+					if(name.contains(".owl")||name.contains("biopax")) { 
 						name = name.replaceAll(".owl", "-");
 						name = name.replaceAll(".xml", "-");
 						String this_output_file_stub = output_file_stub+name;
