@@ -1,0 +1,1695 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+ xml:base="http://pathway.yeastgenome.org/YEAST/pathway-biopax?type=3%38object=PWY3O-981"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema#"
+ xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#"
+>
+ <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://www.biopax.org/release/biopax-level3.owl"/>
+ <rdfs:comment>This%32BioPAX%32Level%323%32output%32for%32organism%32Saccharomyces%3732cerevisiae%44%32pathway%32superpathway%3732of%3732acetoin%3732and%3732butanediol%3732biosynthesis%10was%32automatically%32generated%32from%32URL%32http%58%47%47pathway%46yeastgenome%46org%47YEAST%47pathway%45biopax%63type%613%3738object%61PWY3O%45981%32on%3201%45Nov%452018%32%3216%5817%5814%46%32%32Note%32that%32all%32IDs%32are%32auto%45generated%44%10and%32are%32valid%32in%32the%32scope%32of%32this%32file%32only%46%32%32If%32the%32data%32is%32regenerated%32at%32some%32later%10time%44%32or%32data%32for%32another%32pathway%32is%32generated%32from%32this%32same%32site%44%32there%32are%32no%32%10guarantees%32that%32the%32same%32IDs%32will%32refer%32to%32the%32same%32objects%46%32%32To%32retrieve%32a%32file%32%10containing%32a%32complete%32list%32of%32pathways%32for%32this%32organism%32in%32BioPAX%32format%44%32please%10visit%32http%58%47%47biocyc%46org%47download%45flatfiles%46shtml</rdfs:comment>
+ </owl:Ontology>
+  <bp:UnificationXref rdf:ID="UnificationXref807876">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-914</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807871">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">BUTANEDIOL</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807870">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">24347-58-8</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807869">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C03044</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LIGAND-compound</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807868">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">225936</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807867">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:16982</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807865">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RR-BUTANEDIOL-DEHYDROGENASE-RXN</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807862">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-80</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807860">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-94</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807858">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-102</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807856">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RXN-6161</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807853">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-471</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807851">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-473</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807849">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-476</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807846">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RXN3O-470</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807841">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MONOMER3O-117</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807839">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CPLX3O-118</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807837">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-462</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807833">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YLR134W-MONOMER</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807831">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CPLX3O-67</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807829">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-465</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807825">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YGR087C-MONOMER</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807822">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CPLX3O-58</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807820">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-467</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807815">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACETALD</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807814">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">c0160</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">UMBBD-Compounds</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807813">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">75-07-0</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807812">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">177</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807811">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00084</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LIGAND-compound</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807810">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:15343</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807808">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RXN0-2022</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807803">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YCL009C-MONOMER</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807799">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MONOMER3O-29</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807797">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CPLX3O-30</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807795">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-1465</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807790">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PYRUVATE</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807789">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">127-17-3</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807788">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">c0159</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">UMBBD-Compounds</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807787">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1060</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807786">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:32816</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807785">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00022</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LIGAND-compound</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807783">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACETOLACTSYN-RXN</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807777">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CARBON-DIOXIDE</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807776">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">124-38-9</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807775">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">280</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807774">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00011</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LIGAND-compound</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807773">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:16526</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807768">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2-ACETO-LACTATE</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807767">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C06010</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LIGAND-compound</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807766">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">440878</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807765">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:18409</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807763">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RXN-6081</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807758">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">4932</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NCBI Taxonomy</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807756">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YAL060W-MONOMER</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807754">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CPLX3O-79</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807752">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-339</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807747">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NAD</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807746">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">5893</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807745">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:15846</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807744">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00003</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LIGAND-compound</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807739">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACETOIN</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807738">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00466</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LIGAND - generic</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807737">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">513-86-0</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807736">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">7609</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NCI</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807731">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADH</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807730">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">439153</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807729">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:16908</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807728">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">53-84-9</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807727">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00004</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LIGAND-compound</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807722">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DIACETYL</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807721">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">431-03-8</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807719">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GO:0005829</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GO</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807717">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACETOINDEHYDROG-RXN</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807713">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PWY3O-981</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:UnificationXref rdf:ID="UnificationXref807710">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">EV-EXP-TAS</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://brg.ai.sri.com/evidence-ontology/</bp:db>
+  </bp:UnificationXref>
+  <bp:PublicationXref rdf:ID="PublicationXref807824">
+    <bp:year rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1996</bp:year>
+    <bp:url rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://www.yeastgenome.org/reference/S000058092</bp:url>
+    <bp:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Pyruvate metabolism in Saccharomyces cerevisiae.</bp:title>
+    <bp:source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Yeast 12(16);1607-33</bp:source>
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#int">9123965</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:db>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Pronk JT</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Yde Steensma H</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Van Dijken JP</bp:author>
+  </bp:PublicationXref>
+  <bp:PublicationXref rdf:ID="PublicationXref807708">
+    <bp:year rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1990</bp:year>
+    <bp:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Purification and properties of two oxidoreductases catalyzing the enantioselective reduction of diacetyl and other diketones from baker&apos;s yeast.</bp:title>
+    <bp:source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Eur J Biochem 188(1);165-74</bp:source>
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2180695</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:db>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Heidlas J</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Tressl R</bp:author>
+  </bp:PublicationXref>
+  <bp:PublicationXref rdf:ID="PublicationXref807707">
+    <bp:year rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1984</bp:year>
+    <bp:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Brewers&apos; yeast pyruvate decarboxylase produces acetoin from acetaldehyde: a novel tool to study the mechanism of steps subsequent to carbon dioxide loss.</bp:title>
+    <bp:source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Biochemistry 23(16);3576-82</bp:source>
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">6383467</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:db>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Chen GC</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Jordan F</bp:author>
+  </bp:PublicationXref>
+  <bp:PublicationXref rdf:ID="PublicationXref807706">
+    <bp:year rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1990</bp:year>
+    <bp:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pdc1(0) mutants of Saccharomyces cerevisiae give evidence for an additional structural PDC gene: cloning of PDC5, a gene homologous to PDC1.</bp:title>
+    <bp:source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">J Bacteriol 172(2);678-85</bp:source>
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2404950</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:db>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Seeboth PG</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Bohnsack K</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Hollenberg CP</bp:author>
+  </bp:PublicationXref>
+  <bp:PublicationXref rdf:ID="PublicationXref807705">
+    <bp:year rdf:datatype="http://www.w3.org/2001/XMLSchema#int">2000</bp:year>
+    <bp:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Characterization of a (2R,3R)-2,3-butanediol dehydrogenase as the Saccharomyces cerevisiae YAL060W gene product. Disruption and induction of the gene.</bp:title>
+    <bp:source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">J Biol Chem 275(46);35876-85</bp:source>
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">10938079</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:db>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Gonzalez E</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Fernandez MR</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Larroy C</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sola L</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Pericas MA</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Pares X</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Biosca JA</bp:author>
+  </bp:PublicationXref>
+  <bp:PublicationXref rdf:ID="PublicationXref807704">
+    <bp:year rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1996</bp:year>
+    <bp:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Origin and Production of Acetoin during Wine Yeast Fermentation.</bp:title>
+    <bp:source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Appl Environ Microbiol 62(2);309-315</bp:source>
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">16535224</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:db>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Romano P</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Suzzi G</bp:author>
+  </bp:PublicationXref>
+  <bp:Stoichiometry rdf:ID="Stoichiometry807874">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:SmallMolecule rdf:ID="SmallMolecule807873">
+        <bp:xref rdf:resource="#UnificationXref807871"/>
+        <bp:xref rdf:resource="#UnificationXref807870"/>
+        <bp:xref rdf:resource="#UnificationXref807869"/>
+        <bp:xref rdf:resource="#UnificationXref807868"/>
+        <bp:xref rdf:resource="#UnificationXref807867"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">butanediol</bp:standardName>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D(-)-2,3-butanediol</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2,3-butylene glycol</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(R,R)-2,3-butanediol</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2,3-butanediol</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(R,R)-Butane-2,3-diol</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(R,R)-2,3-Butylene glycol</bp:name>
+        <bp:entityReference>
+          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference807866">
+            <bp:xref rdf:resource="#UnificationXref807871"/>
+            <bp:xref rdf:resource="#UnificationXref807870"/>
+            <bp:xref rdf:resource="#UnificationXref807869"/>
+            <bp:xref rdf:resource="#UnificationXref807868"/>
+            <bp:xref rdf:resource="#UnificationXref807867"/>
+            <bp:structure>
+              <bp:ChemicalStructure rdf:ID="ChemicalStructure807872">
+                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CML</bp:structureFormat>
+                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string"> &lt;cml&gt;
+  &lt;molecule id=&quot;BUTANEDIOL&quot; title=&quot;butanediol&quot; dictRef=&quot;dictBUTANEDIOL&quot;&gt;
+   &lt;atomArray&gt;
+    &lt;atom id=&quot;BUTANEDIOL-atom1&quot; elementType=&quot;C&quot; x2=&quot;3.375&quot; y2=&quot;-2.825&quot;/&gt;
+    &lt;atom id=&quot;BUTANEDIOL-atom2&quot; elementType=&quot;C&quot; x2=&quot;4.0246&quot; y2=&quot;-2.45&quot;/&gt;
+    &lt;atom id=&quot;BUTANEDIOL-atom3&quot; elementType=&quot;C&quot; x2=&quot;4.6741&quot; y2=&quot;-2.825&quot;/&gt;
+    &lt;atom id=&quot;BUTANEDIOL-atom4&quot; elementType=&quot;O&quot; x2=&quot;4.0246&quot; y2=&quot;-1.7&quot;/&gt;
+    &lt;atom id=&quot;BUTANEDIOL-atom5&quot; elementType=&quot;O&quot; x2=&quot;4.6741&quot; y2=&quot;-3.575&quot;/&gt;
+    &lt;atom id=&quot;BUTANEDIOL-atom6&quot; elementType=&quot;C&quot; x2=&quot;5.3236&quot; y2=&quot;-2.45&quot;/&gt;
+   &lt;/atomArray&gt;
+   &lt;bondArray&gt;
+    &lt;bond id=&quot;BUTANEDIOL-bond1&quot; atomRefs=&quot;BUTANEDIOL-atom3 BUTANEDIOL-atom6&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;BUTANEDIOL-bond2&quot; atomRefs=&quot;BUTANEDIOL-atom3 BUTANEDIOL-atom5&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;BUTANEDIOL-bond3&quot; atomRefs=&quot;BUTANEDIOL-atom2 BUTANEDIOL-atom4&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;BUTANEDIOL-bond4&quot; atomRefs=&quot;BUTANEDIOL-atom2 BUTANEDIOL-atom3&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;BUTANEDIOL-bond5&quot; atomRefs=&quot;BUTANEDIOL-atom1 BUTANEDIOL-atom2&quot; order=&quot;1&quot;/&gt;
+   &lt;/bondArray&gt;
+   &lt;formula concise=&quot;C 4 H 10 O 2&quot; formalCharge=&quot;0&quot;/&gt;
+   &lt;float title=&quot;molecularWeight&quot; units=&quot;g/mol&quot;&gt;90.122&lt;/float&gt;
+   &lt;string title=&quot;smiles&quot;&gt;CC(C(O)C)O&lt;/string&gt;
+  &lt;/molecule&gt;
+ &lt;/cml&gt;
+</bp:structureData>
+              </bp:ChemicalStructure>
+            </bp:structure>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">butanediol</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D(-)-2,3-butanediol</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2,3-butylene glycol</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(R,R)-2,3-butanediol</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2,3-butanediol</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(R,R)-Butane-2,3-diol</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(R,R)-2,3-Butylene glycol</bp:name>
+            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">90.122</bp:molecularWeight>
+          </bp:SmallMoleculeReference>
+        </bp:entityReference>
+        <bp:dataSource>
+          <bp:Provenance rdf:ID="Provenance807714">
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NIL</bp:name>
+          </bp:Provenance>
+        </bp:dataSource>
+        <bp:cellularLocation>
+          <bp:CellularLocationVocabulary rdf:ID="CellularLocationVocabulary807718">
+            <bp:xref rdf:resource="#UnificationXref807719"/>
+            <bp:term rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GO:0005829</bp:term>
+          </bp:CellularLocationVocabulary>
+        </bp:cellularLocation>
+      </bp:SmallMolecule>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry807847">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">2</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:SmallMolecule rdf:ID="SmallMolecule807817">
+        <bp:xref rdf:resource="#UnificationXref807815"/>
+        <bp:xref rdf:resource="#UnificationXref807814"/>
+        <bp:xref rdf:resource="#UnificationXref807813"/>
+        <bp:xref rdf:resource="#UnificationXref807812"/>
+        <bp:xref rdf:resource="#UnificationXref807811"/>
+        <bp:xref rdf:resource="#UnificationXref807810"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">acetaldehyde</bp:standardName>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">acetald</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ethanal</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ch3cho</bp:name>
+        <bp:entityReference>
+          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference807809">
+            <bp:xref rdf:resource="#UnificationXref807815"/>
+            <bp:xref rdf:resource="#UnificationXref807814"/>
+            <bp:xref rdf:resource="#UnificationXref807813"/>
+            <bp:xref rdf:resource="#UnificationXref807812"/>
+            <bp:xref rdf:resource="#UnificationXref807811"/>
+            <bp:xref rdf:resource="#UnificationXref807810"/>
+            <bp:structure>
+              <bp:ChemicalStructure rdf:ID="ChemicalStructure807816">
+                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CML</bp:structureFormat>
+                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string"> &lt;cml&gt;
+  &lt;molecule id=&quot;ACETALD&quot; title=&quot;acetaldehyde&quot; dictRef=&quot;dictACETALD&quot;&gt;
+   &lt;atomArray&gt;
+    &lt;atom id=&quot;ACETALD-atom1&quot; elementType=&quot;O&quot; x2=&quot;0.99673&quot; y2=&quot;0.71242&quot;/&gt;
+    &lt;atom id=&quot;ACETALD-atom2&quot; elementType=&quot;H&quot; x2=&quot;-0.00327&quot; y2=&quot;-1.0&quot;/&gt;
+    &lt;atom id=&quot;ACETALD-atom3&quot; elementType=&quot;C&quot; x2=&quot;-0.00327&quot; y2=&quot;0.14706&quot;/&gt;
+    &lt;atom id=&quot;ACETALD-atom4&quot; elementType=&quot;C&quot; x2=&quot;-1.0&quot; y2=&quot;0.71242&quot;/&gt;
+   &lt;/atomArray&gt;
+   &lt;bondArray&gt;
+    &lt;bond id=&quot;ACETALD-bond1&quot; atomRefs=&quot;ACETALD-atom4 ACETALD-atom3&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ACETALD-bond2&quot; atomRefs=&quot;ACETALD-atom3 ACETALD-atom1&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;ACETALD-bond3&quot; atomRefs=&quot;ACETALD-atom2 ACETALD-atom3&quot; order=&quot;1&quot;/&gt;
+   &lt;/bondArray&gt;
+   &lt;formula concise=&quot;C 2 H 4 O 1&quot; formalCharge=&quot;0&quot;/&gt;
+   &lt;float title=&quot;molecularWeight&quot; units=&quot;g/mol&quot;&gt;44.053&lt;/float&gt;
+   &lt;string title=&quot;smiles&quot;&gt;O=C([H])C&lt;/string&gt;
+  &lt;/molecule&gt;
+ &lt;/cml&gt;
+</bp:structureData>
+              </bp:ChemicalStructure>
+            </bp:structure>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">acetaldehyde</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">acetald</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ethanal</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ch3cho</bp:name>
+            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">44.053</bp:molecularWeight>
+          </bp:SmallMoleculeReference>
+        </bp:entityReference>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary807718"/>
+      </bp:SmallMolecule>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry807843">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">4</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:Protein rdf:ID="Protein807842">
+        <bp:xref rdf:resource="#UnificationXref807841"/>
+        <bp:xref rdf:resource="#PublicationXref807824"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">decarboxylase</bp:standardName>
+        <bp:entityReference>
+          <bp:ProteinReference rdf:ID="ProteinReference807840">
+            <bp:organism>
+              <bp:BioSource rdf:ID="BioSource807757">
+                <bp:xref rdf:resource="#UnificationXref807758"/>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Saccharomyces cerevisiae</bp:name>
+              </bp:BioSource>
+            </bp:organism>
+            <bp:sequence rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MSEITLGKYLFERLKQVNVNTVFGLPGDFNLSLLDKIYEVEGMRWAGNANELNAAYAADGYARIKGMSCIITTFGVGELSALNGIAGSYAEHVGVLHVVGVPSISAQAKQLLLHHTLGNGDFTVFHRMSANISETTAMITDIATAPAEIDRCIRTTYVTQRPVYLGLPANLVDLNVPAKLLQTPIDMSLKPNDAESEKEVIDTILALVKDAKNPVILADACCSRHDVKAETKKLIDLTQFPAFVTPMGKGSIDEQHPRYGGVYVGTLSKPEVKEAVESADLILSVGALLSDFNTGSFSYSYKTKNIVEFHSDHMKIRNATFPGVQMKFVLQKLLTTIADAAKGYKPVAVPARTPANAAVPASTPLKQEWMWNQLGNFLQEGDVVIAETGTSAFGINQTTFPNNTYGISQVLWGSIGFTTGATLGAAFAAEEIDPKKRVILFIGDGSLQLTVQEISTMIRWGLKPYLFVLNNDGYTIEKLIHGPKAQYNEIQGWDHLSLLPTFGAKDYETHRVATTGEWDKLTQDKSFNDNSKIRMIEIMLPVFDAPQNLVEQAKLTAATNAKQ</bp:sequence>
+            <bp:xref rdf:resource="#UnificationXref807841"/>
+            <bp:xref rdf:resource="#PublicationXref807824"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">decarboxylase</bp:standardName>
+          </bp:ProteinReference>
+        </bp:entityReference>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+      </bp:Protein>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry807835">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">4</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:Protein rdf:ID="Protein807834">
+        <bp:xref rdf:resource="#UnificationXref807833"/>
+        <bp:xref rdf:resource="#PublicationXref807824"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">decarboxylase</bp:standardName>
+        <bp:entityReference>
+          <bp:ProteinReference rdf:ID="ProteinReference807832">
+            <bp:organism rdf:resource="#BioSource807757"/>
+            <bp:sequence rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MSEITLGKYLFERLSQVNCNTVFGLPGDFNLSLLDKLYEVKGMRWAGNANELNAAYAADGYARIKGMSCIITTFGVGELSALNGIAGSYAEHVGVLHVVGVPSISSQAKQLLLHHTLGNGDFTVFHRMSANISETTAMITDIANAPAEIDRCIRTTYTTQRPVYLGLPANLVDLNVPAKLLETPIDLSLKPNDAEAEAEVVRTVVELIKDAKNPVILADACASRHDVKAETKKLMDLTQFPVYVTPMGKGAIDEQHPRYGGVYVGTLSRPEVKKAVESADLILSIGALLSDFNTGSFSYSYKTKNIVEFHSDHIKIRNATFPGVQMKFALQKLLDAIPEVVKDYKPVAVPARVPITKSTPANTPMKQEWMWNHLGNFLREGDIVIAETGTSAFGINQTTFPTDVYAIVQVLWGSIGFTVGALLGATMAAEELDPKKRVILFIGDGSLQLTVQEISTMIRWGLKPYIFVLNNNGYTIEKLIHGPHAEYNEIQGWDHLALLPTFGARNYETHRVATTGEWEKLTQDKDFQDNSKIRMIEVMLPVFDAPQNLVKQAQLTAATNAKQ</bp:sequence>
+            <bp:xref rdf:resource="#UnificationXref807833"/>
+            <bp:xref rdf:resource="#PublicationXref807824"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">decarboxylase</bp:standardName>
+          </bp:ProteinReference>
+        </bp:entityReference>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+      </bp:Protein>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry807827">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">4</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:Protein rdf:ID="Protein807826">
+        <bp:xref rdf:resource="#UnificationXref807825"/>
+        <bp:xref rdf:resource="#PublicationXref807824"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">decarboxylase</bp:standardName>
+        <bp:entityReference>
+          <bp:ProteinReference rdf:ID="ProteinReference807823">
+            <bp:organism rdf:resource="#BioSource807757"/>
+            <bp:sequence rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MSEITLGKYLFERLKQVNVNTIFGLPGDFNLSLLDKIYEVDGLRWAGNANELNAAYAADGYARIKGLSVLVTTFGVGELSALNGIAGSYAEHVGVLHVVGVPSISAQAKQLLLHHTLGNGDFTVFHRMSANISETTSMITDIATAPSEIDRLIRTTFITQRPSYLGLPANLVDLKVPGSLLEKPIDLSLKPNDPEAEKEVIDTVLELIQNSKNPVILSDACASRHNVKKETQKLIDLTQFPAFVTPLGKGSIDEQHPRYGGVYVGTLSKQDVKQAVESADLILSVGALLSDFNTGSFSYSYKTKNVVEFHSDYVKVKNATFLGVQMKFALQNLLKVIPDVVKGYKSVPVPTKTPANKGVPASTPLKQEWLWNELSKFLQEGDVIISETGTSAFGINQTIFPKDAYGISQVLWGSIGFTTGATLGAAFAAEEIDPNKRVILFIGDGSLQLTVQEISTMIRWGLKPYLFVLNNDGYTIEKLIHGPHAEYNEIQTWDHLALLPAFGAKKYENHKIATTGEWDALTTDSEFQKNSVIRLIELKLPVFDAPESLIKQAQLTAATNAKQ</bp:sequence>
+            <bp:xref rdf:resource="#UnificationXref807825"/>
+            <bp:xref rdf:resource="#PublicationXref807824"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">decarboxylase</bp:standardName>
+          </bp:ProteinReference>
+        </bp:entityReference>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+      </bp:Protein>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry807818">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+    <bp:physicalEntity rdf:resource="#SmallMolecule807817"/>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry807805">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:Protein rdf:ID="Protein807804">
+        <bp:xref rdf:resource="#UnificationXref807803"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">acetolactate synthase, regulatory subunit</bp:standardName>
+        <bp:entityReference>
+          <bp:ProteinReference rdf:ID="ProteinReference807802">
+            <bp:organism rdf:resource="#BioSource807757"/>
+            <bp:sequence rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MLRSLLQSGHRRVVASSCATMVRCSSSSTSALAYKQMHRHATRPPLPTLDTPSWNANSAVSSIIYETPAPSRQPRKQHVLNCLVQNEPGVLSRVSGTLAARGFNIDSLVVCNTEVKDLSRMTIVLQGQDGVVEQARRQIEDLVPVYAVLDYTNSEIIKRELVMARISLLGTEYFEDLLLHHHTSTNAGAADSQELVAEIREKQFHPANLPASEVLRLKHEHLNDITNLTNNFGGRVVDISETSCIVELSAKPTRISAFLKLVEPFGVLECARSGMMALPRTPLKTSTEEAADEDEKISEIVDISQLPPG</bp:sequence>
+            <bp:xref rdf:resource="#UnificationXref807803"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">acetolactate synthase, regulatory subunit</bp:standardName>
+          </bp:ProteinReference>
+        </bp:entityReference>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+      </bp:Protein>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry807801">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:Protein rdf:ID="Protein807800">
+        <bp:xref rdf:resource="#UnificationXref807799"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">acetolactate synthase, catalytic subunit</bp:standardName>
+        <bp:entityReference>
+          <bp:ProteinReference rdf:ID="ProteinReference807798">
+            <bp:organism rdf:resource="#BioSource807757"/>
+            <bp:sequence rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MIRQSTLKNFAIKRCFQHIAYRNTPAMRSVALAQRFYSSSSRYYSASPLPASKRPEPAPSFNVDPLEQPAEPSKLAKKLRAEPDMDTSFVGLTGGQIFNEMMSRQNVDTVFGYPGGAILPVYDAIHNSDKFNFVLPKHEQGAGHMAEGYARASGKPGVVLVTSGPGATNVVTPMADAFADGIPMVVFTGQVPTSAIGTDAFQEADVVGISRSCTKWNVMVKSVEELPLRINEAFEIATSGRPGPVLVDLPKDVTAAILRNPIPTKTTLPSNALNQLTSRAQDEFVMQSINKAADLINLAKKPVLYVGAGILNHADGPRLLKELSDRAQIPVTTTLQGLGSFDQEDPKSLDMLGMHGCATANLAVQNADLIIAVGARFDDRVTGNISKFAPEARRAAAEGRGGIIHFEVSPKNINKVVQTQIAVEGDATTNLGKMMSKIFPVKERSEWFAQINKWKKEYPYAYMEETPGSKIKPQTVIKKLSKVANDTGRHVIVTTGVGQHQMWAAQHWTWRNPHTFITSGGLGTMGYGLPAAIGAQVAKPESLVIDIDGDASFNMTLTELSSAVQAGTPVKILILNNEEQGMVTQWQSLFYEHRYSHTHQLNPDFIKLAEAMGLKGLRVKKQEELDAKLKEFVSTKGPVLLEVEVDKKVPVLPMVAGGSGLDEFINFDPEVERQQTELRHKRTGGKH</bp:sequence>
+            <bp:xref rdf:resource="#UnificationXref807799"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">acetolactate synthase, catalytic subunit</bp:standardName>
+          </bp:ProteinReference>
+        </bp:entityReference>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+      </bp:Protein>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry807793">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:SmallMolecule rdf:ID="SmallMolecule807792">
+        <bp:xref rdf:resource="#UnificationXref807790"/>
+        <bp:xref rdf:resource="#UnificationXref807789"/>
+        <bp:xref rdf:resource="#UnificationXref807788"/>
+        <bp:xref rdf:resource="#UnificationXref807787"/>
+        <bp:xref rdf:resource="#UnificationXref807786"/>
+        <bp:xref rdf:resource="#UnificationXref807785"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pyruvate</bp:standardName>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Pyruvic acid</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2-Oxopropanoate</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2-Oxopropanoic acid</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Pyroracemic acid</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2-oxo-propionic acid</bp:name>
+        <bp:entityReference>
+          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference807784">
+            <bp:xref rdf:resource="#UnificationXref807790"/>
+            <bp:xref rdf:resource="#UnificationXref807789"/>
+            <bp:xref rdf:resource="#UnificationXref807788"/>
+            <bp:xref rdf:resource="#UnificationXref807787"/>
+            <bp:xref rdf:resource="#UnificationXref807786"/>
+            <bp:xref rdf:resource="#UnificationXref807785"/>
+            <bp:structure>
+              <bp:ChemicalStructure rdf:ID="ChemicalStructure807791">
+                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CML</bp:structureFormat>
+                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string"> &lt;cml&gt;
+  &lt;molecule id=&quot;PYRUVATE&quot; title=&quot;pyruvate&quot; dictRef=&quot;dictPYRUVATE&quot;&gt;
+   &lt;atomArray&gt;
+    &lt;atom id=&quot;PYRUVATE-atom1&quot; elementType=&quot;C&quot; x2=&quot;0.36301&quot; y2=&quot;-0.2363&quot;/&gt;
+    &lt;atom id=&quot;PYRUVATE-atom2&quot; elementType=&quot;C&quot; x2=&quot;-1.0&quot; y2=&quot;-0.2774&quot;/&gt;
+    &lt;atom id=&quot;PYRUVATE-atom3&quot; elementType=&quot;O&quot; x2=&quot;-0.34247&quot; y2=&quot;0.87329&quot;/&gt;
+    &lt;atom id=&quot;PYRUVATE-atom4&quot; elementType=&quot;C&quot; x2=&quot;-0.34247&quot; y2=&quot;0.10959&quot;/&gt;
+    &lt;atom id=&quot;PYRUVATE-atom5&quot; elementType=&quot;O&quot; x2=&quot;0.36301&quot; y2=&quot;-1.0&quot;/&gt;
+    &lt;atom id=&quot;PYRUVATE-atom6&quot; elementType=&quot;O&quot; x2=&quot;0.99658&quot; y2=&quot;0.18836&quot;/&gt;
+   &lt;/atomArray&gt;
+   &lt;bondArray&gt;
+    &lt;bond id=&quot;PYRUVATE-bond1&quot; atomRefs=&quot;PYRUVATE-atom6 PYRUVATE-atom1&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;PYRUVATE-bond2&quot; atomRefs=&quot;PYRUVATE-atom5 PYRUVATE-atom1&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;PYRUVATE-bond3&quot; atomRefs=&quot;PYRUVATE-atom4 PYRUVATE-atom1&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;PYRUVATE-bond4&quot; atomRefs=&quot;PYRUVATE-atom3 PYRUVATE-atom4&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;PYRUVATE-bond5&quot; atomRefs=&quot;PYRUVATE-atom2 PYRUVATE-atom4&quot; order=&quot;1&quot;/&gt;
+   &lt;/bondArray&gt;
+   &lt;formula concise=&quot;C 3 H 4 O 3&quot; formalCharge=&quot;0&quot;/&gt;
+   &lt;float title=&quot;molecularWeight&quot; units=&quot;g/mol&quot;&gt;88.063&lt;/float&gt;
+   &lt;string title=&quot;smiles&quot;&gt;C(C(C)=O)(=O)O&lt;/string&gt;
+  &lt;/molecule&gt;
+ &lt;/cml&gt;
+</bp:structureData>
+              </bp:ChemicalStructure>
+            </bp:structure>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pyruvate</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Pyruvic acid</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2-Oxopropanoate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2-Oxopropanoic acid</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Pyroracemic acid</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2-oxo-propionic acid</bp:name>
+            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">88.063</bp:molecularWeight>
+          </bp:SmallMoleculeReference>
+        </bp:entityReference>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary807718"/>
+      </bp:SmallMolecule>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry807780">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:SmallMolecule rdf:ID="SmallMolecule807779">
+        <bp:xref rdf:resource="#UnificationXref807777"/>
+        <bp:xref rdf:resource="#UnificationXref807776"/>
+        <bp:xref rdf:resource="#UnificationXref807775"/>
+        <bp:xref rdf:resource="#UnificationXref807774"/>
+        <bp:xref rdf:resource="#UnificationXref807773"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CO&lt;SUB&gt;2&lt;/SUB&gt;</bp:standardName>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">carbonic anhydride</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">carbonic acid gas</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">carbon dioxide</bp:name>
+        <bp:entityReference>
+          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference807772">
+            <bp:xref rdf:resource="#UnificationXref807777"/>
+            <bp:xref rdf:resource="#UnificationXref807776"/>
+            <bp:xref rdf:resource="#UnificationXref807775"/>
+            <bp:xref rdf:resource="#UnificationXref807774"/>
+            <bp:xref rdf:resource="#UnificationXref807773"/>
+            <bp:structure>
+              <bp:ChemicalStructure rdf:ID="ChemicalStructure807778">
+                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CML</bp:structureFormat>
+                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string"> &lt;cml&gt;
+  &lt;molecule id=&quot;CARBON-DIOXIDE&quot; title=&quot;CO2&quot; dictRef=&quot;dictCARBON-DIOXIDE&quot;&gt;
+   &lt;atomArray&gt;
+    &lt;atom id=&quot;CARBON-DIOXIDE-atom1&quot; elementType=&quot;C&quot; x2=&quot;-0.0013209581&quot; y2=&quot;-1.0&quot;/&gt;
+    &lt;atom id=&quot;CARBON-DIOXIDE-atom2&quot; elementType=&quot;O&quot; x2=&quot;-1.0&quot; y2=&quot;-1.0&quot;/&gt;
+    &lt;atom id=&quot;CARBON-DIOXIDE-atom3&quot; elementType=&quot;O&quot; x2=&quot;0.9973581&quot; y2=&quot;-0.99735796&quot;/&gt;
+   &lt;/atomArray&gt;
+   &lt;bondArray&gt;
+    &lt;bond id=&quot;CARBON-DIOXIDE-bond1&quot; atomRefs=&quot;CARBON-DIOXIDE-atom3 CARBON-DIOXIDE-atom1&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;CARBON-DIOXIDE-bond2&quot; atomRefs=&quot;CARBON-DIOXIDE-atom2 CARBON-DIOXIDE-atom1&quot; order=&quot;2&quot;/&gt;
+   &lt;/bondArray&gt;
+   &lt;formula concise=&quot;C 1 O 2&quot; formalCharge=&quot;0&quot;/&gt;
+   &lt;float title=&quot;molecularWeight&quot; units=&quot;g/mol&quot;&gt;44.01&lt;/float&gt;
+   &lt;string title=&quot;smiles&quot;&gt;C(=O)=O&lt;/string&gt;
+  &lt;/molecule&gt;
+ &lt;/cml&gt;
+</bp:structureData>
+              </bp:ChemicalStructure>
+            </bp:structure>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CO&lt;SUB&gt;2&lt;/SUB&gt;</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">carbonic anhydride</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">carbonic acid gas</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">carbon dioxide</bp:name>
+            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">44.01</bp:molecularWeight>
+          </bp:SmallMoleculeReference>
+        </bp:entityReference>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary807718"/>
+      </bp:SmallMolecule>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry807771">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:SmallMolecule rdf:ID="SmallMolecule807770">
+        <bp:xref rdf:resource="#UnificationXref807768"/>
+        <bp:xref rdf:resource="#UnificationXref807767"/>
+        <bp:xref rdf:resource="#UnificationXref807766"/>
+        <bp:xref rdf:resource="#UnificationXref807765"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2-aceto-lactate</bp:standardName>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(S)-2-hydroxy-2-methyl-3-oxobutanoate</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">&amp;alpha;-acetolactate</bp:name>
+        <bp:entityReference>
+          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference807764">
+            <bp:xref rdf:resource="#UnificationXref807768"/>
+            <bp:xref rdf:resource="#UnificationXref807767"/>
+            <bp:xref rdf:resource="#UnificationXref807766"/>
+            <bp:xref rdf:resource="#UnificationXref807765"/>
+            <bp:structure>
+              <bp:ChemicalStructure rdf:ID="ChemicalStructure807769">
+                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CML</bp:structureFormat>
+                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string"> &lt;cml&gt;
+  &lt;molecule id=&quot;2-ACETO-LACTATE&quot; title=&quot;2-aceto-lactate&quot; dictRef=&quot;dict2-ACETO-LACTATE&quot;&gt;
+   &lt;atomArray&gt;
+    &lt;atom id=&quot;2-ACETO-LACTATE-atom1&quot; elementType=&quot;C&quot; x2=&quot;-0.51443&quot; y2=&quot;-0.44312&quot;/&gt;
+    &lt;atom id=&quot;2-ACETO-LACTATE-atom2&quot; elementType=&quot;O&quot; x2=&quot;-0.51443&quot; y2=&quot;-1.0&quot;/&gt;
+    &lt;atom id=&quot;2-ACETO-LACTATE-atom3&quot; elementType=&quot;C&quot; x2=&quot;-0.0017&quot; y2=&quot;-0.71138&quot;/&gt;
+    &lt;atom id=&quot;2-ACETO-LACTATE-atom4&quot; elementType=&quot;C&quot; x2=&quot;0.51104&quot; y2=&quot;-0.44312&quot;/&gt;
+    &lt;atom id=&quot;2-ACETO-LACTATE-atom5&quot; elementType=&quot;O&quot; x2=&quot;-0.0017&quot; y2=&quot;0.40238&quot;/&gt;
+    &lt;atom id=&quot;2-ACETO-LACTATE-atom6&quot; elementType=&quot;C&quot; x2=&quot;-1.0&quot; y2=&quot;-0.16808&quot;/&gt;
+    &lt;atom id=&quot;2-ACETO-LACTATE-atom7&quot; elementType=&quot;O&quot; x2=&quot;0.9966&quot; y2=&quot;-0.17148&quot;/&gt;
+    &lt;atom id=&quot;2-ACETO-LACTATE-atom8&quot; elementType=&quot;C&quot; x2=&quot;-0.0017&quot; y2=&quot;-0.1545&quot;/&gt;
+    &lt;atom id=&quot;2-ACETO-LACTATE-atom9&quot; elementType=&quot;O&quot; x2=&quot;0.51104&quot; y2=&quot;-1.0&quot;/&gt;
+   &lt;/atomArray&gt;
+   &lt;bondArray&gt;
+    &lt;bond id=&quot;2-ACETO-LACTATE-bond1&quot; atomRefs=&quot;2-ACETO-LACTATE-atom9 2-ACETO-LACTATE-atom4&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;2-ACETO-LACTATE-bond2&quot; atomRefs=&quot;2-ACETO-LACTATE-atom7 2-ACETO-LACTATE-atom4&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;2-ACETO-LACTATE-bond3&quot; atomRefs=&quot;2-ACETO-LACTATE-atom6 2-ACETO-LACTATE-atom1&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;2-ACETO-LACTATE-bond4&quot; atomRefs=&quot;2-ACETO-LACTATE-atom5 2-ACETO-LACTATE-atom8&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;2-ACETO-LACTATE-bond5&quot; atomRefs=&quot;2-ACETO-LACTATE-atom4 2-ACETO-LACTATE-atom8&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;2-ACETO-LACTATE-bond6&quot; atomRefs=&quot;2-ACETO-LACTATE-atom3 2-ACETO-LACTATE-atom8&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;2-ACETO-LACTATE-bond7&quot; atomRefs=&quot;2-ACETO-LACTATE-atom2 2-ACETO-LACTATE-atom1&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;2-ACETO-LACTATE-bond8&quot; atomRefs=&quot;2-ACETO-LACTATE-atom1 2-ACETO-LACTATE-atom8&quot; order=&quot;1&quot;/&gt;
+   &lt;/bondArray&gt;
+   &lt;formula concise=&quot;C 5 H 8 O 4&quot; formalCharge=&quot;0&quot;/&gt;
+   &lt;float title=&quot;molecularWeight&quot; units=&quot;g/mol&quot;&gt;132.116&lt;/float&gt;
+   &lt;string title=&quot;smiles&quot;&gt;C(C(C)(C(O)=O)O)(=O)C&lt;/string&gt;
+  &lt;/molecule&gt;
+ &lt;/cml&gt;
+</bp:structureData>
+              </bp:ChemicalStructure>
+            </bp:structure>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2-aceto-lactate</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(S)-2-hydroxy-2-methyl-3-oxobutanoate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">&amp;alpha;-acetolactate</bp:name>
+            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">132.116</bp:molecularWeight>
+          </bp:SmallMoleculeReference>
+        </bp:entityReference>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary807718"/>
+      </bp:SmallMolecule>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry807760">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">2</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:Protein rdf:ID="Protein807759">
+        <bp:xref rdf:resource="#UnificationXref807756"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2,3-butanediol dehydrogenase</bp:standardName>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(2R,3R)-2,3-butanediol dehydrogenase</bp:name>
+        <bp:entityReference>
+          <bp:ProteinReference rdf:ID="ProteinReference807755">
+            <bp:organism rdf:resource="#BioSource807757"/>
+            <bp:sequence rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MRALAYFKKGDIHFTNDIPRPEIQTDDEVIIDVSWCGICGSDLHEYLDGPIFMPKDGECHKLSNAALPLAMGHEMSGIVSKVGPKVTKVKVGDHVVVDAASSCADLHCWPHSKFYNSKPCDACQRGSENLCTHAGFVGLGVISGGFAEQVVVSQHHIIPVPKEIPLDVAALVEPLSVTWHAVKISGFKKGSSALVLGAGPIGLCTILVLKGMGASKIVVSEIAERRIEMAKKLGVEVFNPSKHGHKSIEILRGLTKSHDGFDYSYDCSGIQVTFETSLKALTFKGTATNIAVWGPKPVPFQPMDVTLQEKVMTGSIGYVVEDFEEVVRAIHNGDIAMEDCKQLITGKQRIEDGWEKGFQELMDHKESNVKILLTPNNHGEMK</bp:sequence>
+            <bp:xref rdf:resource="#UnificationXref807756"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2,3-butanediol dehydrogenase</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(2R,3R)-2,3-butanediol dehydrogenase</bp:name>
+          </bp:ProteinReference>
+        </bp:entityReference>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+      </bp:Protein>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry807750">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:SmallMolecule rdf:ID="SmallMolecule807749">
+        <bp:xref rdf:resource="#UnificationXref807747"/>
+        <bp:xref rdf:resource="#UnificationXref807728"/>
+        <bp:xref rdf:resource="#UnificationXref807746"/>
+        <bp:xref rdf:resource="#UnificationXref807745"/>
+        <bp:xref rdf:resource="#UnificationXref807744"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NAD</bp:standardName>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NAD</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">&amp;beta;-nicotinamide adenine dinucleotide</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">beta-nicotinamide adenine dinucleotide</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">coenzyme I</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">diphosphopyridine nucleotide</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">diphosphopyridine nucleotide oxidized</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nicotinamide adenine dinucleotide</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nicotinamide adenine dinucleotide oxidized</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NAD-oxidized</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NAD-ox</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NAD+</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DPN+</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DPN-ox</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DPN</bp:name>
+        <bp:entityReference>
+          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference807743">
+            <bp:xref rdf:resource="#UnificationXref807747"/>
+            <bp:xref rdf:resource="#UnificationXref807728"/>
+            <bp:xref rdf:resource="#UnificationXref807746"/>
+            <bp:xref rdf:resource="#UnificationXref807745"/>
+            <bp:xref rdf:resource="#UnificationXref807744"/>
+            <bp:structure>
+              <bp:ChemicalStructure rdf:ID="ChemicalStructure807748">
+                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CML</bp:structureFormat>
+                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string"> &lt;cml&gt;
+  &lt;molecule id=&quot;NAD&quot; title=&quot;NAD&quot; dictRef=&quot;dictNAD&quot;&gt;
+   &lt;atomArray&gt;
+    &lt;atom id=&quot;NAD-atom1&quot; elementType=&quot;H&quot; x2=&quot;-0.5885714&quot; y2=&quot;-0.64&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom2&quot; elementType=&quot;C&quot; x2=&quot;-0.5857143&quot; y2=&quot;-0.31428573&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom3&quot; elementType=&quot;H&quot; x2=&quot;0.45714286&quot; y2=&quot;-0.8542857&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom4&quot; elementType=&quot;C&quot; x2=&quot;0.9657143&quot; y2=&quot;-0.40571427&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom5&quot; elementType=&quot;C&quot; x2=&quot;-0.67142856&quot; y2=&quot;-0.6342857&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom6&quot; elementType=&quot;C&quot; x2=&quot;0.55714285&quot; y2=&quot;-0.56857145&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom7&quot; elementType=&quot;H&quot; x2=&quot;-0.40285715&quot; y2=&quot;-0.57714283&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom8&quot; elementType=&quot;N&quot; x2=&quot;-1.0&quot; y2=&quot;-0.26&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom9&quot; elementType=&quot;C&quot; x2=&quot;0.68285716&quot; y2=&quot;-0.8057143&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom10&quot; elementType=&quot;C&quot; x2=&quot;-0.35428572&quot; y2=&quot;-0.73142856&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom11&quot; elementType=&quot;C&quot; x2=&quot;0.37714285&quot; y2=&quot;-0.8057143&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom12&quot; elementType=&quot;C&quot; x2=&quot;0.45714286&quot; y2=&quot;-0.9257143&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom13&quot; elementType=&quot;C&quot; x2=&quot;-0.5885714&quot; y2=&quot;-0.71428573&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom14&quot; elementType=&quot;C&quot; x2=&quot;-1.0&quot; y2=&quot;-0.3857143&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom15&quot; elementType=&quot;O&quot; x2=&quot;0.108571425&quot; y2=&quot;-0.8371429&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom16&quot; elementType=&quot;O&quot; x2=&quot;0.24571429&quot; y2=&quot;-0.7171429&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom17&quot; elementType=&quot;C&quot; x2=&quot;-0.48&quot; y2=&quot;-0.71428573&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom18&quot; elementType=&quot;O&quot; x2=&quot;-0.48&quot; y2=&quot;-0.78571427&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom19&quot; elementType=&quot;C&quot; x2=&quot;0.55714285&quot; y2=&quot;-0.41714287&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom20&quot; elementType=&quot;N&quot; x2=&quot;0.68285716&quot; y2=&quot;-0.64&quot; formalCharge=&quot;1&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom21&quot; elementType=&quot;H&quot; x2=&quot;0.37714285&quot; y2=&quot;-0.88&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom22&quot; elementType=&quot;O&quot; x2=&quot;-0.017142856&quot; y2=&quot;-0.7171429&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom23&quot; elementType=&quot;C&quot; x2=&quot;0.8142857&quot; y2=&quot;-0.42285714&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom24&quot; elementType=&quot;O&quot; x2=&quot;-0.54571426&quot; y2=&quot;-0.5714286&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom25&quot; elementType=&quot;O&quot; x2=&quot;0.9657143&quot; y2=&quot;-0.2857143&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom26&quot; elementType=&quot;C&quot; x2=&quot;-0.8914286&quot; y2=&quot;-0.19714285&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom27&quot; elementType=&quot;H&quot; x2=&quot;-0.48&quot; y2=&quot;-0.64&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom28&quot; elementType=&quot;C&quot; x2=&quot;0.6142857&quot; y2=&quot;-0.9257143&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom29&quot; elementType=&quot;N&quot; x2=&quot;-0.67142856&quot; y2=&quot;-0.20285714&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom30&quot; elementType=&quot;C&quot; x2=&quot;-0.78&quot; y2=&quot;-0.26&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom31&quot; elementType=&quot;O&quot; x2=&quot;-0.25714287&quot; y2=&quot;-0.7171429&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom32&quot; elementType=&quot;O&quot; x2=&quot;0.6142857&quot; y2=&quot;-1.0&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom33&quot; elementType=&quot;C&quot; x2=&quot;0.8142857&quot; y2=&quot;-0.56857145&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom34&quot; elementType=&quot;C&quot; x2=&quot;0.37714285&quot; y2=&quot;-0.7171429&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom35&quot; elementType=&quot;P&quot; x2=&quot;0.108571425&quot; y2=&quot;-0.7171429&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom36&quot; elementType=&quot;C&quot; x2=&quot;-0.40285715&quot; y2=&quot;-0.6514286&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom37&quot; elementType=&quot;O&quot; x2=&quot;0.108571425&quot; y2=&quot;-0.5971429&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom38&quot; elementType=&quot;N&quot; x2=&quot;-0.8914286&quot; y2=&quot;-0.07714286&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom39&quot; elementType=&quot;C&quot; x2=&quot;-0.78&quot; y2=&quot;-0.3857143&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom40&quot; elementType=&quot;N&quot; x2=&quot;-0.67142856&quot; y2=&quot;-0.41142857&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom41&quot; elementType=&quot;O&quot; x2=&quot;-0.15428571&quot; y2=&quot;-0.8371429&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom42&quot; elementType=&quot;O&quot; x2=&quot;-0.5885714&quot; y2=&quot;-0.78571427&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom43&quot; elementType=&quot;O&quot; x2=&quot;0.45714286&quot; y2=&quot;-1.0&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom44&quot; elementType=&quot;P&quot; x2=&quot;-0.15428571&quot; y2=&quot;-0.7171429&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom45&quot; elementType=&quot;N&quot; x2=&quot;-0.8914286&quot; y2=&quot;-0.4485714&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom46&quot; elementType=&quot;O&quot; x2=&quot;-0.15428571&quot; y2=&quot;-0.5971429&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom47&quot; elementType=&quot;H&quot; x2=&quot;0.68285716&quot; y2=&quot;-0.88&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom48&quot; elementType=&quot;H&quot; x2=&quot;0.6142857&quot; y2=&quot;-0.8542857&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom49&quot; elementType=&quot;N&quot; x2=&quot;0.99714285&quot; y2=&quot;-0.52&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom50&quot; elementType=&quot;H&quot; x2=&quot;-0.6628571&quot; y2=&quot;-0.7057143&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom51&quot; elementType=&quot;O&quot; x2=&quot;0.5314286&quot; y2=&quot;-0.75142854&quot;/&gt;
+    &lt;atom id=&quot;NAD-atom52&quot; elementType=&quot;C&quot; x2=&quot;0.69142854&quot; y2=&quot;-0.34571427&quot;/&gt;
+   &lt;/atomArray&gt;
+   &lt;bondArray&gt;
+    &lt;bond id=&quot;NAD-bond1&quot; atomRefs=&quot;NAD-atom52 NAD-atom23&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond2&quot; atomRefs=&quot;NAD-atom51 NAD-atom11&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond3&quot; atomRefs=&quot;NAD-atom50 NAD-atom5&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond4&quot; atomRefs=&quot;NAD-atom49 NAD-atom4&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond5&quot; atomRefs=&quot;NAD-atom48 NAD-atom28&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond6&quot; atomRefs=&quot;NAD-atom47 NAD-atom9&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond7&quot; atomRefs=&quot;NAD-atom46 NAD-atom44&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond8&quot; atomRefs=&quot;NAD-atom45 NAD-atom39&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond9&quot; atomRefs=&quot;NAD-atom44 NAD-atom31&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond10&quot; atomRefs=&quot;NAD-atom43 NAD-atom12&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond11&quot; atomRefs=&quot;NAD-atom42 NAD-atom13&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond12&quot; atomRefs=&quot;NAD-atom41 NAD-atom44&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond13&quot; atomRefs=&quot;NAD-atom40 NAD-atom39&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond14&quot; atomRefs=&quot;NAD-atom39 NAD-atom30&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond15&quot; atomRefs=&quot;NAD-atom38 NAD-atom26&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond16&quot; atomRefs=&quot;NAD-atom37 NAD-atom35&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond17&quot; atomRefs=&quot;NAD-atom36 NAD-atom24&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond18&quot; atomRefs=&quot;NAD-atom36 NAD-atom17&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond19&quot; atomRefs=&quot;NAD-atom35 NAD-atom22&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond20&quot; atomRefs=&quot;NAD-atom34 NAD-atom16&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond21&quot; atomRefs=&quot;NAD-atom33 NAD-atom20&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond22&quot; atomRefs=&quot;NAD-atom32 NAD-atom28&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond23&quot; atomRefs=&quot;NAD-atom31 NAD-atom10&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond24&quot; atomRefs=&quot;NAD-atom30 NAD-atom26&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond25&quot; atomRefs=&quot;NAD-atom30 NAD-atom29&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond26&quot; atomRefs=&quot;NAD-atom29 NAD-atom2&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond27&quot; atomRefs=&quot;NAD-atom28 NAD-atom12&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond28&quot; atomRefs=&quot;NAD-atom27 NAD-atom17&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond29&quot; atomRefs=&quot;NAD-atom26 NAD-atom8&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond30&quot; atomRefs=&quot;NAD-atom25 NAD-atom4&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond31&quot; atomRefs=&quot;NAD-atom24 NAD-atom5&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond32&quot; atomRefs=&quot;NAD-atom23 NAD-atom33&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond33&quot; atomRefs=&quot;NAD-atom22 NAD-atom44&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond34&quot; atomRefs=&quot;NAD-atom21 NAD-atom11&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond35&quot; atomRefs=&quot;NAD-atom20 NAD-atom6&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond36&quot; atomRefs=&quot;NAD-atom20 NAD-atom9&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond37&quot; atomRefs=&quot;NAD-atom19 NAD-atom52&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond38&quot; atomRefs=&quot;NAD-atom18 NAD-atom17&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond39&quot; atomRefs=&quot;NAD-atom17 NAD-atom13&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond40&quot; atomRefs=&quot;NAD-atom16 NAD-atom35&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond41&quot; atomRefs=&quot;NAD-atom15 NAD-atom35&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond42&quot; atomRefs=&quot;NAD-atom14 NAD-atom45&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond43&quot; atomRefs=&quot;NAD-atom11 NAD-atom34&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond44&quot; atomRefs=&quot;NAD-atom11 NAD-atom12&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond45&quot; atomRefs=&quot;NAD-atom10 NAD-atom36&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond46&quot; atomRefs=&quot;NAD-atom9 NAD-atom51&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond47&quot; atomRefs=&quot;NAD-atom9 NAD-atom28&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond48&quot; atomRefs=&quot;NAD-atom8 NAD-atom14&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond49&quot; atomRefs=&quot;NAD-atom7 NAD-atom36&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond50&quot; atomRefs=&quot;NAD-atom6 NAD-atom19&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond51&quot; atomRefs=&quot;NAD-atom5 NAD-atom40&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond52&quot; atomRefs=&quot;NAD-atom5 NAD-atom13&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond53&quot; atomRefs=&quot;NAD-atom4 NAD-atom23&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond54&quot; atomRefs=&quot;NAD-atom3 NAD-atom12&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond55&quot; atomRefs=&quot;NAD-atom2 NAD-atom40&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NAD-bond56&quot; atomRefs=&quot;NAD-atom1 NAD-atom13&quot; order=&quot;1&quot;/&gt;
+   &lt;/bondArray&gt;
+   &lt;formula concise=&quot;C 21 H 28 N 7 O 14 P 2&quot; formalCharge=&quot;0&quot;/&gt;
+   &lt;float title=&quot;molecularWeight&quot; units=&quot;g/mol&quot;&gt;664.438&lt;/float&gt;
+   &lt;string title=&quot;smiles&quot;&gt;[H]C5(C(n2(cnc1(c(ncnc12)N)))(OC([H])(COP(OP(O)(OCC3(C([H])(C(C(O3)([n+]4(cccc(C(=O)N)c4))[H])(O)[H])O)([H]))=O)(O)=O)C5(O)[H])[H])O&lt;/string&gt;
+  &lt;/molecule&gt;
+ &lt;/cml&gt;
+</bp:structureData>
+              </bp:ChemicalStructure>
+            </bp:structure>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NAD</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NAD</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">&amp;beta;-nicotinamide adenine dinucleotide</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">beta-nicotinamide adenine dinucleotide</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">coenzyme I</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">diphosphopyridine nucleotide</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">diphosphopyridine nucleotide oxidized</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nicotinamide adenine dinucleotide</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nicotinamide adenine dinucleotide oxidized</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NAD-oxidized</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NAD-ox</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NAD+</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DPN+</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DPN-ox</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DPN</bp:name>
+            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">664.438</bp:molecularWeight>
+            <bp:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NIL
+
+Nicotinamide adenine dinucleotide (NAD) and its phosphorylated derivative, nicotinamide adenine dinucleotide
+phosphate (NADP) are two of the most important coenzymes in redox reactions in the cell.
+Generally, NAD is involved in catabolic reactions, while NADP is involved in anabolic reactions.
+Because of the positive charge on the nitrogen atom in the nicotinamide ring, the oxidized forms of these
+compounds are often depicted as NAD&lt;sup&gt;+&lt;/sup&gt; and NADP&lt;sup&gt;+&lt;/sup&gt;, respectively.</bp:comment>
+          </bp:SmallMoleculeReference>
+        </bp:entityReference>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+        <bp:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NIL
+
+Nicotinamide adenine dinucleotide (NAD) and its phosphorylated derivative, nicotinamide adenine dinucleotide
+phosphate (NADP) are two of the most important coenzymes in redox reactions in the cell.
+Generally, NAD is involved in catabolic reactions, while NADP is involved in anabolic reactions.
+Because of the positive charge on the nitrogen atom in the nicotinamide ring, the oxidized forms of these
+compounds are often depicted as NAD&lt;sup&gt;+&lt;/sup&gt; and NADP&lt;sup&gt;+&lt;/sup&gt;, respectively.</bp:comment>
+        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary807718"/>
+      </bp:SmallMolecule>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry807742">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:SmallMolecule rdf:ID="SmallMolecule807741">
+        <bp:xref rdf:resource="#UnificationXref807739"/>
+        <bp:xref rdf:resource="#UnificationXref807738"/>
+        <bp:xref rdf:resource="#UnificationXref807737"/>
+        <bp:xref rdf:resource="#UnificationXref807736"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">acetoin</bp:standardName>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(R)-acetoin</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">acetylmethylcarbinol</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3-hydroxy-2-butanone</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(R)-2-acetoin</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(R)-3-hydroxy-2-butanone</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(R)-dimethylketol</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(R)-3-hydroxybutan-2-one</bp:name>
+        <bp:entityReference>
+          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference807735">
+            <bp:xref rdf:resource="#UnificationXref807739"/>
+            <bp:xref rdf:resource="#UnificationXref807738"/>
+            <bp:xref rdf:resource="#UnificationXref807737"/>
+            <bp:xref rdf:resource="#UnificationXref807736"/>
+            <bp:structure>
+              <bp:ChemicalStructure rdf:ID="ChemicalStructure807740">
+                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CML</bp:structureFormat>
+                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string"> &lt;cml&gt;
+  &lt;molecule id=&quot;ACETOIN&quot; title=&quot;acetoin&quot; dictRef=&quot;dictACETOIN&quot;&gt;
+   &lt;atomArray&gt;
+    &lt;atom id=&quot;ACETOIN-atom1&quot; elementType=&quot;C&quot; x2=&quot;0.4214&quot; y2=&quot;-0.17726&quot;/&gt;
+    &lt;atom id=&quot;ACETOIN-atom2&quot; elementType=&quot;C&quot; x2=&quot;-0.99666&quot; y2=&quot;0.64214&quot;/&gt;
+    &lt;atom id=&quot;ACETOIN-atom3&quot; elementType=&quot;O&quot; x2=&quot;-1.0&quot; y2=&quot;-0.99331&quot;/&gt;
+    &lt;atom id=&quot;ACETOIN-atom4&quot; elementType=&quot;O&quot; x2=&quot;0.99666&quot; y2=&quot;0.57191&quot;/&gt;
+    &lt;atom id=&quot;ACETOIN-atom5&quot; elementType=&quot;C&quot; x2=&quot;-0.52508&quot; y2=&quot;-0.17726&quot;/&gt;
+    &lt;atom id=&quot;ACETOIN-atom6&quot; elementType=&quot;C&quot; x2=&quot;0.8796&quot; y2=&quot;-1.0&quot;/&gt;
+   &lt;/atomArray&gt;
+   &lt;bondArray&gt;
+    &lt;bond id=&quot;ACETOIN-bond1&quot; atomRefs=&quot;ACETOIN-atom6 ACETOIN-atom1&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ACETOIN-bond2&quot; atomRefs=&quot;ACETOIN-atom5 ACETOIN-atom1&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ACETOIN-bond3&quot; atomRefs=&quot;ACETOIN-atom4 ACETOIN-atom1&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;ACETOIN-bond4&quot; atomRefs=&quot;ACETOIN-atom3 ACETOIN-atom5&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;ACETOIN-bond5&quot; atomRefs=&quot;ACETOIN-atom2 ACETOIN-atom5&quot; order=&quot;1&quot;/&gt;
+   &lt;/bondArray&gt;
+   &lt;formula concise=&quot;C 4 H 8 O 2&quot; formalCharge=&quot;0&quot;/&gt;
+   &lt;float title=&quot;molecularWeight&quot; units=&quot;g/mol&quot;&gt;88.106&lt;/float&gt;
+   &lt;string title=&quot;smiles&quot;&gt;C(=O)(C(C)O)C&lt;/string&gt;
+  &lt;/molecule&gt;
+ &lt;/cml&gt;
+</bp:structureData>
+              </bp:ChemicalStructure>
+            </bp:structure>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">acetoin</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(R)-acetoin</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">acetylmethylcarbinol</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3-hydroxy-2-butanone</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(R)-2-acetoin</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(R)-3-hydroxy-2-butanone</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(R)-dimethylketol</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(R)-3-hydroxybutan-2-one</bp:name>
+            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">88.106</bp:molecularWeight>
+            <bp:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Acetoin, along with diacetyl, is one of the compounds that gives butter its characteristic taste.
+It is natuarally found in apples, butter, yogurt, asparagus, black currants, blackberry, wheat, broccoli,
+brussels sprouts, and cantaloupe.
+Many bacteria can grow on acetoin, some of which degrade it to acetaldehyde and acetyl-CoA
+|CITS: [8110297]|.</bp:comment>
+          </bp:SmallMoleculeReference>
+        </bp:entityReference>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+        <bp:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Acetoin, along with diacetyl, is one of the compounds that gives butter its characteristic taste.
+It is natuarally found in apples, butter, yogurt, asparagus, black currants, blackberry, wheat, broccoli,
+brussels sprouts, and cantaloupe.
+Many bacteria can grow on acetoin, some of which degrade it to acetaldehyde and acetyl-CoA
+|CITS: [8110297]|.</bp:comment>
+        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary807718"/>
+      </bp:SmallMolecule>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry807734">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:SmallMolecule rdf:ID="SmallMolecule807733">
+        <bp:xref rdf:resource="#UnificationXref807731"/>
+        <bp:xref rdf:resource="#UnificationXref807730"/>
+        <bp:xref rdf:resource="#UnificationXref807729"/>
+        <bp:xref rdf:resource="#UnificationXref807728"/>
+        <bp:xref rdf:resource="#UnificationXref807727"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADH</bp:standardName>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADH&lt;sub&gt;2&lt;/sub&gt;</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADH2</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dihydrodiphosphopyridine nucleotide</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">diphosphopyridine nucleotide reduced</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dihydronicotinamide adenine dinucleotide</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nicotinamide adenine dinucleotide reduced</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NAD-reduced</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADH+H+</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DPNH</bp:name>
+        <bp:entityReference>
+          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference807726">
+            <bp:xref rdf:resource="#UnificationXref807731"/>
+            <bp:xref rdf:resource="#UnificationXref807730"/>
+            <bp:xref rdf:resource="#UnificationXref807729"/>
+            <bp:xref rdf:resource="#UnificationXref807728"/>
+            <bp:xref rdf:resource="#UnificationXref807727"/>
+            <bp:structure>
+              <bp:ChemicalStructure rdf:ID="ChemicalStructure807732">
+                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CML</bp:structureFormat>
+                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string"> &lt;cml&gt;
+  &lt;molecule id=&quot;NADH&quot; title=&quot;NADH&quot; dictRef=&quot;dictNADH&quot;&gt;
+   &lt;atomArray&gt;
+    &lt;atom id=&quot;NADH-atom1&quot; elementType=&quot;C&quot; x2=&quot;0.34285715&quot; y2=&quot;-0.7542857&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom2&quot; elementType=&quot;C&quot; x2=&quot;0.92&quot; y2=&quot;-0.45142856&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom3&quot; elementType=&quot;H&quot; x2=&quot;0.37142858&quot; y2=&quot;-0.89428574&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom4&quot; elementType=&quot;O&quot; x2=&quot;0.08285714&quot; y2=&quot;-0.64&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom5&quot; elementType=&quot;O&quot; x2=&quot;0.08285714&quot; y2=&quot;-0.8657143&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom6&quot; elementType=&quot;C&quot; x2=&quot;0.42857143&quot; y2=&quot;-0.93142855&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom7&quot; elementType=&quot;C&quot; x2=&quot;-0.5914286&quot; y2=&quot;-0.36&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom8&quot; elementType=&quot;C&quot; x2=&quot;-0.78571427&quot; y2=&quot;-0.4342857&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom9&quot; elementType=&quot;H&quot; x2=&quot;-0.48857144&quot; y2=&quot;-0.70285714&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom10&quot; elementType=&quot;H&quot; x2=&quot;0.7&quot; y2=&quot;-0.34285715&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom11&quot; elementType=&quot;O&quot; x2=&quot;0.42857143&quot; y2=&quot;-1.0&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom12&quot; elementType=&quot;C&quot; x2=&quot;0.52&quot; y2=&quot;-0.46285716&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom13&quot; elementType=&quot;C&quot; x2=&quot;-1.0&quot; y2=&quot;-0.4342857&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom14&quot; elementType=&quot;H&quot; x2=&quot;0.42857143&quot; y2=&quot;-0.86285716&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom15&quot; elementType=&quot;H&quot; x2=&quot;-0.68&quot; y2=&quot;-0.7542857&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom16&quot; elementType=&quot;H&quot; x2=&quot;0.6028572&quot; y2=&quot;-0.34571427&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom17&quot; elementType=&quot;C&quot; x2=&quot;-0.42285714&quot; y2=&quot;-0.68285716&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom18&quot; elementType=&quot;C&quot; x2=&quot;0.7714286&quot; y2=&quot;-0.45142856&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom19&quot; elementType=&quot;H&quot; x2=&quot;0.6457143&quot; y2=&quot;-0.89428574&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom20&quot; elementType=&quot;O&quot; x2=&quot;-0.5542857&quot; y2=&quot;-0.61142856&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom21&quot; elementType=&quot;C&quot; x2=&quot;0.6457143&quot; y2=&quot;-0.82857144&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom22&quot; elementType=&quot;O&quot; x2=&quot;-0.48857144&quot; y2=&quot;-0.8428571&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom23&quot; elementType=&quot;C&quot; x2=&quot;0.37142858&quot; y2=&quot;-0.82857144&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom24&quot; elementType=&quot;C&quot; x2=&quot;0.52&quot; y2=&quot;-0.6085714&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom25&quot; elementType=&quot;C&quot; x2=&quot;-0.48857144&quot; y2=&quot;-0.77428573&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom26&quot; elementType=&quot;C&quot; x2=&quot;-0.61714286&quot; y2=&quot;-0.77428573&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom27&quot; elementType=&quot;O&quot; x2=&quot;0.5&quot; y2=&quot;-0.7457143&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom28&quot; elementType=&quot;N&quot; x2=&quot;-0.8971428&quot; y2=&quot;-0.13142857&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom29&quot; elementType=&quot;O&quot; x2=&quot;0.21428572&quot; y2=&quot;-0.7542857&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom30&quot; elementType=&quot;O&quot; x2=&quot;-0.17714286&quot; y2=&quot;-0.64&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom31&quot; elementType=&quot;N&quot; x2=&quot;-1.0&quot; y2=&quot;-0.31142858&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom32&quot; elementType=&quot;N&quot; x2=&quot;-0.68&quot; y2=&quot;-0.48285714&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom33&quot; elementType=&quot;N&quot; x2=&quot;0.9942857&quot; y2=&quot;-0.5342857&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom34&quot; elementType=&quot;C&quot; x2=&quot;0.7714286&quot; y2=&quot;-0.6085714&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom35&quot; elementType=&quot;C&quot; x2=&quot;-0.78571427&quot; y2=&quot;-0.31142858&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom36&quot; elementType=&quot;H&quot; x2=&quot;0.5714286&quot; y2=&quot;-0.86285716&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom37&quot; elementType=&quot;P&quot; x2=&quot;0.08285714&quot; y2=&quot;-0.7542857&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom38&quot; elementType=&quot;O&quot; x2=&quot;-0.61714286&quot; y2=&quot;-0.8428571&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom39&quot; elementType=&quot;N&quot; x2=&quot;-0.68&quot; y2=&quot;-0.25714287&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom40&quot; elementType=&quot;P&quot; x2=&quot;-0.17714286&quot; y2=&quot;-0.7542857&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom41&quot; elementType=&quot;C&quot; x2=&quot;-0.68&quot; y2=&quot;-0.68285716&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom42&quot; elementType=&quot;N&quot; x2=&quot;0.6457143&quot; y2=&quot;-0.67714286&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom43&quot; elementType=&quot;H&quot; x2=&quot;-0.61714286&quot; y2=&quot;-0.70285714&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom44&quot; elementType=&quot;O&quot; x2=&quot;0.99714285&quot; y2=&quot;-0.37142858&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom45&quot; elementType=&quot;N&quot; x2=&quot;-0.8971428&quot; y2=&quot;-0.48857144&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom46&quot; elementType=&quot;C&quot; x2=&quot;-0.36857143&quot; y2=&quot;-0.7657143&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom47&quot; elementType=&quot;O&quot; x2=&quot;0.5714286&quot; y2=&quot;-1.0&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom48&quot; elementType=&quot;O&quot; x2=&quot;-0.17714286&quot; y2=&quot;-0.8657143&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom49&quot; elementType=&quot;C&quot; x2=&quot;-0.8971428&quot; y2=&quot;-0.24857143&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom50&quot; elementType=&quot;O&quot; x2=&quot;-0.2742857&quot; y2=&quot;-0.7542857&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom51&quot; elementType=&quot;H&quot; x2=&quot;-0.42285714&quot; y2=&quot;-0.61714286&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom52&quot; elementType=&quot;O&quot; x2=&quot;-0.042857144&quot; y2=&quot;-0.7542857&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom53&quot; elementType=&quot;C&quot; x2=&quot;0.5714286&quot; y2=&quot;-0.93142855&quot;/&gt;
+    &lt;atom id=&quot;NADH-atom54&quot; elementType=&quot;C&quot; x2=&quot;0.6542857&quot; y2=&quot;-0.39142856&quot;/&gt;
+   &lt;/atomArray&gt;
+   &lt;bondArray&gt;
+    &lt;bond id=&quot;NADH-bond1&quot; atomRefs=&quot;NADH-atom54 NADH-atom18&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond2&quot; atomRefs=&quot;NADH-atom53 NADH-atom6&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond3&quot; atomRefs=&quot;NADH-atom52 NADH-atom40&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond4&quot; atomRefs=&quot;NADH-atom51 NADH-atom17&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond5&quot; atomRefs=&quot;NADH-atom50 NADH-atom46&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond6&quot; atomRefs=&quot;NADH-atom49 NADH-atom31&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond7&quot; atomRefs=&quot;NADH-atom48 NADH-atom40&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond8&quot; atomRefs=&quot;NADH-atom47 NADH-atom53&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond9&quot; atomRefs=&quot;NADH-atom46 NADH-atom17&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond10&quot; atomRefs=&quot;NADH-atom45 NADH-atom8&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond11&quot; atomRefs=&quot;NADH-atom44 NADH-atom2&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond12&quot; atomRefs=&quot;NADH-atom43 NADH-atom26&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond13&quot; atomRefs=&quot;NADH-atom42 NADH-atom21&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond14&quot; atomRefs=&quot;NADH-atom42 NADH-atom24&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond15&quot; atomRefs=&quot;NADH-atom41 NADH-atom32&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond16&quot; atomRefs=&quot;NADH-atom41 NADH-atom26&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond17&quot; atomRefs=&quot;NADH-atom40 NADH-atom50&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond18&quot; atomRefs=&quot;NADH-atom39 NADH-atom35&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond19&quot; atomRefs=&quot;NADH-atom38 NADH-atom26&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond20&quot; atomRefs=&quot;NADH-atom37 NADH-atom52&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond21&quot; atomRefs=&quot;NADH-atom36 NADH-atom53&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond22&quot; atomRefs=&quot;NADH-atom35 NADH-atom49&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond23&quot; atomRefs=&quot;NADH-atom35 NADH-atom8&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond24&quot; atomRefs=&quot;NADH-atom34 NADH-atom42&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond25&quot; atomRefs=&quot;NADH-atom33 NADH-atom2&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond26&quot; atomRefs=&quot;NADH-atom32 NADH-atom7&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond27&quot; atomRefs=&quot;NADH-atom31 NADH-atom13&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond28&quot; atomRefs=&quot;NADH-atom30 NADH-atom40&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond29&quot; atomRefs=&quot;NADH-atom29 NADH-atom37&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond30&quot; atomRefs=&quot;NADH-atom28 NADH-atom49&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond31&quot; atomRefs=&quot;NADH-atom27 NADH-atom23&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond32&quot; atomRefs=&quot;NADH-atom25 NADH-atom26&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond33&quot; atomRefs=&quot;NADH-atom23 NADH-atom1&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond34&quot; atomRefs=&quot;NADH-atom23 NADH-atom6&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond35&quot; atomRefs=&quot;NADH-atom22 NADH-atom25&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond36&quot; atomRefs=&quot;NADH-atom21 NADH-atom27&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond37&quot; atomRefs=&quot;NADH-atom21 NADH-atom53&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond38&quot; atomRefs=&quot;NADH-atom20 NADH-atom41&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond39&quot; atomRefs=&quot;NADH-atom19 NADH-atom21&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond40&quot; atomRefs=&quot;NADH-atom18 NADH-atom34&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond41&quot; atomRefs=&quot;NADH-atom17 NADH-atom20&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond42&quot; atomRefs=&quot;NADH-atom17 NADH-atom25&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond43&quot; atomRefs=&quot;NADH-atom16 NADH-atom54&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond44&quot; atomRefs=&quot;NADH-atom15 NADH-atom41&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond45&quot; atomRefs=&quot;NADH-atom14 NADH-atom6&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond46&quot; atomRefs=&quot;NADH-atom13 NADH-atom45&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond47&quot; atomRefs=&quot;NADH-atom12 NADH-atom24&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond48&quot; atomRefs=&quot;NADH-atom12 NADH-atom54&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond49&quot; atomRefs=&quot;NADH-atom11 NADH-atom6&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond50&quot; atomRefs=&quot;NADH-atom10 NADH-atom54&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond51&quot; atomRefs=&quot;NADH-atom9 NADH-atom25&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond52&quot; atomRefs=&quot;NADH-atom8 NADH-atom32&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond53&quot; atomRefs=&quot;NADH-atom7 NADH-atom39&quot; order=&quot;A&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond54&quot; atomRefs=&quot;NADH-atom5 NADH-atom37&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond55&quot; atomRefs=&quot;NADH-atom4 NADH-atom37&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond56&quot; atomRefs=&quot;NADH-atom3 NADH-atom23&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond57&quot; atomRefs=&quot;NADH-atom2 NADH-atom18&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;NADH-bond58&quot; atomRefs=&quot;NADH-atom1 NADH-atom29&quot; order=&quot;1&quot;/&gt;
+   &lt;/bondArray&gt;
+   &lt;formula concise=&quot;C 21 H 29 N 7 O 14 P 2&quot; formalCharge=&quot;0&quot;/&gt;
+   &lt;float title=&quot;molecularWeight&quot; units=&quot;g/mol&quot;&gt;665.446&lt;/float&gt;
+   &lt;string title=&quot;smiles&quot;&gt;C(OP(=O)(O)OP(=O)(OCC1(C([H])(O)C(O)(C([H])(O1)n3(c2(c(c(N)ncn2)nc3)))[H])[H])O)C4([H])(C(O)([H])C(C([H])(O4)N5(C=C(C(N)=O)C([H])(C=C5)[H]))([H])O)&lt;/string&gt;
+  &lt;/molecule&gt;
+ &lt;/cml&gt;
+</bp:structureData>
+              </bp:ChemicalStructure>
+            </bp:structure>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADH</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADH&lt;sub&gt;2&lt;/sub&gt;</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADH2</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dihydrodiphosphopyridine nucleotide</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">diphosphopyridine nucleotide reduced</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dihydronicotinamide adenine dinucleotide</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nicotinamide adenine dinucleotide reduced</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NAD-reduced</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADH+H+</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DPNH</bp:name>
+            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">665.446</bp:molecularWeight>
+          </bp:SmallMoleculeReference>
+        </bp:entityReference>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary807718"/>
+      </bp:SmallMolecule>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry807725">
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+    <bp:physicalEntity>
+      <bp:SmallMolecule rdf:ID="SmallMolecule807724">
+        <bp:xref rdf:resource="#UnificationXref807722"/>
+        <bp:xref rdf:resource="#UnificationXref807721"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">diacetyl</bp:standardName>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2,3-butanedione</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">biacetyl</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dimethylglyoxal</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2,3-diketobutane</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2,3-dioxobutane</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">butadione</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dimethyl diketone</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">butanedione</bp:name>
+        <bp:entityReference>
+          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference807720">
+            <bp:xref rdf:resource="#UnificationXref807722"/>
+            <bp:xref rdf:resource="#UnificationXref807721"/>
+            <bp:structure>
+              <bp:ChemicalStructure rdf:ID="ChemicalStructure807723">
+                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CML</bp:structureFormat>
+                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string"> &lt;cml&gt;
+  &lt;molecule id=&quot;DIACETYL&quot; title=&quot;diacetyl&quot; dictRef=&quot;dictDIACETYL&quot;&gt;
+   &lt;atomArray&gt;
+    &lt;atom id=&quot;DIACETYL-atom1&quot; elementType=&quot;C&quot; x2=&quot;711.0&quot; y2=&quot;-2068.0&quot;/&gt;
+    &lt;atom id=&quot;DIACETYL-atom2&quot; elementType=&quot;C&quot; x2=&quot;1956.0&quot; y2=&quot;-3826.0&quot;/&gt;
+    &lt;atom id=&quot;DIACETYL-atom3&quot; elementType=&quot;C&quot; x2=&quot;1649.0&quot; y2=&quot;-3080.0&quot;/&gt;
+    &lt;atom id=&quot;DIACETYL-atom4&quot; elementType=&quot;C&quot; x2=&quot;976.0&quot; y2=&quot;-2846.0&quot;/&gt;
+    &lt;atom id=&quot;DIACETYL-atom5&quot; elementType=&quot;O&quot; x2=&quot;356.0&quot; y2=&quot;-3269.0&quot;/&gt;
+    &lt;atom id=&quot;DIACETYL-atom6&quot; elementType=&quot;O&quot; x2=&quot;2300.0&quot; y2=&quot;-2552.0&quot;/&gt;
+   &lt;/atomArray&gt;
+   &lt;bondArray&gt;
+    &lt;bond id=&quot;DIACETYL-bond1&quot; atomRefs=&quot;DIACETYL-atom4 DIACETYL-atom5&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;DIACETYL-bond2&quot; atomRefs=&quot;DIACETYL-atom3 DIACETYL-atom6&quot; order=&quot;2&quot;/&gt;
+    &lt;bond id=&quot;DIACETYL-bond3&quot; atomRefs=&quot;DIACETYL-atom3 DIACETYL-atom2&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;DIACETYL-bond4&quot; atomRefs=&quot;DIACETYL-atom4 DIACETYL-atom1&quot; order=&quot;1&quot;/&gt;
+    &lt;bond id=&quot;DIACETYL-bond5&quot; atomRefs=&quot;DIACETYL-atom4 DIACETYL-atom3&quot; order=&quot;1&quot;/&gt;
+   &lt;/bondArray&gt;
+   &lt;formula concise=&quot;C 4 H 6 O 2&quot; formalCharge=&quot;0&quot;/&gt;
+   &lt;float title=&quot;molecularWeight&quot; units=&quot;g/mol&quot;&gt;86.09&lt;/float&gt;
+   &lt;string title=&quot;smiles&quot;&gt;CC(C(C)=O)=O&lt;/string&gt;
+  &lt;/molecule&gt;
+ &lt;/cml&gt;
+</bp:structureData>
+              </bp:ChemicalStructure>
+            </bp:structure>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">diacetyl</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2,3-butanedione</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">biacetyl</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dimethylglyoxal</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2,3-diketobutane</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2,3-dioxobutane</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">butadione</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dimethyl diketone</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">butanedione</bp:name>
+            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">86.09</bp:molecularWeight>
+            <bp:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Diacetyl is an important flavor component in many fermented foods and beverages, including dairy and dairy-like
+products, beer and wine |CITS: [15454314]|.
+It imparts a buttery aroma and flavour, and has an important stylistic role in wine. In beer, diacetyl is considered
+a spoilage factor. During beer maturation, 2-acetolactate is slowly converted to diacetyl by a chemical,
+non-enzymatic process, and the diacetyl is converted to acetoin by diacetyl reductase of the yeast cells. for this
+purpose, purified enzyme is sometimes added to the wort |CITS: [2198252]|.</bp:comment>
+          </bp:SmallMoleculeReference>
+        </bp:entityReference>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+        <bp:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Diacetyl is an important flavor component in many fermented foods and beverages, including dairy and dairy-like
+products, beer and wine |CITS: [15454314]|.
+It imparts a buttery aroma and flavour, and has an important stylistic role in wine. In beer, diacetyl is considered
+a spoilage factor. During beer maturation, 2-acetolactate is slowly converted to diacetyl by a chemical,
+non-enzymatic process, and the diacetyl is converted to acetoin by diacetyl reductase of the yeast cells. for this
+purpose, purified enzyme is sometimes added to the wort |CITS: [2198252]|.</bp:comment>
+        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary807718"/>
+      </bp:SmallMolecule>
+    </bp:physicalEntity>
+  </bp:Stoichiometry>
+  <bp:BiochemicalPathwayStep rdf:ID="BiochemicalPathwayStep807863">
+    <bp:stepProcess>
+      <bp:Catalysis rdf:ID="Catalysis807875">
+        <bp:xref rdf:resource="#UnificationXref807876"/>
+        <bp:xref rdf:resource="#PublicationXref807705"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2,3-butanediol dehydrogenase</bp:standardName>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+        <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+        <bp:controller>
+          <bp:Complex rdf:ID="Complex807753">
+            <bp:xref rdf:resource="#UnificationXref807754"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2,3-butanediol dehydrogenase / diacetyl reductase</bp:standardName>
+            <bp:dataSource rdf:resource="#Provenance807714"/>
+            <bp:componentStoichiometry rdf:resource="#Stoichiometry807760"/>
+            <bp:component rdf:resource="#Protein807759"/>
+          </bp:Complex>
+        </bp:controller>
+        <bp:controlled>
+          <bp:BiochemicalReaction rdf:ID="BiochemicalReaction807864">
+            <bp:xref rdf:resource="#UnificationXref807865"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NAD + butanediol  =  acetoin + NADH</bp:standardName>
+            <bp:right rdf:resource="#SmallMolecule807741"/>
+            <bp:right rdf:resource="#SmallMolecule807733"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry807734"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry807742"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry807874"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry807750"/>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Butyleneglycol dehydrogenase</bp:name>
+            <bp:left rdf:resource="#SmallMolecule807749"/>
+            <bp:left rdf:resource="#SmallMolecule807873"/>
+            <bp:eCNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1.1.1.4</bp:eCNumber>
+            <bp:dataSource rdf:resource="#Provenance807714"/>
+            <bp:conversionDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">REVERSIBLE</bp:conversionDirection>
+          </bp:BiochemicalReaction>
+        </bp:controlled>
+      </bp:Catalysis>
+    </bp:stepProcess>
+    <bp:stepDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RIGHT-TO-LEFT</bp:stepDirection>
+    <bp:stepConversion rdf:resource="#BiochemicalReaction807864"/>
+  </bp:BiochemicalPathwayStep>
+  <bp:BiochemicalPathwayStep rdf:ID="BiochemicalPathwayStep807854">
+    <bp:stepProcess>
+      <bp:Catalysis rdf:ID="Catalysis807857">
+        <bp:xref rdf:resource="#UnificationXref807858"/>
+        <bp:xref rdf:resource="#PublicationXref807824"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pyruvate decarboxylase</bp:standardName>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+        <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+        <bp:controller>
+          <bp:Complex rdf:ID="Complex807821">
+            <bp:xref rdf:resource="#UnificationXref807822"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pyruvate decarboxylase / decarboxylase</bp:standardName>
+            <bp:dataSource rdf:resource="#Provenance807714"/>
+            <bp:componentStoichiometry rdf:resource="#Stoichiometry807827"/>
+            <bp:component rdf:resource="#Protein807826"/>
+          </bp:Complex>
+        </bp:controller>
+        <bp:controlled>
+          <bp:BiochemicalReaction rdf:ID="BiochemicalReaction807855">
+            <bp:xref rdf:resource="#UnificationXref807856"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pyruvate  &amp;rarr;  acetaldehyde + CO&lt;SUB&gt;2&lt;/SUB&gt;</bp:standardName>
+            <bp:right rdf:resource="#SmallMolecule807817"/>
+            <bp:right rdf:resource="#SmallMolecule807779"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry807780"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry807818"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry807793"/>
+            <bp:left rdf:resource="#SmallMolecule807792"/>
+            <bp:eCNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">4.1.1.1</bp:eCNumber>
+            <bp:dataSource rdf:resource="#Provenance807714"/>
+          </bp:BiochemicalReaction>
+        </bp:controlled>
+      </bp:Catalysis>
+    </bp:stepProcess>
+    <bp:stepProcess>
+      <bp:Catalysis rdf:ID="Catalysis807859">
+        <bp:xref rdf:resource="#UnificationXref807860"/>
+        <bp:xref rdf:resource="#PublicationXref807824"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pyruvate decarboxylase</bp:standardName>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+        <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+        <bp:controller>
+          <bp:Complex rdf:ID="Complex807830">
+            <bp:xref rdf:resource="#UnificationXref807831"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pyruvate decarboxylase / decarboxylase</bp:standardName>
+            <bp:dataSource rdf:resource="#Provenance807714"/>
+            <bp:componentStoichiometry rdf:resource="#Stoichiometry807835"/>
+            <bp:component rdf:resource="#Protein807834"/>
+          </bp:Complex>
+        </bp:controller>
+        <bp:controlled rdf:resource="#BiochemicalReaction807855"/>
+      </bp:Catalysis>
+    </bp:stepProcess>
+    <bp:stepProcess>
+      <bp:Catalysis rdf:ID="Catalysis807861">
+        <bp:xref rdf:resource="#UnificationXref807862"/>
+        <bp:xref rdf:resource="#PublicationXref807824"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pyruvate decarboxylase</bp:standardName>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+        <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+        <bp:controller>
+          <bp:Complex rdf:ID="Complex807838">
+            <bp:xref rdf:resource="#UnificationXref807839"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pyruvate decarboxylase / decarboxylase</bp:standardName>
+            <bp:dataSource rdf:resource="#Provenance807714"/>
+            <bp:componentStoichiometry rdf:resource="#Stoichiometry807843"/>
+            <bp:component rdf:resource="#Protein807842"/>
+          </bp:Complex>
+        </bp:controller>
+        <bp:controlled rdf:resource="#BiochemicalReaction807855"/>
+      </bp:Catalysis>
+    </bp:stepProcess>
+    <bp:stepDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LEFT-TO-RIGHT</bp:stepDirection>
+    <bp:stepConversion rdf:resource="#BiochemicalReaction807855"/>
+    <bp:nextStep>
+      <bp:BiochemicalPathwayStep rdf:ID="BiochemicalPathwayStep807844">
+        <bp:stepProcess>
+          <bp:Catalysis rdf:ID="Catalysis807848">
+            <bp:xref rdf:resource="#UnificationXref807849"/>
+            <bp:xref rdf:resource="#PublicationXref807707"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pyruvate decarboxylase</bp:standardName>
+            <bp:dataSource rdf:resource="#Provenance807714"/>
+            <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+            <bp:controller rdf:resource="#Complex807821"/>
+            <bp:controlled>
+              <bp:BiochemicalReaction rdf:ID="BiochemicalReaction807845">
+                <bp:xref rdf:resource="#UnificationXref807846"/>
+                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2 acetaldehyde  &amp;rarr;  acetoin</bp:standardName>
+                <bp:right rdf:resource="#SmallMolecule807741"/>
+                <bp:participantStoichiometry rdf:resource="#Stoichiometry807742"/>
+                <bp:participantStoichiometry rdf:resource="#Stoichiometry807847"/>
+                <bp:left rdf:resource="#SmallMolecule807817"/>
+                <bp:dataSource rdf:resource="#Provenance807714"/>
+              </bp:BiochemicalReaction>
+            </bp:controlled>
+          </bp:Catalysis>
+        </bp:stepProcess>
+        <bp:stepProcess>
+          <bp:Catalysis rdf:ID="Catalysis807850">
+            <bp:xref rdf:resource="#UnificationXref807851"/>
+            <bp:xref rdf:resource="#PublicationXref807707"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pyruvate decarboxylase</bp:standardName>
+            <bp:dataSource rdf:resource="#Provenance807714"/>
+            <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+            <bp:controller rdf:resource="#Complex807830"/>
+            <bp:controlled rdf:resource="#BiochemicalReaction807845"/>
+          </bp:Catalysis>
+        </bp:stepProcess>
+        <bp:stepProcess>
+          <bp:Catalysis rdf:ID="Catalysis807852">
+            <bp:xref rdf:resource="#UnificationXref807853"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pyruvate decarboxylase</bp:standardName>
+            <bp:dataSource rdf:resource="#Provenance807714"/>
+            <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+            <bp:controller rdf:resource="#Complex807838"/>
+            <bp:controlled rdf:resource="#BiochemicalReaction807845"/>
+          </bp:Catalysis>
+        </bp:stepProcess>
+        <bp:stepDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LEFT-TO-RIGHT</bp:stepDirection>
+        <bp:stepConversion rdf:resource="#BiochemicalReaction807845"/>
+        <bp:nextStep rdf:resource="#BiochemicalPathwayStep807863"/>
+      </bp:BiochemicalPathwayStep>
+    </bp:nextStep>
+  </bp:BiochemicalPathwayStep>
+  <bp:BiochemicalPathwayStep rdf:ID="BiochemicalPathwayStep807806">
+    <bp:stepProcess>
+      <bp:Catalysis rdf:ID="Catalysis807819">
+        <bp:xref rdf:resource="#UnificationXref807820"/>
+        <bp:xref rdf:resource="#PublicationXref807707"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pyruvate decarboxylase</bp:standardName>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+        <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+        <bp:controller rdf:resource="#Complex807821"/>
+        <bp:controlled>
+          <bp:BiochemicalReaction rdf:ID="BiochemicalReaction807807">
+            <bp:xref rdf:resource="#UnificationXref807808"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pyruvate + acetaldehyde  &amp;rarr;  acetoin + CO&lt;SUB&gt;2&lt;/SUB&gt;</bp:standardName>
+            <bp:right rdf:resource="#SmallMolecule807741"/>
+            <bp:right rdf:resource="#SmallMolecule807779"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry807780"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry807742"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry807818"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry807793"/>
+            <bp:left rdf:resource="#SmallMolecule807792"/>
+            <bp:left rdf:resource="#SmallMolecule807817"/>
+            <bp:dataSource rdf:resource="#Provenance807714"/>
+          </bp:BiochemicalReaction>
+        </bp:controlled>
+      </bp:Catalysis>
+    </bp:stepProcess>
+    <bp:stepProcess>
+      <bp:Catalysis rdf:ID="Catalysis807828">
+        <bp:xref rdf:resource="#UnificationXref807829"/>
+        <bp:xref rdf:resource="#PublicationXref807707"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pyruvate decarboxylase</bp:standardName>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+        <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+        <bp:controller rdf:resource="#Complex807830"/>
+        <bp:controlled rdf:resource="#BiochemicalReaction807807"/>
+      </bp:Catalysis>
+    </bp:stepProcess>
+    <bp:stepProcess>
+      <bp:Catalysis rdf:ID="Catalysis807836">
+        <bp:xref rdf:resource="#UnificationXref807837"/>
+        <bp:xref rdf:resource="#PublicationXref807707"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pyruvate decarboxylase</bp:standardName>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+        <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+        <bp:controller rdf:resource="#Complex807838"/>
+        <bp:controlled rdf:resource="#BiochemicalReaction807807"/>
+      </bp:Catalysis>
+    </bp:stepProcess>
+    <bp:stepDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LEFT-TO-RIGHT</bp:stepDirection>
+    <bp:stepConversion rdf:resource="#BiochemicalReaction807807"/>
+    <bp:nextStep rdf:resource="#BiochemicalPathwayStep807863"/>
+  </bp:BiochemicalPathwayStep>
+  <bp:BiochemicalPathwayStep rdf:ID="BiochemicalPathwayStep807781">
+    <bp:stepProcess>
+      <bp:Catalysis rdf:ID="Catalysis807794">
+        <bp:xref rdf:resource="#UnificationXref807795"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">acetolactate synthase</bp:standardName>
+        <bp:dataSource rdf:resource="#Provenance807714"/>
+        <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+        <bp:controller>
+          <bp:Complex rdf:ID="Complex807796">
+            <bp:xref rdf:resource="#UnificationXref807797"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">acetolactate synthase</bp:standardName>
+            <bp:dataSource rdf:resource="#Provenance807714"/>
+            <bp:componentStoichiometry rdf:resource="#Stoichiometry807805"/>
+            <bp:componentStoichiometry rdf:resource="#Stoichiometry807801"/>
+            <bp:component rdf:resource="#Protein807804"/>
+            <bp:component rdf:resource="#Protein807800"/>
+          </bp:Complex>
+        </bp:controller>
+        <bp:controlled>
+          <bp:BiochemicalReaction rdf:ID="BiochemicalReaction807782">
+            <bp:xref rdf:resource="#UnificationXref807783"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pyruvate + pyruvate  &amp;rarr;  2-aceto-lactate + CO&lt;SUB&gt;2&lt;/SUB&gt;</bp:standardName>
+            <bp:right rdf:resource="#SmallMolecule807770"/>
+            <bp:right rdf:resource="#SmallMolecule807779"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry807780"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry807771"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry807793"/>
+            <bp:left rdf:resource="#SmallMolecule807792"/>
+            <bp:eCNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2.2.1.6</bp:eCNumber>
+            <bp:dataSource rdf:resource="#Provenance807714"/>
+          </bp:BiochemicalReaction>
+        </bp:controlled>
+      </bp:Catalysis>
+    </bp:stepProcess>
+    <bp:stepDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LEFT-TO-RIGHT</bp:stepDirection>
+    <bp:stepConversion rdf:resource="#BiochemicalReaction807782"/>
+    <bp:nextStep>
+      <bp:BiochemicalPathwayStep rdf:ID="BiochemicalPathwayStep807761">
+        <bp:stepDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LEFT-TO-RIGHT</bp:stepDirection>
+        <bp:stepConversion>
+          <bp:BiochemicalReaction rdf:ID="BiochemicalReaction807762">
+            <bp:xref rdf:resource="#UnificationXref807763"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2-aceto-lactate  &amp;rarr;  diacetyl + CO&lt;SUB&gt;2&lt;/SUB&gt;</bp:standardName>
+            <bp:spontaneous rdf:datatype="http://www.w3.org/2001/XMLSchema#string">L-R</bp:spontaneous>
+            <bp:right rdf:resource="#SmallMolecule807724"/>
+            <bp:right rdf:resource="#SmallMolecule807779"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry807780"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry807725"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry807771"/>
+            <bp:left rdf:resource="#SmallMolecule807770"/>
+            <bp:dataSource rdf:resource="#Provenance807714"/>
+          </bp:BiochemicalReaction>
+        </bp:stepConversion>
+        <bp:nextStep>
+          <bp:BiochemicalPathwayStep rdf:ID="BiochemicalPathwayStep807715">
+            <bp:stepProcess>
+              <bp:Catalysis rdf:ID="Catalysis807751">
+                <bp:xref rdf:resource="#UnificationXref807752"/>
+                <bp:xref rdf:resource="#PublicationXref807705"/>
+                <bp:xref rdf:resource="#PublicationXref807708"/>
+                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">diacetyl reductase</bp:standardName>
+                <bp:dataSource rdf:resource="#Provenance807714"/>
+                <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+                <bp:controller rdf:resource="#Complex807753"/>
+                <bp:controlled>
+                  <bp:BiochemicalReaction rdf:ID="BiochemicalReaction807716">
+                    <bp:xref rdf:resource="#UnificationXref807717"/>
+                    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">diacetyl + NADH  &amp;rarr;  acetoin + NAD</bp:standardName>
+                    <bp:right rdf:resource="#SmallMolecule807741"/>
+                    <bp:right rdf:resource="#SmallMolecule807749"/>
+                    <bp:participantStoichiometry rdf:resource="#Stoichiometry807750"/>
+                    <bp:participantStoichiometry rdf:resource="#Stoichiometry807742"/>
+                    <bp:participantStoichiometry rdf:resource="#Stoichiometry807734"/>
+                    <bp:participantStoichiometry rdf:resource="#Stoichiometry807725"/>
+                    <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">diacetyl reductase</bp:name>
+                    <bp:left rdf:resource="#SmallMolecule807724"/>
+                    <bp:left rdf:resource="#SmallMolecule807733"/>
+                    <bp:eCNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1.1.1.5</bp:eCNumber>
+                    <bp:dataSource rdf:resource="#Provenance807714"/>
+                  </bp:BiochemicalReaction>
+                </bp:controlled>
+              </bp:Catalysis>
+            </bp:stepProcess>
+            <bp:stepDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LEFT-TO-RIGHT</bp:stepDirection>
+            <bp:stepConversion rdf:resource="#BiochemicalReaction807716"/>
+            <bp:nextStep rdf:resource="#BiochemicalPathwayStep807863"/>
+          </bp:BiochemicalPathwayStep>
+        </bp:nextStep>
+      </bp:BiochemicalPathwayStep>
+    </bp:nextStep>
+  </bp:BiochemicalPathwayStep>
+  <bp:Evidence rdf:ID="Evidence807712">
+    <bp:xref rdf:resource="#PublicationXref807705"/>
+    <bp:evidenceCode>
+      <bp:EvidenceCodeVocabulary rdf:ID="EvidenceCodeVocabulary807709">
+        <bp:xref rdf:resource="#UnificationXref807710"/>
+        <bp:term rdf:datatype="http://www.w3.org/2001/XMLSchema#string">EV-EXP-TAS</bp:term>
+      </bp:EvidenceCodeVocabulary>
+    </bp:evidenceCode>
+  </bp:Evidence>
+  <bp:Evidence rdf:ID="Evidence807711">
+    <bp:xref rdf:resource="#PublicationXref807704"/>
+    <bp:evidenceCode rdf:resource="#EvidenceCodeVocabulary807709"/>
+  </bp:Evidence>
+  <bp:Pathway rdf:ID="Pathway807703">
+    <bp:xref rdf:resource="#UnificationXref807713"/>
+    <bp:xref rdf:resource="#PublicationXref807708"/>
+    <bp:xref rdf:resource="#PublicationXref807707"/>
+    <bp:xref rdf:resource="#PublicationXref807706"/>
+    <bp:xref rdf:resource="#PublicationXref807705"/>
+    <bp:xref rdf:resource="#PublicationXref807704"/>
+    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">superpathway of acetoin and butanediol biosynthesis</bp:standardName>
+    <bp:pathwayOrder rdf:resource="#BiochemicalPathwayStep807863"/>
+    <bp:pathwayOrder rdf:resource="#BiochemicalPathwayStep807854"/>
+    <bp:pathwayOrder rdf:resource="#BiochemicalPathwayStep807844"/>
+    <bp:pathwayOrder rdf:resource="#BiochemicalPathwayStep807806"/>
+    <bp:pathwayOrder rdf:resource="#BiochemicalPathwayStep807781"/>
+    <bp:pathwayOrder rdf:resource="#BiochemicalPathwayStep807761"/>
+    <bp:pathwayOrder rdf:resource="#BiochemicalPathwayStep807715"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis807875"/>
+    <bp:pathwayComponent rdf:resource="#BiochemicalReaction807864"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis807861"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis807859"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis807857"/>
+    <bp:pathwayComponent rdf:resource="#BiochemicalReaction807855"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis807852"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis807850"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis807848"/>
+    <bp:pathwayComponent rdf:resource="#BiochemicalReaction807845"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis807836"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis807828"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis807819"/>
+    <bp:pathwayComponent rdf:resource="#BiochemicalReaction807807"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis807794"/>
+    <bp:pathwayComponent rdf:resource="#BiochemicalReaction807782"/>
+    <bp:pathwayComponent rdf:resource="#BiochemicalReaction807762"/>
+    <bp:pathwayComponent rdf:resource="#BiochemicalReaction807716"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis807751"/>
+    <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">superpathway of acetoin and butanediol fermentation</bp:name>
+    <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">superpathway of acetoin and butylene glycol fermentation</bp:name>
+    <bp:evidence rdf:resource="#Evidence807712"/>
+    <bp:evidence rdf:resource="#Evidence807711"/>
+    <bp:dataSource rdf:resource="#Provenance807714"/>
+    <bp:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Many yeast and bacterial species ferment pyruvate to 2,3-butanediol via the intermediate, acetoin.  Although acetoin is a flavorless compound, it is a precursor to some off-odor compounds, such as diacetyl, which can be unfavorable in beer and wine.  Acetoin and 2,3-butanediol are both by-products of alcoholic fermentation by S. cerevisiae and other wine yeasts. Acetoin production during alcoholic fermentation depends on the yeast strain and other variables such as substrate and temperature (as reported in |CITS: [16535224]|). Wine yeasts with high fermentation power generally produce low acetoin levels and large amounts of ethanol and higher alcohols (alcohols with more than 2 carbons) (as reported in |CITS: [16535224]|).
+</bp:comment>
+  </bp:Pathway>
+</rdf:RDF>
