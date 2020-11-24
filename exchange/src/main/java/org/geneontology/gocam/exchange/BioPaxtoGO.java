@@ -86,6 +86,7 @@ import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLEntity;
@@ -839,7 +840,16 @@ public class BioPaxtoGO {
 					if(mapping!=null) {
 						String class_iri = sssom.expandId(mapping.object_id);
 						OWLClass mapped_class = go_cam.df.getOWLClass(IRI.create(class_iri));
-						go_cam.addTypeAssertion(pathway_e, mapped_class);	
+						//go_cam.addTypeAssertion(pathway_e, mapped_class);	
+						//TODO further development of sssom and evidence ontology could produce a useful evidence block here
+						String comment = "This type assertion was computed with: "+mapping.mapping_tool+" with confidence "+mapping.confidence;
+						go_cam.addComment(pathway_e, comment);
+						//add some annotations to the assertion. (this is not viewable in noctua grad editor)
+						Set<OWLAnnotation> annotations = new HashSet<OWLAnnotation>();
+						annotations.add(go_cam.df.getOWLAnnotation(GoCAM.rdfs_comment, go_cam.df.getOWLLiteral(comment)));
+						OWLClassAssertionAxiom isa = go_cam.df.getOWLClassAssertionAxiom(mapped_class, pathway_e, annotations);
+						go_cam.ontman.addAxiom(go_cam.go_cam_ont, isa);
+						
 						mapped = true;
 					}
 				}//no mapping, default to root
