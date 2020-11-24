@@ -292,7 +292,7 @@ public class BioPaxtoGO {
 					//e.g. for a WikiPathways model retrieved from Pathway Commons I see
 					//Source http://pointer.ucsf.edu/wp/biopax/wikipathways-human-v20150929-biopax3.zip type: BIOPAX, WikiPathways - Community Curated Human Pathways; 29/09/2015 (human)
 				}			
-				base_ont_title = datasource+":"+tag+":"+getBioPaxName(currentPathway);
+				base_ont_title = getBioPaxName(currentPathway)+" - imported from: "+datasource;
 				iri = "http://model.geneontology.org/"+model_id; 
 				ont_iri = IRI.create(iri);	
 				go_cam = new GoCAM(ont_iri, base_ont_title, contributor_link, null, base_provider, add_lego_import, taxa);
