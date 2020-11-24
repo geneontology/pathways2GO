@@ -3,9 +3,11 @@
  */
 package org.geneontology.gocam.exchange;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -23,6 +25,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import org.biopax.paxtools.io.BioPAXIOHandler;
@@ -83,6 +86,7 @@ import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLEntity;
@@ -112,9 +116,15 @@ public class BioPaxtoGO {
 	GOLego golego; //The fully axiomitized Gene Ontology. Used in multiple places for different purposes. 
 	String blazegraph_output_journal;//Generated models will be stored both as files and as entries in this blazegraph journal.  Note this is ready for use in a Noctua/Minerva instance without any further processing.
 	QRunner tbox_qrunner;
+	SSSOM sssom; // this represents a mapping from some rdf node (e.g. a pathway instance) to another (e.g. a GO class), its an option for estimating classifications when none are provided
 	ImportStrategy strategy;
 	enum ImportStrategy {
 		NoctuaCuration, 
+	}
+	EntityStrategy entityStrategy;
+	enum EntityStrategy {
+		REACTO,
+		YeastCyc
 	}
 	boolean add_bp_from_pathway_parents = false;  //sometimes subpathways do not have BP annotation while parents do. Turning this on assumes that subpathway means subclass and adds parent BP as type for subpathway nodes missing BP annotation.
 	boolean apply_layout = false; //If true, attempts a rational layout for Noctua based on the semantic structure of the model.  (Breaks down or larger models)
@@ -138,86 +148,11 @@ public class BioPaxtoGO {
 	boolean add_subpathway_bridges = true; //this is groundwork for an approach that generates go-cams that reference members of other go-cams, here referencing other pathways.  
 	String default_namespace_prefix = "Reactome"; //this is used to generate curi structured references - e.g. Reactome:HSA-007
 	Set<String> drug_process_ids = new HashSet<String>(); 
-
+	Map<String, String> accession_neo = new HashMap<String, String>(); //in case we need to store mappings to neo IRIs, use this
 	public BioPaxtoGO(){
 		strategy = ImportStrategy.NoctuaCuration; 
 		report = new GoMappingReport();
-		//		tbox_files = new HashSet<String>();
-		//		tbox_files.add(goplus_file);
-		//		tbox_files.add(ro_file);
-		//		tbox_files.add(legorel_file);
-		//		tbox_files.add(go_bfo_bridge_file);
-		//		tbox_files.add(eco_base_file);
-		//		tbox_files.add(reactome_physical_entities_file);
-		//		try {
-		//			goplus = new GOPlus();
-		//		} catch (OWLOntologyCreationException e) {
-		//			// TODO Auto-generated catch block
-		//			e.printStackTrace();
-		//		}
 	}
-	/**
-	 * @param args
-	 * @throws OWLOntologyCreationException 
-	 * @throws OWLOntologyStorageException 
-	 * @throws IOException 
-	 * @throws RDFHandlerException 
-	 * @throws RDFParseException 
-	 * @throws RepositoryException 
-	 */
-	public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
-		//need to put in a check to make sure the entity ontology is based on the same version as the one being processed
-		//dig from xml:base="http://www.reactome.org/biopax/69/48887#" and check 
-
-		BioPaxtoGO bp2g = new BioPaxtoGO();
-		String input_biopax = 
-				//"/Users/bgood/Downloads/biopax3/Oryza_sativa.owl";
-				//"/Users/bgood/Desktop/test/biopax/Homo_sapiens_sept9_2019.owl";
-				"/Users/bgood/Desktop/test/biopax/wnt-curator-195721.owl";
-		String converted = 
-				//"/Users/bgood/Desktop/test/go_cams/plant-reactome/reactome-Oryza_sativa-";
-				"/Users/bgood/Desktop/test/go_cams/tmp-wnt-curator/";
-		//"/Users/bgood/Desktop/test/go_cams/reactome/reactome-homosapiens-";
-		bp2g.blazegraph_output_journal = "/Users/bgood/noctua-config/blazegraph.jnl";  
-		bp2g.go_lego_file = "/Users/bgood/git/noctua_exchange/exchange/src/test/resources/go-lego-test.owl";
-		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();	
-		//		if(local_catalogue_file!=null) {
-		//			ontman.setIRIMappers(Collections.singleton(new CatalogXmlIRIMapper(local_catalogue_file)));
-		//		}
-		OWLOntology tbox = ontman.loadOntologyFromOntologyDocument(new File(bp2g.go_lego_file));
-
-		bp2g.golego = new GOLego(tbox);
-
-		String base_title = "title here";//"Will be replaced if a title can be found for the pathway in its annotations
-		String base_contributor = "https://orcid.org/0000-0002-7334-7852"; //Ben Good
-		bp2g.base_provider = "https://reactome.org";//"https://www.wikipathways.org/";//"https://www.pathwaycommons.org/";
-		String tag = "unexpanded";
-		if(bp2g.expand_subpathways) {
-			tag = "expanded";
-		}	
-
-		Set<String> test_pathways = new HashSet<String>();
-		test_pathways.add("Signaling by BMP");
-		test_pathways.add("Glycolysis");
-		test_pathways.add("Disassembly of the destruction complex and recruitment of AXIN to the membrane");
-		//set to null to do full run
-		test_pathways = null;
-
-		//set up reasoner and blazegraph output
-		//for blazegraph output 
-		String journal = bp2g.blazegraph_output_journal;	
-		//clean out any prior data in store
-		FileWriter clean = new FileWriter(journal, false);
-		clean.write("");
-		clean.close();	
-		Blazer blaze = new Blazer(journal);
-
-		bp2g.tbox_qrunner = new QRunner(Collections.singleton(bp2g.golego.golego_ont), null, bp2g.golego.golego_reasoner, true, false, false);
-		Set<String> taxa = new HashSet<String>();
-		taxa.add("http://purl.obolibrary.org/obo/NCBITaxon_9606");
-		bp2g.convert(input_biopax, converted, base_title, base_contributor, bp2g.base_provider, tag, test_pathways, blaze, taxa);
-
-	} 
 
 	void convert(
 			String input_biopax, 
@@ -236,10 +171,65 @@ public class BioPaxtoGO {
 			datasource = "Reactome";
 		}else if(base_provider.equals("https://www.wikipathways.org/")) {
 			datasource = "Wikipathways";
+			default_namespace_prefix = "wikipathways";
 		}else if(base_provider.equals("https://www.pathwaycommons.org/")) {
 			datasource = "Pathway Commons";
+			default_namespace_prefix = "pathwaycommons";
+		}else if(base_provider.equals("https://yeastgenome.org")) {
+			datasource = "Saccharomyces Genome Database";
+			default_namespace_prefix = "SGD";
 		}
-
+		//will determine how classes for physical entities are handled
+		if(entityStrategy.equals(EntityStrategy.YeastCyc)) {
+			//neo needs e.g.
+			//http://identifiers.org/sgd/S000001024
+			//we get e.g.
+			//YeastCyc YIL155C-MONOMER
+			//we get the mapping from a YeastCyc GPI file downloaded from http://sgd-archive.yeastgenome.org/curation/literature/ 
+			//e.g. http://sgd-archive.yeastgenome.org/curation/literature/gp_information.559292_sgd.gpi.gz 
+			BufferedReader reader = new BufferedReader(new FileReader("./target/classes/YeastCyc/gp_information.559292_sgd"));
+			String line = reader.readLine();
+			while(line!=null) {
+				if(line.startsWith("!")) {
+					line = reader.readLine();
+				}else {
+					String[] cols = line.split("	");
+					String yeastcyc = cols[4];
+					Set<String> yeastcyc_ids = new HashSet<String>();
+					if(yeastcyc.contains("|")) {
+						String[] ids = yeastcyc.split("\\|");
+						for(String id : ids) {
+							yeastcyc_ids.add(id);
+						}
+					}else {
+						yeastcyc_ids.add(yeastcyc);
+					}
+					if(cols[0].contentEquals("ComplexPortal")) {
+						for(String yeastacc : yeastcyc_ids) {
+							accession_neo.put(yeastacc, "http://purl.obolibrary.org/obo/ComplexPortal_"+cols[1]);
+						}	
+					}else if(cols.length>=8) {
+						String sgd = cols[8];
+						Set<String> sgd_ids = new HashSet<String>();
+						if(sgd.contains("|")) {
+							String[] ids = sgd.split("\\|");
+							for(String id : ids) {
+								sgd_ids.add(id);
+							}
+						}else {
+							sgd_ids.add(sgd);
+						}				
+						for(String yeastacc : yeastcyc_ids) {
+							for(String sgdid : sgd_ids) {
+								accession_neo.put(yeastacc, sgdid.replace("SGD:", "http://identifiers.org/sgd/"));
+							}
+						}					
+					}
+					line = reader.readLine();
+				}
+			}
+			reader.close();
+		}
 		//read biopax pathway(s)
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileInputStream f = new FileInputStream(input_biopax);
@@ -281,7 +271,13 @@ public class BioPaxtoGO {
 				String contributor_link = base_provider;
 				//See if there is a specific pathway reference to allow a direct link
 				model_id = getEntityReferenceId(currentPathway);
-				contributor_link = "https://reactome.org/content/detail/"+model_id;
+				if(base_provider.equals("https://reactome.org")) {
+					contributor_link = "https://reactome.org/content/detail/"+model_id;
+				}else if(base_provider.equals("https://yeastgenome.org")) {
+					contributor_link = "https://pathway.yeastgenome.org/YEAST/NEW-IMAGE?object="+model_id;
+				}else {
+					contributor_link = base_provider+"/"+model_id;					
+				}
 				//check for datasource (seen commonly in Pathway Commons)
 				Set<Provenance> datasources = currentPathway.getDataSource();
 				for(Provenance prov : datasources) {
@@ -296,7 +292,7 @@ public class BioPaxtoGO {
 					//e.g. for a WikiPathways model retrieved from Pathway Commons I see
 					//Source http://pointer.ucsf.edu/wp/biopax/wikipathways-human-v20150929-biopax3.zip type: BIOPAX, WikiPathways - Community Curated Human Pathways; 29/09/2015 (human)
 				}			
-				base_ont_title = datasource+":"+tag+":"+getBioPaxName(currentPathway);
+				base_ont_title = getBioPaxName(currentPathway)+" - imported from: "+datasource;
 				iri = "http://model.geneontology.org/"+model_id; 
 				ont_iri = IRI.create(iri);	
 				go_cam = new GoCAM(ont_iri, base_ont_title, contributor_link, null, base_provider, add_lego_import, taxa);
@@ -349,7 +345,7 @@ public class BioPaxtoGO {
 		}
 	}
 
-	public static String getEntityReferenceId(Entity bp_entity) {
+	public String getEntityReferenceId(Entity bp_entity) {
 		String id = null;
 		Set<Xref> references = null;
 		//first check for entity reference
@@ -361,30 +357,46 @@ public class BioPaxtoGO {
 		if(references==null) {
 			references = bp_entity.getXref();
 		}
-		boolean reactome = false;
-		for(Xref ref : references) {
-			if(ref.getModelInterface().equals(UnificationXref.class)) {
-				UnificationXref r = (UnificationXref)ref;	    			
-				if(r.getDb().equals("Reactome")) {
-					id = r.getId();
-					if(id.startsWith("R-")) {
-						reactome = true;
-						break;
+		if(entityStrategy.equals(EntityStrategy.REACTO)) {
+			for(Xref ref : references) {
+				if(ref.getModelInterface().equals(UnificationXref.class)) {
+					UnificationXref r = (UnificationXref)ref;	    			
+					if(r.getDb().equals("Reactome")) {
+						id = r.getId();
+						if(id.startsWith("R-")) {
+							break;
+						}
 					}
 				}
 			}
-		}
-		//if id not found in unification references, check on other xrefs - use only for reactome
-		if(id==null) {
-			//Reactome Database ID
-			for(Xref r : references) {   			
-				if(r.getDb().startsWith("Reactome Database ID")) {
-					id = r.getId();
-					reactome = true;
-					break;
+			//if id not found in unification references, check on other xrefs - use only for reactome
+			if(id==null) {
+				//Reactome Database ID
+				for(Xref r : references) {   			
+					if(r.getDb().startsWith("Reactome Database ID")) {
+						id = r.getId();
+						break;
+					}
+					else {
+						id = r.getDb()+"_"+r.getId();
+					}
 				}
-				else {
-					id = r.getDb()+"_"+r.getId();
+			}
+		}else if(entityStrategy.equals(EntityStrategy.YeastCyc)) {
+			for(Xref ref : references) {
+				if(ref.getModelInterface().equals(UnificationXref.class)) {
+					UnificationXref r = (UnificationXref)ref;	    			
+					if(bp_entity instanceof SmallMolecule) {
+						if(r.getDb().equalsIgnoreCase("ChEBI")) {
+							id = r.getId().replace(":", "_");
+							break;
+						}
+					}else {
+						if(r.getDb().equalsIgnoreCase("YeastCyc")) {
+							id = r.getId();
+							break;
+						}
+					}
 				}
 			}
 		}
@@ -439,7 +451,7 @@ public class BioPaxtoGO {
 		}
 		return keep;
 	}
-	
+
 	Set<Pathway> getPathwayParents(Pathway pathway, Set<Pathway> parents){
 		if(parents==null) {
 			parents = new HashSet<Pathway>();
@@ -818,8 +830,32 @@ public class BioPaxtoGO {
 				}else {	//default to bp
 					go_cam.addTypeAssertion(pathway_e, GoCAM.bp_class);	
 				}
-			}else {
-				go_cam.addTypeAssertion(pathway_e, GoCAM.bp_class);	
+			}else {				
+				boolean mapped = false;
+				if(sssom!=null) { //meaning we have an inferred set of mappings to check on
+					String subject_id = sssom.contractUri(pathway.getUri());
+					//paxtools seems to eat the # ...  
+					subject_id = subject_id.replace("Pathway", "#Pathway");
+					SSSOM.Mapping mapping = sssom.getBestMatch(subject_id, 0.5);
+					if(mapping!=null) {
+						String class_iri = sssom.expandId(mapping.object_id);
+						OWLClass mapped_class = go_cam.df.getOWLClass(IRI.create(class_iri));
+						//go_cam.addTypeAssertion(pathway_e, mapped_class);	
+						//TODO further development of sssom and evidence ontology could produce a useful evidence block here
+						String comment = "This type assertion was computed with: "+mapping.mapping_tool+" with confidence "+mapping.confidence;
+						go_cam.addComment(pathway_e, comment);
+						//add some annotations to the assertion. (this is not viewable in noctua grad editor)
+						Set<OWLAnnotation> annotations = new HashSet<OWLAnnotation>();
+						annotations.add(go_cam.df.getOWLAnnotation(GoCAM.rdfs_comment, go_cam.df.getOWLLiteral(comment)));
+						OWLClassAssertionAxiom isa = go_cam.df.getOWLClassAssertionAxiom(mapped_class, pathway_e, annotations);
+						go_cam.ontman.addAxiom(go_cam.go_cam_ont, isa);
+						
+						mapped = true;
+					}
+				}//no mapping, default to root
+				if(!mapped) {
+					go_cam.addTypeAssertion(pathway_e, GoCAM.bp_class);	
+				}
 			}
 		}
 		return pathway_e;
@@ -896,10 +932,14 @@ public class BioPaxtoGO {
 	 * @return
 	 * @throws IOException 
 	 */
-	private void defineReactionEntity(GoCAM go_cam, Entity entity, IRI this_iri, boolean follow_controllers, String model_id, String root_pathway_iri) throws IOException {		
+	private void defineReactionEntity(GoCAM go_cam, Entity entity, IRI this_iri, boolean follow_controllers, String model_id, String root_pathway_iri) throws IOException {				
 		String entity_id = getEntityReferenceId(entity);
-		if(this_iri==null) {			
-			this_iri = GoCAM.makeGoCamifiedIRI(null, entity_id);
+		if(this_iri==null) {
+			if(entity_id!=null) {
+				this_iri = GoCAM.makeGoCamifiedIRI(null, entity_id);
+			}else {
+				this_iri = GoCAM.makeARandomIri(model_id);
+			}
 		}
 		Set<String> dbids = new HashSet<String>();
 		dbids.add(model_id);
@@ -927,10 +967,7 @@ public class BioPaxtoGO {
 			go_cam.addLabel(e, entity_name);
 		}
 		if(entity instanceof PhysicalEntity) {
-
-			//if it is a physical entity, then we should already have created a class to describe it based on the unique id.  
-			//TODO this needs some generalizing, but focusing on getting Reactome done right now.
-			IRI entity_class_iri = IRI.create(GoCAM.reacto_base_iri+entity_id);
+			IRI entity_class_iri = getPhysicalEntityIRI(entity);
 			OWLClass entity_class = go_cam.df.getOWLClass(entity_class_iri); 
 			go_cam.addTypeAssertion(e,  entity_class);
 
@@ -1144,6 +1181,9 @@ public class BioPaxtoGO {
 					for(PhysicalEntity input : inputs) {
 						IRI i_iri = null;
 						String input_id = getEntityReferenceId(input);
+						if(input_id==null){ //failed to find a chebi reference
+							input_id = UUID.randomUUID().toString();
+						}
 						i_iri = GoCAM.makeGoCamifiedIRI(null, input_id+"_"+entity_id);
 						OWLNamedIndividual input_entity = go_cam.df.getOWLNamedIndividual(i_iri);
 						defineReactionEntity(go_cam, input, i_iri, true, model_id, root_pathway_iri);
@@ -1153,6 +1193,9 @@ public class BioPaxtoGO {
 					for(PhysicalEntity output : outputs) {
 						IRI o_iri = null;
 						String output_id = getEntityReferenceId(output);
+						if(output_id==null) {
+							output_id = UUID.randomUUID().toString();
+						}
 						o_iri = GoCAM.makeGoCamifiedIRI(null, output_id+"_"+entity_id);
 						OWLNamedIndividual output_entity = go_cam.df.getOWLNamedIndividual(o_iri);
 						defineReactionEntity(go_cam, output, o_iri, true, model_id, root_pathway_iri);
@@ -1410,23 +1453,30 @@ public class BioPaxtoGO {
 					}
 					//default to mf
 					if(!ecmapped) {
-						//and now we aren't doing this again
-						//try to infer protein binding or complex dissociation
-						//						ComplexFunction b = checkForComplexFunction(e, go_cam);
-						//						if(b.protein_complex_binding) {
-						//							go_cam.addTypeAssertion(e, GoCAM.protein_complex_binding);	
-						//						}else if(b.protein_binding) {
-						//							go_cam.addTypeAssertion(e, GoCAM.protein_binding);	
-						//						}else if(b.binding){
-						//							go_cam.addTypeAssertion(e, GoCAM.binding);
-						//						}
-						//changing idea again here.  will handle these events downstream
-						//						else if(b.dissociation) {
-						//							go_cam.addTypeAssertion(e, GoCAM.protein_complex_dissassembly);
-						//						}
-						//						else {
-						go_cam.addTypeAssertion(e, GoCAM.molecular_event);	
-						//						}
+						boolean mapped = false;
+						if(sssom!=null) {
+							String subject_id = sssom.contractUri(entity.getUri());
+							//paxtools seems to eat the # ...  
+							subject_id = subject_id.replace("BiochemicalReaction", "#BiochemicalReaction");
+							SSSOM.Mapping mapping = sssom.getBestMatch(subject_id, 0.5);
+							if(mapping!=null) {
+								String class_iri = sssom.expandId(mapping.object_id);
+								OWLClass mapped_class = go_cam.df.getOWLClass(IRI.create(class_iri));
+								//go_cam.addTypeAssertion(pathway_e, mapped_class);	
+								//TODO further development of sssom and evidence ontology could produce a useful evidence block here
+								String comment = "This type assertion was computed with: "+mapping.mapping_tool+" with confidence "+mapping.confidence;
+								go_cam.addComment(e, comment);
+								//add some annotations to the assertion. (this is not viewable in noctua graph editor)
+								Set<OWLAnnotation> annotations = new HashSet<OWLAnnotation>();
+								annotations.add(go_cam.df.getOWLAnnotation(GoCAM.rdfs_comment, go_cam.df.getOWLLiteral(comment)));
+								OWLClassAssertionAxiom isa = go_cam.df.getOWLClassAssertionAxiom(mapped_class, e, annotations);
+								go_cam.ontman.addAxiom(go_cam.go_cam_ont, isa);						
+								mapped = true;
+							}
+						}
+						if(!mapped) {
+							go_cam.addTypeAssertion(e, GoCAM.molecular_event);	
+						}
 					}
 				}
 				//The GO-CAM OWL for the reaction and all of its parts should now be assembled.  
@@ -1439,6 +1489,45 @@ public class BioPaxtoGO {
 		return;
 	}
 
+	private IRI getPhysicalEntityIRI(Entity entity) {
+		String entity_id = getEntityReferenceId(entity);
+		if(entity_id!=null) {
+			if(entityStrategy.equals(EntityStrategy.REACTO)) {
+				//if it is a physical entity, then we should already have created a class to describe it based on the unique id.  
+				//this will exist in the REACTO ontology
+				IRI entity_class_iri = IRI.create(GoCAM.reacto_base_iri+entity_id);
+				return entity_class_iri;
+			}else if(entityStrategy.equals(EntityStrategy.YeastCyc)) {
+				if(entity_id.startsWith("CHEBI")) {
+					IRI entity_class_iri = IRI.create("http://purl.obolibrary.org/obo/"+entity_id);
+					return entity_class_iri;
+				}
+				String neo_iri = accession_neo.get(entity_id);
+				if(neo_iri==null) {
+					String trimmed = entity_id.replace("-MONOMER", "");
+					neo_iri = accession_neo.get(trimmed);
+				}
+				if(neo_iri==null) {
+					String[] split = entity_id.split("-");
+					neo_iri = accession_neo.get(split[0]);
+				}
+				if(neo_iri==null) {
+					System.err.println("No neo access found for YeastCyc if "+entity_id);
+				}else {
+					return IRI.create(neo_iri);
+				}
+			}
+		}
+		System.err.println("no class found for physical entity "+entity);
+		if(entity instanceof SmallMolecule) {
+			//classify it as a chemical
+			return IRI.create("http://purl.obolibrary.org/obo/CHEBI_24431");
+		}else if(entity instanceof Complex) {
+			return IRI.create("http://purl.obolibrary.org/obo/GO_0032991");
+		}else {//infobiomacromolecule
+			return IRI.create("http://purl.obolibrary.org/obo/CHEBI_33695");
+		}
+	}
 	private Set<String> getExactMatches(OWLIndividual part, OWLOntology ont) {
 		Set<String> matches = new HashSet<String>();
 		Collection<OWLAnnotation> orig_ids = EntitySearcher.getAnnotationObjects((OWLEntity) part, ont, GoCAM.skos_exact_match);

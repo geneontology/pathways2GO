@@ -80,6 +80,8 @@ public class BioPaxtoGOTest {
 	}
 	
 	public static void fullBuild() throws Exception{
+		bp2g.entityStrategy = BioPaxtoGO.EntityStrategy.REACTO;
+		bp2g.generate_report = false;
 		System.out.println("set up before class");
 		bp2g.go_lego_file = go_lego_file;
 		File goplus_file = new File(go_plus_file);

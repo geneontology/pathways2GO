@@ -15,6 +15,8 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.geneontology.gocam.exchange.BioPaxtoGO.EntityStrategy;
+import org.geneontology.gocam.exchange.PhysicalEntityOntologyBuilder.ReasonerImplementation;
 import org.obolibrary.robot.CatalogXmlIRIMapper;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
@@ -35,6 +37,8 @@ import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 -dc https://orcid.org/0000-0002-7334-7852 
 -dp https://reactome.org 
 -lego ./go-lego-reacto.owl
+-e REACTO 
+-sssom ./target/classes/YeastCyc/obomatch-go-yeastpathway.sssom.tsv.txt
  * @author bgood
  *
  */
@@ -50,7 +54,7 @@ public class Biopax2GOCmdLine {
 	 * @throws OWLOntologyStorageException 
 	 * @throws OWLOntologyCreationException 
 	 */
-	public static void main(String[] args) throws ParseException, OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {
+	public static void main(String[] args) throws ParseException, OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {		
 		BioPaxtoGO bp2g = new BioPaxtoGO();
 		//parameters to set
 		String input_biopax = null; //"/Users/bgood/Desktop/test/biopax/Homo_sapiens_sept9_2019.owl";
@@ -63,12 +67,14 @@ public class Biopax2GOCmdLine {
 		String test_pathway_name = null;
 		String catalog = null;
 		String reacto_out = null;
+		bp2g.entityStrategy = EntityStrategy.REACTO; //default to reactome entity ontology pattern 
+		bp2g.generate_report = false; //have not been using this at all, but could be revived
 		// create Options object
 		Options options = new Options();
 		options.addOption("b", true, "biopax pathway file to convert");
 		options.addOption("reacto", true, "if reacto, generate an ontology of all physical entities in the input biopax file. ");
 		options.addOption("chebi", true, "local chebi.owl file");
-
+		options.addOption("e", true, "specify a stategy for handling physical entities - so far either REACTO or YeastCyc - with REACTO as the default");
 		options.addOption("o", true, "output directory");
 		options.addOption("bg", true, "blazegraph output journal"); 
 		options.addOption("tag", true, "a tag to be added to the title's of generated go-cams");
@@ -79,6 +85,7 @@ public class Biopax2GOCmdLine {
 		options.addOption("tp", true, "Exact name of a specific pathway to test - e.g. \"Signaling by MP\".  Other pathways in the biopax input file will be ignored. Default is that all pathways are processed");
 		options.addOption("c", true, "Catalog file for tbox");
 		options.addOption("nosplit", false, "If present, do not split the input biopax file into its constituent pathways where one pathway becomes one go-cam model.  Make one big model.");
+		options.addOption("sssom", true, "An sssom formatted mapping file (optional). Will be used to add guessed classes if none are present in the biopax");
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = parser.parse( options, args);
@@ -110,7 +117,12 @@ public class Biopax2GOCmdLine {
 			if(chebi_file!=null) {
 				chebi = ontman.loadOntologyFromOntologyDocument(new File(chebi_file));
 			}
-			PhysicalEntityOntologyBuilder.buildReacto(input_biopax, reacto_out, go_lego_tbox, add_imports, chebi);
+			//TODO parameterize this config
+			String base_extra_info = "https://reactome.org/content/detail/";
+			String base_short_namespace = "Reactome";
+			ReasonerImplementation r = ReasonerImplementation.Elk;
+			PhysicalEntityOntologyBuilder builder = new PhysicalEntityOntologyBuilder(new GOLego(go_lego_tbox), base_short_namespace, base_extra_info, r, null);
+			builder.buildReacto(input_biopax, reacto_out, go_lego_tbox, add_imports, chebi);
 		}
 		//could chain them together if desired, but simple for now.  
 		else {
@@ -168,6 +180,26 @@ public class Biopax2GOCmdLine {
 			}else {
 				bp2g.split_by_pathway = true;
 			}
+			if(cmd.hasOption("sssom")) {
+				bp2g.sssom = new SSSOM(cmd.getOptionValue("sssom"));
+			}
+			//TODO generalize this!  
+			Set<String> taxa = new HashSet<String>();			
+			if(cmd.hasOption("e")) {
+				String entity_strategy = cmd.getOptionValue("e");
+				if(entity_strategy.equalsIgnoreCase("REACTO")) {
+					bp2g.entityStrategy = EntityStrategy.REACTO; 
+					taxa.add("http://purl.obolibrary.org/obo/NCBITaxon_9606");
+				}else if(entity_strategy.equalsIgnoreCase("YeastCyc")) {
+					bp2g.entityStrategy = EntityStrategy.YeastCyc; 
+					taxa.add("http://purl.obolibrary.org/obo/NCBITaxon_559292");
+				}else {
+					System.out.println("If specifying entity resolution strategy with -e, please select either REACTO or YeastCyc");
+				}
+			}
+			if(taxa.size()==0) {
+				taxa.add("http://purl.obolibrary.org/obo/NCBITaxon_9606");
+			}
 			//initialize the rules for inference		
 			OWLOntology tbox = ontman.loadOntologyFromOntologyDocument(new File(bp2g.go_lego_file));
 			bp2g.golego = new GOLego(tbox);
@@ -176,15 +208,12 @@ public class Biopax2GOCmdLine {
 			
 			File dir = new File(input_biopax);
 			File[] directoryListing = dir.listFiles();
-			//TODO generalize this!  
-			Set<String> taxa = new HashSet<String>();
-			taxa.add("http://purl.obolibrary.org/obo/NCBITaxon_9606");
 			
 			//run through all files
 			if (directoryListing != null) {
 				for (File biopax : directoryListing) {
 					String name = biopax.getName();
-					if(name.contains(".owl")||name.contains(".xml")) { 
+					if(name.contains(".owl")||name.contains("biopax")) { 
 						name = name.replaceAll(".owl", "-");
 						name = name.replaceAll(".xml", "-");
 						String this_output_file_stub = output_file_stub+name;

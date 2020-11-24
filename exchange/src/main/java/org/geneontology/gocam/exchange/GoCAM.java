@@ -150,6 +150,7 @@ public class GoCAM {
 	Blazer blazegraphdb;
 	//for convenience
 	String name;
+	String default_namespace_prefix;
 
 	public GoCAM() throws OWLOntologyCreationException {
 		ontman = OWLManager.createOWLOntologyManager();				
@@ -197,6 +198,16 @@ public class GoCAM {
 		df = OWLManager.getOWLDataFactory();
 		initializeClassesAndRelations();
 
+		if(base_provider.equals("https://reactome.org")) {
+			default_namespace_prefix = "Reactome";
+		}else if(base_provider.equals("https://www.wikipathways.org/")) {
+			default_namespace_prefix = "wikipathways";
+		}else if(base_provider.equals("https://www.pathwaycommons.org/")) {
+			default_namespace_prefix = "pathwaycommons";
+		}else if(base_provider.equals("https://yeastcyc.org")) {
+			default_namespace_prefix = "SGD";
+		}
+		
 		//TODO find a better way
 		if(add_lego_import) {
 			String lego_iri = "http://purl.obolibrary.org/obo/go/extensions/go-lego-reacto.owl";
@@ -1022,7 +1033,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 						//drop the has input 
 						applyAnnotatedTripleRemover(reaction_instance.getIRI(), has_input.getIRI(), input_instance.getIRI());
 						//add the enabled by					
-						addRefBackedObjectPropertyAssertion(reaction_instance, GoCAM.enabled_by, input_instance, Collections.singleton(model_id), GoCAM.eco_imported_auto, "Reactome", annos, model_id);
+						addRefBackedObjectPropertyAssertion(reaction_instance, GoCAM.enabled_by, input_instance, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, annos, model_id);
 						//sloppily catch the pathway id
 						enabling_binding_pathways.add(model_id);
 					}
@@ -1105,16 +1116,16 @@ final long counterValue = instanceCounter.getAndIncrement();
 				String explain1 = "This relation was inferred because something that was an input to the reaction started out in the target location "+getaLabel(start_loc_type)
 				+ " and then, as a consequence of the reaction/process was transported to "+getaLabel(end_loc_type);
 				annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain1)));				
-				addRefBackedObjectPropertyAssertion(reaction, has_target_start_location, start_loc, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+				addRefBackedObjectPropertyAssertion(reaction, has_target_start_location, start_loc, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
 				String explain2 = "This relation was inferred because something that was an input to the reaction started in "+getaLabel(start_loc_type)
 						+ " and then, as a consequence of the reaction/process was transported to the target end location "+getaLabel(end_loc_type);
 				Set<OWLAnnotation> annos2 = getDefaultAnnotations();
 				annos2.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain2)));
-				addRefBackedObjectPropertyAssertion(reaction, has_target_end_location, end_loc, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos2, model_id);
+				addRefBackedObjectPropertyAssertion(reaction, has_target_end_location, end_loc, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos2, model_id);
 				//needed to support inferences into the localization hierarchy
 				IRI new_iri = makeGoCamifiedIRI(null,"transported_"+thing.toString().replace("http://model.geneontology.org/", ""));
 				OWLNamedIndividual transported_thing = cloneIndividual(thing, model_id, true, false, false, true, new_iri);
-				addRefBackedObjectPropertyAssertion(reaction, transports_or_maintains_localization_of, transported_thing, Collections.singleton(model_id), GoCAM.eco_inferred_auto,"Reactome", annos2, model_id);
+				addRefBackedObjectPropertyAssertion(reaction, transports_or_maintains_localization_of, transported_thing, Collections.singleton(model_id), GoCAM.eco_inferred_auto,default_namespace_prefix, annos2, model_id);
 			}
 			//enabled by needs to know if there are any transport reactions as these should not be included
 			//hence reload graph from ontology
@@ -1181,7 +1192,7 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 						IRI place_iri = makeGoCamifiedIRI(null, loc_id);						
 						OWLNamedIndividual placeInstance = df.getOWLNamedIndividual(place_iri);
 						addTypeAssertion(placeInstance, location_class);
-						addRefBackedObjectPropertyAssertion(reaction, GoCAM.occurs_in, placeInstance, Collections.singleton(model_id), GoCAM.eco_imported_auto, "Reactome", annos, model_id);
+						addRefBackedObjectPropertyAssertion(reaction, GoCAM.occurs_in, placeInstance, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, annos, model_id);
 					}
 				}
 			}
@@ -1238,10 +1249,10 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 			IRI binding_node_iri = makeGoCamifiedIRI(null, r1.toString().replace("http://model.geneontology.org/", "")+"_binding_"+entity.toString().replace("http://model.geneontology.org/", ""));
 			OWLNamedIndividual binding_node = makeAnnotatedIndividual(binding_node_iri);
 			addTypeAssertion(binding_node, binding);
-			addRefBackedObjectPropertyAssertion(binding_node, has_input, entity, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
-			addRefBackedObjectPropertyAssertion(binding_node, part_of, pathway, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
-			addRefBackedObjectPropertyAssertion(r1, provides_direct_input_for, binding_node, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
-			addRefBackedObjectPropertyAssertion(binding_node, o, r2, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+			addRefBackedObjectPropertyAssertion(binding_node, has_input, entity, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
+			addRefBackedObjectPropertyAssertion(binding_node, part_of, pathway, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
+			addRefBackedObjectPropertyAssertion(r1, provides_direct_input_for, binding_node, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
+			addRefBackedObjectPropertyAssertion(binding_node, o, r2, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
 
 			//delete the entity regulates process relation 
 			applyAnnotatedTripleRemover(entity.getIRI(), IRI.create(ir.prop_uri), r2.getIRI());
@@ -1290,7 +1301,7 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 					r1_label+" is enabled by B.";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
 			//this.addObjectPropertyAssertion(r1, o, r2, annos);
-			this.addRefBackedObjectPropertyAssertion(r2, o, r1, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+			this.addRefBackedObjectPropertyAssertion(r2, o, r1, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
 			//			System.out.println("reg2 "+r1+" "+o+" "+r2);
 		}	
 		r.rule_hitcount.put(regulator_rule_2, regulator_count_2);
@@ -1324,7 +1335,7 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 			String explain = "Entity Regulation Rule 3. The relation "+r1_label+" "+o_label+" "+r2_label+" was inferred because:\n "+
 					"reaction1 has an output that is the enabler of reaction 2.";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
-			this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+			this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
 			applyAnnotatedTripleRemover(r1.getIRI(), causally_upstream_of.getIRI(), r2.getIRI());
 		}	
 		r.rule_hitcount.put(regulator_rule_3, regulator_count_3);
@@ -1358,7 +1369,7 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 			String explain = "Provides Input For Rule. The relation "+r1_label+" "+o_label+" "+r2_label+" was inferred because:\n "+
 					"reaction1 has an output that is an input of reaction 2. ";
 			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
-			this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+			this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
 			applyAnnotatedTripleRemover(r1.getIRI(), causally_upstream_of.getIRI(), r2.getIRI());
 		}	
 		r.rule_hitcount.put(provides_input_rule, provides_input_count);
@@ -1439,14 +1450,14 @@ BP has_part R
 					OWLNamedIndividual binding_node = makeAnnotatedIndividual(new_mf_node_iri);
 					addComment(binding_node, "Produced by Entity Regulator Rule");					
 				
-					addRefBackedObjectPropertyAssertion(binding_node, has_input, regulator, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
-					addRefBackedObjectPropertyAssertion(binding_node, regulator_prop, reaction, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+					addRefBackedObjectPropertyAssertion(binding_node, has_input, regulator, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
+					addRefBackedObjectPropertyAssertion(binding_node, regulator_prop, reaction, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
 
 					if(er.enabler_uri!=null) {
 						addTypeAssertion(binding_node, binding);
 						IRI new_enabler_node_iri = makeGoCamifiedIRI(null, reaction.toString().replace("http://model.geneontology.org/", "").replaceAll(">", "").replaceAll("<", "")+"_regulator_enabler_"+er.enabler_uri.toString().replace("http://model.geneontology.org/", "")+"_"+regulator.toString().replace("http://model.geneontology.org/", ""));						
 						OWLNamedIndividual enabler = cloneIndividual(er.enabler_uri, model_id, true, false, false, true, new_enabler_node_iri);
-						addRefBackedObjectPropertyAssertion(binding_node, enabled_by, enabler, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+						addRefBackedObjectPropertyAssertion(binding_node, enabled_by, enabler, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
 						//delete the cloned enable relation
 						applyAnnotatedTripleRemover(reaction.getIRI(), enabled_by.getIRI(), enabler.getIRI());
 						//just in case the enabler was double inserted as a controller
@@ -1460,9 +1471,9 @@ BP has_part R
 					OWLNamedIndividual bp_node = makeAnnotatedIndividual(new_bp_node_iri);
 					addComment(bp_node, "Produced by Entity Regulator Rule");
 					addTypeAssertion(bp_node, bp_class);
-					addRefBackedObjectPropertyAssertion(binding_node, part_of, bp_node, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);
+					addRefBackedObjectPropertyAssertion(binding_node, part_of, bp_node, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
 					if(pathway!=null) {
-						addRefBackedObjectPropertyAssertion(bp_node, regulator_prop, pathway, Collections.singleton(model_id), GoCAM.eco_inferred_auto, "Reactome", annos, model_id);					
+						addRefBackedObjectPropertyAssertion(bp_node, regulator_prop, pathway, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);					
 					}
 					//delete the original entity regulates process relation 
 					applyAnnotatedTripleRemover(regulator.getIRI(), prop_for_deletion.getIRI(), reaction.getIRI());

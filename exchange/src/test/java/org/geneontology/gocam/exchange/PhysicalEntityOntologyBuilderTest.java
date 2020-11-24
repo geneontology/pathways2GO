@@ -90,7 +90,11 @@ public class PhysicalEntityOntologyBuilderTest {
 			if(chebi_location!=null) {
 				chebi = ontman.loadOntologyFromOntologyDocument(new File(chebi_location));
 			}
-			OWLOntology reacto = PhysicalEntityOntologyBuilder.buildReacto(input_biopax_file, reacto_out, go_lego_tbox, add_imports, chebi);			
+			String base_extra_info = "https://reactome.org/content/detail/";
+			String base_short_namespace = "Reactome";
+			ReasonerImplementation r = ReasonerImplementation.Elk;
+			PhysicalEntityOntologyBuilder builder = new PhysicalEntityOntologyBuilder(new GOLego(go_lego_tbox), base_short_namespace, base_extra_info, r, null);
+			OWLOntology reacto = builder.buildReacto(input_biopax_file, reacto_out, go_lego_tbox, add_imports, chebi);			
 			ontman.addAxioms(reacto, go_lego_tbox.getAxioms());
 			OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
 			System.out.println(" creating reacto reasoner ");
