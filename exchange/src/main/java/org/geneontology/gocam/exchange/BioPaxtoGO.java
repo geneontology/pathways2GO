@@ -995,7 +995,7 @@ public class BioPaxtoGO {
 						UnificationXref uref = (UnificationXref)xref;	    			
 						//here we add the referenced GO class as a type.  
 						String db = uref.getDb().toLowerCase();
-						if(db.contains("gene ontology")) {
+						if(db.contains("gene ontology")||db.equals("go")) {
 							String uri = GoCAM.obo_iri + uref.getId().replaceAll(":", "_");						
 							OWLClass xref_go_loc = golego.getOboClass(uri, true);
 							boolean deprecated = golego.isDeprecated(uri);
