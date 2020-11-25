@@ -217,6 +217,7 @@ public class Biopax2GOCmdLine {
 						name = name.replaceAll(".owl", "-");
 						name = name.replaceAll(".xml", "-");
 						String this_output_file_stub = output_file_stub+name;
+						this_output_file_stub = this_output_file_stub.replace("pathway-biopax?type=3&object=","");
 						bp2g.convert(biopax.getAbsolutePath(), this_output_file_stub, base_title, default_contributor, default_provider, tag, test_pathways, blaze, taxa);
 					}
 				}
