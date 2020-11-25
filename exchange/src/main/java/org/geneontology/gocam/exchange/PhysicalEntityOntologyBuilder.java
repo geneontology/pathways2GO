@@ -137,6 +137,7 @@ public class PhysicalEntityOntologyBuilder {
 		}
 		missing_chebi = new HashSet<String>();
 		bp2go = new BioPaxtoGO();
+		bp2go.entityStrategy = BioPaxtoGO.EntityStrategy.REACTO;
 	}
 
 	/**
@@ -1060,7 +1061,7 @@ public class PhysicalEntityOntologyBuilder {
 		int n_drug = 0;
 		int n_sets_of_complexes = 0; int n_sets_of_sets = 0;
 		Set<String> set_types = new HashSet<String>();		
-		String mapping = "/Users/benjamingood/gocam_ontology/REO/promapping.txt";
+		String mapping = "./target/classes/REACTO/promapping.txt";
 		Map<String, Set<String>> exact_map = PRO.readReact2PRO(mapping, "exact");
 		Map<String, Set<String>> any_map = PRO.readReact2PRO(mapping, "is_a");
 		Map<String, String> physical_ref = new HashMap<String, String>();
@@ -1148,12 +1149,12 @@ public class PhysicalEntityOntologyBuilder {
 		System.out.println("n_all_pro\tn_sets_pro\tn_complex_pro\tn_protein_prp\tn_small_molecule_pro");
 		System.out.println( n_all_pro+"\t"+n_sets_pro+"\t"+n_complex_pro+"\t"+n_protein_pro+"\t"+n_small_molecule_pro);
 
-		FileWriter f = new FileWriter("/Users/benjamingood/Desktop/untyped_physical.txt");
-		f.write("id	drug	set	name	biopax type\n");
-		for(String n : physical_ref.keySet()) {
-			f.write(n+"\t"+physical_ref.get(n)+"\n");
-		}
-		f.close();
+//		FileWriter f = new FileWriter("/Users/benjamingood/Desktop/untyped_physical.txt");
+//		f.write("id	drug	set	name	biopax type\n");
+//		for(String n : physical_ref.keySet()) {
+//			f.write(n+"\t"+physical_ref.get(n)+"\n");
+//		}
+//		f.close();
 	}
 
 }
