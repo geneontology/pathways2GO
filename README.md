@@ -35,7 +35,7 @@ Code for converting between biological pathways (e.g. Reactome, Wikipathways) ex
 
 ## Running
 - Build using Maven install, or download a release jar file from https://github.com/geneontology/pathways2GO/releases 
-- the biopax2go.jar executable has 2 purposes.  It can generate an OWL ontology containing the physical entities in a biopax file (e.g. reacto.owl) and it can convert a biopax file into a set of GO-CAMs corresponding to the pathways in the biopax.  
+- the biopax2go.jar executable has 2 purposes.  It can generate an OWL ontology containing the physical entities in a biopax file (e.g. reacto.owl) and it can convert a biopax file (e.g. https://reactome.org/download/current/biopax.zip) into a set of GO-CAMs corresponding to the pathways in the biopax.  
 - For example, to generate a physical entity ontology called reacto.owl from a biopax file: 
   - java -jar biopax2go.jar -b some_biopax.owl -reacto reacto -lego go-lego.owl -chebi chebi.owl
   - Note that it needs a local copy of go-lego.owl and chebi.owl (http://purl.obolibrary.org/obo/chebi.owl).  
