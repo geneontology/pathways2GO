@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -26,30 +27,7 @@ import org.apache.jena.vocabulary.RDFS;
 import org.biopax.paxtools.io.BioPAXIOHandler;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.Model;
-import org.biopax.paxtools.model.level3.CellularLocationVocabulary;
-import org.biopax.paxtools.model.level3.Complex;
-import org.biopax.paxtools.model.level3.Dna;
-import org.biopax.paxtools.model.level3.DnaRegion;
-import org.biopax.paxtools.model.level3.Entity;
-import org.biopax.paxtools.model.level3.EntityFeature;
-import org.biopax.paxtools.model.level3.EntityReference;
-import org.biopax.paxtools.model.level3.FragmentFeature;
-import org.biopax.paxtools.model.level3.ModificationFeature;
-import org.biopax.paxtools.model.level3.Pathway;
-import org.biopax.paxtools.model.level3.PhysicalEntity;
-import org.biopax.paxtools.model.level3.Protein;
-import org.biopax.paxtools.model.level3.Rna;
-import org.biopax.paxtools.model.level3.RnaRegion;
-import org.biopax.paxtools.model.level3.SequenceInterval;
-import org.biopax.paxtools.model.level3.SequenceLocation;
-import org.biopax.paxtools.model.level3.SequenceModificationVocabulary;
-import org.biopax.paxtools.model.level3.SequenceRegionVocabulary;
-import org.biopax.paxtools.model.level3.SequenceSite;
-import org.biopax.paxtools.model.level3.SmallMolecule;
-import org.biopax.paxtools.model.level3.Stoichiometry;
-import org.biopax.paxtools.model.level3.UnificationXref;
-import org.biopax.paxtools.model.level3.XReferrable;
-import org.biopax.paxtools.model.level3.Xref;
+import org.biopax.paxtools.model.level3.*;
 import org.geneontology.gocam.exchange.BioPaxtoGO.ImportStrategy;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFHandlerException;
@@ -88,6 +66,8 @@ import org.semanticweb.owlapi.util.InferredAxiomGenerator;
 import org.semanticweb.owlapi.util.InferredEquivalentClassAxiomGenerator;
 import org.semanticweb.owlapi.util.InferredOntologyGenerator;
 import org.semanticweb.owlapi.util.InferredSubClassAxiomGenerator;
+
+import static org.geneontology.gocam.exchange.GoCAM.only_in_taxon;
 
 
 /**
@@ -468,6 +448,7 @@ public class PhysicalEntityOntologyBuilder {
 		//attempt to localize the class 
 		OWLClass go_loc_class = null;
 		OWLClassExpression occurs_in_exp = null;
+
 		CellularLocationVocabulary loc = ((PhysicalEntity) entity).getCellularLocation();
 		if(loc!=null&&capture_location) {			
 			//dig out the GO cellular location and create a class construct for it
@@ -500,14 +481,28 @@ public class PhysicalEntityOntologyBuilder {
 		//check for sets and add them if present
 		boolean isa_set = checkForAndAddSet(go_cam, model_id, entity, e);
 
+		// add taxon linkage
+		if (entity instanceof SimplePhysicalEntity) {
+			SimplePhysicalEntity spe = (SimplePhysicalEntity)entity;
+			if ((spe.getEntityReference() instanceof SequenceEntityReference) && capture_taxon) {
+				SequenceEntityReference ref = (SequenceEntityReference)(spe.getEntityReference());
+				BioSource source = ref.getOrganism();
+				if (source != null) {
+					Set<OWLClass> taxa = source.getXref().stream()
+							.filter(xref -> xref.getDb().equals("NCBI Taxonomy"))
+							.map(xref -> "http://purl.obolibrary.org/obo/NCBITaxon_" + xref.getId())
+							.map(iri -> go_cam.ontman.getOWLDataFactory().getOWLClass(IRI.create(iri)))
+							.collect(Collectors.toSet());
+					taxa.forEach(taxon -> go_cam.addSubClassAssertion(e, go_cam.ontman.getOWLDataFactory().getOWLObjectSomeValuesFrom(only_in_taxon, taxon)));
+				}
+			}
+		}
+
 		//now get more specific type information
 		//Complex 
 		if(entity.getModelInterface().equals(Complex.class)) {
-			Complex complex = (Complex)entity;	
+			Complex complex = (Complex)entity;
 			go_cam.addSubClassAssertion(e, GoCAM.go_complex);
-			if(capture_taxon) {
-				go_cam.addSubClassAssertion(e, GoCAM.taxon_human);
-			}
 			//since we never have anything more specific that NEO knows about (now)
 			//any downstream mapping will just call this a complex
 			//todo IF we start using real external classes for complexes we can change this here. 
@@ -566,9 +561,6 @@ public class PhysicalEntityOntologyBuilder {
 			if(entity.getModelInterface().equals(Protein.class)) {
 				Protein protein = (Protein)entity;
 				id = getUniprotProteinId(protein);
-				if(capture_taxon) {
-					go_cam.addSubClassAssertion(e, GoCAM.taxon_human);
-				}
 			}			
 			if(id!=null) {
 				//create the specific protein class
