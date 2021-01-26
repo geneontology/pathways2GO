@@ -89,13 +89,6 @@
 			<artifactId>arachne_2.12</artifactId>
 			<version>1.2</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.phenoscape/scowl -->
-<dependency>
-    <groupId>org.phenoscape</groupId>
-    <artifactId>scowl_2.11</artifactId>
-    <version>1.3</version>
-</dependency>
-
       <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
