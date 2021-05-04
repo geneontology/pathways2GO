@@ -149,6 +149,7 @@ public class BioPaxtoGO {
 	String default_namespace_prefix = "Reactome"; //this is used to generate curi structured references - e.g. Reactome:HSA-007
 	Set<String> drug_process_ids = new HashSet<String>(); 
 	Map<String, String> accession_neo = new HashMap<String, String>(); //in case we need to store mappings to neo IRIs, use this
+	Map<String, String> yeastcyc2EC = new HashMap<String, String>(); //used to store mappings from YeastCyc ID to EC number in SGDIDs_to_ExPASy-ECs.txt
 	public BioPaxtoGO(){
 		strategy = ImportStrategy.NoctuaCuration; 
 		report = new GoMappingReport();
@@ -229,6 +230,18 @@ public class BioPaxtoGO {
 				}
 			}
 			reader.close();
+			// Also parse SGDIDs_to_ExPASy-ECs.txt
+			BufferedReader sgd2ECReader = new BufferedReader(new FileReader("./target/classes/YeastCyc/SGDIDs_to_ExPASy-ECs.txt"));
+			String sgdLine = sgd2ECReader.readLine();
+			while(sgdLine!=null) {
+				String[] cols = sgdLine.split("	");
+				String yeastcyc = cols[1];
+				String ecNumber = cols[5];
+				yeastcyc2EC.put(yeastcyc, ecNumber);
+				
+				sgdLine = sgd2ECReader.readLine();
+			}
+			sgd2ECReader.close();
 		}
 		//read biopax pathway(s)
 		BioPAXIOHandler handler = new SimpleIOHandler();
@@ -1326,6 +1339,14 @@ public class BioPaxtoGO {
 						defineReactionEntity(go_cam, controller_entity, iri, true, model_id, root_pathway_iri);
 						//the protein or complex
 						OWLNamedIndividual controller_e = go_cam.df.getOWLNamedIndividual(iri);
+						if(entityStrategy.equals(EntityStrategy.YeastCyc)) {
+							Set<OWLClass> more_go_mfs = getTypesFromECsFromGPs(controller_entity, go_cam);
+							for(OWLClass xtra_mf : more_go_mfs) {
+								go_cam.addTypeAssertion(e, xtra_mf);	
+//								ecmapped = true;
+								go_mf.add(xtra_mf.getIRI().getRemainder().toString());
+							}
+						}
 						//the controlling physical entity enables that function/reaction
 						//check if there is an activeUnit annotation (reactome only)
 						//active site 
@@ -1447,6 +1468,10 @@ public class BioPaxtoGO {
 					//try mapping via xrefs
 					boolean ecmapped = false;
 					if(entity instanceof BiochemicalReaction) {
+//						for(OWLClass type :getTypesFromECs((BiochemicalReaction)entity, go_cam)) {
+//							go_cam.addTypeAssertion(e, type);	
+//							ecmapped = true;
+//						}
 						for(OWLClass type :getTypesFromECs((BiochemicalReaction)entity, go_cam)) {
 							go_cam.addTypeAssertion(e, type);	
 							ecmapped = true;
@@ -1646,6 +1671,42 @@ public class BioPaxtoGO {
 				}
 			}
 		}
+		return gos;
+	}
+	
+	Set<OWLClass> getTypesFromECsFromGPs(Entity entity, GoCAM go_cam){
+		Set<OWLClass> gos = new HashSet<OWLClass>();
+		Protein controller_pr = (Protein) entity;
+		for(Xref xref : controller_pr.getXref()) {
+			//dig out any xreferenced GO processes and assign them as types
+			if(xref.getModelInterface().equals(RelationshipXref.class)) {
+				RelationshipXref r = (RelationshipXref)xref;
+				if(r.getDb().equalsIgnoreCase("YeastCyc")) {
+					String yeastcyc_id = r.getId().replace("-MONOMER", "");
+					String eCNumber = yeastcyc2EC.get(yeastcyc_id);
+					Set<String> goids = golego.xref_gos.get("EC:"+eCNumber);
+					if(goids!=null) {
+						for(String goid : goids) {
+							OWLClass go = go_cam.df.getOWLClass(IRI.create(goid));
+							gos.add(go);
+						}
+					}
+				}
+			}
+		}
+//		String trimmed = entity_id.replace("-MONOMER", "");
+//		reaction.  // Get GP ID from reaction. Access lookup to get ECs.
+//		for(Control co : reaction.getControlledOf()) {
+//			for(String ec : reaction.getECNumber()) {
+//				Set<String> goids = golego.xref_gos.get("EC:"+ec);
+//				if(goids!=null) {
+//					for(String goid : goids) {
+//						OWLClass go = go_cam.df.getOWLClass(IRI.create(goid));
+//						gos.add(go);
+//					}
+//				}
+//			}
+//		}
 		return gos;
 	}
 
