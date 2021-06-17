@@ -258,7 +258,7 @@ public class PhysicalEntityOntologyBuilder {
 
 	public OWLOntology buildReacto(String input_biopax, String outfilename, OWLOntology tbox, boolean add_imports, OWLOntology chebi_in) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException {
 
-		String outputformat = "RDFXML";
+		String outputformat = "TURTLE";
 		String base_ont_title = "Reactome Entity Ontology (REACTO)";
 		String base_extra_info = "https://reactome.org/content/detail/";
 		String base_short_namespace = "Reactome";
@@ -1053,9 +1053,9 @@ public class PhysicalEntityOntologyBuilder {
 		int n_drug = 0;
 		int n_sets_of_complexes = 0; int n_sets_of_sets = 0;
 		Set<String> set_types = new HashSet<String>();		
-		String mapping = "./target/classes/REACTO/promapping.txt";
-		Map<String, Set<String>> exact_map = PRO.readReact2PRO(mapping, "exact");
-		Map<String, Set<String>> any_map = PRO.readReact2PRO(mapping, "is_a");
+		//String mapping = "./target/classes/REACTO/promapping.txt";
+		Map<String, Set<String>> exact_map = PRO.readReact2PRO(null, "exact");
+		Map<String, Set<String>> any_map = PRO.readReact2PRO(null, "is_a");
 		Map<String, String> physical_ref = new HashMap<String, String>();
 		any_map.putAll(exact_map);
 		boolean isa_set = false;
