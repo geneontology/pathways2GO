@@ -1,10 +1,17 @@
 package org.geneontology.gocam.exchange;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import org.biopax.paxtools.model.level3.RelationshipXref;
+import org.biopax.paxtools.model.level3.Xref;
 import org.semanticweb.owlapi.formats.OBODocumentFormat;
 import org.semanticweb.owlapi.formats.TurtleDocumentFormat;
 import org.semanticweb.owlapi.io.FileDocumentTarget;
@@ -150,5 +157,99 @@ public class Helper {
 		//ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());	
 		ont.getOWLOntologyManager().setOntologyFormat(ont, new OBODocumentFormat());	
 		ont.getOWLOntologyManager().saveOntology(ont,outf);
+	}
+	
+	public static Map<String, String> parseGPI(String gpiFile) throws IOException {
+		Map<String, String> idLookup = new HashMap<String, String>();
+		
+		//neo needs e.g.
+		//http://identifiers.org/sgd/S000001024
+		//we get e.g.
+		//YeastCyc YIL155C-MONOMER
+		//we get the mapping from a YeastCyc GPI file downloaded from http://sgd-archive.yeastgenome.org/curation/literature/ 
+		//e.g. http://sgd-archive.yeastgenome.org/curation/literature/gp_information.559292_sgd.gpi.gz 
+		BufferedReader reader = new BufferedReader(new FileReader(gpiFile));
+		String line = reader.readLine();
+		while(line!=null) {
+			if(line.startsWith("!")) {
+				line = reader.readLine();
+			}else {
+				String[] cols = line.split("	");
+				String yeastcyc = cols[4];
+				Set<String> yeastcyc_ids = new HashSet<String>();
+				if(yeastcyc.contains("|")) {
+					String[] ids = yeastcyc.split("\\|");
+					for(String id : ids) {
+						yeastcyc_ids.add(id);
+					}
+				}else {
+					yeastcyc_ids.add(yeastcyc);
+				}
+				if(cols[0].contentEquals("ComplexPortal")) {
+					for(String yeastacc : yeastcyc_ids) {
+						idLookup.put(yeastacc, "http://purl.obolibrary.org/obo/ComplexPortal_"+cols[1]);
+					}	
+				}else if(cols.length>=8) {
+					String sgd = cols[8];
+					Set<String> sgd_ids = new HashSet<String>();
+					if(sgd.contains("|")) {
+						String[] ids = sgd.split("\\|");
+						for(String id : ids) {
+							sgd_ids.add(id);
+						}
+					}else {
+						sgd_ids.add(sgd);
+					}				
+					for(String yeastacc : yeastcyc_ids) {
+						for(String sgdid : sgd_ids) {
+							idLookup.put(yeastacc, sgdid.replace("SGD:", "http://identifiers.org/sgd/"));
+						}
+					}					
+				}
+				line = reader.readLine();
+			}
+		}
+		reader.close();
+		
+		return idLookup;
+	}
+	
+	public static Map<String, String> parseSgdIdToEcFile(String sgdIdToEcFilePath) throws IOException {
+		Map<String, String> ecLookup = new HashMap<String, String>();
+		
+		BufferedReader sgd2ECReader = new BufferedReader(new FileReader(sgdIdToEcFilePath));
+		String sgdLine = sgd2ECReader.readLine();
+		while(sgdLine!=null) {
+			String[] cols = sgdLine.split("	");
+			String yeastcyc = cols[1];
+			String ecNumber = cols[5];
+			ecLookup.put(yeastcyc, ecNumber);
+			
+			sgdLine = sgd2ECReader.readLine();
+		}
+		sgd2ECReader.close();
+		
+		return ecLookup;
+	}
+	
+	public static HashSet<String> extractGoTermsFromXrefs(Set<Xref> xrefs) {
+		HashSet<String> extractedGos = new HashSet<String>();
+		for(Xref xref : xrefs) {
+			//dig out any xreferenced GO processes and assign them as types
+			if(xref.getModelInterface().equals(RelationshipXref.class)) {
+				RelationshipXref r = (RelationshipXref)xref;	    			
+				//System.out.println(xref.getDb()+" "+xref.getId()+" "+xref.getUri()+"----"+r.getRelationshipType());
+				//note that relationship types are not defined beyond text strings like RelationshipTypeVocabulary_gene ontology term for cellular process
+				//you just have to know what to do.
+				//here we add the referenced GO class as a type.  
+				String db = r.getDb().toLowerCase();
+				if(db.contains("gene ontology")) {
+					String goid = r.getId().replaceAll(":", "_");
+					//record mappings
+					extractedGos.add(goid);
+				}
+			}
+		}
+		return extractedGos;
 	}
 }
