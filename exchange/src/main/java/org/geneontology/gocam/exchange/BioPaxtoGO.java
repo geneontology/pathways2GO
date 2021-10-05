@@ -1476,6 +1476,10 @@ public class BioPaxtoGO {
 			}else if(entityStrategy.equals(EntityStrategy.YeastCyc)) {
 				if(entity_id.startsWith("CHEBI")) {
 					IRI entity_class_iri = IRI.create("http://purl.obolibrary.org/obo/"+entity_id);
+					if(golego.chebi_roles.contains(entity_class_iri.toString())) {
+						// No roles of any kind can be treated as physical entities - fall back on 'chemical entity'
+						return IRI.create("http://purl.obolibrary.org/obo/CHEBI_24331");
+					}
 					return entity_class_iri;
 				}
 				String neo_iri = accession_neo.get(entity_id);
