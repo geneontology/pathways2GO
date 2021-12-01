@@ -43,6 +43,7 @@ public class GOLego {
 	OWLDataFactory df;
 	Set<String> chebi_roles;
 	Set<String> chebi_chemicals;
+	Set<String> molecular_functions;
 	Set<String> deprecated;
 	Map<String, String> replaced_by_map;
 	Map<String, Set<String>> xref_gos;
@@ -117,6 +118,14 @@ public class GOLego {
 		chebi_chemicals.add(obo_base+"CHEBI_24431");
 		for(OWLClass c : chemicals) {
 			chebi_chemicals.add(c.getIRI().toURI().toString());
+		}
+		//make list of functions
+		OWLClass mf_root = df.getOWLClass(IRI.create(obo_base+"GO_0003674"));
+		Set<OWLClass> function_classes = getSubClasses(mf_root, false, golego_reasoner);
+		molecular_functions = new HashSet<String>();
+		molecular_functions.add(obo_base+"GO_0003674");
+		for(OWLClass fc : function_classes) {
+			molecular_functions.add(fc.getIRI().toString());
 		}
 		//make uber list of deprecated
 		OWLClass thing = golego_ont.getOWLOntologyManager().getOWLDataFactory().getOWLClass(IRI.create(OWL.THING));

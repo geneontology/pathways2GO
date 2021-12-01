@@ -918,7 +918,10 @@ public class BioPaxtoGO {
 			}
 			for(OWLClass type :getTypesFromExactECs((BiochemicalReaction)entity, go_cam)) {
 				// Track which exact ECs (type) came from the BioPAX file
-				typesFromDirectEntityExactECs.add(type);
+				// Ensure type is descendant of root MF GO:0003674
+				if(golego.molecular_functions.contains(type.getIRI().toString())) {
+					typesFromDirectEntityExactECs.add(type);
+				}
 			}
 			if (entityStrategy.equals(EntityStrategy.YeastCyc) && typesFromDirectEntityExactECs.size() == 1) {
 				// For YeastCyc: if a single type can be derived from EC annotations in the BioPAX, go with that
