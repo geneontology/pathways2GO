@@ -314,10 +314,15 @@ public class BioPaxtoGO {
 		String id = null;
 		Set<Xref> references = null;
 		//first check for entity reference
-		if(bp_entity instanceof SimplePhysicalEntity) {
+		if(entityStrategy.equals(EntityStrategy.YeastCyc) && bp_entity instanceof SimplePhysicalEntity) {
 			SimplePhysicalEntity entity = (SimplePhysicalEntity) bp_entity;
 			EntityReference entity_ref = entity.getEntityReference();
-			references = entity_ref.getXref();
+			if(entity_ref!=null) {
+				references = entity_ref.getXref();
+			}
+		}else if(bp_entity instanceof PhysicalEntity) {
+			PhysicalEntity entity = (PhysicalEntity) bp_entity;
+			references = entity.getXref();
 		}
 		//otherwise get direct xrefs
 		if(references==null) {
