@@ -215,7 +215,7 @@ public class Helper {
 	}
 	
 	public static Map<String, String> parseSgdIdToEcFile(String sgdIdToEcFilePath) throws IOException {
-		Map<String, String> ecLookup = new HashMap<String, String>();
+		Map<String, Set<String>> ecLookup = new HashMap<String, Set<String>>();  // First track SGDIDs having multiple EC mappings
 		
 		BufferedReader sgd2ECReader = new BufferedReader(new FileReader(sgdIdToEcFilePath));
 		String sgdLine = sgd2ECReader.readLine();
@@ -223,13 +223,27 @@ public class Helper {
 			String[] cols = sgdLine.split("	");
 			String yeastcyc = cols[1];
 			String ecNumber = cols[5];
-			ecLookup.put(yeastcyc, ecNumber);
+			if(!ecLookup.containsKey(yeastcyc)) {
+				ecLookup.put(yeastcyc, new HashSet<String>());
+			}
+			if(!ecLookup.get(yeastcyc).contains(ecNumber)) {
+				ecLookup.get(yeastcyc).add(ecNumber);
+			}
 			
 			sgdLine = sgd2ECReader.readLine();
 		}
 		sgd2ECReader.close();
 		
-		return ecLookup;
+		Map<String, String> cleanedEcLookup = new HashMap<String, String>();
+		for(Map.Entry<String, Set<String>> ecMapping : ecLookup.entrySet()) {
+			String yeastcyc = ecMapping.getKey();
+			Set<String> ecNumbers = ecMapping.getValue();
+			// Ensure only 1:1 mappings are used
+			if(ecNumbers.size() == 1) {
+				cleanedEcLookup.put(yeastcyc, ecNumbers.iterator().next());
+			}
+		}
+		return cleanedEcLookup;
 	}
 	
 	public static HashSet<String> extractGoTermsFromXrefs(Set<Xref> xrefs) {
