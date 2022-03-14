@@ -1,8 +1,13 @@
 package org.geneontology.gocam.exchange;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.semanticweb.owlapi.formats.OBODocumentFormat;
@@ -150,5 +155,56 @@ public class Helper {
 		//ontman.setOntologyFormat(go_cam_ont, new TurtleOntologyFormat());	
 		ont.getOWLOntologyManager().setOntologyFormat(ont, new OBODocumentFormat());	
 		ont.getOWLOntologyManager().saveOntology(ont,outf);
+	}
+	
+	public static Map<String, String> parseMonomerToSgdIdFile(String monomerToSgdIdFilePath, String gpiFile) throws IOException {
+		Map<String, String> uniprotToSgdLookup = new HashMap<String, String>();
+		Map<String, String> monomerSgdLookup = new HashMap<String, String>();
+		
+		// First, retrieve UniProtID-to-SGDID mappings
+		BufferedReader reader = new BufferedReader(new FileReader(gpiFile));
+		String line = reader.readLine();
+		while(line!=null) {
+			if(line.startsWith("!")) {
+				line = reader.readLine();
+			}else {
+				String[] cols = line.split("	");
+				if(cols[0].contentEquals("UniProtKB") && cols.length>=8) {
+					String uniprotId = cols[1];
+					String sgd = cols[8];
+					Set<String> sgd_ids = new HashSet<String>();
+					if(sgd.contains("|")) {
+						String[] ids = sgd.split("\\|");
+						for(String id : ids) {
+							sgd_ids.add(id);
+						}
+					}else {
+						sgd_ids.add(sgd);
+					}
+					for(String sgdid : sgd_ids) {
+						uniprotToSgdLookup.put(uniprotId, sgdid.replace("SGD:", "http://identifiers.org/sgd/"));
+					}
+				}
+			}
+			line = reader.readLine();
+		}
+		reader.close();
+		
+		BufferedReader mon2SgdReader = new BufferedReader(new FileReader(monomerToSgdIdFilePath));
+		String monSgdLine = mon2SgdReader.readLine();
+		while(monSgdLine!=null) {
+			String[] cols = monSgdLine.split("	");
+			String uniprotId = cols[0];
+			String monomerId = cols[2];
+			monomerId = monomerId.split(":")[1];
+			
+			String sgdId = uniprotToSgdLookup.get(uniprotId);
+			monomerSgdLookup.put(monomerId, sgdId);
+			
+			monSgdLine = mon2SgdReader.readLine();
+		}
+		mon2SgdReader.close();
+		
+		return monomerSgdLookup;
 	}
 }
