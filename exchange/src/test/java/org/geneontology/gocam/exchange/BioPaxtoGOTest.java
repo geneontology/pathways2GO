@@ -151,7 +151,9 @@ public class BioPaxtoGOTest {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		blaze.getRepo().shutDown();
+		blaze = null;
 		bp2g.golego = null;
+		bp2g.tbox_qrunner = null;
 		System.out.println("tear down after class");
 	}
 
