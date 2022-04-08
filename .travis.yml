@@ -8,7 +8,7 @@ jdk:
 
 # command to run tests
 script: 
-  - cd exchange; MAVEN_OPTS=-Xmx12g travis_wait 20 mvn clean test -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+  - cd exchange; MAVEN_OPTS=-Xmx8g travis_wait 20 mvn clean test -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
   - git clone https://github.com/geneontology/minerva.git
   - cd minerva
   - git checkout shapes

@@ -152,6 +152,7 @@ public class BioPaxtoGOYeastCycTest {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		blaze.getRepo().shutDown();
+		bp2g.golego = null;
 		System.out.println("tear down after class");
 	}
 
@@ -341,25 +342,7 @@ public class BioPaxtoGOYeastCycTest {
 				"    	"+reaction_node+" RO:0002333 ?gp_node " +
 				"    }\n" + 
 				"  } \n";
-		TupleQueryResult result = null;
-		int n = 0;
-		try {			
-			result = blaze.runSparqlQuery(q);			
-			while (result.hasNext()) {
-				BindingSet bindingSet = result.next();
-				n++;
-			}
-		} catch (QueryEvaluationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				result.close();
-			} catch (QueryEvaluationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		int n = runQueryAndGetCount(q);
 		assertTrue("Didn't get correct EC-sourced type assertion for "+reaction_node, n==1);
 	}
 	

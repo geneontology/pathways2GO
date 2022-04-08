@@ -99,7 +99,7 @@ public class BioPaxtoGOTest {
 		blaze = new Blazer(bp2g.blazegraph_output_journal);
 		System.out.println("done connecting to blaze, loading axioms");
 		//set up for validation
-		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();	
+		OWLOntologyManager ontman = OWLManager.createOWLOntologyManager();
 		if(local_catalogue_file!=null) {
 			ontman.setIRIMappers(Collections.singleton(new CatalogXmlIRIMapper(local_catalogue_file)));
 		}
@@ -151,6 +151,7 @@ public class BioPaxtoGOTest {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		blaze.getRepo().shutDown();
+		bp2g.golego = null;
 		System.out.println("tear down after class");
 	}
 
