@@ -70,18 +70,6 @@ public class BioPaxtoGOTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		fullBuild();
-		//loadBlazegraph();
-	}
-	
-	public static void loadBlazegraph() {
-		bp2g.blazegraph_output_journal = output_blazegraph_journal;
-		blaze = new Blazer(bp2g.blazegraph_output_journal);
-	}
-	
-	public static void fullBuild() throws Exception{
-		bp2g.entityStrategy = BioPaxtoGO.EntityStrategy.REACTO;
-		bp2g.generate_report = false;
 		System.out.println("set up before class");
 		bp2g.go_lego_file = go_lego_file;
 		File goplus_file = new File(go_plus_file);
@@ -89,7 +77,7 @@ public class BioPaxtoGOTest {
 			URL goplus_location = new URL(go_plus_url);
 			System.out.println("downloading goplus ontology from "+go_plus_url);
 			org.apache.commons.io.FileUtils.copyURLToFile(goplus_location, goplus_file);
-		}		
+		}
 		bp2g.blazegraph_output_journal = output_blazegraph_journal;
 		//clean out any prior data in triple store
 		FileWriter clean = new FileWriter(bp2g.blazegraph_output_journal, false);
@@ -109,6 +97,21 @@ public class BioPaxtoGOTest {
 		System.out.println("starting tbox build");
 		bp2g.tbox_qrunner = new QRunner(Collections.singleton(tbox), null, bp2g.golego.golego_reasoner, true, false, false);
 		System.out.println("done building arachne");		
+		fullBuild();
+		fullBuildYeastCyc();
+		//loadBlazegraph();
+		System.out.println("done set up before class");
+	}
+	
+	public static void loadBlazegraph() {
+		bp2g.blazegraph_output_journal = output_blazegraph_journal;
+		blaze = new Blazer(bp2g.blazegraph_output_journal);
+	}
+	
+	public static void fullBuild() throws Exception{
+		bp2g.entityStrategy = BioPaxtoGO.EntityStrategy.REACTO;
+		bp2g.generate_report = false;
+		
 		//run the conversion on all the test biopax files
 		System.out.println("running biopaxtogo on all test files");
 		File dir = new File(input_biopax);
@@ -141,7 +144,49 @@ public class BioPaxtoGOTest {
 				e.printStackTrace();
 			}
 		}
-		System.out.println("done set up before class");
+		
+	}
+	
+	public static void fullBuildYeastCyc() throws Exception{
+		String sssom_file = "./target/classes/YeastCyc/obomatch-go-yeastpathway.sssom.tsv.txt";
+		String input_yeastcyc_biopax = "./src/test/resources/cyc/";
+		String default_provider = "https://yeastgenome.org";
+		
+		bp2g.entityStrategy = BioPaxtoGO.EntityStrategy.YeastCyc;
+		bp2g.sssom = new SSSOM(sssom_file);
+		bp2g.generate_report = false;
+			
+		//run the conversion on all the test biopax files
+		System.out.println("running biopaxtogo on all test files");
+		File dir = new File(input_yeastcyc_biopax);
+		File[] directoryListing = dir.listFiles();
+		Set<String> taxa = new HashSet<String>();
+		taxa.add("http://purl.obolibrary.org/obo/NCBITaxon_559292");
+		//run through all files
+		if (directoryListing != null) {
+			for (File biopax : directoryListing) {
+				String name = biopax.getName();
+				if(name.contains(".owl")) { 
+					name = name.replaceAll(".owl", "-");
+					String this_output_file_stub = output_file_folder+name;
+					try {
+						bp2g.convert(biopax.getAbsolutePath(), this_output_file_stub, base_title, default_contributor, default_provider, tag, null, blaze, taxa);
+					} catch (OWLOntologyCreationException | OWLOntologyStorageException | RepositoryException
+							| RDFParseException | RDFHandlerException | IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			} 
+		}else {
+			try {
+				bp2g.convert(input_yeastcyc_biopax, output_file_stub, base_title, default_contributor, default_provider, tag, null, blaze, taxa);
+			} catch (OWLOntologyCreationException | OWLOntologyStorageException | RepositoryException
+					| RDFParseException | RDFHandlerException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 	}
 	
@@ -975,5 +1020,212 @@ BP has_part R
 			}
 		}
 		System.out.println("Done testing regulates via output enables");
+	}
+	
+	@Test
+	public final void testAny() {
+		System.out.println("testing ");
+		String pathway = "<http://model.geneontology.org/GLYCLEAV-PWY>";
+		String q =  
+				" prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+				+ "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"
+				+ "SELECT ?pathway ?pathway_node ?type ?comment \n" + 
+				"WHERE {\n" + 
+				"  GRAPH "+pathway+"  {  \n" + 
+				"    	?pathway_node rdf:type ?type . \n" + 
+				"    	?pathway_node rdfs:comment ?comment "+
+				"    }\n" + 
+				"  } \n";
+		TupleQueryResult result = null;
+		int n = 0;
+		String comment = "";
+		try {			
+			result = blaze.runSparqlQuery(q);			
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				n++;
+				comment = bindingSet.getValue("comment").stringValue();
+				//String path = bindingSet.getValue("pathway").stringValue();
+				String node = bindingSet.getValue("pathway_node").stringValue();
+				String type = bindingSet.getValue("type").stringValue();
+				System.out.println(pathway+"\t"+node+"\t"+type+"\t"+comment);
+			}
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		assertTrue("no typed nodes? "+pathway, n>1);
+	}
+	
+	@Test
+	public final void testSSSOMbp() {
+		System.out.println("testing sssom BP mapping additions");
+		String pathway = "<http://model.geneontology.org/GLYCLEAV-PWY>";
+		String pathway_node = "<http://model.geneontology.org/GLYCLEAV-PWY/GLYCLEAV-PWY>";
+		String pathway_go_type = "<http://purl.obolibrary.org/obo/GO_0019464>";
+		String q =  
+				" prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+				+ "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> "
+				+ "SELECT  ?comment  \n" + 
+				"WHERE {\n" + 
+				"  GRAPH "+pathway+"  {  \n" + 
+				"    	"+pathway_node+" rdf:type "+pathway_go_type +" . \n" + 
+				"    	"+pathway_node+" rdfs:comment ?comment "+
+				"    }\n" + 
+				"  } \n";
+		TupleQueryResult result = null;
+		int n = 0;
+		String comment = "";
+		try {			
+			result = blaze.runSparqlQuery(q);			
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				n++;
+				comment = bindingSet.getValue("comment").stringValue();
+			}
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		assertTrue("Didn't get sssom mapped type assertion for "+pathway_node, n==1);
+		assertTrue("Didn't get comment on sssom type assertion", comment.startsWith("This type assertion was computed"));
+	}
+	
+	@Test
+	public final void testSSSOMmf() {
+		System.out.println("testing sssom BP mapping additions");
+		String pathway = "<http://model.geneontology.org/PWY3O-981>";
+		String reaction_node = "<http://model.geneontology.org/ACETOINDEHYDROG-RXN>";
+		String reaction_go_type = "<http://purl.obolibrary.org/obo/GO_0019152>";
+		String q =  
+				" prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+				+ "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> "
+				+ "SELECT  ?comment  \n" + 
+				"WHERE {\n" + 
+				"  GRAPH "+pathway+"  {  \n" + 
+				"    	"+reaction_node+" rdf:type "+reaction_go_type +" . \n" + 
+				"    	"+reaction_node+" rdfs:comment ?comment "+
+				"    }\n" + 
+				"  } \n";
+		TupleQueryResult result = null;
+		int n = 0;
+		String comment = "";
+		try {			
+			result = blaze.runSparqlQuery(q);			
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				n++;
+				comment = bindingSet.getValue("comment").stringValue();
+			}
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		assertTrue("Didn't get sssom mapped type assertion for "+reaction_node, n==1);
+		assertTrue("Didn't get comment on sssom type assertion", comment.startsWith("This type assertion was computed"));
+	}
+	
+	@Test
+	public final void testSGDIdLookup() {
+		System.out.println("testing EC->MF lookup via SGD ID");
+		String pathway = "<http://model.geneontology.org/YEAST-SALV-PYRMID-DNTP>";
+		String reaction_node = "<http://model.geneontology.org/RXN3O-314>";
+		String reaction_go_type = "<http://purl.obolibrary.org/obo/GO_0045437>";
+		String reaction_gp_type = "<http://identifiers.org/sgd/S000002808>";
+		String q =  
+				" prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+				+ "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> "
+				+ "prefix RO: <http://purl.obolibrary.org/obo/RO_> "
+				+ "SELECT *  \n" + 
+				"WHERE {\n" + 
+				"  GRAPH "+pathway+"  {  \n" + 
+				"    	"+reaction_node+" rdf:type "+reaction_go_type + " . \n" +
+				"    	?gp_node rdf:type "+reaction_gp_type + " . \n" +
+				"    	"+reaction_node+" RO:0002333 ?gp_node " +
+				"    }\n" + 
+				"  } \n";
+		int n = runQueryAndGetCount(q);
+		assertTrue("Didn't get correct EC-sourced type assertion for "+reaction_node, n==1);
+	}
+	
+	public static int runQueryAndGetCount(String query) {
+		TupleQueryResult result = null;
+		int n = 0;
+		try {			
+			result = blaze.runSparqlQuery(query);			
+			while (result.hasNext()) {
+				result.next();
+				n++;
+			}
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return n;
+	}
+	
+	@Test
+	public final void testChemicalRoleReplacement() {
+		System.out.println("testing replacement of CHEBI chemical role with chemical entity");
+		String pathway = "<http://model.geneontology.org/ERGOSTEROL-SYN-PWY-1>";
+		String reaction_node = "<http://model.geneontology.org/RXN3O-9816>";
+		String chemical_entity_type = "<http://purl.obolibrary.org/obo/CHEBI_24431>";
+		String chemical_acceptor_type = "<http://purl.obolibrary.org/obo/CHEBI_15339>";
+		String q =  
+				" prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+				+ "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> "
+				+ "prefix RO: <http://purl.obolibrary.org/obo/RO_> "
+				+ "SELECT *  \n" + 
+				"WHERE {\n" + 
+				"  GRAPH "+pathway+"  {  \n" + 
+				"    	"+reaction_node+" RO:0002233 ?chebi_node . \n" +
+				"    	?chebi_node rdf:type "+chemical_entity_type +
+				"    }\n" + 
+				"  } \n";
+		int n = runQueryAndGetCount(q);
+		assertTrue("No has_input chemical_entity assertion for "+reaction_node, n==1);
+		
+		q = 
+				" prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+				+ "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> "
+				+ "prefix owl: <http://www.w3.org/2002/07/owl#> "
+				+ "SELECT *  \n" + 
+				"WHERE {\n" + 
+				"  GRAPH "+pathway+"  {  \n" + 
+				"    	?chebi_node rdf:type owl:NamedIndividual . \n" +
+				"    	?chebi_node rdf:type "+chemical_acceptor_type +
+				"    }\n" + 
+				"  } \n";
+		n = runQueryAndGetCount(q);
+		// acceptor is subclassOf chemical_role
+		assertTrue("There are 'acceptor' type assertions in "+pathway, n==0);
 	}
 }
