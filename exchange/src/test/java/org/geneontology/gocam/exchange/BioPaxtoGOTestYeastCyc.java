@@ -44,7 +44,7 @@ import com.google.common.collect.Sets;
  * @author bgood
  *
  */
-public class BioPaxtoGOYeastCycTest {
+public class BioPaxtoGOTestYeastCyc {
 	//use default values for testing
 	static BioPaxtoGO bp2g = new BioPaxtoGO(); 
 	//parameters to set
