@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -167,8 +169,9 @@ public class Helper {
 		//we get e.g.
 		//YeastCyc YIL155C-MONOMER
 		//we get the mapping from a YeastCyc GPI file downloaded from http://sgd-archive.yeastgenome.org/curation/literature/ 
-		//e.g. http://sgd-archive.yeastgenome.org/curation/literature/gp_information.559292_sgd.gpi.gz 
-		BufferedReader reader = new BufferedReader(new FileReader(gpiFile));
+		//e.g. http://sgd-archive.yeastgenome.org/curation/literature/gp_information.559292_sgd.gpi.gz
+		InputStream stream = Helper.class.getResourceAsStream(gpiFile);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 		String line = reader.readLine();
 		while(line!=null) {
 			if(line.startsWith("!")) {
@@ -217,7 +220,8 @@ public class Helper {
 	public static Map<String, String> parseSgdIdToEcFile(String sgdIdToEcFilePath) throws IOException {
 		Map<String, Set<String>> ecLookup = new HashMap<String, Set<String>>();  // First track SGDIDs having multiple EC mappings
 		
-		BufferedReader sgd2ECReader = new BufferedReader(new FileReader(sgdIdToEcFilePath));
+		InputStream stream = Helper.class.getResourceAsStream(sgdIdToEcFilePath);
+		BufferedReader sgd2ECReader = new BufferedReader(new InputStreamReader(stream));
 		String sgdLine = sgd2ECReader.readLine();
 		while(sgdLine!=null) {
 			String[] cols = sgdLine.split("	");

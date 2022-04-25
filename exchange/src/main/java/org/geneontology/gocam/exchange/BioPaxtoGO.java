@@ -182,14 +182,14 @@ public class BioPaxtoGO {
 		}
 		//will determine how classes for physical entities are handled
 		if(entityStrategy.equals(EntityStrategy.YeastCyc)) {
-			String sgdGPIPath = "./target/classes/YeastCyc/gp_information.559292_sgd";
+			String sgdGPIPath = "/YeastCyc/gp_information.559292_sgd";
 			Map<String, String> idMappings = Helper.parseGPI(sgdGPIPath); 
 			for (Map.Entry<String, String> idMapping : idMappings.entrySet()) {
 				accession_neo.put(idMapping.getKey(), idMapping.getValue());
 			}
 			
 			// Also parse SGDIDs_to_ExPASy-ECs.txt
-			String sgdIdToEcFilePath = "./target/classes/YeastCyc/SGDIDs_to_ExPASy-ECs.txt";
+			String sgdIdToEcFilePath = "/YeastCyc/SGDIDs_to_ExPASy-ECs.txt";
 			Map<String, String> sgdToEcMappings = Helper.parseSgdIdToEcFile(sgdIdToEcFilePath);
 			for (Map.Entry<String, String> sgdEcMapping : sgdToEcMappings.entrySet()) {
 				yeastcyc2EC.put(sgdEcMapping.getKey(), sgdEcMapping.getValue());
@@ -1639,7 +1639,7 @@ public class BioPaxtoGO {
 	Set<OWLClass> getTypesFromExactECs(BiochemicalReaction reaction, GoCAM go_cam){
 		Set<OWLClass> gos = new HashSet<OWLClass>();
 		for(String ec : reaction.getECNumber()) {
-			if(ec.indexOf('-') != -1) {
+			if(ec.contains("-")) {
 				// If '-' in EC, it is not exact so we want to avoid considering it.
 				// Ex: '3.2.2.-' vs '3.2.2.3'
 				continue;
