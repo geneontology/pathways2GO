@@ -190,7 +190,7 @@ public class Helper {
 				}
 				if(cols[0].contentEquals("ComplexPortal")) {
 					for(String yeastacc : yeastcyc_ids) {
-						idLookup.put(yeastacc, "http://purl.obolibrary.org/obo/ComplexPortal_"+cols[1]);
+						idLookup.put(yeastacc, "https://www.ebi.ac.uk/complexportal/complex/"+cols[1]);
 					}	
 				}else if(cols.length>=8) {
 					String sgd = cols[8];
