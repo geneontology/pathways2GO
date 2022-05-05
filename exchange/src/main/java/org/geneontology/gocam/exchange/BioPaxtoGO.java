@@ -808,6 +808,16 @@ public class BioPaxtoGO {
 						
 						mapped = true;
 					}
+				}
+				if(!mapped && entityStrategy.equals(EntityStrategy.YeastCyc)) {
+					Set<String> metacyc_gos = golego.xref_gos.get("MetaCyc:"+model_id);
+					if(metacyc_gos!=null) {
+						for(String goid : metacyc_gos) {
+							OWLClass go = go_cam.df.getOWLClass(IRI.create(goid));
+							go_cam.addTypeAssertion(pathway_e, go);
+							mapped = true;
+						}
+					}
 				}//no mapping, default to root
 				if(!mapped) {
 					go_cam.addTypeAssertion(pathway_e, GoCAM.bp_class);	
