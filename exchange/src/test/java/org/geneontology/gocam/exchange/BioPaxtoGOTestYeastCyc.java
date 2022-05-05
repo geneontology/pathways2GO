@@ -50,9 +50,9 @@ public class BioPaxtoGOTestYeastCyc {
 	//parameters to set
 	static String sssom_file = "./target/classes/YeastCyc/obomatch-go-yeastpathway.sssom.tsv.txt";
 	static String input_biopax = "./src/test/resources/cyc/"; 
-	static String output_file_folder = "./src/test/resources/gocam/"; 
-	static String output_file_stub = "./src/test/resources/gocam/test-"; 
-	static String output_blazegraph_journal = "./src/test/resources/gocam/blazegraph.jnl"; //"/Users/bgood/noctua-config/blazegraph.jnl"; //
+	static String output_file_folder = "./src/test/resources/gocam/yeastcyc/"; 
+	static String output_file_stub = "./src/test/resources/gocam/yeastcyc/test-"; 
+	static String output_blazegraph_journal = "./src/test/resources/gocam/yeastcyc/blazegraph.jnl"; //"/Users/bgood/noctua-config/blazegraph.jnl"; //
 	static String tag = ""; //unexpanded
 	static String base_title = "title here";//"Will be replaced if a title can be found for the pathway in its annotations
 	static String default_contributor = "https://orcid.org/0000-0002-7334-7852"; //
@@ -152,6 +152,9 @@ public class BioPaxtoGOTestYeastCyc {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		blaze.getRepo().shutDown();
+		blaze = null;
+		bp2g.golego = null;
+		bp2g.tbox_qrunner = null;
 		System.out.println("tear down after class");
 	}
 
@@ -320,5 +323,88 @@ public class BioPaxtoGOTestYeastCyc {
 		}
 		assertTrue("Didn't get sssom mapped type assertion for "+reaction_node, n==1);
 		assertTrue("Didn't get comment on sssom type assertion", comment.startsWith("This type assertion was computed"));
+	}
+	
+	@Test
+	public final void testSGDIdLookup() {
+		System.out.println("testing EC->MF lookup via SGD ID");
+		String pathway = "<http://model.geneontology.org/YEAST-SALV-PYRMID-DNTP>";
+		String reaction_node = "<http://model.geneontology.org/RXN3O-314>";
+		String reaction_go_type = "<http://purl.obolibrary.org/obo/GO_0045437>";
+		String reaction_gp_type = "<http://identifiers.org/sgd/S000002808>";
+		String q =  
+				" prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+				+ "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> "
+				+ "prefix RO: <http://purl.obolibrary.org/obo/RO_> "
+				+ "SELECT *  \n" + 
+				"WHERE {\n" + 
+				"  GRAPH "+pathway+"  {  \n" + 
+				"    	"+reaction_node+" rdf:type "+reaction_go_type + " . \n" +
+				"    	?gp_node rdf:type "+reaction_gp_type + " . \n" +
+				"    	"+reaction_node+" RO:0002333 ?gp_node " +
+				"    }\n" + 
+				"  } \n";
+		int n = runQueryAndGetCount(q);
+		assertTrue("Didn't get correct EC-sourced type assertion for "+reaction_node, n==1);
+	}
+	
+	public static int runQueryAndGetCount(String query) {
+		TupleQueryResult result = null;
+		int n = 0;
+		try {			
+			result = blaze.runSparqlQuery(query);			
+			while (result.hasNext()) {
+				result.next();
+				n++;
+			}
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return n;
+	}
+	
+	@Test
+	public final void testChemicalRoleReplacement() {
+		System.out.println("testing replacement of CHEBI chemical role with chemical entity");
+		String pathway = "<http://model.geneontology.org/ERGOSTEROL-SYN-PWY-1>";
+		String reaction_node = "<http://model.geneontology.org/RXN3O-9816>";
+		String chemical_entity_type = "<http://purl.obolibrary.org/obo/CHEBI_24431>";
+		String chemical_acceptor_type = "<http://purl.obolibrary.org/obo/CHEBI_15339>";
+		String q =  
+				" prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+				+ "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> "
+				+ "prefix RO: <http://purl.obolibrary.org/obo/RO_> "
+				+ "SELECT *  \n" + 
+				"WHERE {\n" + 
+				"  GRAPH "+pathway+"  {  \n" + 
+				"    	"+reaction_node+" RO:0002233 ?chebi_node . \n" +
+				"    	?chebi_node rdf:type "+chemical_entity_type +
+				"    }\n" + 
+				"  } \n";
+		int n = runQueryAndGetCount(q);
+		assertTrue("No has_input chemical_entity assertion for "+reaction_node, n==1);
+		
+		q = 
+				" prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+				+ "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> "
+				+ "prefix owl: <http://www.w3.org/2002/07/owl#> "
+				+ "SELECT *  \n" + 
+				"WHERE {\n" + 
+				"  GRAPH "+pathway+"  {  \n" + 
+				"    	?chebi_node rdf:type owl:NamedIndividual . \n" +
+				"    	?chebi_node rdf:type "+chemical_acceptor_type +
+				"    }\n" + 
+				"  } \n";
+		n = runQueryAndGetCount(q);
+		// acceptor is subclassOf chemical_role
+		assertTrue("There are 'acceptor' type assertions in "+pathway, n==0);
 	}
 }

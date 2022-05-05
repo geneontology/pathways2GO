@@ -1,0 +1,1491 @@
+S000000010	YAL012W	CYS3	CYStathionine gamma-lyase	CYI1|cystathionine gamma-lyase CYS3|FUN35|STR1	4.4.1.1	ExPASy/EC number
+S000000013	YAL015C	NTG1	eNdonuclease Three-like Glycosylase	bifunctional N-glycosylase/AP lyase NTG1|FUN33|ogg2|SCR1	4.2.99.18	ExPASy/EC number
+S000000015	YAL017W	PSK1	Pas domain-containing Serine/threonine protein Kinase	FUN31|serine/threonine protein kinase PSK1	2.7.11.1	ExPASy/EC number
+S000000017	YAL019W	FUN30	Function Unknown Now	DNA-dependent ATPase FUN30	3.6.4.12	ExPASy/EC number
+S000000019	YAL021C	CCR4	Carbon Catabolite Repression	CCR4-NOT core exoribonuclease subunit CCR4|FUN27|NUT21	3.1.13.4	ExPASy/EC number
+S000000021	YAL023C	PMT2	Protein O-MannosylTransferase	dolichyl-phosphate-mannose-protein mannosyltransferase PMT2|FUN25	2.4.1.109	ExPASy/EC number
+S000000024	YAL026C	DRS2	Deficiency of Ribosomal Subunits	aminophospholipid-translocating P4-type ATPase DRS2|FUN38|SWA3	7.6.2.1	ExPASy/EC number
+S000000031	YAL033W	POP5	Processing Of Precursor RNAs	FUN53|RNA-binding protein POP5	3.1.26.5	ExPASy/EC number
+S000000033	YAL035W	FUN12	Function Unknown Now	eIF5B|translation initiation factor eIF5B|yIF2	3.6.5.3	ExPASy/EC number
+S000000036	YAL038W	CDC19	Cell Division Cycle	PYK1|pyruvate kinase CDC19	2.7.1.40	ExPASy/EC number
+S000000037	YAL039C	CYC3	CYtochrome C	CCHL|holocytochrome c synthase CYC3	4.4.1.17	ExPASy/EC number
+S000000050	YAL054C	ACS1	Acetyl CoA Synthetase	acetate--CoA ligase 1|FUN44	6.2.1.1	ExPASy/EC number
+S000000056	YAL060W	BDH1	Butanediol DeHydrogenase	BDH|(R,R)-butanediol dehydrogenase	1.1.1.4	ExPASy/EC number
+S000000057	YAL061W	BDH2	""	putative dehydrogenase BDH2	1.1.1.303	ExPASy/EC number
+S000000058	YAL062W	GDH3	Glutamate DeHydrogenase	FUN51|glutamate dehydrogenase (NADP(+)) GDH3	1.4.1.4	ExPASy/EC number
+S000000066	YAR008W	SEN34	Splicing ENdonuclease	FUN4|tRNA splicing endonuclease subunit SEN34	4.6.1.16	ExPASy/EC number
+S000000070	YAR015W	ADE1	ADEnine requiring	phosphoribosylaminoimidazolesuccinocarboxamide synthase	6.3.2.6	ExPASy/EC number
+S000000071	YAR018C	KIN3	protein KINase	FUN52|NPK1|serine/threonine protein kinase KIN3	2.7.11.1	ExPASy/EC number
+S000000072	YAR019C	CDC15	Cell Division Cycle	LYT1|RLT1|serine/threonine protein kinase CDC15	2.7.11.1	ExPASy/EC number
+S000000080	YAR035W	YAT1	""	carnitine O-acetyltransferase YAT1	2.3.1.7	ExPASy/EC number
+S000000094	YAR071W	PHO11	PHOsphate metabolism	acid phosphatase PHO11	3.1.3.2	ExPASy/EC number
+S000000095	YAR073W	IMD1	IMP Dehydrogenase	IMP dehydrogenase	1.1.1.205	ExPASy/EC number
+S000000105	YBL009W	ALK2	""	protein kinase ALK2	2.7.11.1	ExPASy/EC number
+S000000107	YBL011W	SCT1	Suppressor of Choline-Transport mutants	bifunctional glycerol-3-phosphate/glycerone-phosphate O-acyltransferase SCT1|GAT2	2.3.1.15	ExPASy/EC number
+S000000107	YBL011W	SCT1	Suppressor of Choline-Transport mutants	bifunctional glycerol-3-phosphate/glycerone-phosphate O-acyltransferase SCT1|GAT2	2.3.1.42	ExPASy/EC number
+S000000109	YBL013W	FMT1	Formyl-Methionyl-tRNA Transformylase	methionyl-tRNA formyltransferase	2.1.2.9	ExPASy/EC number
+S000000111	YBL015W	ACH1	Acetyl CoA Hydrolase	acetyl-CoA hydrolase	3.1.2.1	ExPASy/EC number
+S000000112	YBL016W	FUS3	cell FUSion	DAC2|mitogen-activated serine/threonine-protein kinase FUS3	2.7.11.24	ExPASy/EC number
+S000000114	YBL018C	POP8	Processing Of Precursor RNAs	ribonuclease P	3.1.26.5	ExPASy/EC number
+S000000118	YBL022C	PIM1	Proteolysis In Mitochondria	ATP-dependent Lon protease PIM1|LON1	3.4.21.53	ExPASy/EC number
+S000000119	YBL023C	MCM2	MiniChromosome Maintenance	MCM DNA helicase complex subunit MCM2	3.6.4.12	ExPASy/EC number
+S000000120	YBL024W	NCL1	NuCLear protein	TRM4|tRNA (cytosine-C5-)-methyltransferase	2.1.1.202	ExPASy/EC number
+S000000129	YBL033C	RIB1	RIBoflavin biosynthesis	GTP cyclohydrolase II	3.5.4.25	ExPASy/EC number
+S000000135	YBL039C	URA7	URAcil requiring	CTP synthase URA7	6.3.4.2	ExPASy/EC number
+S000000148	YBL052C	SAS3	Something About Silencing	histone acetyltransferase|KAT6	2.3.1.48	ExPASy/EC number
+S000000152	YBL056W	PTC3	Phosphatase Two C	type 2C protein phosphatase PTC3	3.1.3.16	ExPASy/EC number
+S000000153	YBL057C	PTH2	Peptidyl-Trna Hydrolase	aminoacyl-tRNA hydrolase	3.1.1.29	ExPASy/EC number
+S000000160	YBL064C	PRX1	PeroxiRedoXin	thioredoxin peroxidase PRX1	1.11.1.25	ExPASy/EC number
+S000000160	YBL064C	PRX1	PeroxiRedoXin	thioredoxin peroxidase PRX1	1.11.1.27	ExPASy/EC number
+S000000163	YBL067C	UBP13	UBiquitin-specific Protease	ubiquitin-specific protease UBP13	3.4.19.12	ExPASy/EC number
+S000000164	YBL068W	PRS4	PhosphoRibosylpyrophosphate Synthetase	ribose phosphate diphosphokinase subunit PRS4	2.7.6.1	ExPASy/EC number
+S000000172	YBL076C	ILS1	IsoLeucine-tRNA Synthetase	isoleucine--tRNA ligase ILS1	6.1.1.5	ExPASy/EC number
+S000000178	YBL082C	ALG3	Asparagine Linked Glycosylation	dolichyl-P-Man:Man(5)GlcNAc(2)-PP-dolichol alpha-1,3-mannosyltransferase|RHK1	2.4.1.258	ExPASy/EC number
+S000000184	YBL088C	TEL1	TELomere maintenance	DNA-binding protein kinase TEL1	2.7.11.1	ExPASy/EC number
+S000000187	YBL091C	MAP2	Methionine AminoPeptidase	methionine aminopeptidase	3.4.11.18	ExPASy/EC number
+S000000194	YBL098W	BNA4	Biosynthesis of Nicotinic Acid	kynurenine 3-monooxygenase	1.14.13.9	ExPASy/EC number
+S000000201	YBL105C	PKC1	Protein Kinase C	CLY15|CLY5|CLY7|HPO2|protein kinase C|RSF8|STT1	2.7.11.13	ExPASy/EC number
+S000000205	YBR001C	NTH2	Neutral TreHalase	alpha,alpha-trehalase NTH2	3.2.1.28	ExPASy/EC number
+S000000206	YBR002C	RER2	Retention in the Endoplasmic Reticulum	ditrans,polycis-polyprenyl diphosphate synthase	2.5.1.87	ExPASy/EC number
+S000000210	YBR006W	UGA2	Utilization of GAba	succinate-semialdehyde dehydrogenase (NAD(P)(+))|UGA5	1.2.1.16	ExPASy/EC number
+S000000215	YBR011C	IPP1	Inorganic PyroPhosphatase	inorganic diphosphatase IPP1|PPA1	3.6.1.1	ExPASy/EC number
+S000000222	YBR018C	GAL7	GALactose metabolism	UDP-glucose:hexose-1-phosphate uridylyltransferase	2.7.7.12	ExPASy/EC number
+S000000223	YBR019C	GAL10	GALactose metabolism	bifunctional UDP-glucose 4-epimerase/aldose 1-epimerase	5.1.3.2	ExPASy/EC number
+S000000223	YBR019C	GAL10	GALactose metabolism	bifunctional UDP-glucose 4-epimerase/aldose 1-epimerase	5.1.3.3	ExPASy/EC number
+S000000224	YBR020W	GAL1	GALactose metabolism	galactokinase	2.7.1.6	ExPASy/EC number
+S000000226	YBR022W	POA1	Phosphatase Of ADP-ribose 1"-phosphate	ADP-ribose 1''-phosphate phosphatase	3.1.3.84	ExPASy/EC number
+S000000227	YBR023C	CHS3	CHitin Synthase-related	CAL1|chitin synthase CHS3|CSD2|DIT101|KTI2	2.4.1.16	ExPASy/EC number
+S000000230	YBR026C	ETR1	2-Enoyl Thioester Reductase	enoyl-[acyl-carrier-protein] reductase|MRF1|MRF1'	1.3.1.104	ExPASy/EC number
+S000000232	YBR028C	YPK3	""	putative protein kinase YPK3	2.7.11.1	ExPASy/EC number
+S000000233	YBR029C	CDS1	CDP-Diacylglycerol Synthase	CDG1|phosphatidate cytidylyltransferase	2.7.7.41	ExPASy/EC number
+S000000239	YBR035C	PDX3	PyriDoXine auxotrophy	pyridoxamine-phosphate oxidase PDX3	1.4.3.5	ExPASy/EC number
+S000000242	YBR038W	CHS2	CHitin Synthase	chitin synthase CHS2	2.4.1.16	ExPASy/EC number
+S000000250	YBR046C	ZTA1	ZeTA-crystallin	NADPH:quinone reductase	1.6.5.5	ExPASy/EC number
+S000000262	YBR058C	UBP14	UBiquitin-specific Protease	GID6|ubiquitin-specific protease UBP14	3.4.19.12	ExPASy/EC number
+S000000263	YBR059C	AKL1	Ark family Kinase-Like protein	serine/threonine protein kinase AKL1	2.7.11.1	ExPASy/EC number
+S000000265	YBR061C	TRM7	Transfer RNA Methyltransferase	tRNA methyltransferase TRM7	2.1.1.205	ExPASy/EC number
+S000000277	YBR073W	RDH54	RaD54 Homolog	DNA-dependent ATPase RDH54|TID1	3.6.4.12	ExPASy/EC number
+S000000286	YBR082C	UBC4	UBiquitin-Conjugating	E2 ubiquitin-conjugating protein UBC4	2.3.2.23	ExPASy/EC number
+S000000288	YBR084W	MIS1	MItochondrial C1-tetrahydrofolate Synthase	trifunctional formate-tetrahydrofolate ligase/methenyltetrahydrofolate cyclohydrolase/methylenetetrahydrofolate dehydrogenase MIS1	1.5.1.5	ExPASy/EC number
+S000000288	YBR084W	MIS1	MItochondrial C1-tetrahydrofolate Synthase	trifunctional formate-tetrahydrofolate ligase/methenyltetrahydrofolate cyclohydrolase/methylenetetrahydrofolate dehydrogenase MIS1	3.5.4.9	ExPASy/EC number
+S000000288	YBR084W	MIS1	MItochondrial C1-tetrahydrofolate Synthase	trifunctional formate-tetrahydrofolate ligase/methenyltetrahydrofolate cyclohydrolase/methylenetetrahydrofolate dehydrogenase MIS1	6.3.4.3	ExPASy/EC number
+S000000296	YBR092C	PHO3	PHOsphate metabolism	acid phosphatase PHO3|phoC	3.1.3.2	ExPASy/EC number
+S000000297	YBR093C	PHO5	PHOsphate metabolism	acid phosphatase PHO5|phoE	3.1.3.2	ExPASy/EC number
+S000000298	YBR094W	PBY1	P-BodY associated protein	putative tubulin tyrosine ligase	6.3.2.25	ExPASy/EC number
+S000000301	YBR097W	VPS15	Vacuolar Protein Sorting	GRD8|ubiquitin-binding serine/threonine protein kinase VPS15|VAC4|VPL19|VPS40|VPT15	2.7.11.1	ExPASy/EC number
+S000000314	YBR110W	ALG1	Asparagine-Linked Glycosylation	chitobiosyldiphosphodolichol beta-1,4 mannosyltransferase	2.4.1.142	ExPASy/EC number
+S000000315	YBR111C	YSA1	""	ADP-ribose diphosphatase|RMA2	3.6.1.13	ExPASy/EC number
+S000000319	YBR115C	LYS2	LYSine requiring	L-aminoadipate-semialdehyde dehydrogenase	1.2.1.31	ExPASy/EC number
+S000000319	YBR115C	LYS2	LYSine requiring	L-aminoadipate-semialdehyde dehydrogenase	1.2.1.95	ExPASy/EC number
+S000000321	YBR117C	TKL2	TransKetoLase	transketolase TKL2	2.2.1.1	ExPASy/EC number
+S000000325	YBR121C	GRS1	Glycyl-tRNA Synthase	glycine--tRNA ligase	6.1.1.14	ExPASy/EC number
+S000000329	YBR125C	PTC4	Phosphatase Two C	GCT1|type 2C protein phosphatase PTC4	3.1.3.16	ExPASy/EC number
+S000000330	YBR126C	TPS1	Trehalose-6-Phosphate Synthase	alpha,alpha-trehalose-phosphate synthase (UDP-forming) TPS1|BYP1|CIF1|FDP1|GGS1|GLC6|TSS1	2.4.1.15	ExPASy/EC number
+S000000337	YBR133C	HSL7	Histone Synthetic Lethal	protein arginine N-methyltransferase	2.1.1.320	ExPASy/EC number
+S000000340	YBR136W	MEC1	Mitosis Entry Checkpoint	ESR1|protein kinase MEC1|RAD31|SAD3	2.7.11.1	ExPASy/EC number
+S000000345	YBR141C	BMT2	Base MethylTransferase of 25S RNA	25S rRNA (adenine2142-N1)-methyltransferase	2.1.1.286	ExPASy/EC number
+S000000346	YBR142W	MAK5	MAintenance of Killer	putative ATP-dependent RNA helicase	3.6.4.13	ExPASy/EC number
+S000000349	YBR145W	ADH5	Alcohol DeHydrogenase	alcohol dehydrogenase ADH5	1.1.1.1	ExPASy/EC number
+S000000353	YBR149W	ARA1	D-ARAbinose dehydrogenase	D-arabinose 1-dehydrogenase (NAD(P)(+)) ARA1	1.1.1.117	ExPASy/EC number
+S000000357	YBR153W	RIB7	RIBoflavin biosynthesis	2,5-diamino-6-(ribosylamino)-4(3H)-pyrimidinone 5'-phosphate reductase	1.1.1.302	ExPASy/EC number
+S000000363	YBR159W	IFA38	""	ketoreductase	1.1.1.330	ExPASy/EC number
+S000000364	YBR160W	CDC28	Cell Division Cycle	CDK1|cyclin-dependent serine/threonine-protein kinase CDC28|HSL5|SRM5	2.7.11.22	ExPASy/EC number
+S000000370	YBR166C	TYR1	TYRosine	prephenate dehydrogenase (NADP(+))	1.3.1.13	ExPASy/EC number
+S000000371	YBR167C	POP7	Processing Of Precursor RNAs	ribonuclease P/MRP protein subunit POP7|RPP2	3.1.26.5	ExPASy/EC number
+S000000380	YBR176W	ECM31	ExtraCellular Mutant	3-methyl-2-oxobutanoate hydroxymethyltransferase	2.1.2.11	ExPASy/EC number
+S000000381	YBR177C	EHT1	Ethanol Hexanoyl Transferase	medium-chain fatty acid ethyl ester synthase/esterase	2.3.1.84	ExPASy/EC number
+S000000400	YBR196C	PGI1	PhosphoGlucoIsomerase	CDC30|glucose-6-phosphate isomerase	5.3.1.9	ExPASy/EC number
+S000000406	YBR202W	MCM7	MiniChromosome Maintenance	CDC47|mini-chromosome maintenance complex protein 7	3.6.4.12	ExPASy/EC number
+S000000408	YBR204C	LDH1	Lipid Droplet Hydrolase	triacylglycerol lipase	3.1.1.3	ExPASy/EC number
+S000000412	YBR208C	DUR1,2	Degradation of URea	bifunctional urea carboxylase/allophanate hydrolase|DUR80	3.5.1.54	ExPASy/EC number
+S000000412	YBR208C	DUR1,2	Degradation of URea	bifunctional urea carboxylase/allophanate hydrolase|DUR80	6.3.4.6	ExPASy/EC number
+S000000417	YBR213W	MET8	METhionine requiring	bifunctional precorrin-2 dehydrogenase/sirohydrochlorin ferrochelatase MET8	1.3.1.76	ExPASy/EC number
+S000000417	YBR213W	MET8	METhionine requiring	bifunctional precorrin-2 dehydrogenase/sirohydrochlorin ferrochelatase MET8	4.99.1.4	ExPASy/EC number
+S000000422	YBR218C	PYC2	PYruvate Carboxylase	pyruvate carboxylase 2	6.4.1.1	ExPASy/EC number
+S000000425	YBR221C	PDB1	Pyruvate Dehydrogenase Beta subunit	pyruvate dehydrogenase (acetyl-transferring) subunit E1 beta	1.2.4.1	ExPASy/EC number
+S000000426	YBR222C	PCS60	Peroxisomal CoA-dependent Synthetase	FAT2	6.2.1.8	ExPASy/EC number
+S000000433	YBR229C	ROT2	Reversal Of Tor2 lethality	GLS2|glucan 1,3-alpha-glucosidase ROT2	3.2.1.207	ExPASy/EC number
+S000000440	YBR236C	ABD1	""	mRNA (guanine-N7)-methyltransferase	2.1.1.56	ExPASy/EC number
+S000000441	YBR237W	PRP5	Pre-mRNA Processing	DEAD-box RNA helicase PRP5|RNA5	3.6.4.13	ExPASy/EC number
+S000000446	YBR242W	""	""	5'-deoxynucleotidase	3.1.3.89	ExPASy/EC number
+S000000447	YBR243C	ALG7	Asparagine-Linked Glycosylation	TUR1|UDP-N-acetylglucosamine--dolichyl-phosphate N-acetylglucosaminephosphotransferase	2.7.8.15	ExPASy/EC number
+S000000448	YBR244W	GPX2	Glutathione PeroXidase	AMI1|glutathione peroxidase GPX2	1.11.1.24	ExPASy/EC number
+S000000450	YBR246W	RRT2	Regulator of rDNA Transcription	diphthamide synthase|DPH7|ERE1	3.1.1.97	ExPASy/EC number
+S000000452	YBR248C	HIS7	HIStidine requiring	imidazoleglycerol-phosphate synthase	3.5.1.2	ExPASy/EC number
+S000000452	YBR248C	HIS7	HIStidine requiring	imidazoleglycerol-phosphate synthase	4.3.2.10	ExPASy/EC number
+S000000453	YBR249C	ARO4	AROmatic amino acid requiring	3-deoxy-7-phosphoheptulonate synthase ARO4	2.5.1.54	ExPASy/EC number
+S000000456	YBR252W	DUT1	DUTp pyrophosphatase	bifunctional dITP/dUTP diphosphatase	3.6.1.23	ExPASy/EC number
+S000000460	YBR256C	RIB5	RIBoflavin biosynthesis	riboflavin synthase	2.5.1.9	ExPASy/EC number
+S000000465	YBR261C	TAE1	Translation Associated Element	N-terminal protein methyltransferase|NTM1	2.1.1.244	ExPASy/EC number
+S000000467	YBR263W	SHM1	Serine HydroxyMethyltransferase	glycine hydroxymethyltransferase SHM1|SHMT1|TMP3	2.1.2.1	ExPASy/EC number
+S000000469	YBR265W	TSC10	Temperature-sensitive Suppressors of Csg2 mutants	3-dehydrosphinganine reductase	1.1.1.102	ExPASy/EC number
+S000000478	YBR274W	CHK1	CHeckpoint Kinase	serine/threonine protein kinase CHK1	2.7.11.1	ExPASy/EC number
+S000000480	YBR276C	PPS1	Protein Phosphatase S phase	tyrosine/serine/threonine protein phosphatase PPS1	3.1.3.16	ExPASy/EC number
+S000000480	YBR276C	PPS1	Protein Phosphatase S phase	tyrosine/serine/threonine protein phosphatase PPS1	3.1.3.48	ExPASy/EC number
+S000000490	YBR286W	APE3	AminoPEptidase	aminopeptidase Y|APY1	3.4.11.15	ExPASy/EC number
+S000000499	YBR295W	PCA1	P-type Cation-transporting ATPase	CAD2|cation-transporting P-type ATPase PCA1|PAY2	7.2.2.21	ExPASy/EC number
+S000000503	YBR299W	MAL32	MALtose	alpha-glucosidase MAL32|MAL3S|MALS	3.2.1.20	ExPASy/EC number
+S000000510	YCL004W	PGS1	PhosphatidylGlycerolphosphate Synthase	CDP-diacylglycerol--glycerol-3-phosphate 3-phosphatidyltransferase|PEL1|YCL003W	2.7.8.5	ExPASy/EC number
+S000000522	YCL017C	NFS1	NiFS-like	cysteine desulfurase|SPL1	2.8.1.7	ExPASy/EC number
+S000000523	YCL018W	LEU2	LEUcine biosynthesis	3-isopropylmalate dehydrogenase	1.1.1.85	ExPASy/EC number
+S000000529	YCL024W	KCC4	""	serine/threonine protein kinase	2.7.11.1	ExPASy/EC number
+S000000535	YCL030C	HIS4	HIStidine requiring	trifunctional histidinol dehydrogenase/phosphoribosyl-AMP cyclohydrolase/phosphoribosyl-ATP diphosphatase	1.1.1.23	ExPASy/EC number
+S000000535	YCL030C	HIS4	HIStidine requiring	trifunctional histidinol dehydrogenase/phosphoribosyl-AMP cyclohydrolase/phosphoribosyl-ATP diphosphatase	3.5.4.19	ExPASy/EC number
+S000000535	YCL030C	HIS4	HIStidine requiring	trifunctional histidinol dehydrogenase/phosphoribosyl-AMP cyclohydrolase/phosphoribosyl-ATP diphosphatase	3.6.1.31	ExPASy/EC number
+S000000538	YCL033C	MXR2	peptide Methionine sulfoXide Reductase	MSRB|peptide-methionine (R)-S-oxide reductase	1.8.4.12	ExPASy/EC number
+S000000540	YCL035C	GRX1	GlutaRedoXin	dithiol glutaredoxin GRX1	1.11.1.9	ExPASy/EC number
+S000000540	YCL035C	GRX1	GlutaRedoXin	dithiol glutaredoxin GRX1	2.5.1.18	ExPASy/EC number
+S000000545	YCL040W	GLK1	GLucoKinase	glucokinase|HOR3	2.7.1.2	ExPASy/EC number
+S000000548	YCL043C	PDI1	Protein Disulfide Isomerase	MFP1|protein disulfide isomerase PDI1|TRG1	5.3.4.1	ExPASy/EC number
+S000000552	YCL047C	POF1	Promoter Of Filamentation	nicotinamide-nucleotide adenylyltransferase	2.7.7.1	ExPASy/EC number
+S000000555	YCL050C	APA1	AP4A phosphorylase	bifunctional AP-4-A phosphorylase/ADP sulfurylase|DTP1	2.7.7.5	ExPASy/EC number
+S000000555	YCL050C	APA1	AP4A phosphorylase	bifunctional AP-4-A phosphorylase/ADP sulfurylase|DTP1	2.7.7.53	ExPASy/EC number
+S000000559	YCL054W	SPB1	Suppressor of PaB1 mutant	27S pre-rRNA (guanosine2922-2'-O)-methyltransferase	2.1.1.167	ExPASy/EC number
+S000000562	YCL057W	PRD1	PRoteinase yscD	metalloendopeptidase	3.4.24.37	ExPASy/EC number
+S000000569	YCL064C	CHA1	Catabolism of Hydroxy Amino acids	L-serine/L-threonine ammonia-lyase CHA1	4.3.1.17	ExPASy/EC number
+S000000569	YCL064C	CHA1	Catabolism of Hydroxy Amino acids	L-serine/L-threonine ammonia-lyase CHA1	4.3.1.19	ExPASy/EC number
+S000000598	YCR005C	CIT2	CITrate synthase	citrate (Si)-synthase CIT2	2.3.3.16	ExPASy/EC number
+S000000601	YCR008W	SAT4	""	HAL4|serine/threonine protein kinase SAT4	2.7.11.1	ExPASy/EC number
+S000000605	YCR012W	PGK1	3-PhosphoGlycerate Kinase	phosphoglycerate kinase	2.7.2.3	ExPASy/EC number
+S000000607	YCR014C	POL4	POLymerase	DNA-directed DNA polymerase IV|POLX	2.7.7.7	ExPASy/EC number
+S000000618	YCR024C	SLM5	Synthetic Lethal with Mss4	asparagine--tRNA ligase SLM5	6.1.1.22	ExPASy/EC number
+S000000621	YCR026C	NPP1	ecto-Nucleotide Pyrophosphatase/Phosphodiesterase	nucleotide diphosphatase/phosphodiesterase NPP1	3.1.4.1	ExPASy/EC number
+S000000621	YCR026C	NPP1	ecto-Nucleotide Pyrophosphatase/Phosphodiesterase	nucleotide diphosphatase/phosphodiesterase NPP1	3.6.1.9	ExPASy/EC number
+S000000630	YCR034W	ELO2	fatty acid ELOngation	fatty acid elongase ELO2|FEN1|GNS1|VBM2	2.3.1.199	ExPASy/EC number
+S000000632	YCR036W	RBK1	RiBoKinase	putative ribokinase	2.7.1.15	ExPASy/EC number
+S000000643	YCR047C	BUD23	BUD site selection	18S rRNA (guanine1575-N7)-methyltransferase	2.1.1.309	ExPASy/EC number
+S000000649	YCR053W	THR4	THReonine requiring	threonine synthase THR4	4.2.3.1	ExPASy/EC number
+S000000662	YCR066W	RAD18	RADiation sensitive	E3 ubiquitin-protein ligase RAD18	2.3.2.27	ExPASy/EC number
+S000000664	YCR068W	ATG15	AuTophaGy related	AUT5|CVT17|triglyceride lipase ATG15	3.1.1.3	ExPASy/EC number
+S000000665	YCR069W	CPR4	Cyclosporin-sensitive Proline Rotamase	CYP4|peptidylprolyl isomerase family protein CPR4|SCC3|YCR070W	5.2.1.8	ExPASy/EC number
+S000000669	YCR073C	SSK22	Suppressor of Sensor Kinase	mitogen-activated protein kinase kinase kinase SSK22	2.7.11.1	ExPASy/EC number
+S000000687	YCR091W	KIN82	protein KINase	FPK2|putative serine/threonine protein kinase KIN82	2.7.11.1	ExPASy/EC number
+S000000702	YCR105W	ADH7	Alcohol DeHydrogenase	ADHVII|NADP-dependent alcohol dehydrogenase	1.1.1.2	ExPASy/EC number
+S000000737	YEL011W	GLC3	GLyCogen	1,4-alpha-glucan branching enzyme|GHA1	2.4.1.18	ExPASy/EC number
+S000000738	YEL012W	UBC8	UBiquitin-Conjugating	E2 ubiquitin-conjugating protein UBC8|GID3	2.3.2.23	ExPASy/EC number
+S000000742	YEL016C	NPP2	ecto-Nucleotide Pyrophosphatase/Phosphodiesterase	nucleotide diphosphatase/phosphodiesterase NPP2	3.1.4.1	ExPASy/EC number
+S000000742	YEL016C	NPP2	ecto-Nucleotide Pyrophosphatase/Phosphodiesterase	nucleotide diphosphatase/phosphodiesterase NPP2	3.6.1.9	ExPASy/EC number
+S000000747	YEL021W	URA3	URAcil requiring	orotidine-5'-phosphate decarboxylase	4.1.1.23	ExPASy/EC number
+S000000750	YEL024W	RIP1	Rieske Iron-sulfur Protein	ubiquinol--cytochrome-c reductase catalytic subunit RIP1	7.1.1.8	ExPASy/EC number
+S000000755	YEL029C	BUD16	BUD site selection	putative pyridoxal kinase BUD16	2.7.1.35	ExPASy/EC number
+S000000758	YEL032W	MCM3	MiniChromosome Maintenance	MCM DNA helicase complex subunit MCM3	3.6.4.12	ExPASy/EC number
+S000000764	YEL038W	UTR4	Unidentified TRanscript	putative acireductone synthase UTR4	3.1.3.77	ExPASy/EC number
+S000000767	YEL041W	YEF1	""	NADH/NAD(+) kinase	2.7.1.86	ExPASy/EC number
+S000000768	YEL042W	GDA1	Guanosine DiphosphatAse	guanosine diphosphatase	3.6.1.42	ExPASy/EC number
+S000000772	YEL046C	GLY1	GLYcine requiring	threonine aldolase GLY1	4.1.2.48	ExPASy/EC number
+S000000773	YEL047C	FRD1	Fumarate ReDuctase	FRDS1|fumarate reductase	1.3.1.6	ExPASy/EC number
+S000000781	YEL055C	POL5	POLymerase	DNA-directed DNA polymerase	2.7.7.7	ExPASy/EC number
+S000000784	YEL058W	PCM1	PhosphoaCetylglucosamine Mutase	AGM1|phosphoacetylglucosamine mutase PCM1	5.4.2.3	ExPASy/EC number
+S000000786	YEL060C	PRB1	PRoteinase B	CVT1|proteinase B	3.4.21.48	ExPASy/EC number
+S000000792	YEL066W	HPA3	Histone and other Protein Acetyltransferase	D-amino-acid N-acetyltransferase	2.3.1.36	ExPASy/EC number
+S000000792	YEL066W	HPA3	Histone and other Protein Acetyltransferase	D-amino-acid N-acetyltransferase	2.3.1.48	ExPASy/EC number
+S000000796	YEL070W	DSF1	Deletion Suppressor of mptFive/pufFive mutation	MAN1|mannitol dehydrogenase DSF1	1.1.1.67	ExPASy/EC number
+S000000797	YEL071W	DLD3	D-Lactate Dehydrogenase	D-lactate dehydrogenase	1.1.2.4	ExPASy/EC number
+S000000797	YEL071W	DLD3	D-Lactate Dehydrogenase	D-lactate dehydrogenase	1.1.99.40	ExPASy/EC number
+S000000805	YER003C	PMI40	PhosphoMannose Isomerase	mannose-6-phosphate isomerase PMI40|PMI	5.3.1.8	ExPASy/EC number
+S000000807	YER005W	YND1	Yeast Nucleoside Diphosphatase	APY1|apyrase|YEJ5	3.6.1.5	ExPASy/EC number
+S000000812	YER010C	""	""	bifunctional 4-hydroxy-4-methyl-2-oxoglutarate aldolase/oxaloacetate decarboxylase	4.1.1.112	ExPASy/EC number
+S000000812	YER010C	""	""	bifunctional 4-hydroxy-4-methyl-2-oxoglutarate aldolase/oxaloacetate decarboxylase	4.1.3.17	ExPASy/EC number
+S000000815	YER013W	PRP22	Pre-mRNA Processing	DEAH-box ATP-dependent RNA helicase PRP22	3.6.4.13	ExPASy/EC number
+S000000816	YER014W	HEM14	HEMe biosynthesis	oxygen-dependent protoporphyrinogen oxidase	1.3.3.4	ExPASy/EC number
+S000000817	YER015W	FAA2	Fatty Acid Activation	FAM1|medium-chain fatty acid-CoA ligase FAA2	6.2.1.3	ExPASy/EC number
+S000000825	YER023W	PRO3	PROline requiring	ORE2|pyrroline-5-carboxylate reductase	1.5.1.2	ExPASy/EC number
+S000000826	YER024W	YAT2	""	carnitine O-acetyltransferase YAT2	2.3.1.7	ExPASy/EC number
+S000000827	YER025W	GCD11	General Control Derepressed	SUI4|translation initiation factor eIF2 subunit gamma	3.6.5.3	ExPASy/EC number
+S000000828	YER026C	CHO1	CHOline requiring	CDP-diacylglycerol-serine O-phosphatidyltransferase|PSS1	2.7.8.8	ExPASy/EC number
+S000000844	YER042W	MXR1	peptide Methionine sulfoXide Reductase	msrA|peptide-methionine-S-sulfoxide reductase	1.8.4.11	ExPASy/EC number
+S000000845	YER043C	SAH1	S-Adenosyl-l-Homocysteine hydrolase	adenosylhomocysteinase	3.3.1.1	ExPASy/EC number
+S000000853	YER051W	JHD1	JmjC domain-containing Histone Demethylase	[Histone H3]-lysine-36 demethylase|JHDM1|KDM2	1.14.11.27	ExPASy/EC number
+S000000854	YER052C	HOM3	HOMoserine requiring	aspartate kinase|BOR1|SIL4|THR3	2.7.2.4	ExPASy/EC number
+S000000857	YER055C	HIS1	HIStidine	ATP phosphoribosyltransferase	2.4.2.17	ExPASy/EC number
+S000000863	YER061C	CEM1	Condensing Enzyme with Mitochondrial function	fatty acid synthase CEM1	2.3.1.41	ExPASy/EC number
+S000000864	YER062C	GPP2	Glycerol-3-Phosphate Phosphatase	glycerol-1-phosphatase HOR2|HOR2	3.1.3.21	ExPASy/EC number
+S000000867	YER065C	ICL1	IsoCitrate Lyase	isocitrate lyase 1	4.1.3.1	ExPASy/EC number
+S000000867	YER065C	ICL1	IsoCitrate Lyase	isocitrate lyase 1	4.1.3.30	ExPASy/EC number
+S000000871	YER069W	ARG5,6	ARGinine requiring	argB|argC|bifunctional acetylglutamate kinase/N-acetyl-gamma-glutamyl-phosphate reductase	1.2.1.38	ExPASy/EC number
+S000000871	YER069W	ARG5,6	ARGinine requiring	argB|argC|bifunctional acetylglutamate kinase/N-acetyl-gamma-glutamyl-phosphate reductase	2.7.2.8	ExPASy/EC number
+S000000872	YER070W	RNR1	RiboNucleotide Reductase	CRT7|ribonucleotide-diphosphate reductase subunit RNR1|RIR1|SDS12	1.17.4.1	ExPASy/EC number
+S000000875	YER073W	ALD5	ALdehyde Dehydrogenase	aldehyde dehydrogenase (NAD(P)(+)) ALD5	1.2.1.5	ExPASy/EC number
+S000000877	YER075C	PTP3	Protein Tyrosine Phosphatase	tyrosine protein phosphatase PTP3	3.1.3.48	ExPASy/EC number
+S000000880	YER078C	ICP55	Intermediate Cleaving Peptidase	aminopeptidase	3.4.11.26	ExPASy/EC number
+S000000883	YER081W	SER3	SERine requiring	phosphoglycerate dehydrogenase SER3	1.1.1.399	ExPASy/EC number
+S000000883	YER081W	SER3	SERine requiring	phosphoglycerate dehydrogenase SER3	1.1.1.95	ExPASy/EC number
+S000000888	YER086W	ILV1	IsoLeucine-plus-Valine requiring	ISO1|threonine ammonia-lyase ILV1	4.3.1.19	ExPASy/EC number
+S000000889	YER087W	AIM10	Altered Inheritance rate of Mitochondria	putative proline--tRNA ligase AIM10	6.1.1.15	ExPASy/EC number
+S000000891	YER089C	PTC2	Phosphatase Two C	type 2C protein phosphatase PTC2	3.1.3.16	ExPASy/EC number
+S000000892	YER090W	TRP2	TRyPtophan	anthranilate synthase TRP2	4.1.3.27	ExPASy/EC number
+S000000893	YER091C	MET6	METhionine requiring	5-methyltetrahydropteroyltriglutamate-homocysteine S-methyltransferase	2.1.1.14	ExPASy/EC number
+S000000900	YER098W	UBP9	UBiquitin-specific Protease	putative ubiquitin-specific protease UBP9	3.4.19.12	ExPASy/EC number
+S000000901	YER099C	PRS2	PhosphoRibosylpyrophosphate Synthetase	ribose phosphate diphosphokinase subunit PRS2	2.7.6.1	ExPASy/EC number
+S000000902	YER100W	UBC6	UBiquitin-Conjugating	DOA2|E2 ubiquitin-conjugating protein UBC6	2.3.2.23	ExPASy/EC number
+S000000918	YER116C	SLX8	Synthetic Lethal of unknown (X) function	SUMO-targeted ubiquitin ligase complex subunit SLX8	2.3.2.27	ExPASy/EC number
+S000000925	YER123W	YCK3	Yeast Casein Kinase	casein kinase YCK3|CKI3	2.7.11.1	ExPASy/EC number
+S000000927	YER125W	RSP5	Reverses Spt- Phenotype	HPG1|MDP1|MUT2|NEDD4 family E3 ubiquitin-protein ligase|NPI1|SMM1|UBY1	2.3.2.26	ExPASy/EC number
+S000000931	YER129W	SAK1	Snf1 Activating Kinase	PAK1|serine/threonine protein kinase SAK1	2.7.11.1	ExPASy/EC number
+S000000935	YER133W	GLC7	GLyCogen	CID1|DIS2|DIS2S1|PP1|type 1 serine/threonine-protein phosphatase catalytic subunit GLC7	3.1.3.16	ExPASy/EC number
+S000000936	YER134C	""	""	MDP-1|Mg-dependent acid phosphatase	3.1.3.48	ExPASy/EC number
+S000000941	YER139C	RTR1	Regulator of TRanscription	RNA polymerase II subunit B1 CTD phosphatase RTR1	3.1.3.16	ExPASy/EC number
+S000000944	YER142C	MAG1	3-MethylAdenine DNA Glycosylase	DNA-3-methyladenine glycosylase II|MMS5	3.2.2.21	ExPASy/EC number
+S000000946	YER144C	UBP5	UBiquitin-specific Protease	putative ubiquitin-specific protease UBP5	3.4.19.12	ExPASy/EC number
+S000000953	YER151C	UBP3	UBiquitin-specific Protease	BLM3|mRNA-binding ubiquitin-specific protease UBP3	3.4.19.12	ExPASy/EC number
+S000000965	YER163C	GCG1	Gamma-glutamyl Cyclotransferase acting on Glutathione	gamma-glutamylcyclotransferase	4.3.2.7	ExPASy/EC number
+S000000968	YER166W	DNF1	Drs2 Neo1 Family	aminophospholipid-translocating P4-type ATPase DNF1	7.6.2.1	ExPASy/EC number
+S000000970	YER168C	CCA1	tRNA CCA-pyrophosphorylase	TNT1|tRNA adenylyltransferase	2.7.7.72	ExPASy/EC number
+S000000972	YER170W	ADK2	ADenylate Kinase	adenylate kinase ADK2|AKY3|PAK3	2.7.4.10	ExPASy/EC number
+S000000973	YER171W	RAD3	RADiation sensitive	REM1|TFIIH/NER complex ATP-dependent 5'-3' DNA helicase subunit RAD3	3.6.4.12	ExPASy/EC number
+S000000974	YER172C	BRR2	Bad Response to Refrigeration	ATP-dependent RNA helicase BRR2|PRP44|RSS1|SLT22|SNU246	3.6.4.13	ExPASy/EC number
+S000000977	YER175C	TMT1	Trans-aconitate MethylTransferase	TAM1|trans-aconitate 3-methyltransferase	2.1.1.145	ExPASy/EC number
+S000000978	YER176W	ECM32	ExtraCellular Mutant	HEL1|MTT1|RNA helicase	3.6.4.13	ExPASy/EC number
+S000000980	YER178W	PDA1	Pyruvate Dehydrogenase Alpha	pyruvate dehydrogenase (acetyl-transferring) subunit E1 alpha	1.2.4.1	ExPASy/EC number
+S000000985	YER183C	FAU1	Folinic Acid Utilization	5-formyltetrahydrofolate cyclo-ligase	6.3.3.2	ExPASy/EC number
+S000000992	YER190W	YRF1-2	""	Y' element ATP-dependent helicase protein 1 copy 2|YRF1	3.6.4.12	ExPASy/EC number
+S000000995	YHL003C	LAG1	Longevity Assurance Gene	sphingosine N-acyltransferase LAG1	2.3.1.24	ExPASy/EC number
+S000000999	YHL007C	STE20	STErile	mitogen-activated protein kinase kinase kinase kinase STE20	2.7.11.1	ExPASy/EC number
+S000001003	YHL011C	PRS3	PhosphoRibosylpyrophosphate Synthetase	ribose phosphate diphosphokinase subunit PRS3	2.7.6.1	ExPASy/EC number
+S000001004	YHL012W	""	""	UTP--glucose-1-phosphate uridylyltransferase	2.7.7.9	ExPASy/EC number
+S000001010	YHL018W	MCO14	Mitochondrial Class One protein of 14 kDa	4a-hydroxytetrahydrobiopterin dehydratase	4.2.1.96	ExPASy/EC number
+S000001014	YHL022C	SPO11	SPOrulation	DNA topoisomerase (ATP-hydrolyzing)	5.6.2.2	ExPASy/EC number
+S000001024	YHL032C	GUT1	Glycerol UTilization	glycerol kinase	2.7.1.30	ExPASy/EC number
+S000001046	YHR004C	NEM1	Nuclear Envelope Morphology	Nem1-Spo7 phosphatase catalytic subunit NEM1	3.1.3.16	ExPASy/EC number
+S000001049	YHR007C	ERG11	ERGosterol biosynthesis	CYP51|sterol 14-demethylase	1.14.14.154	ExPASy/EC number
+S000001050	YHR008C	SOD2	SuperOxide Dismutase	superoxide dismutase SOD2	1.15.1.1	ExPASy/EC number
+S000001053	YHR011W	DIA4	Digs Into Agar	putative serine--tRNA ligase DIA4	6.1.1.11	ExPASy/EC number
+S000001055	YHR013C	ARD1	ARrest Defective	NAA10|peptide alpha-N-acetyltransferase complex A subunit ARD1	2.3.1.255	ExPASy/EC number
+S000001060	YHR018C	ARG4	ARGinine requiring	argininosuccinate lyase ARG4	4.3.2.1	ExPASy/EC number
+S000001061	YHR019C	DED81	Defines Essential Domain	asparagine--tRNA ligase DED81	6.1.1.22	ExPASy/EC number
+S000001062	YHR020W	""	""	proline--tRNA ligase	6.1.1.15	ExPASy/EC number
+S000001067	YHR025W	THR1	THReonine requiring	homoserine kinase	2.7.1.39	ExPASy/EC number
+S000001072	YHR030C	SLT2	Suppressor of the LyTic phenotype	BYC2|LYT2|mitogen-activated serine/threonine-protein kinase SLT2|MPK1|SLK2	2.7.11.24	ExPASy/EC number
+S000001073	YHR031C	RRM3	rDNA Recombination Mutation	DNA helicase|RTT104	3.6.4.12	ExPASy/EC number
+S000001079	YHR037W	PUT2	Proline UTilization	1-pyrroline-5-carboxylate dehydrogenase	1.2.1.88	ExPASy/EC number
+S000001084	YHR042W	NCP1	NADP-Cytochrome P450 reductase	CPR1|NADPH--hemoprotein reductase	1.6.2.4	ExPASy/EC number
+S000001085	YHR043C	DOG2	DeOxyGlucose	2-deoxyglucose-6-phosphatase	3.1.3.68	ExPASy/EC number
+S000001086	YHR044C	DOG1	DeOxyGlucose	2-deoxyglucose-6-phosphatase	3.1.3.68	ExPASy/EC number
+S000001088	YHR046C	INM1	INositol Monophosphatase	inositol monophosphate 1-phosphatase INM1	3.1.3.25	ExPASy/EC number
+S000001099	YHR057C	CPR2	Cyclosporin A-sensitive Proline Rotamase	CYP2|peptidylprolyl isomerase CPR2	5.2.1.8	ExPASy/EC number
+S000001104	YHR062C	RPP1	Ribonuclease P Protein	RNA-binding RNA processing protein RPP1	3.1.26.5	ExPASy/EC number
+S000001105	YHR063C	PAN5	PANtothenate biosynthesis	2-dehydropantoate 2-reductase PAN5	1.1.1.169	ExPASy/EC number
+S000001107	YHR065C	RRP3	Ribosomal RNA Processing	RNA-dependent ATPase RRP3	3.6.4.13	ExPASy/EC number
+S000001110	YHR068W	DYS1	DeoxyhYpusine Synthase	deoxyhypusine synthase	2.5.1.46	ExPASy/EC number
+S000001112	YHR070W	TRM5	tRNA Methyltransferase	tRNA (guanine) methyltransferase	2.1.1.228	ExPASy/EC number
+S000001114	YHR072W	ERG7	ERGosterol biosynthesis	lanosterol synthase ERG7	5.4.99.7	ExPASy/EC number
+S000001116	YHR074W	QNS1	glutamine (Q) dependent Nad+ Synthetase	glutamine-dependent NAD(+) synthetase	6.3.5.1	ExPASy/EC number
+S000001117	YHR075C	PPE1	Phosphoprotein Phosphatase methylEsterase	carboxylesterase-mitochondrial 37S ribosomal protein YmS2|MRPS2|YmS2	3.1.1.89	ExPASy/EC number
+S000001118	YHR076W	PTC7	Phosphatase type Two C	type 2C protein phosphatase PTC7	3.1.3.16	ExPASy/EC number
+S000001121	YHR079C	IRE1	Inositol REquiring	bifunctional endoribonuclease/protein kinase IRE1|ERN1	2.7.11.1	ExPASy/EC number
+S000001124	YHR082C	KSP1	Kinase Suppressing Prp20-10	putative serine/threonine protein kinase KSP1	2.7.11.1	ExPASy/EC number
+S000001133	YHR091C	MSR1	Mitochondrial tRNA Synthetase aRginine	arginine--tRNA ligase MSR1	6.1.1.19	ExPASy/EC number
+S000001142	YHR100C	GEP4	GEnetic interactors of Prohibitins	phosphatidylglycerophosphatase	3.1.3.27	ExPASy/EC number
+S000001144	YHR102W	KIC1	Kinase that Interacts with Cdc31p	NRK1|putative serine/threonine protein kinase KIC1	2.7.11.1	ExPASy/EC number
+S000001146	YHR104W	GRE3	Genes de Respuesta a Estres (stress responsive genes)	trifunctional aldehyde reductase/xylose reductase/glucose 1-dehydrogenase (NADP(+))	1.1.1.21	ExPASy/EC number
+S000001148	YHR106W	TRR2	ThioRedoxin Reductase	thioredoxin-disulfide reductase TRR2	1.8.1.9	ExPASy/EC number
+S000001151	YHR109W	CTM1	CyTochrome c Methyltransferase	cytochrome c lysine N-methyltransferase	2.1.1.59	ExPASy/EC number
+S000001155	YHR113W	APE4	""	aspartyl aminopeptidase	3.4.11.21	ExPASy/EC number
+S000001157	YHR115C	DMA1	Defective in Mitotic Arrest	CHF1|ubiquitin-conjugating protein DMA1	2.3.2.27	ExPASy/EC number
+S000001161	YHR119W	SET1	SET domain-containing	histone methyltransferase SET1|KMT2|YTX1	2.1.1.354	ExPASy/EC number
+S000001165	YHR123W	EPT1	EthanolaminePhosphoTransferase	bifunctional diacylglycerol cholinephosphotransferase/ethanolaminephosphotransferase	2.7.8.1	ExPASy/EC number
+S000001165	YHR123W	EPT1	EthanolaminePhosphoTransferase	bifunctional diacylglycerol cholinephosphotransferase/ethanolaminephosphotransferase	2.7.8.2	ExPASy/EC number
+S000001170	YHR128W	FUR1	5-FluoroURidine resistant	uracil phosphoribosyltransferase	2.4.2.9	ExPASy/EC number
+S000001177	YHR135C	YCK1	Yeast Casein Kinase I homolog	CKI2|serine/threonine protein kinase YCK1	2.7.11.1	ExPASy/EC number
+S000001179	YHR137W	ARO9	AROmatic amino acid requiring	aromatic-amino-acid:2-oxoglutarate transaminase	2.6.1.57	ExPASy/EC number
+S000001179	YHR137W	ARO9	AROmatic amino acid requiring	aromatic-amino-acid:2-oxoglutarate transaminase	2.6.1.7	ExPASy/EC number
+S000001187	YHR144C	DCD1	dCMP Deaminase	deoxycytidine monophosphate deaminase	3.5.4.12	ExPASy/EC number
+S000001206	YHR163W	SOL3	Suppressor Of Los1-1	6-phosphogluconolactonase SOL3	3.1.1.31	ExPASy/EC number
+S000001207	YHR164C	DNA2	DNA synthesis defective	bifunctional ATP-dependent DNA helicase/ssDNA endodeoxyribonuclease DNA2|WEB2	3.6.4.12	ExPASy/EC number
+S000001212	YHR169W	DBP8	Dead Box Protein	ATP-dependent RNA helicase DBP8	3.6.4.13	ExPASy/EC number
+S000001217	YHR174W	ENO2	ENOlase	phosphopyruvate hydratase ENO2	4.2.1.11	ExPASy/EC number
+S000001222	YHR179W	OYE2	Old Yellow Enzyme	NADPH dehydrogenase	1.6.99.1	ExPASy/EC number
+S000001226	YHR183W	GND1	6-phosphoGlucoNateDehydrogenase	phosphogluconate dehydrogenase (decarboxylating) GND1	1.1.1.44	ExPASy/EC number
+S000001232	YHR189W	PTH1	Peptidyl-Trna Hydrolase	aminoacyl-tRNA hydrolase|PTH	3.1.1.29	ExPASy/EC number
+S000001233	YHR190W	ERG9	ERGosterol biosynthesis	bifunctional farnesyl-diphosphate farnesyltransferase/squalene synthase	2.5.1.21	ExPASy/EC number
+S000001244	YHR201C	PPX1	""	exopolyphosphatase	3.6.1.11	ExPASy/EC number
+S000001247	YHR204W	MNL1	MaNnosidase-Like protein	alpha-1,2-mannosidase MNL1|HTM1	3.2.1.24	ExPASy/EC number
+S000001248	YHR205W	SCH9	""	HRM2|KOM1|serine/threonine protein kinase SCH9	2.7.11.1	ExPASy/EC number
+S000001251	YHR208W	BAT1	Branched-chain Amino acid Transaminase	branched-chain-amino-acid transaminase BAT1|ECA39|TWT1	2.6.1.42	ExPASy/EC number
+S000001258	YHR215W	PHO12	PHOsphate metabolism	acid phosphatase PHO12|PHO10	3.1.3.2	ExPASy/EC number
+S000001259	YHR216W	IMD2	IMP Dehydrogenase	IMP dehydrogenase IMD2|PUR5	1.1.1.205	ExPASy/EC number
+S000001264	YIL002C	INP51	INositol polyphosphate 5-Phosphatase	phosphoinositide 5-phosphatase INP51|SJL1	3.1.3.36	ExPASy/EC number
+S000001267	YIL005W	EPS1	ER-retained Pma1 Suppressing	protein disulfide isomerase EPS1	5.3.4.1	ExPASy/EC number
+S000001271	YIL009W	FAA3	Fatty Acid Activation	long-chain fatty acid-CoA ligase FAA3	6.2.1.3	ExPASy/EC number
+S000001272	YIL010W	DOT5	Disruptor Of Telomeric silencing	thioredoxin peroxidase DOT5	1.11.1.24	ExPASy/EC number
+S000001277	YIL015W	BAR1	BARrier to the alpha factor response	aspartyl protease BAR1|SST1	3.4.23.35	ExPASy/EC number
+S000001282	YIL020C	HIS6	HIStidine requiring	1-(5-phosphoribosyl)-5- ((5-phosphoribosylamino)methylideneamino)imidazole-4-carboxamide isomerase HIS6	5.3.1.16	ExPASy/EC number
+S000001292	YIL030C	SSM4	Suppressor of mrna Stability Mutant	DOA10|E3 ubiquitin-protein ligase SSM4|KIS3	2.3.2.27	ExPASy/EC number
+S000001297	YIL035C	CKA1	Casein Kinase Alpha subunit	casein kinase 2 catalytic subunit CKA1	2.7.11.1	ExPASy/EC number
+S000001304	YIL042C	PKP1	Protein Kinase of PDH	protein kinase PKP1	2.7.11.2	ExPASy/EC number
+S000001305	YIL043C	CBR1	Cytochrome b Reductase	CBR5|cytochrome-b5 reductase	1.6.2.2	ExPASy/EC number
+S000001310	YIL048W	NEO1	NEOmycin-resistance	putative aminophospholipid-translocating P4-type ATPase NEO1	7.6.2.1	ExPASy/EC number
+S000001311	YIL049W	DFG10	Defective for Filamentous Growth	putative polyprenol reductase	1.3.1.94	ExPASy/EC number
+S000001315	YIL053W	GPP1	Glycerol-3-Phosphate Phosphatase	glycerol-1-phosphatase RHR2|RHR2	3.1.3.21	ExPASy/EC number
+S000001328	YIL066C	RNR3	RiboNucleotide Reductase	DIN1|ribonucleotide-diphosphate reductase subunit RNR3|RIR3	1.17.4.1	ExPASy/EC number
+S000001336	YIL074C	SER33	SERine requiring	phosphoglycerate dehydrogenase SER33	1.1.1.399	ExPASy/EC number
+S000001336	YIL074C	SER33	SERine requiring	phosphoglycerate dehydrogenase SER33	1.1.1.95	ExPASy/EC number
+S000001340	YIL078W	THS1	THreonyl tRNA Synthetase	threonine--tRNA ligase THS1	6.1.1.3	ExPASy/EC number
+S000001345	YIL083C	CAB2	Coenzyme A Biosynthesis	phosphopantothenate--cysteine ligase CAB2	6.3.2.5	ExPASy/EC number
+S000001356	YIL094C	LYS12	LYSine requiring	homoisocitrate dehydrogenase|LYS10|LYS11	1.1.1.87	ExPASy/EC number
+S000001357	YIL095W	PRK1	p53 Regulatory Kinase	PAK1|serine/threonine protein kinase PRK1	2.7.11.1	ExPASy/EC number
+S000001358	YIL096C	BMT5	Base Methyltransferase of Twenty five S rRNA 5	25S rRNA (uracil2634-N3)-methyltransferase	2.1.1.313	ExPASy/EC number
+S000001359	YIL097W	FYV10	Function required for Yeast Viability	GID9|glucose-induced degradation complex subunit FYV10	2.3.2.27	ExPASy/EC number
+S000001361	YIL099W	SGA1	Sporulation-specific GlycoAmylase	glucan 1,4-alpha-glucosidase	3.2.1.3	ExPASy/EC number
+S000001365	YIL103W	DPH1	DiPHthamide biosynthesis	2-(3-amino-3-carboxypropyl)histidine synthase|KIF48	2.5.1.108	ExPASy/EC number
+S000001369	YIL107C	PFK26	6-PhosphoFructo-2-Kinase	6-phosphofructo-2-kinase|PFK2|PFK-2	2.7.1.105	ExPASy/EC number
+S000001372	YIL110W	HPM1	Histidine Protein Methyltransferase	MNI1|protein-histidine N-methyltransferase	2.1.1.85	ExPASy/EC number
+S000001375	YIL113W	SDP1	Stress-inducible Dual specificity Phosphatase	mitogen-activated protein kinase tyrosine protein phosphatase SDP1	3.1.3.48	ExPASy/EC number
+S000001378	YIL116W	HIS5	HIStidine requiring	histidinol-phosphate transaminase	2.6.1.9	ExPASy/EC number
+S000001386	YIL124W	AYR1	1-AcyldihYdroxyacetone-phosphate Reductase	acylglycerone-phosphate reductase|GBG1	1.1.1.101	ExPASy/EC number
+S000001386	YIL124W	AYR1	1-AcyldihYdroxyacetone-phosphate Reductase	acylglycerone-phosphate reductase|GBG1	3.1.1.3	ExPASy/EC number
+S000001387	YIL125W	KGD1	alpha-KetoGlutarate Dehydrogenase	alpha-ketoglutarate dehydrogenase KGD1|OGD1	1.2.4.2	ExPASy/EC number
+S000001388	YIL126W	STH1	SNF Two Homolog	NPS1|RSC chromatin remodeling complex ATPase subunit STH1	3.6.4.12	ExPASy/EC number
+S000001405	YIL143C	SSL2	Suppressor of Stem-Loop mutation	LOM3|RAD25|TFIIH/NER complex ATPase/helicase subunit SSL2	3.6.4.12	ExPASy/EC number
+S000001407	YIL145C	PAN6	PANtothenate biosynthesis	pantoate--beta-alanine ligase PAN6	6.3.2.1	ExPASy/EC number
+S000001409	YIL147C	SLN1	Synthetic Lethal of N-end rule	histidine kinase|YPD2	2.7.13.3	ExPASy/EC number
+S000001415	YIL153W	RRD1	Resistant to Rapamycin Deletion	peptidylprolyl isomerase RRD1|YPA1	5.2.1.8	ExPASy/EC number
+S000001417	YIL155C	GUT2	Glycerol UTilization	glycerol-3-phosphate dehydrogenase	1.1.5.3	ExPASy/EC number
+S000001418	YIL156W	UBP7	UBiquitin-specific Protease	ubiquitin-specific protease UBP7	3.4.19.12	ExPASy/EC number
+S000001422	YIL160C	POT1	Peroxisomal Oxoacyl Thiolase	acetyl-CoA C-acyltransferase|FOX3|POX3	2.3.1.16	ExPASy/EC number
+S000001424	YIL162W	SUC2	SUCrose	beta-fructofuranosidase SUC2	3.2.1.26	ExPASy/EC number
+S000001434	YIL172C	IMA3	IsoMAltase	oligo-1,6-glucosidase IMA3	3.2.1.10	ExPASy/EC number
+S000001439	YIL177C	""	""	Y' element ATP-dependent helicase	3.6.4.12	ExPASy/EC number
+S000001441	YIR002C	MPH1	Mutator PHenotype	3'-5' DNA helicase	3.6.4.12	ExPASy/EC number
+S000001454	YIR015W	RPR2	RNase P Ribonucleoprotein	ribonuclease P protein subunit RPR2	3.1.26.5	ExPASy/EC number
+S000001461	YIR022W	SEC11	SECretory	signal peptidase complex catalytic subunit SEC11	3.4.21.89	ExPASy/EC number
+S000001465	YIR026C	YVH1	Yeast vaccinia virus VH1 Homolog	tyrosine protein phosphatase YVH1	3.1.3.48	ExPASy/EC number
+S000001466	YIR027C	DAL1	Degradation of Allantoin	allantoinase	3.5.2.5	ExPASy/EC number
+S000001468	YIR029W	DAL2	Degradation of Allantoin	ALC1|allantoicase	3.5.3.4	ExPASy/EC number
+S000001470	YIR031C	DAL7	Degradation of Allantoin	malate synthase DAL7|MLS2|MSL2	2.3.3.9	ExPASy/EC number
+S000001471	YIR032C	DAL3	Degradation of Allantoin	ureidoglycolate hydrolase	4.3.2.3	ExPASy/EC number
+S000001473	YIR034C	LYS1	LYSine requiring	saccharopine dehydrogenase (NAD+, L-lysine-forming)	1.5.1.7	ExPASy/EC number
+S000001475	YIR036C	IRC24	Increased Recombination Centers	sepiapterin reductase family protein IRC24	1.1.1.320	ExPASy/EC number
+S000001476	YIR037W	HYR1	HYdroperoxide Resistance	GPX3|ORP1|peroxiredoxin HYR1	1.11.1.24	ExPASy/EC number
+S000001477	YIR038C	GTT1	GlutaThione Transferase	bifunctional glutathione transferase/peroxidase	2.5.1.18	ExPASy/EC number
+S000001484	YKL001C	MET14	METhionine requiring	adenylyl-sulfate kinase	2.7.1.25	ExPASy/EC number
+S000001491	YKL008C	LAC1	Longevity-Assurance gene Cognate (LAG1 Cognate)	DGT1|sphingosine N-acyltransferase LAC1	2.3.1.24	ExPASy/EC number
+S000001493	YKL010C	UFD4	Ubiquitin Fusion Degradation protein	putative ubiquitin-protein ligase UFD4	2.3.2.26	ExPASy/EC number
+S000001494	YKL011C	CCE1	Cruciform Cutting Endonuclease	cruciform cutting endonuclease|MGT1	3.1.22.4	ExPASy/EC number
+S000001500	YKL017C	HCS1	dna HeliCaSe	ATP-dependent 5'-3' DNA helicase HCS1|DIP1	3.6.4.12	ExPASy/EC number
+S000001502	YKL019W	RAM2	RAS protein and A-factor Maturation	bifunctional protein farnesyltransferase/protein geranylgeranyltransferase	2.5.1.58	ExPASy/EC number
+S000001502	YKL019W	RAM2	RAS protein and A-factor Maturation	bifunctional protein farnesyltransferase/protein geranylgeranyltransferase	2.5.1.59	ExPASy/EC number
+S000001507	YKL024C	URA6	URAcil requiring	bifunctional uridylate/adenylate kinase|SOC8	2.7.4.14	ExPASy/EC number
+S000001509	YKL026C	GPX1	Glutathione PeroXidase	glutathione peroxidase GPX1	1.11.1.24	ExPASy/EC number
+S000001509	YKL026C	GPX1	Glutathione PeroXidase	glutathione peroxidase GPX1	1.11.1.9	ExPASy/EC number
+S000001512	YKL029C	MAE1	MAlic Enzyme	malate dehydrogenase (oxaloacetate-decarboxylating)	1.1.1.38	ExPASy/EC number
+S000001517	YKL034W	TUL1	Transmembrane Ubiquitin Ligase	ubiquitin-protein ligase TUL1	2.3.2.27	ExPASy/EC number
+S000001518	YKL035W	UGP1	UDP-glucose pyrophosphorylase	UTP glucose-1-phosphate uridylyltransferase	2.7.7.9	ExPASy/EC number
+S000001529	YKL046C	DCW1	Defective Cell Wall	putative mannan endo-1,6-alpha-mannosidase	3.2.1.101	ExPASy/EC number
+S000001531	YKL048C	ELM1	ELongated Morphology	LDB9|serine/threonine protein kinase ELM1	2.7.11.1	ExPASy/EC number
+S000001538	YKL055C	OAR1	3-Oxoacyl-[Acyl-carrier-protein] Reductase	3-oxoacyl-[acyl-carrier-protein] reductase (NADPH)	1.1.1.100	ExPASy/EC number
+S000001543	YKL060C	FBA1	Fructose-1,6-Bisphosphate Aldolase	fructose-bisphosphate aldolase FBA1|LOT1	4.1.2.13	ExPASy/EC number
+S000001550	YKL067W	YNK1	Yeast Nucleoside diphosphate Kinase	NDK1|nucleoside diphosphate kinase	2.7.4.6	ExPASy/EC number
+S000001552	YKL069W	""	""	fRMsr|L-methionine (R)-S-oxide reductase|YKG9	1.8.4.14	ExPASy/EC number
+S000001561	YKL078W	DHR2	DEAH-box RNA helicase	RNA helicase	3.6.4.13	ExPASy/EC number
+S000001568	YKL085W	MDH1	Malate DeHydrogenase	malate dehydrogenase MDH1	1.1.1.37	ExPASy/EC number
+S000001569	YKL086W	SRX1	SulfiRedoXin	sulfiredoxin	1.8.98.2	ExPASy/EC number
+S000001570	YKL087C	CYT2	CYTochrome-c1-heme-lyase	CC1HL|cytochrome c1 heme lyase CYT2	4.4.1.17	ExPASy/EC number
+S000001577	YKL094W	YJU3	""	acylglycerol lipase	3.1.1.23	ExPASy/EC number
+S000001584	YKL101W	HSL1	Histone Synthetic Lethal	ELM2|NIK1|protein kinase HSL1	2.7.11.1	ExPASy/EC number
+S000001586	YKL103C	APE1	AminoPeptidase	API|LAP4|metalloaminopeptidase APE1|YSC1	3.4.11.22	ExPASy/EC number
+S000001587	YKL104C	GFA1	Glutamine:Fructose-6-phosphate Amidotransferase	glutamine--fructose-6-phosphate transaminase (isomerizing) GFA1	2.6.1.16	ExPASy/EC number
+S000001589	YKL106W	AAT1	Aspartate AminoTransferase	aspartate transaminase AAT1	2.6.1.1	ExPASy/EC number
+S000001599	YKL116C	PRR1	Pheromone Response Regulator	serine/threonine protein kinase PRR1	2.7.11.1	ExPASy/EC number
+S000001609	YKL126W	YPK1	Yeast Protein Kinase	serine/threonine protein kinase YPK1|SLI2	2.7.11.1	ExPASy/EC number
+S000001610	YKL127W	PGM1	PhosphoGlucoMutase	phosphoglucomutase PGM1	5.4.2.2	ExPASy/EC number
+S000001615	YKL132C	RMA1	Reduced Mating A	putative tetrahydrofolate synthase	6.3.2.17	ExPASy/EC number
+S000001617	YKL134C	OCT1	OCTapeptidyl aminopeptidase	metalloendopeptidase	3.4.24.59	ExPASy/EC number
+S000001622	YKL139W	CTK1	Carboxy-Terminal domain Kinase	cyclin-dependent serine/threonine protein kinase CTK1	2.7.11.23	ExPASy/EC number
+S000001623	YKL140W	TGL1	TriGlyceride Lipase	sterol esterase|YKL5	3.1.1.13	ExPASy/EC number
+S000001631	YKL148C	SDH1	Succinate DeHydrogenase	SDHA|succinate dehydrogenase flavoprotein subunit SDH1	1.3.5.1	ExPASy/EC number
+S000001633	YKL150W	MCR1	Mitochondrial NADH-Cytochrome b5 Reductase	cytochrome-b5 reductase	1.6.2.2	ExPASy/EC number
+S000001634	YKL151C	NNR2	Nicotinamide Nucleotide Repair	NADHX dehydratase	4.2.1.93	ExPASy/EC number
+S000001635	YKL152C	GPM1	Glycerate PhosphoMutase	phosphoglycerate mutase GPM1	5.4.2.11	ExPASy/EC number
+S000001644	YKL161C	KDX1	Kinase Dead X-talker	MLP1|putative protein kinase KDX1	2.7.11.1	ExPASy/EC number
+S000001645	YKL162C	""	""	type II protein arginine methyltransferase	2.1.1.320	ExPASy/EC number
+S000001649	YKL166C	TPK3	Takashi's Protein Kinase	cAMP-dependent protein kinase catalytic subunit TPK3	2.7.11.11	ExPASy/EC number
+S000001651	YKL168C	KKQ8	""	putative serine/threonine protein kinase KKQ8	2.7.11.1	ExPASy/EC number
+S000001654	YKL171W	NNK1	Nitrogen Network Kinase	protein kinase NNK1	2.7.11.1	ExPASy/EC number
+S000001664	YKL181W	PRS1	PhosphoRibosylpyrophosphate Synthetase	PRP1|ribose phosphate diphosphokinase subunit PRS1	2.7.6.1	ExPASy/EC number
+S000001665	YKL182W	FAS1	Fatty Acid Synthetase	tetrafunctional fatty acid synthase subunit FAS1	1.3.1.9	ExPASy/EC number
+S000001665	YKL182W	FAS1	Fatty Acid Synthetase	tetrafunctional fatty acid synthase subunit FAS1	2.3.1.38	ExPASy/EC number
+S000001665	YKL182W	FAS1	Fatty Acid Synthetase	tetrafunctional fatty acid synthase subunit FAS1	2.3.1.39	ExPASy/EC number
+S000001665	YKL182W	FAS1	Fatty Acid Synthetase	tetrafunctional fatty acid synthase subunit FAS1	2.3.1.86	ExPASy/EC number
+S000001665	YKL182W	FAS1	Fatty Acid Synthetase	tetrafunctional fatty acid synthase subunit FAS1	3.1.2.14	ExPASy/EC number
+S000001665	YKL182W	FAS1	Fatty Acid Synthetase	tetrafunctional fatty acid synthase subunit FAS1	4.2.1.59	ExPASy/EC number
+S000001667	YKL184W	SPE1	SPErmidine auxotroph	ORD1|ornithine decarboxylase SPE1|SPE10	4.1.1.17	ExPASy/EC number
+S000001674	YKL191W	DPH2	DiPHthamide	2-(3-amino-3-carboxypropyl)histidine synthase	2.5.1.108	ExPASy/EC number
+S000001677	YKL194C	MST1	Mitochondrial aminoacyl-tRNA Synthetase, Threonine	threonine--tRNA ligase MST1	6.1.1.3	ExPASy/EC number
+S000001681	YKL198C	PTK1	Putative serine/Threonine protein Kinase	KKT8|POT1|putative serine/threonine protein kinase PTK1|STK1|YKL199C|YKT9	2.7.11.1	ExPASy/EC number
+S000001686	YKL203C	TOR2	Target Of Rapamycin	DRR2|phosphatidylinositol kinase-related protein kinase TOR2	2.7.11.1	ExPASy/EC number
+S000001686	YKL203C	TOR2	Target Of Rapamycin	DRR2|phosphatidylinositol kinase-related protein kinase TOR2	2.7.1.67	ExPASy/EC number
+S000001692	YKL209C	STE6	STErile	ATP-binding cassette a-factor transporter STE6	7.4.2.7	ExPASy/EC number
+S000001693	YKL210W	UBA1	UBiquitin Activating	E1 ubiquitin-activating protein UBA1	6.2.1.45	ExPASy/EC number
+S000001694	YKL211C	TRP3	TRyPtophan	bifunctional anthranilate synthase/indole-3-glycerol-phosphate synthase	4.1.1.48	ExPASy/EC number
+S000001694	YKL211C	TRP3	TRyPtophan	bifunctional anthranilate synthase/indole-3-glycerol-phosphate synthase	4.1.3.27	ExPASy/EC number
+S000001695	YKL212W	SAC1	Suppressor of ACtin	phosphatidylinositol-3-phosphatase SAC1|RSD1	3.1.3.64	ExPASy/EC number
+S000001698	YKL215C	OXP1	OXoProlinase	5-oxoprolinase	3.5.2.9	ExPASy/EC number
+S000001699	YKL216W	URA1	URAcil requiring	dihydroorotate dehydrogenase	1.3.98.1	ExPASy/EC number
+S000001701	YKL218C	SRY1	Serine Racemase of Yeast	threo-3-hydroxy-L-aspartate ammonia-lyase SRY1	4.3.1.16	ExPASy/EC number
+S000001703	YKL220C	FRE2	Ferric REductase	ferric/cupric-chelate reductase	1.16.1.9	ExPASy/EC number
+S000001710	YKR002W	PAP1	Poly(A) Polymerase	polynucleotide adenylyltransferase PAP1	2.7.7.19	ExPASy/EC number
+S000001717	YKR009C	FOX2	Fatty acid OXidation	bifunctional hydroxyacyl-CoA dehydrogenase/enoyl-CoA hydratase FOX2|POX2	1.1.1.n12	ExPASy/EC number
+S000001717	YKR009C	FOX2	Fatty acid OXidation	bifunctional hydroxyacyl-CoA dehydrogenase/enoyl-CoA hydratase FOX2|POX2	4.2.1.119	ExPASy/EC number
+S000001725	YKR017C	HEL1	Histone E3 Ligase	E3 ubiquitin-protein ligase HEL1	2.3.2.31	ExPASy/EC number
+S000001732	YKR024C	DBP7	Dead Box Protein	putative ATP-dependent RNA helicase	3.6.4.13	ExPASy/EC number
+S000001739	YKR031C	SPO14	SPOrulation	phospholipase D|PLD1	3.1.4.4	ExPASy/EC number
+S000001746	YKR038C	KAE1	Kinase-Associated Endopeptidase	tRNA N6-adenosine threonylcarbamoyltransferase	2.3.1.234	ExPASy/EC number
+S000001751	YKR043C	SHB17	SedoHeptulose 1,7-Bisphosphatase	sedoheptulose-bisphosphatase	3.1.3.37	ExPASy/EC number
+S000001764	YKR056W	TRM2	tRNA Methyltransferase	NUC2|NUD1|RNC1|tRNA (uracil(54)-C(5))-methyltransferase	2.1.1.35	ExPASy/EC number
+S000001766	YKR058W	GLG1	Glycogenin-Like Gene	glycogenin glucosyltransferase GLG1	2.4.1.186	ExPASy/EC number
+S000001774	YKR066C	CCP1	Cytochrome c Peroxidase	cytochrome-c peroxidase	1.11.1.5	ExPASy/EC number
+S000001775	YKR067W	GPT2	Glycerol-3-Phosphate acylTransferase	bifunctional glycerol-3-phosphate/glycerone-phosphate O-acyltransferase GPT2|GAT1	2.3.1.15	ExPASy/EC number
+S000001775	YKR067W	GPT2	Glycerol-3-Phosphate acylTransferase	bifunctional glycerol-3-phosphate/glycerone-phosphate O-acyltransferase GPT2|GAT1	2.3.1.42	ExPASy/EC number
+S000001777	YKR069W	MET1	METhionine requiring	MET20|uroporphyrinogen-III C-methyltransferase	2.1.1.107	ExPASy/EC number
+S000001784	YKR076W	ECM4	ExtraCellular Mutant	GTO2|S-glutathionyl-(chloro)hydroquinone reductase	1.8.5.1	ExPASy/EC number
+S000001784	YKR076W	ECM4	ExtraCellular Mutant	GTO2|S-glutathionyl-(chloro)hydroquinone reductase	2.5.1.18	ExPASy/EC number
+S000001787	YKR079C	TRZ1	tRNase Z	tRNase Z	3.1.26.11	ExPASy/EC number
+S000001788	YKR080W	MTD1	Methylene Tetrahydrafolate Dehydrogenase	methylenetetrahydrofolate dehydrogenase (NAD(+))	1.5.1.15	ExPASy/EC number
+S000001794	YKR086W	PRP16	Pre-mRNA Processing	DEAH-box RNA helicase PRP16|PRP23|RNA16	3.6.4.13	ExPASy/EC number
+S000001797	YKR089C	TGL4	TriacylGlycerol Lipase	STC1|triacylglycerol lipase	3.1.1.3	ExPASy/EC number
+S000001805	YKR097W	PCK1	Phosphoenolpyruvate CarboxyKinase	JPM2|phosphoenolpyruvate carboxykinase PCK1|PPC1	4.1.1.49	ExPASy/EC number
+S000001806	YKR098C	UBP11	UBiquitin-specific Protease	ubiquitin-specific protease UBP11	3.4.19.12	ExPASy/EC number
+S000001828	YFL066C	""	""	Y' element ATP-dependent helicase	3.6.4.12	ExPASy/EC number
+S000001833	YFL061W	DDI2	DNA Damage Inducible	cyanamide hydratase	4.2.1.69	ExPASy/EC number
+S000001834	YFL060C	SNO3	SNZ proximal Open reading frame	putative pyridoxal 5'-phosphate synthase	3.5.1.2	ExPASy/EC number
+S000001834	YFL060C	SNO3	SNZ proximal Open reading frame	putative pyridoxal 5'-phosphate synthase	4.3.3.6	ExPASy/EC number
+S000001835	YFL059W	SNZ3	SNooZe	pyridoxine biosynthesis protein SNZ3	4.3.3.6	ExPASy/EC number
+S000001841	YFL053W	DAK2	DihydroxyAcetone Kinase	dihydroxyacetone kinase	2.7.1.28	ExPASy/EC number
+S000001841	YFL053W	DAK2	DihydroxyAcetone Kinase	dihydroxyacetone kinase	2.7.1.29	ExPASy/EC number
+S000001849	YFL045C	SEC53	SECretory	ALG4|phosphomannomutase SEC53	5.4.2.8	ExPASy/EC number
+S000001850	YFL044C	OTU1	Ovarian TUmor	ubiquitin-specific protease OTU1|YOD1	3.4.19.12	ExPASy/EC number
+S000001858	YFL036W	RPO41	RNA POlymerase	DNA-directed RNA polymerase	2.7.7.6	ExPASy/EC number
+S000001861	YFL033C	RIM15	Regulator of IME2	protein kinase RIM15|TAK1	2.7.11.1	ExPASy/EC number
+S000001864	YFL030W	AGX1	Alanine:Glyoxylate aminotrans(X)ferase	alanine--glyoxylate transaminase	2.6.1.44	ExPASy/EC number
+S000001865	YFL029C	CAK1	Cdk-Activating Kinase	CIV1|cyclin-dependent protein kinase-activating kinase CAK1	2.7.11.22	ExPASy/EC number
+S000001872	YFL022C	FRS2	phenylalanyl (F)-tRNA Synthetase	phenylalanine--tRNA ligase subunit alpha	6.1.1.20	ExPASy/EC number
+S000001876	YFL018C	LPD1	LiPoamide Dehydrogenase	dihydrolipoyl dehydrogenase|HPD1	1.8.1.4	ExPASy/EC number
+S000001877	YFL017C	GNA1	GlucosamiNe-6-phosphate Acetyltransferase	glucosamine 6-phosphate N-acetyltransferase|PAT1	2.3.1.4	ExPASy/EC number
+S000001894	YFL002C	SPB4	Suppressor of PAB1	putative ATP-dependent RNA helicase SPB4	3.6.4.13	ExPASy/EC number
+S000001895	YFL001W	DEG1	DEpressed Growth rate	HRM3|pseudouridine synthase DEG1|PUS3	5.4.99.45	ExPASy/EC number
+S000001900	YFR004W	RPN11	Regulatory Particle Non-ATPase	MPR1|proteasome regulatory particle lid subunit RPN11	3.4.19.12	ExPASy/EC number
+S000001906	YFR010W	UBP6	UBiquitin-specific Protease	ubiquitin-specific protease UBP6	3.4.19.12	ExPASy/EC number
+S000001910	YFR014C	CMK1	CalModulin dependent protein Kinase	calmodulin-dependent protein kinase CMK1	2.7.11.17	ExPASy/EC number
+S000001911	YFR015C	GSY1	Glycogen SYnthase	glycogen (starch) synthase GSY1	2.4.1.11	ExPASy/EC number
+S000001915	YFR019W	FAB1	Forms Aploid and Binucleate cells	1-phosphatidylinositol-3-phosphate 5-kinase|SVL7	2.7.1.150	ExPASy/EC number
+S000001921	YFR025C	HIS2	HIStidine requiring	histidinol-phosphatase	3.1.3.15	ExPASy/EC number
+S000001924	YFR028C	CDC14	Cell Division Cycle	OAF3|phosphoprotein phosphatase CDC14	3.1.3.48	ExPASy/EC number
+S000001926	YFR030W	MET10	METhionine requiring	sulfite reductase subunit alpha	1.8.1.2	ExPASy/EC number
+S000001943	YFR047C	BNA6	Biosynthesis of Nicotinic Acid	nicotinate-nucleotide diphosphorylase (carboxylating)|QPT1	2.4.2.19	ExPASy/EC number
+S000001949	YFR053C	HXK1	HeXoKinase	hexokinase 1	2.7.1.1	ExPASy/EC number
+S000001952	YFR055W	IRC7	Increased Recombination Centers	cysteine-S-conjugate beta-lyase IRC7	4.4.1.13	ExPASy/EC number
+S000002133	YCR079W	PTC6	Phosphatase Two C	AUP1|PPP2|type 2C protein phosphatase PTC6	3.1.3.16	ExPASy/EC number
+S000002133	YCR079W	PTC6	Phosphatase Two C	AUP1|PPP2|type 2C protein phosphatase PTC6	3.1.3.43	ExPASy/EC number
+S000002164	YDL006W	PTC1	Phosphatase type Two C	CWH47|KCS2|TPD1|type 2C protein phosphatase PTC1	3.1.3.16	ExPASy/EC number
+S000002171	YDL013W	SLX5	Synthetic Lethal of unknown [X] function	HEX3|SUMO-targeted ubiquitin ligase complex subunit SLX5|ULS2	2.3.2.27	ExPASy/EC number
+S000002173	YDL015C	TSC13	Temperature-sensitive Suppressors of Csg2 mutants	trans-2-enoyl-CoA reductase (NADPH) TSC13	1.3.1.93	ExPASy/EC number
+S000002175	YDL017W	CDC7	Cell Division Cycle	LSD6|SAS1|serine/threonine protein kinase CDC7	2.7.11.1	ExPASy/EC number
+S000002179	YDL021W	GPM2	Glycerate PhosphoMutase	phosphoglycerate mutase family protein GPM2	5.4.2.11	ExPASy/EC number
+S000002180	YDL022W	GPD1	Glycerol-3-Phosphate Dehydrogenase	DAR1|glycerol-3-phosphate dehydrogenase (NAD(+)) GPD1|HOR1|OSG1|OSR5	1.1.1.8	ExPASy/EC number
+S000002182	YDL024C	DIA3	Digs Into Agar	putative acid phosphatase DIA3	3.1.3.2	ExPASy/EC number
+S000002183	YDL025C	RTK1	Ribosome biogenesis and TRNA synthetase-associated Kinase	putative serine/threonine protein kinase RTK1	2.7.11.1	ExPASy/EC number
+S000002186	YDL028C	MPS1	MonoPolar Spindle	PAC8|RPK1|serine/threonine/tyrosine protein kinase MPS1	2.7.12.2	ExPASy/EC number
+S000002189	YDL031W	DBP10	Dead Box Protein	putative ATP-dependent RNA helicase DBP10	3.6.4.13	ExPASy/EC number
+S000002191	YDL033C	SLM3	Synthetic Lethal with Mss4	MTO2|MTU1|tRNA-5-taurinomethyluridine 2-sulfurtransferase	2.8.1.14	ExPASy/EC number
+S000002194	YDL036C	PUS9	PseudoUridine Synthase	pseudouridine synthase PUS9	5.4.99.28	ExPASy/EC number
+S000002200	YDL042C	SIR2	Silent Information Regulator	MAR1|NAD-dependent histone deacetylase SIR2	2.3.1.286	ExPASy/EC number
+S000002203	YDL045C	FAD1	FAD synthetase	FMN adenylyltransferase	2.7.7.2	ExPASy/EC number
+S000002205	YDL047W	SIT4	Suppressor of Initiation of Transcription	PPH1|type 2A-related serine/threonine-protein phosphatase SIT4	3.1.3.16	ExPASy/EC number
+S000002210	YDL052C	SLC1	SphingoLipid Compensation	1-acylglycerol-3-phosphate O-acyltransferase SLC1	2.3.1.23	ExPASy/EC number
+S000002210	YDL052C	SLC1	SphingoLipid Compensation	1-acylglycerol-3-phosphate O-acyltransferase SLC1	2.3.1.51	ExPASy/EC number
+S000002210	YDL052C	SLC1	SphingoLipid Compensation	1-acylglycerol-3-phosphate O-acyltransferase SLC1	2.3.1.n7	ExPASy/EC number
+S000002213	YDL055C	PSA1	""	mannose-1-phosphate guanylyltransferase|MPG1|SRB1|VIG9	2.7.7.13	ExPASy/EC number
+S000002224	YDL066W	IDP1	Isocitrate Dehydrogenase, NADP-specific	isocitrate dehydrogenase (NADP(+)) IDP1	1.1.1.42	ExPASy/EC number
+S000002232	YDL074C	BRE1	BREfeldin A sensitivity	E3 ubiquitin-protein ligase BRE1	2.3.2.27	ExPASy/EC number
+S000002236	YDL078C	MDH3	Malate DeHydrogenase	malate dehydrogenase MDH3	1.1.1.37	ExPASy/EC number
+S000002237	YDL079C	MRK1	Mds1p Related Kinase	putative serine/threonine protein kinase MRK1	2.7.11.1	ExPASy/EC number
+S000002238	YDL080C	THI3	THIamine metabolism	branched-chain-2-oxoacid decarboxylase THI3|KID1	4.1.1.72	ExPASy/EC number
+S000002242	YDL084W	SUB2	SUppressor of Brr1-1	ATP-dependent RNA helicase SUB2	3.6.4.13	ExPASy/EC number
+S000002243	YDL085W	NDE2	NADH Dehydrogenase, External	NADH-ubiquinone reductase (H(+)-translocating) NDE2|NDH2	1.6.5.9	ExPASy/EC number
+S000002244	YDL086W	""	""	carboxymethylenebutenolidase	3.1.1.45	ExPASy/EC number
+S000002248	YDL090C	RAM1	RAS protein and A-factor Maturation	DPR1|FUS8|protein farnesyltransferase|SCG2|SGP2|STE16	2.5.1.58	ExPASy/EC number
+S000002251	YDL093W	PMT5	Protein O-MannosylTransferase	putative dolichyl-phosphate-mannose-protein mannosyltransferase PMT5	2.4.1.109	ExPASy/EC number
+S000002253	YDL095W	PMT1	Protein O-MannosylTransferase	dolichyl-phosphate-mannose-protein mannosyltransferase PMT1	2.4.1.109	ExPASy/EC number
+S000002259	YDL101C	DUN1	DNA-damage UNinducible	serine/threonine protein kinase DUN1	2.7.11.1	ExPASy/EC number
+S000002260	YDL102W	POL3	POLymerase	CDC2|DNA-directed DNA polymerase delta POL3|HPR6|TEX1	2.7.7.7	ExPASy/EC number
+S000002261	YDL103C	QRI1	""	UAP1|UDP-N-acetylglucosamine diphosphorylase	2.7.7.23	ExPASy/EC number
+S000002262	YDL104C	QRI7	""	putative N(6)-L-threonylcarbamoyladenine synthase	2.3.1.234	ExPASy/EC number
+S000002266	YDL108W	KIN28	protein KINase	TFIIH complex serine/threonine-protein kinase subunit KIN28	2.7.11.23	ExPASy/EC number
+S000002270	YDL112W	TRM3	Transfer RNA Methyltransferase	tRNA (guanosine(18)-2'-O)-methyltransferase	2.1.1.34	ExPASy/EC number
+S000002278	YDL120W	YFH1	Yeast Frataxin Homolog	ferroxidase	1.16.3.1	ExPASy/EC number
+S000002280	YDL122W	UBP1	UBiquitin-specific Protease	ubiquitin-specific protease UBP1	3.4.19.12	ExPASy/EC number
+S000002284	YDL126C	CDC48	Cell Division Cycle	AAA family ATPase CDC48	3.6.4.6	ExPASy/EC number
+S000002289	YDL131W	LYS21	LYSine	homocitrate synthase LYS21	2.3.3.14	ExPASy/EC number
+S000002292	YDL134C	PPH21	Protein PHosphatase	phosphoprotein phosphatase 2A catalytic subunit PPH21	3.1.3.16	ExPASy/EC number
+S000002299	YDL140C	RPO21	RNA POlymerase	B220|DNA-directed RNA polymerase II core subunit RPO21|RPB1|RPB220|SIT1|SUA8	2.7.7.6	ExPASy/EC number
+S000002300	YDL141W	BPL1	Biotin:apoProtein Ligase	ACC2|biotin--[acetyl-CoA-carboxylase] ligase BPL1	6.3.4.10	ExPASy/EC number
+S000002300	YDL141W	BPL1	Biotin:apoProtein Ligase	ACC2|biotin--[acetyl-CoA-carboxylase] ligase BPL1	6.3.4.11	ExPASy/EC number
+S000002300	YDL141W	BPL1	Biotin:apoProtein Ligase	ACC2|biotin--[acetyl-CoA-carboxylase] ligase BPL1	6.3.4.15	ExPASy/EC number
+S000002300	YDL141W	BPL1	Biotin:apoProtein Ligase	ACC2|biotin--[acetyl-CoA-carboxylase] ligase BPL1	6.3.4.9	ExPASy/EC number
+S000002301	YDL142C	CRD1	CaRDiolipin synthase	cardiolipin synthase|CLS1	2.7.8.41	ExPASy/EC number
+S000002318	YDL159W	STE7	STErile	mitogen-activated protein kinase kinase STE7	2.7.12.2	ExPASy/EC number
+S000002319	YDL160C	DHH1	DEAD box Helicase Homolog	DExD/H-box ATP-dependent RNA helicase DHH1	3.6.4.13	ExPASy/EC number
+S000002323	YDL164C	CDC9	Cell Division Cycle	DNA ligase (ATP) CDC9|MMS8	6.5.1.1	ExPASy/EC number
+S000002325	YDL166C	FAP7	Factor Activating Pos9	nucleoside-triphosphatase	2.7.4.3	ExPASy/EC number
+S000002327	YDL168W	SFA1	Sensitive to FormAldehyde	ADH5|bifunctional alcohol dehydrogenase/S-(hydroxymethyl)glutathione dehydrogenase	1.1.1.1	ExPASy/EC number
+S000002327	YDL168W	SFA1	Sensitive to FormAldehyde	ADH5|bifunctional alcohol dehydrogenase/S-(hydroxymethyl)glutathione dehydrogenase	1.1.1.284	ExPASy/EC number
+S000002330	YDL171C	GLT1	GLuTamate synthase	glutamate synthase (NADH)	1.4.1.14	ExPASy/EC number
+S000002333	YDL174C	DLD1	D-Lactate Dehydrogenase	D-lactate dehydrogenase	1.1.2.4	ExPASy/EC number
+S000002337	YDL178W	DLD2	D-Lactate Dehydrogenase	AIP2|D-lactate dehydrogenase	1.1.2.4	ExPASy/EC number
+S000002337	YDL178W	DLD2	D-Lactate Dehydrogenase	AIP2|D-lactate dehydrogenase	1.1.99.40	ExPASy/EC number
+S000002341	YDL182W	LYS20	LYSine requiring	homocitrate synthase LYS20	2.3.3.14	ExPASy/EC number
+S000002344	YDL185W	VMA1	Vacuolar Membrane Atpase	CLS8|H(+)-transporting V1 sector ATPase subunit A|TFP1	7.1.2.2	ExPASy/EC number
+S000002347	YDL188C	PPH22	Protein PHosphatase	phosphoprotein phosphatase 2A catalytic subunit PPH22|PPH2	3.1.3.16	ExPASy/EC number
+S000002349	YDL190C	UFD2	Ubiquitin Fusion Degradation	ubiquitin-ubiquitin ligase UFD2	2.3.2.27	ExPASy/EC number
+S000002352	YDL193W	NUS1	Nuclear Undecaprenyl pyrophosphate Synthase	ditrans,polycis-polyprenyl diphosphate synthase	2.5.1.87	ExPASy/EC number
+S000002359	YDL200C	MGT1	O-6-MethylGuanine-DNA methylTransferase	methylated-DNA--protein-cysteine methyltransferase|MGMT	2.1.1.63	ExPASy/EC number
+S000002360	YDL201W	TRM8	Transfer RNA Methyltransferase	tRNA (guanine46-N7)-methyltransferase	2.1.1.33	ExPASy/EC number
+S000002364	YDL205C	HEM3	HEMe biosynthesis	hydroxymethylbilane synthase|OLE2	2.5.1.61	ExPASy/EC number
+S000002373	YDL214C	PRR2	Pheromone Response Regulator	serine/threonine protein kinase PRR2	2.7.11.1	ExPASy/EC number
+S000002374	YDL215C	GDH2	Glutamate DeHydrogenase	GDHB|GDH-B|glutamate dehydrogenase (NAD(+))	1.4.1.2	ExPASy/EC number
+S000002378	YDL219W	DTD1	D-Tyr-tRNA(Tyr) Deacylase	D-tyrosyl-tRNA(Tyr) deacylase	3.1.1.96	ExPASy/EC number
+S000002388	YDL229W	SSB1	Stress-Seventy subfamily B	Hsp70 family ATPase SSB1|YG101	3.6.4.10	ExPASy/EC number
+S000002389	YDL230W	PTP1	Protein Tyrosine Phosphatase	tyrosine protein phosphatase PTP1	3.1.3.48	ExPASy/EC number
+S000002395	YDL236W	PHO13	PHOsphate metabolism	4-nitrophenylphosphatase	3.1.3.41	ExPASy/EC number
+S000002397	YDL238C	GUD1	GUanine Deaminase	guanine deaminase	3.5.4.3	ExPASy/EC number
+S000002405	YDL246C	SOR2	""	L-iditol 2-dehydrogenase SOR2	1.1.1.9	ExPASy/EC number
+S000002408	YDR001C	NTH1	Neutral TreHalase	alpha,alpha-trehalase NTH1	3.2.1.28	ExPASy/EC number
+S000002414	YDR007W	TRP1	TRyPtophan	phosphoribosylanthranilate isomerase TRP1	5.3.1.24	ExPASy/EC number
+S000002424	YDR017C	KCS1	pKC1 Suppressor	inositol polyphosphate kinase KCS1	2.7.4.21	ExPASy/EC number
+S000002426	YDR019C	GCV1	GlyCine cleaVage	glycine decarboxylase subunit T|GSD1	2.1.2.10	ExPASy/EC number
+S000002427	YDR020C	DAS2	Dst1-delta 6-Azauracil Sensitivity	putative uridine kinase DAS2|RRT3	2.7.1.48	ExPASy/EC number
+S000002428	YDR021W	FAL1	eukaryotic translation initiation factor Four A Like	ATP-dependent RNA helicase FAL1	3.6.4.13	ExPASy/EC number
+S000002430	YDR023W	SES1	SEryl-tRNA Synthetase	serine--tRNA ligase SES1|SerRS	6.1.1.11	ExPASy/EC number
+S000002442	YDR035W	ARO3	AROmatic amino acid requiring	3-deoxy-7-phosphoheptulonate synthase ARO3	2.5.1.54	ExPASy/EC number
+S000002443	YDR036C	EHD3	""	3-hydroxyisobutyryl-CoA hydrolase|MRP5|mS47	3.1.2.4	ExPASy/EC number
+S000002444	YDR037W	KRS1	Lysyl (K) tRNA Synthetase	GCD5|lysine--tRNA ligase KRS1	6.1.1.6	ExPASy/EC number
+S000002445	YDR038C	ENA5	Exitus NAtru (Latin, "exit sodium")	putative Na(+)-exporting P-type ATPase ENA5	7.2.2.3	ExPASy/EC number
+S000002446	YDR039C	ENA2	Exitus NAtru (Latin, "exit sodium")	Na(+)-exporting P-type ATPase ENA2	7.2.2.3	ExPASy/EC number
+S000002447	YDR040C	ENA1	Exitus NAtru (Latin, "exit sodium")	HOR6|Na(+)/Li(+)-exporting P-type ATPase ENA1|PMR2	7.2.2.3	ExPASy/EC number
+S000002451	YDR044W	HEM13	HEMe biosynthesis	coproporphyrinogen oxidase	1.3.3.3	ExPASy/EC number
+S000002454	YDR047W	HEM12	HEMe biosynthesis	HEM6|uroporphyrinogen decarboxylase HEM12	4.1.1.37	ExPASy/EC number
+S000002457	YDR050C	TPI1	Triose-Phosphate Isomerase	triose-phosphate isomerase TPI1	5.3.1.1	ExPASy/EC number
+S000002461	YDR054C	CDC34	Cell Division Cycle	DNA6|SCF E2 ubiquitin-protein ligase catalytic subunit CDC34|UBC3	2.3.2.23	ExPASy/EC number
+S000002465	YDR058C	TGL2	TriacylGlycerol Lipase	triglyceride lipase	3.1.1.3	ExPASy/EC number
+S000002466	YDR059C	UBC5	UBiquitin-Conjugating	E2 ubiquitin-conjugating protein UBC5	2.3.2.23	ExPASy/EC number
+S000002469	YDR062W	LCB2	Long-Chain Base	SCS1|serine C-palmitoyltransferase LCB2|TSC1	2.3.1.50	ExPASy/EC number
+S000002473	YDR066C	RTR2	Regulator of TRanscription	putative protein-serine/threonine phosphatase	3.1.3.16	ExPASy/EC number
+S000002474	YDR067C	OCA6	Oxidant-induced Cell-cycle Arrest	protein-tyrosine-phosphatase	3.1.3.48	ExPASy/EC number
+S000002476	YDR069C	DOA4	Degradation Of Alpha	DOS1|MUT4|NPI2|SSV7|ubiquitin-specific protease DOA4|UBP4	3.4.19.12	ExPASy/EC number
+S000002479	YDR072C	IPT1	InositolPhosphoTransferase	inositolphosphotransferase|KTI6|MIC2|SYR4	2.7.1.228	ExPASy/EC number
+S000002481	YDR074W	TPS2	Trehalose-6-Phosphate Synthase/phosphatase	HOG2|PFK3|trehalose-phosphatase TPS2	3.1.3.12	ExPASy/EC number
+S000002482	YDR075W	PPH3	Protein PHosphatase	phosphoprotein phosphatase PP4 catalytic subunit PPH3	3.1.3.16	ExPASy/EC number
+S000002490	YDR083W	RRP8	Ribosomal RNA Processing	25S rRNA (adenine645-N1)-methyltransferase	2.1.1.287	ExPASy/EC number
+S000002499	YDR092W	UBC13	UBiquitin-Conjugating	E2 ubiquitin-conjugating protein UBC13	2.3.2.23	ExPASy/EC number
+S000002500	YDR093W	DNF2	Drs2 Neo1 Family	aminophospholipid-translocating P4-type ATPase DNF2	7.6.2.1	ExPASy/EC number
+S000002518	YDR111C	ALT2	ALanine Transaminase	alanine transaminase ALT2	2.6.1.2	ExPASy/EC number
+S000002527	YDR120C	TRM1	tRNA Methyltransferase	tRNA (guanine26-N2)-dimethyltransferase	2.1.1.216	ExPASy/EC number
+S000002529	YDR122W	KIN1	KINase	serine/threonine protein kinase KIN1	2.7.11.1	ExPASy/EC number
+S000002533	YDR126W	SWF1	Spore Wall Formation	palmitoyltransferase SWF1|PSL10	2.3.1.225	ExPASy/EC number
+S000002534	YDR127W	ARO1	AROmatic amino acid requiring	pentafunctional protein ARO1p	1.1.1.25	ExPASy/EC number
+S000002534	YDR127W	ARO1	AROmatic amino acid requiring	pentafunctional protein ARO1p	2.5.1.19	ExPASy/EC number
+S000002534	YDR127W	ARO1	AROmatic amino acid requiring	pentafunctional protein ARO1p	2.7.1.71	ExPASy/EC number
+S000002534	YDR127W	ARO1	AROmatic amino acid requiring	pentafunctional protein ARO1p	4.2.1.10	ExPASy/EC number
+S000002534	YDR127W	ARO1	AROmatic amino acid requiring	pentafunctional protein ARO1p	4.2.3.4	ExPASy/EC number
+S000002542	YDR135C	YCF1	Yeast Cadmium Factor	ATP-binding cassette glutathione S-conjugate transporter YCF1	7.2.2.2	ExPASy/EC number
+S000002542	YDR135C	YCF1	Yeast Cadmium Factor	ATP-binding cassette glutathione S-conjugate transporter YCF1	7.6.2.3	ExPASy/EC number
+S000002547	YDR140W	MTQ2	Methyltransferase	S-adenosylmethionine-dependent methyltransferase	2.1.1.297	ExPASy/EC number
+S000002551	YDR144C	MKC7	Multicopy suppressor of Kex2 Cold sensitivity	aspartyl protease|YPS2	3.4.23.41	ExPASy/EC number
+S000002554	YDR147W	EKI1	Ethanolamine KInase	bifunctional choline kinase/ethanolamine kinase EKI1	2.7.1.82	ExPASy/EC number
+S000002555	YDR148C	KGD2	alpha-KetoGlutarate Dehydrogenase	alpha-ketoglutarate dehydrogenase KGD2	2.3.1.61	ExPASy/EC number
+S000002562	YDR155C	CPR1	Cyclosporin A-sensitive Proline Rotamase	CPH1|CYP1|peptidylprolyl isomerase CPR1	5.2.1.8	ExPASy/EC number
+S000002565	YDR158W	HOM2	HOMoserine requiring	aspartate-semialdehyde dehydrogenase|THR2	1.2.1.11	ExPASy/EC number
+S000002580	YDR173C	ARG82	ARGinine requiring	ARGR3|ARGRIII|inositol polyphosphate multikinase|IPK2	2.7.1.151	ExPASy/EC number
+S000002584	YDR177W	UBC1	UBiquitin-Conjugating	E2 ubiquitin-conjugating protein UBC1	2.3.2.23	ExPASy/EC number
+S000002598	YDR190C	RVB1	RuVB-like	RuvB family ATP-dependent DNA helicase pontin|TIH1|TIP49|TIP49A	3.6.4.12	ExPASy/EC number
+S000002599	YDR191W	HST4	Homolog of SIR Two (SIR2)	NAD-dependent histone deacetylase HST4	2.3.1.286	ExPASy/EC number
+S000002602	YDR194C	MSS116	Mitochondrial Splicing System	ATP-dependent RNA helicase	3.6.4.13	ExPASy/EC number
+S000002604	YDR196C	CAB5	""	putative dephospho-CoA kinase	2.7.1.24	ExPASy/EC number
+S000002616	YDR208W	MSS4	Multicopy Suppressor of Stt4 mutation	1-phosphatidylinositol-4-phosphate 5-kinase	2.7.1.68	ExPASy/EC number
+S000002634	YDR226W	ADK1	ADenylate Kinase	adenylate kinase ADK1|AKY1|AKY2	2.7.4.3	ExPASy/EC number
+S000002640	YDR232W	HEM1	HEMe biosynthesis	5-aminolevulinate synthase|CYD1|OLE3	2.3.1.37	ExPASy/EC number
+S000002642	YDR234W	LYS4	LYSine requiring	homoaconitate hydratase LYS4|LYS3	4.2.1.36	ExPASy/EC number
+S000002644	YDR236C	FMN1	FMN biosynthesis	riboflavin kinase	2.7.1.26	ExPASy/EC number
+S000002650	YDR242W	AMD2	AMiDase	putative amidase	3.5.1.4	ExPASy/EC number
+S000002651	YDR243C	PRP28	Pre-mRNA Processing	mRNA splicing protein PRP28	3.6.4.13	ExPASy/EC number
+S000002655	YDR247W	VHS1	Viable in a Hal3 Sit4 background	putative serine/threonine protein kinase VHS1	2.7.11.1	ExPASy/EC number
+S000002656	YDR248C	""	""	gluconokinase	2.7.1.12	ExPASy/EC number
+S000002663	YDR255C	RMD5	Required for Meiotic nuclear Division	GID2|ubiquitin-protein ligase RMD5	2.3.2.27	ExPASy/EC number
+S000002664	YDR256C	CTA1	CaTalase A	catalase A	1.11.1.6	ExPASy/EC number
+S000002669	YDR261C	EXG2	EXo-1,3-beta-Glucanase	glucan exo-1,3-beta-glucosidase	3.2.1.58	ExPASy/EC number
+S000002672	YDR264C	AKR1	AnKyrin Repeat containing	palmitoyltransferase AKR1	2.3.1.225	ExPASy/EC number
+S000002674	YDR266C	HEL2	Histone E3 Ligase	E3 ubiquitin-protein ligase HEL2|RQT1	2.3.2.27	ExPASy/EC number
+S000002676	YDR268W	MSW1	Mitochondrial aminoacyl-tRNA Synthetase, tryptophan (W)	tryptophan--tRNA ligase MSW1	6.1.1.2	ExPASy/EC number
+S000002678	YDR270W	CCC2	Cross-Complements Ca(2+) phenotype of csg1	Cu(2+)-transporting P-type ATPase CCC2	7.2.2.8	ExPASy/EC number
+S000002680	YDR272W	GLO2	GLyOxalase	hydroxyacylglutathione hydrolase GLO2	3.1.2.6	ExPASy/EC number
+S000002691	YDR283C	GCN2	General Control Nonderepressible	AAS1|AAS102|NDR2|serine/threonine-protein kinase GCN2	2.7.11.1	ExPASy/EC number
+S000002692	YDR284C	DPP1	Diacylglycerol Pyrophosphate Phosphatase	bifunctional diacylglycerol diphosphate phosphatase/phosphatidate phosphatase|ZRG1	3.1.3.4	ExPASy/EC number
+S000002692	YDR284C	DPP1	Diacylglycerol Pyrophosphate Phosphatase	bifunctional diacylglycerol diphosphate phosphatase/phosphatidate phosphatase|ZRG1	3.1.3.81	ExPASy/EC number
+S000002695	YDR287W	INM2	INositol Monophosphatase	inositol monophosphate 1-phosphatase INM2	3.1.3.25	ExPASy/EC number
+S000002699	YDR291W	HRQ1	Homologous to RecQ protein	ATP-dependent 3'-5' DNA helicase	3.6.4.12	ExPASy/EC number
+S000002702	YDR294C	DPL1	Dihydrosphingosine Phosphate Lyase	BST1|sphinganine-1-phosphate aldolase DPL1	4.1.2.27	ExPASy/EC number
+S000002708	YDR300C	PRO1	PROline requiring	glutamate 5-kinase	2.7.2.11	ExPASy/EC number
+S000002712	YDR304C	CPR5	Cyclosporin-sensitive Proline Rotamase	CYP5|peptidylprolyl isomerase family protein CPR5	5.2.1.8	ExPASy/EC number
+S000002713	YDR305C	HNT2	Histidine triad NucleoTide-binding	APH1|bis(5'-adenosyl)-triphosphatase	3.6.1.29	ExPASy/EC number
+S000002715	YDR307W	PMT7	""	putative dolichyl-phosphate-mannose--protein mannosyltransferase	2.4.1.109	ExPASy/EC number
+S000002721	YDR313C	PIB1	PhosphatidylInositol(3)-phosphate Binding	phosphatidylinositol-3-phosphate-binding ubiquitin-protein ligase	2.3.2.27	ExPASy/EC number
+S000002723	YDR315C	IPK1	Inositol Polyphosphate Kinase	GSL1|inositol pentakisphosphate 2-kinase	2.7.1.158	ExPASy/EC number
+S000002729	YDR321W	ASP1	ASParaginase	asparaginase ASP1	3.5.1.1	ExPASy/EC number
+S000002742	YDR334W	SWR1	SWi2/snf2-Related	chromatin-remodeling protein SWR1	3.6.4.12	ExPASy/EC number
+S000002749	YDR341C	""	""	arginine--tRNA ligase|ArgRS|RRS1	6.1.1.19	ExPASy/EC number
+S000002761	YDR353W	TRR1	ThioRedoxin Reductase	thioredoxin-disulfide reductase TRR1	1.8.1.9	ExPASy/EC number
+S000002762	YDR354W	TRP4	TRyPtophan	anthranilate phosphoribosyltransferase	2.4.2.18	ExPASy/EC number
+S000002779	YDR371W	CTS2	ChiTinaSe	putative chitinase	3.2.1.14	ExPASy/EC number
+S000002784	YDR376W	ARH1	Adrenodoxin Reductase Homolog	NADPH-adrenodoxin reductase	1.18.1.6	ExPASy/EC number
+S000002788	YDR380W	ARO10	AROmatic amino acid requiring	phenylpyruvate decarboxylase ARO10	4.1.1.43	ExPASy/EC number
+S000002788	YDR380W	ARO10	AROmatic amino acid requiring	phenylpyruvate decarboxylase ARO10	4.1.1.72	ExPASy/EC number
+S000002788	YDR380W	ARO10	AROmatic amino acid requiring	phenylpyruvate decarboxylase ARO10	4.1.1.74	ExPASy/EC number
+S000002788	YDR380W	ARO10	AROmatic amino acid requiring	phenylpyruvate decarboxylase ARO10	4.1.1.80	ExPASy/EC number
+S000002807	YDR399W	HPT1	Hypoxanthine guanine PhosphoribosylTransferase	BRA6|HGPRTase|HPRT|hypoxanthine phosphoribosyltransferase	2.4.2.8	ExPASy/EC number
+S000002808	YDR400W	URH1	URidine Hydrolase	trifunctional uridine nucleosidase/nicotinamide riboside hydrolase/nicotinic acid riboside hydrolase	3.2.2.3	ExPASy/EC number
+S000002816	YDR408C	ADE8	ADEnine requiring	phosphoribosylglycinamide formyltransferase	2.1.2.2	ExPASy/EC number
+S000002818	YDR410C	STE14	STErile	protein-S-isoprenylcysteine carboxyl O-methyltransferase	2.1.1.100	ExPASy/EC number
+S000002827	YDR419W	RAD30	RADiation sensitive	DBH1|DNA-directed DNA polymerase eta	2.7.7.7	ExPASy/EC number
+S000002836	YDR428C	BNA7	Biosynthesis of NAD	arylformamidase	3.5.1.9	ExPASy/EC number
+S000002843	YDR435C	PPM1	Protein Phosphatase Methyltransferase	leucine carboxy methyltransferase	2.1.1.233	ExPASy/EC number
+S000002844	YDR436W	PPZ2	Protein Phosphatase Z	salt homeostasis regulator	3.1.3.16	ExPASy/EC number
+S000002845	YDR437W	GPI19	Glycosyl PhosphatidylInositol anchor biosynthesis	phosphatidylinositol N-acetylglucosaminyltransferase GPI19	2.4.1.198	ExPASy/EC number
+S000002848	YDR440W	DOT1	Disruptor Of Telomeric silencing	histone methyltransferase DOT1|KMT4|PCH1	2.1.1.360	ExPASy/EC number
+S000002849	YDR441C	APT2	Adenine PhosphoribosylTransferase	adenine phosphoribosyltransferase APT2	2.4.2.7	ExPASy/EC number
+S000002860	YDR452W	PPN1	""	endopolyphosphatase|PHM5	3.6.1.10	ExPASy/EC number
+S000002860	YDR452W	PPN1	""	endopolyphosphatase|PHM5	3.6.1.11	ExPASy/EC number
+S000002861	YDR453C	TSA2	Thiol-Specific Antioxidant	cTPxII|thioredoxin peroxidase TSA2	1.11.1.24	ExPASy/EC number
+S000002862	YDR454C	GUK1	GUanylate Kinase	BRA3|guanylate kinase|PUR5	2.7.4.8	ExPASy/EC number
+S000002865	YDR457W	TOM1	Temperature dependent Organization in Mitotic nucleus or Trigger Of Mitosis	E3 ubiquitin-protein ligase TOM1	2.3.2.26	ExPASy/EC number
+S000002867	YDR459C	PFA5	Protein Fatty Acyltransferase	palmitoyltransferase PFA5	2.3.1.225	ExPASy/EC number
+S000002874	YDR466W	PKH3	Pkb-activating Kinase Homolog	protein kinase PKH3	2.7.11.1	ExPASy/EC number
+S000002885	YDR477W	SNF1	Sucrose NonFermenting	AMP-activated serine/threonine-protein kinase catalytic subunit SNF1|CAT1|CCR1|GLC2|HAF3|PAS14	2.7.11.1	ExPASy/EC number
+S000002889	YDR481C	PHO8	PHOsphate metabolism	alkaline phosphatase PHO8|phoH	3.1.3.1	ExPASy/EC number
+S000002889	YDR481C	PHO8	PHOsphate metabolism	alkaline phosphatase PHO8|phoH	3.1.3.54	ExPASy/EC number
+S000002889	YDR481C	PHO8	PHOsphate metabolism	alkaline phosphatase PHO8|phoH	3.1.7.6	ExPASy/EC number
+S000002895	YDR487C	RIB3	RIBoflavin biosynthesis	3,4-dihydroxy-2-butanone-4-phosphate synthase RIB3	4.1.99.12	ExPASy/EC number
+S000002898	YDR490C	PKH1	Pkb-activating Kinase Homolog	serine/threonine protein kinase PKH1	2.7.11.1	ExPASy/EC number
+S000002910	YDR502C	SAM2	S-AdenosylMethionine requiring	ETH2|methionine adenosyltransferase SAM2	2.5.1.6	ExPASy/EC number
+S000002911	YDR503C	LPP1	Lipid Phosphate Phosphatase	phosphatidate phosphatase LPP1	3.1.3.4	ExPASy/EC number
+S000002911	YDR503C	LPP1	Lipid Phosphate Phosphatase	phosphatidate phosphatase LPP1	3.1.3.81	ExPASy/EC number
+S000002915	YDR507C	GIN4	Growth Inhibitory	ERC47|protein kinase GIN4	2.7.11.1	ExPASy/EC number
+S000002921	YDR513W	GRX2	GlutaRedoXin	dithiol glutaredoxin GRX2|TTR1	1.11.1.9	ExPASy/EC number
+S000002921	YDR513W	GRX2	GlutaRedoXin	dithiol glutaredoxin GRX2|TTR1	2.5.1.18	ExPASy/EC number
+S000002924	YDR516C	EMI2	Early Meiotic Induction	putative glucokinase	2.7.1.2	ExPASy/EC number
+S000002926	YDR518W	EUG1	ER protein Unnecessary for Growth	protein disulfide isomerase EUG1	5.3.4.1	ExPASy/EC number
+S000002927	YDR519W	FPR2	FKBP Proline Rotamase	FKB2|peptidylprolyl isomerase family protein FPR2	5.2.1.8	ExPASy/EC number
+S000002931	YDR523C	SPS1	SPorulation Specific	putative serine/threonine protein kinase SPS1	2.7.11.1	ExPASy/EC number
+S000002938	YDR530C	APA2	AP4A phosphorylase	bifunctional AP-4-A phosphorylase/ADP sulfurylase	2.7.7.5	ExPASy/EC number
+S000002938	YDR530C	APA2	AP4A phosphorylase	bifunctional AP-4-A phosphorylase/ADP sulfurylase	2.7.7.53	ExPASy/EC number
+S000002939	YDR531W	CAB1	Coenzyme A Biosynthesis	pantothenate kinase	2.7.1.33	ExPASy/EC number
+S000002941	YDR533C	HSP31	Heat-Shock Protein	glutathione-independent methylglyoxalase	4.2.1.130	ExPASy/EC number
+S000002946	YDR538W	PAD1	Phenylacrylic Acid Decarboxylase	phenylacrylic acid decarboxylase PAD1|POF1	2.5.1.129	ExPASy/EC number
+S000002947	YDR539W	FDC1	Ferulic acid DeCarboxylase	putative phenylacrylic acid decarboxylase FDC1	4.1.1.102	ExPASy/EC number
+S000002953	YDR545W	YRF1-1	""	Y' element ATP-dependent helicase protein 1 copy 1|YRF1	3.6.4.12	ExPASy/EC number
+S000002969	YGL001C	ERG26	ERGosterol biosynthesis	sterol-4-alpha-carboxylate 3-dehydrogenase (decarboxylating)	1.1.1.170	ExPASy/EC number
+S000002974	YGL006W	PMC1	Plasma Membrane Calcium	calcium-transporting ATPase PMC1	7.2.2.10	ExPASy/EC number
+S000002976	YGL008C	PMA1	Plasma Membrane ATPase	H(+)-exporting P2-type ATPase PMA1|KTI10	7.1.2.1	ExPASy/EC number
+S000002977	YGL009C	LEU1	LEUcine biosynthesis	3-isopropylmalate dehydratase LEU1	4.2.1.33	ExPASy/EC number
+S000002978	YGL010W	MPO1	Metabolism of PHS to Odd-numbered fatty acids	""	1.14.18.12	ExPASy/EC number
+S000002980	YGL012W	ERG4	ERGosterol biosynthesis	delta(24(24(1)))-sterol reductase	1.3.1.71	ExPASy/EC number
+S000002985	YGL017W	ATE1	Arginyl-tRNA-protein transfErase	arginyltransferase	2.3.2.8	ExPASy/EC number
+S000002989	YGL021W	ALK1	""	protein kinase ALK1	2.7.11.1	ExPASy/EC number
+S000002990	YGL022W	STT3	STaurosporine and Temperature sensitive	dolichyl-diphosphooligosaccharide--protein glycosyltransferase subunit STT3	2.4.99.18	ExPASy/EC number
+S000002994	YGL026C	TRP5	TRyPtophan	tryptophan synthase TRP5	4.2.1.20	ExPASy/EC number
+S000002995	YGL027C	CWH41	Calcofluor White Hypersensitive	DER7|GLS1|mannosyl-oligosaccharide glucosidase	3.2.1.106	ExPASy/EC number
+S000003005	YGL037C	PNC1	Pyrazinamidase and NiCotinamidase	nicotinamidase	3.5.1.19	ExPASy/EC number
+S000003006	YGL038C	OCH1	Outer CHain elongation	initiation-specific alpha-1,6-mannosyltransferase|LDB12|NGD29	2.4.1.232	ExPASy/EC number
+S000003008	YGL040C	HEM2	HEMe biosynthesis	OLE4|porphobilinogen synthase HEM2|SLU1	4.2.1.24	ExPASy/EC number
+S000003015	YGL047W	ALG13	Asparagine-Linked Glycosylation	N-acetylglucosaminyldiphosphodolichol N-acetylglucosaminyltransferase catalytic subunit ALG13	2.4.1.141	ExPASy/EC number
+S000003018	YGL050W	TYW3	Trna-YW synthesizing protein	tRNA methyltransferase TYW3	2.1.1.282	ExPASy/EC number
+S000003023	YGL055W	OLE1	OLEic acid requiring	MDM2|stearoyl-CoA 9-desaturase	1.14.19.1	ExPASy/EC number
+S000003026	YGL058W	RAD6	RADiation sensitive	E2 ubiquitin-conjugating protein RAD6|PSO8|UBC2	2.3.2.23	ExPASy/EC number
+S000003027	YGL059W	PKP2	Protein Kinase of PDH	protein kinase PKP2	2.7.11.2	ExPASy/EC number
+S000003030	YGL062W	PYC1	PYruvate Carboxylase	pyruvate carboxylase 1	6.4.1.1	ExPASy/EC number
+S000003031	YGL063W	PUS2	PseudoUridine Synthase	pseudouridine synthase PUS2	5.4.99.44	ExPASy/EC number
+S000003032	YGL064C	MRH4	Mitochondrial RNA Helicase	ATP-dependent RNA helicase	3.6.4.13	ExPASy/EC number
+S000003033	YGL065C	ALG2	Asparagine-Linked Glycosylation	GDP-Man:Man(1)GlcNAc(2)-PP-dolichol alpha-1,3-mannosyltransferase	2.4.1.132	ExPASy/EC number
+S000003033	YGL065C	ALG2	Asparagine-Linked Glycosylation	GDP-Man:Man(1)GlcNAc(2)-PP-dolichol alpha-1,3-mannosyltransferase	2.4.1.257	ExPASy/EC number
+S000003035	YGL067W	NPY1	NADH PYrophosphatase	NAD(+) diphosphatase	3.6.1.22	ExPASy/EC number
+S000003046	YGL078C	DBP3	Dead Box Protein	RNA-dependent ATPase DBP3	3.6.4.13	ExPASy/EC number
+S000003062	YGL094C	PAN2	Poly(A)-binding protein-dependent poly(A) riboNuclease	poly(A)-specific ribonuclease	3.1.13.4	ExPASy/EC number
+S000003069	YGL101W	YGK1	""	5'-deoxynucleotidase	3.1.3.89	ExPASy/EC number
+S000003088	YGL120C	PRP43	Pre-mRNA Processing	DEAH-box ATP-dependent RNA helicase PRP43|JA1	3.6.4.13	ExPASy/EC number
+S000003093	YGL125W	MET13	METhionine requiring	MET11|methylenetetrahydrofolate reductase (NAD(P)H) MET13|MRPL45	1.5.1.20	ExPASy/EC number
+S000003098	YGL130W	CEG1	Capping Enzyme Guanylyltransferase	mRNA guanylyltransferase	2.7.7.50	ExPASy/EC number
+S000003099	YGL131C	SNT2	""	DNA-binding E3 ubiquitin-protein ligase SNT2	2.3.2.27	ExPASy/EC number
+S000003104	YGL136C	MRM2	Mitochondrial rRNA Methyl transferase	21S rRNA (uridine2791-2'-O) methyltransferase	2.1.1.168	ExPASy/EC number
+S000003109	YGL141W	HUL5	Hect Ubiquitin Ligase	ubiquitin-ubiquitin ligase HUL5	2.3.2.26	ExPASy/EC number
+S000003116	YGL148W	ARO2	AROmatic amino acid requiring	bifunctional chorismate synthase/riboflavin reductase [NAD(P)H] ARO2	4.2.3.5	ExPASy/EC number
+S000003122	YGL154C	LYS5	LYSine requiring	holo-[acyl-carrier-protein] synthase	2.7.8.7	ExPASy/EC number
+S000003123	YGL155W	CDC43	Cell Division Cycle	CAL1|protein geranylgeranyltransferase type I subunit CDC43	2.5.1.59	ExPASy/EC number
+S000003124	YGL156W	AMS1	Alpha-MannoSidase	alpha-mannosidase	3.2.1.24	ExPASy/EC number
+S000003126	YGL158W	RCK1	Radiation sensitivity Complementing Kinase	putative serine/threonine protein kinase RCK1	2.7.11.1	ExPASy/EC number
+S000003131	YGL163C	RAD54	RADiation sensitive	DNA-dependent ATPase RAD54|XRS1	3.6.4.12	ExPASy/EC number
+S000003135	YGL167C	PMR1	Plasma Membrane ATPase Related	BSD1|Ca(2+)/Mn(2+)-transporting P-type ATPase PMR1|LDB1|SSC1	7.2.2.10	ExPASy/EC number
+S000003137	YGL169W	SUA5	Suppressor of Upstream AUG	threonylcarbamoyladenylate synthase	2.7.7.87	ExPASy/EC number
+S000003139	YGL171W	ROK1	Rescuer Of Kem1	RNA-dependent ATPase ROK1	3.6.4.13	ExPASy/EC number
+S000003147	YGL179C	TOS3	Target Of Sbf	serine/threonine protein kinase TOS3	2.7.11.1	ExPASy/EC number
+S000003148	YGL180W	ATG1	AuTophaGy related	APG1|AUT3|CVT10|serine/threonine protein kinase ATG1	2.7.11.1	ExPASy/EC number
+S000003152	YGL184C	STR3	Sulfur TRansfer	cystathionine beta-lyase STR3	4.4.1.13	ExPASy/EC number
+S000003160	YGL192W	IME4	Inducer of MEiosis	mRNA (N6-adenosine)-methyltransferase|SPO8	2.1.1.348	ExPASy/EC number
+S000003162	YGL194C	HOS2	Hda One Similar	histone deacetylase HOS2|RTL1	3.5.1.98	ExPASy/EC number
+S000003164	YGL196W	DSD1	""	D-serine ammonia-lyase DSD1	4.3.1.18	ExPASy/EC number
+S000003169	YGL201C	MCM6	MiniChromosome Maintenance	MCM DNA helicase complex subunit MCM6	3.6.4.12	ExPASy/EC number
+S000003170	YGL202W	ARO8	AROmatic amino acid requiring	bifunctional 2-aminoadipate transaminase/aromatic-amino-acid:2-oxoglutarate transaminase	2.6.1.39	ExPASy/EC number
+S000003170	YGL202W	ARO8	AROmatic amino acid requiring	bifunctional 2-aminoadipate transaminase/aromatic-amino-acid:2-oxoglutarate transaminase	2.6.1.57	ExPASy/EC number
+S000003171	YGL203C	KEX1	Killer EXpression defective	serine-type carboxypeptidase	3.4.16.6	ExPASy/EC number
+S000003173	YGL205W	POX1	""	acyl-CoA oxidase|FOX1	1.3.3.6	ExPASy/EC number
+S000003203	YGL234W	ADE5,7	ADEnine requiring	bifunctional aminoimidazole ribotide synthase/glycinamide ribotide synthase	6.3.3.1	ExPASy/EC number
+S000003203	YGL234W	ADE5,7	ADEnine requiring	bifunctional aminoimidazole ribotide synthase/glycinamide ribotide synthase	6.3.4.13	ExPASy/EC number
+S000003212	YGL243W	TAD1	tRNA-specific Adenosine Deaminase	tRNA-specific adenosine deaminase	3.5.4.34	ExPASy/EC number
+S000003214	YGL245W	GUS1	GlUtamyl-tRNA Synthetase	GluRS|glutamate--tRNA ligase GUS1|GSN1	6.1.1.17	ExPASy/EC number
+S000003217	YGL248W	PDE1	PhosphoDiEsterase	3',5'-cyclic-nucleotide phosphodiesterase PDE1	3.1.4.17	ExPASy/EC number
+S000003220	YGL251C	HFM1	Helicase Family Member	DNA helicase|MER3	3.6.4.12	ExPASy/EC number
+S000003222	YGL253W	HXK2	HeXoKinase	HEX1|hexokinase 2|HKB|SCI2	2.7.1.1	ExPASy/EC number
+S000003225	YGL256W	ADH4	Alcohol DeHydrogenase	alcohol dehydrogenase ADH4|NRC465|ZRG5	1.1.1.1	ExPASy/EC number
+S000003239	YGR007W	ECT1	Ethanolamine-phosphate CytidylylTransferase	ethanolamine-phosphate cytidylyltransferase|MUQ1	2.7.7.14	ExPASy/EC number
+S000003242	YGR010W	NMA2	Nicotinamide Mononucleotide Adenylyltransferase	nicotinamide-nucleotide adenylyltransferase NMA2	2.7.7.1	ExPASy/EC number
+S000003242	YGR010W	NMA2	Nicotinamide Mononucleotide Adenylyltransferase	nicotinamide-nucleotide adenylyltransferase NMA2	2.7.7.18	ExPASy/EC number
+S000003244	YGR012W	MCY1	putative Mitochondrial CYsteine synthase	putative cysteine synthase	2.5.1.47	ExPASy/EC number
+S000003247	YGR015C	EAT1	Ethanol AcetylTransferase	putative hydrolase	2.3.1.268	ExPASy/EC number
+S000003247	YGR015C	EAT1	Ethanol AcetylTransferase	putative hydrolase	3.1.2.1	ExPASy/EC number
+S000003251	YGR019W	UGA1	Utilization of GAba	4-aminobutyrate transaminase	2.6.1.19	ExPASy/EC number
+S000003256	YGR024C	THG1	tRNAHis Guanylyltransferase	tRNA guanylyltransferase	2.7.7.79	ExPASy/EC number
+S000003261	YGR029W	ERV1	Essential for Respiration and Viability	flavin-linked sulfhydryl oxidase	1.8.3.2	ExPASy/EC number
+S000003262	YGR030C	POP6	Processing Of Precursor RNAs	ribonuclease P/MRP protein subunit POP6	3.1.26.5	ExPASy/EC number
+S000003264	YGR032W	GSC2	Glucan Synthase of Cerevisiae	1,3-beta-glucan synthase GSC2|FKS2	2.4.1.34	ExPASy/EC number
+S000003268	YGR036C	CAX4	CAlmodulin-dependent in cmd one two twenty-siX	CWH8|dolichyldiphosphatase	3.6.1.43	ExPASy/EC number
+S000003272	YGR040W	KSS1	Kinase Suppressor of Sst2 mutations	mitogen-activated serine/threonine-protein kinase KSS1	2.7.11.24	ExPASy/EC number
+S000003275	YGR043C	NQM1	Non-Quiescent Mutant	sedoheptulose-7-phosphate:D-glyceraldehyde-3-phosphate transaldolase NQM1	2.2.1.2	ExPASy/EC number
+S000003278	YGR046W	TAM41	Translocator Assembly and Maintenance	MMP37|putative phosphatidate cytidylyltransferase	2.7.7.41	ExPASy/EC number
+S000003284	YGR052W	FMP48	Found in Mitochondrial Proteome	protein kinase FMP48	2.7.11.1	ExPASy/EC number
+S000003292	YGR060W	ERG25	ERGosterol biosynthesis	methylsterol monooxygenase	1.14.18.9	ExPASy/EC number
+S000003293	YGR061C	ADE6	ADEnine requiring	phosphoribosylformylglycinamidine synthase	6.3.5.3	ExPASy/EC number
+S000003319	YGR087C	PDC6	Pyruvate DeCarboxylase	indolepyruvate decarboxylase 6	4.1.1.43	ExPASy/EC number
+S000003319	YGR087C	PDC6	Pyruvate DeCarboxylase	indolepyruvate decarboxylase 6	4.1.1.72	ExPASy/EC number
+S000003319	YGR087C	PDC6	Pyruvate DeCarboxylase	indolepyruvate decarboxylase 6	4.1.1.74	ExPASy/EC number
+S000003320	YGR088W	CTT1	CaTalase T	catalase T|SPS101	1.11.1.6	ExPASy/EC number
+S000003324	YGR092W	DBF2	DumbBell Former	serine/threonine-protein kinase DBF2	2.7.11.1	ExPASy/EC number
+S000003326	YGR094W	VAS1	VAlyl-tRNA Synthetase	valine--tRNA ligase	6.1.1.9	ExPASy/EC number
+S000003330	YGR098C	ESP1	Extra Spindle Pole bodies	separase	3.4.22.49	ExPASy/EC number
+S000003333	YGR101W	PCP1	Processing of Cytochrome c Peroxidase	MDM37|RBD1|rhomboid protease PCP1|UGO2	3.4.21.105	ExPASy/EC number
+S000003355	YGR123C	PPT1	Protein Phosphatase T	protein serine/threonine phosphatase	3.1.3.16	ExPASy/EC number
+S000003356	YGR124W	ASN2	ASparagiNe requiring	asparagine synthase (glutamine-hydrolyzing) 2	6.3.5.4	ExPASy/EC number
+S000003365	YGR133W	PEX4	PEroXin	E2 ubiquitin-protein ligase peroxin 4|PAS2|UBC10	2.3.2.23	ExPASy/EC number
+S000003376	YGR144W	THI4	THIamine metabolism	ESP35|MOL1|thiamine thiazole synthase	2.4.2.60	ExPASy/EC number
+S000003384	YGR152C	RSR1	RaS-Related	BUD1|Ras family GTPase RSR1	3.6.5.2	ExPASy/EC number
+S000003386	YGR154C	GTO1	Glutathione Transferase Omega-like	omega-class glutathione transferase	1.8.5.1	ExPASy/EC number
+S000003386	YGR154C	GTO1	Glutathione Transferase Omega-like	omega-class glutathione transferase	2.5.1.18	ExPASy/EC number
+S000003387	YGR155W	CYS4	CYStathionine beta-synthase	cystathionine beta-synthase CYS4|NHS5|STR4|VMA41	4.2.1.22	ExPASy/EC number
+S000003389	YGR157W	CHO2	CHOline requiring	PEM1|phosphatidylethanolamine N-methyltransferase	2.1.1.17	ExPASy/EC number
+S000003401	YGR169C	PUS6	PseudoUridine Synthase	pseudouridine synthase PUS6	5.4.99.42	ExPASy/EC number
+S000003402	YGR170W	PSD2	PhosphatidylSerine Decarboxylase	phosphatidylserine decarboxylase 2	4.1.1.65	ExPASy/EC number
+S000003403	YGR171C	MSM1	Mitochondrial aminoacyl-tRNA Synthetase, Methionine	methionine--tRNA ligase MSM1	6.1.1.10	ExPASy/EC number
+S000003407	YGR175C	ERG1	ERGosterol biosynthesis	squalene monooxygenase	1.14.14.17	ExPASy/EC number
+S000003409	YGR177C	ATF2	AcetylTransFerase	alcohol O-acetyltransferase	2.3.1.84	ExPASy/EC number
+S000003412	YGR180C	RNR4	RiboNucleotide Reductase	CRT3|PSO3|ribonucleotide-diphosphate reductase subunit RNR4	1.17.4.1	ExPASy/EC number
+S000003416	YGR184C	UBR1	""	E3 ubiquitin-protein ligase UBR1|PTR1	2.3.2.27	ExPASy/EC number
+S000003417	YGR185C	TYS1	TYrosyl-tRNA Synthetase	TTS1|tyrosine--tRNA ligase TYS1|TyrRS	6.1.1.1	ExPASy/EC number
+S000003420	YGR188C	BUB1	Budding Uninhibited by Benzimidazole	protein kinase BUB1	2.7.11.1	ExPASy/EC number
+S000003424	YGR192C	TDH3	Triose-phosphate DeHydrogenase	GAPDH|GLD1|glyceraldehyde-3-phosphate dehydrogenase (phosphorylating) TDH3|GPD|HSP35|HSP36|SSS2	1.2.1.12	ExPASy/EC number
+S000003426	YGR194C	XKS1	XyluloKinaSe	xylulokinase	2.7.1.17	ExPASy/EC number
+S000003431	YGR199W	PMT6	Protein O-MannosylTransferase	dolichyl-phosphate-mannose-protein mannosyltransferase PMT6	2.4.1.109	ExPASy/EC number
+S000003434	YGR202C	PCT1	Phosphocholine CytidylylTransferase	BSR2|CCT1|choline-phosphate cytidylyltransferase	2.7.7.15	ExPASy/EC number
+S000003436	YGR204W	ADE3	ADEnine requiring	trifunctional formate-tetrahydrofolate ligase/methenyltetrahydrofolate cyclohydrolase/methylenetetrahydrofolate dehydrogenase ADE3	1.5.1.5	ExPASy/EC number
+S000003436	YGR204W	ADE3	ADEnine requiring	trifunctional formate-tetrahydrofolate ligase/methenyltetrahydrofolate cyclohydrolase/methylenetetrahydrofolate dehydrogenase ADE3	3.5.4.9	ExPASy/EC number
+S000003436	YGR204W	ADE3	ADEnine requiring	trifunctional formate-tetrahydrofolate ligase/methenyltetrahydrofolate cyclohydrolase/methylenetetrahydrofolate dehydrogenase ADE3	6.3.4.3	ExPASy/EC number
+S000003440	YGR208W	SER2	SERine requiring	phosphoserine phosphatase	3.1.3.3	ExPASy/EC number
+S000003448	YGR216C	GPI1	GlycosylPhosphatidylInositol anchoring biosynthesis	phosphatidylinositol N-acetylglucosaminyltransferase	2.4.1.198	ExPASy/EC number
+S000003459	YGR227W	DIE2	Derepression of ITR1 Expression	ALG10|dolichyl-P-Glc:Glc(2)Man(9)GlcNAc(2)-PP-dolichol alpha-1,2- glucosyltransferase	2.4.1.256	ExPASy/EC number
+S000003466	YGR234W	YHB1	Yeast flavoHemogloBin	flavohemoglobin|YHB4	1.14.12.17	ExPASy/EC number
+S000003472	YGR240C	PFK1	PhosphoFructoKinase	6-phosphofructokinase subunit alpha	2.7.1.11	ExPASy/EC number
+S000003476	YGR244C	LSC2	Ligase of Succinyl-CoA	succinate--CoA ligase (GDP-forming) subunit beta	6.2.1.5	ExPASy/EC number
+S000003479	YGR247W	CPD1	Cyclic nucleotide PhosphoDiesterase	2',3'-cyclic-nucleotide 3'-phosphodiesterase	3.1.4.37	ExPASy/EC number
+S000003480	YGR248W	SOL4	Suppressor Of Los1-1	6-phosphogluconolactonase SOL4	3.1.1.31	ExPASy/EC number
+S000003484	YGR252W	GCN5	General Control Nonderepressible	AAS104|ADA4|histone acetyltransferase GCN5|KAT2|SWI9	2.3.1.48	ExPASy/EC number
+S000003486	YGR254W	ENO1	ENOlase	HSP48|phosphopyruvate hydratase ENO1	4.2.1.11	ExPASy/EC number
+S000003488	YGR256W	GND2	6-phosphoGlucoNateDehydrogenase	phosphogluconate dehydrogenase (decarboxylating) GND2	1.1.1.44	ExPASy/EC number
+S000003494	YGR262C	BUD32	BUD site selection	LDB14|serine/threonine protein kinase BUD32	2.7.11.1	ExPASy/EC number
+S000003496	YGR264C	MES1	MEthionyl-tRNA Synthetase	MESI|methionine--tRNA ligase MES1|MetRS	6.1.1.10	ExPASy/EC number
+S000003499	YGR267C	FOL2	FOLic acid synthesis	GTP cyclohydrolase I	3.5.4.16	ExPASy/EC number
+S000003503	YGR271W	SLH1	SKI2-Like Helicase	putative RNA helicase|RQT2	3.6.4.13	ExPASy/EC number
+S000003506	YGR274C	TAF1	TATA binding protein-Associated Factor	histone acetyltransferase|KAT4|TAF130|TAF145|TafII130|TafII145	2.3.1.48	ExPASy/EC number
+S000003509	YGR277C	CAB4	Coenzyme A Biosynthesis	putative pantetheine-phosphate adenylyltransferase	2.7.7.3	ExPASy/EC number
+S000003514	YGR282C	BGL2	Beta-GLucanase	glucan 1,3-beta-glucosidase|SCW9	3.2.1.58	ExPASy/EC number
+S000003518	YGR286C	BIO2	BIOtin	biotin synthase	2.8.1.6	ExPASy/EC number
+S000003519	YGR287C	IMA1	IsoMAltase	oligo-1,6-glucosidase IMA1	3.2.1.10	ExPASy/EC number
+S000003524	YGR292W	MAL12	MALtose fermentation	alpha-glucosidase MAL12|MALS	3.2.1.20	ExPASy/EC number
+S000003528	YGR296W	YRF1-3	""	Y' element ATP-dependent helicase protein 1 copy 3|YRF1	3.6.4.12	ExPASy/EC number
+S000003538	YJL001W	PRE3	PRoteinase yscE	CRL21|proteasome core particle subunit beta 1	3.4.25.1	ExPASy/EC number
+S000003542	YJL005W	CYR1	CYclic AMP Requirement	adenylate cyclase|CDC35|FIL1|HSR1|SRA4|TSM0185	4.6.1.1	ExPASy/EC number
+S000003563	YJL026W	RNR2	RiboNucleotide Reductase	CRT6|ribonucleotide-diphosphate reductase subunit RNR2	1.17.4.1	ExPASy/EC number
+S000003568	YJL031C	BET4	Blocked Early in Transport	Rab geranylgeranyltransferase BET4	2.5.1.60	ExPASy/EC number
+S000003570	YJL033W	HCA4	Helicase CA	DBP4|ECM24|RNA-dependent ATPase HCA4	3.6.4.13	ExPASy/EC number
+S000003571	YJL034W	KAR2	KARyogamy	BIP|GRP78|Hsp70 family ATPase KAR2	3.6.4.10	ExPASy/EC number
+S000003572	YJL035C	TAD2	tRNA-specific Adenosine Deaminase	tRNA(adenine34) deaminase	3.5.4.33	ExPASy/EC number
+S000003581	YJL045W	SDH9	Succinate DeHydrogenase	SDH1b|succinate dehydrogenase SDH1b	1.3.5.1	ExPASy/EC number
+S000003582	YJL046W	AIM22	Altered Inheritance rate of Mitochondria	LIP3|putative lipoate--protein ligase|RRG3	6.3.1.20	ExPASy/EC number
+S000003586	YJL050W	MTR4	Mrna TRansport	ATP-dependent RNA helicase MTR4|DOB1	3.6.4.13	ExPASy/EC number
+S000003588	YJL052W	TDH1	Triose-phosphate DeHydrogenase	GAPDH|GLD3|glyceraldehyde-3-phosphate dehydrogenase (phosphorylating) TDH1	1.2.1.12	ExPASy/EC number
+S000003593	YJL057C	IKS1	""	protein kinase IKS1	2.7.11.1	ExPASy/EC number
+S000003596	YJL060W	BNA3	Biosynthesis of Nicotinic Acid	kynurenine--oxoglutarate transaminase	2.6.1.7	ExPASy/EC number
+S000003604	YJL068C	""	""	SFGH|S-formylglutathione hydrolase	3.1.2.12	ExPASy/EC number
+S000003607	YJL071W	ARG2	ARGinine requiring	acetyl-CoA:L-glutamate N-acetyltransferase|HRB574	2.3.1.1	ExPASy/EC number
+S000003623	YJL087C	TRL1	tRNA Ligase	LIG1|RLG1|tRNA ligase	6.5.1.3	ExPASy/EC number
+S000003624	YJL088W	ARG3	ARGinine requiring	argF|ornithine carbamoyltransferase	2.1.3.3	ExPASy/EC number
+S000003628	YJL092W	SRS2	Suppressor of Rad Six	DNA helicase SRS2|HPR5|RADH|RADH1	3.6.4.12	ExPASy/EC number
+S000003631	YJL095W	BCK1	Bypass of C Kinase	LAS3|mitogen-activated protein kinase kinase kinase BCK1|SAP3|SLK1|SSP31	2.7.11.1	ExPASy/EC number
+S000003633	YJL097W	PHS1	PTPLA Homolog involved in Sphingolipid biosynthesis 1	enoyl-CoA hydratase PHS1	4.2.1.134	ExPASy/EC number
+S000003636	YJL100W	LSB6	Las Seventeen Binding protein	1-phosphatidylinositol 4-kinase LSB6	2.7.1.67	ExPASy/EC number
+S000003637	YJL101C	GSH1	glutathione (GSH)	glutamate--cysteine ligase	6.3.2.2	ExPASy/EC number
+S000003642	YJL106W	IME2	Inducer of MEiosis	protein kinase IME2|SME1	2.7.11.1	ExPASy/EC number
+S000003657	YJL121C	RPE1	Ribulose 5-Phosphate Epimerase	EPI1|POS18|ribulose-phosphate 3-epimerase RPE1	5.1.3.1	ExPASy/EC number
+S000003661	YJL125C	GCD14	General Control Nonderepressible	TRM61|tRNA 1-methyladenosine methyltransferase subunit GCD14	2.1.1.220	ExPASy/EC number
+S000003662	YJL126W	NIT2	NITrilase superfamily	putative hydrolase	3.5.1.128	ExPASy/EC number
+S000003664	YJL128C	PBS2	Polymyxin B Sensitivity	HOG4|mitogen-activated protein kinase kinase PBS2|SFS4|SSK4	2.7.12.2	ExPASy/EC number
+S000003666	YJL130C	URA2	URAcil requiring	bifunctional carbamoylphosphate synthetase/aspartate transcarbamylase	2.1.3.2	ExPASy/EC number
+S000003666	YJL130C	URA2	URAcil requiring	bifunctional carbamoylphosphate synthetase/aspartate transcarbamylase	6.3.5.5	ExPASy/EC number
+S000003673	YJL137C	GLG2	Glycogenin-Like Gene	glycogenin glucosyltransferase GLG2	2.4.1.186	ExPASy/EC number
+S000003674	YJL138C	TIF2	Translation Initiation Factor	eIF4A|translation initiation factor eIF4A	3.6.4.13	ExPASy/EC number
+S000003677	YJL141C	YAK1	Yet Another Kinase	serine/threonine protein kinase YAK1	2.7.12.1	ExPASy/EC number
+S000003689	YJL153C	INO1	INOsitol requiring	APR1|inositol-3-phosphate synthase INO1	5.5.1.4	ExPASy/EC number
+S000003691	YJL155C	FBP26	Fructose BisPhosphatase	fructose-2,6-bisphosphatase	3.1.3.46	ExPASy/EC number
+S000003700	YJL164C	TPK1	Takashi's Protein Kinase	cAMP-dependent protein kinase catalytic subunit TPK1|PKA1|SRA3	2.7.11.11	ExPASy/EC number
+S000003701	YJL165C	HAL5	HALotolerance	protein kinase HAL5	2.7.11.1	ExPASy/EC number
+S000003703	YJL167W	ERG20	ERGosterol biosynthesis	bifunctional (2E,6E)-farnesyl diphosphate synthase/dimethylallyltranstransferase|BOT3|FDS1|FPP1	2.5.1.1	ExPASy/EC number
+S000003703	YJL167W	ERG20	ERGosterol biosynthesis	bifunctional (2E,6E)-farnesyl diphosphate synthase/dimethylallyltranstransferase|BOT3|FDS1|FPP1	2.5.1.10	ExPASy/EC number
+S000003704	YJL168C	SET2	SET domain-containing	EZL1|histone methyltransferase SET2|KMT3	2.1.1.359	ExPASy/EC number
+S000003708	YJL172W	CPS1	CarboxyPeptidase yscS	Gly-Xaa carboxypeptidase	3.4.17.4	ExPASy/EC number
+S000003723	YJL187C	SWE1	Saccharomyces WEe1	tyrosine protein kinase SWE1|WEE1	2.7.11.1	ExPASy/EC number
+S000003732	YJL196C	ELO1	ELOngation defective	fatty acid elongase ELO1	2.3.1.199	ExPASy/EC number
+S000003733	YJL197W	UBP12	UBiquitin-specific Protease	putative ubiquitin-specific protease UBP12	3.4.19.12	ExPASy/EC number
+S000003752	YJL216C	IMA5	IsoMAltase	oligo-1,6-glucosidase IMA5	3.2.1.10	ExPASy/EC number
+S000003757	YJL221C	IMA4	IsoMAltase	FSP2|oligo-1,6-glucosidase IMA4	3.2.1.10	ExPASy/EC number
+S000003760	YJL225C	""	""	Y' element ATP-dependent helicase	3.6.4.12	ExPASy/EC number
+S000003766	YJR006W	POL31	POLymerase	DNA-directed DNA polymerase delta subunit POL31|HUS2|HYS2|SDP5	2.7.7.7	ExPASy/EC number
+S000003769	YJR009C	TDH2	Triose-phosphate DeHydrogenase	GAPDH|GLD2|glyceraldehyde-3-phosphate dehydrogenase (phosphorylating) TDH2	1.2.1.12	ExPASy/EC number
+S000003771	YJR010W	MET3	METhionine requiring	sulfate adenylyltransferase	2.7.7.4	ExPASy/EC number
+S000003777	YJR016C	ILV3	IsoLeucine-plus-Valine requiring	dihydroxy-acid dehydratase ILV3	4.2.1.9	ExPASy/EC number
+S000003778	YJR017C	ESS1	ESSential	peptidylprolyl isomerase ESS1|PIN1|PTF1	5.2.1.8	ExPASy/EC number
+S000003780	YJR019C	TES1	ThioESterase	palmitoyl-CoA hydrolase|PTE1	3.1.2.2	ExPASy/EC number
+S000003785	YJR024C	MDE1	Methylthioribulose-1-phosphate DEhydratase	methylthioribulose 1-phosphate dehydratase MDE1	4.2.1.109	ExPASy/EC number
+S000003786	YJR025C	BNA1	Biosynthesis of Nicotinic Acid	3-hydroxyanthranilate 3,4-dioxygenase|HAD1	1.13.11.6	ExPASy/EC number
+S000003793	YJR032W	CPR7	Cyclosporin-sensitive Proline Rotamase	peptidylprolyl isomerase CPR7	5.2.1.8	ExPASy/EC number
+S000003796	YJR035W	RAD26	RADiation sensitive	DNA-dependent ATPase RAD26	3.6.4.12	ExPASy/EC number
+S000003797	YJR036C	HUL4	Hect Ubiquitin Ligase	putative E3 ubiquitin-protein ligase HUL4	2.3.2.26	ExPASy/EC number
+S000003806	YJR045C	SSC1	Stress-Seventy subfamily C	ENS1|Hsp70 family ATPase SSC1|mtHSP70	3.6.4.10	ExPASy/EC number
+S000003810	YJR049C	UTR1	Unidentified TRanscript	NADH/NAD(+) kinase	2.7.1.23	ExPASy/EC number
+S000003812	YJR051W	OSM1	OSMotic sensitivity	FRDS2|fumarate reductase	1.3.1.6	ExPASy/EC number
+S000003818	YJR057W	CDC8	Cell Division Cycle	bifunctional thymidylate/uridylate kinase	2.7.4.9	ExPASy/EC number
+S000003820	YJR059W	PTK2	Putative serine/Threonine protein Kinase	protein kinase PTK2|STK2	2.7.11.1	ExPASy/EC number
+S000003827	YJR066W	TOR1	Target Of Rapamycin	DRR1|phosphatidylinositol kinase-related protein kinase TOR1	2.7.11.1	ExPASy/EC number
+S000003830	YJR069C	HAM1	6-n-HydroxylAMinopurine sensitive	nucleoside triphosphate pyrophosphohydrolase HAM1	3.6.1.9	ExPASy/EC number
+S000003831	YJR070C	LIA1	Ligand of eIF5A	deoxyhypusine monooxygenase|MMD1	1.14.99.29	ExPASy/EC number
+S000003834	YJR073C	OPI3	OverProducer of Inositol	bifunctional phosphatidyl-N-methylethanolamine N-methyltransferase/phosphatidyl-N-dimethylethanolamine N-methyltransferase|PEM2	2.1.1.17	ExPASy/EC number
+S000003834	YJR073C	OPI3	OverProducer of Inositol	bifunctional phosphatidyl-N-methylethanolamine N-methyltransferase/phosphatidyl-N-dimethylethanolamine N-methyltransferase|PEM2	2.1.1.71	ExPASy/EC number
+S000003839	YJR078W	BNA2	Biosynthesis of Nicotinic Acid	dioxygenase BNA2	1.13.11.52	ExPASy/EC number
+S000003860	YJR099W	YUH1	Yeast Ubiquitin Hydrolase	ubiquitin-specific protease YUH1	3.4.19.12	ExPASy/EC number
+S000003864	YJR103W	URA8	URAcil requiring	CTP synthase URA8	6.3.4.2	ExPASy/EC number
+S000003865	YJR104C	SOD1	SuperOxide Dismutase	CRS4|superoxide dismutase SOD1	1.15.1.1	ExPASy/EC number
+S000003866	YJR105W	ADO1	ADenOsine kinase	adenosine kinase	2.7.1.20	ExPASy/EC number
+S000003868	YJR107W	LIH1	LIpase Homolog	putative lipase	3.1.1.3	ExPASy/EC number
+S000003870	YJR109C	CPA2	Carbamyl Phosphate synthetase A	carbamoyl-phosphate synthase (glutamine-hydrolyzing) CPA2	6.3.5.5	ExPASy/EC number
+S000003871	YJR110W	YMR1	Yeast Myotubularin Related	phosphatidylinositol-3-phosphatase YMR1	3.1.3.64	ExPASy/EC number
+S000003878	YJR117W	STE24	STErile	AFC1|PIO2|zinc metalloprotease	3.4.24.84	ExPASy/EC number
+S000003880	YJR119C	JHD2	JmjC domain-containing Histone Demethylase	histone demethylase|KDM5	1.14.11.67	ExPASy/EC number
+S000003882	YJR121W	ATP2	ATP synthase	F1F0 ATP synthase subunit beta	7.1.2.2	ExPASy/EC number
+S000003891	YJR130C	STR2	Sulfur TRansfer	cystathionine gamma-synthase	2.5.1.48	ExPASy/EC number
+S000003892	YJR131W	MNS1	""	mannosyl-oligosaccharide 1,2-alpha-mannosidase	3.2.1.113	ExPASy/EC number
+S000003898	YJR137C	MET5	METhionine requiring	ECM17|sulfite reductase (NADPH) subunit beta	1.8.1.2	ExPASy/EC number
+S000003900	YJR139C	HOM6	HOMoserine requiring	homoserine dehydrogenase|THR6	1.1.1.3	ExPASy/EC number
+S000003904	YJR143C	PMT4	Protein O-MannosylTransferase	dolichyl-phosphate-mannose-protein mannosyltransferase	2.4.1.109	ExPASy/EC number
+S000003909	YJR148W	BAT2	Branched-chain Amino acid Transaminase	branched-chain-amino-acid transaminase BAT2|ECA40|TWT2	2.6.1.42	ExPASy/EC number
+S000003910	YJR149W	""	""	putative nitronate monooxygenase	1.13.12.16	ExPASy/EC number
+S000003914	YJR153W	PGU1	PolyGalactUronase	endo-polygalacturonase|PGL1|PSM1	3.2.1.15	ExPASy/EC number
+S000003920	YJR159W	SOR1	""	L-iditol 2-dehydrogenase SOR1|SDH1	1.1.1.9	ExPASy/EC number
+S000003924	YLL001W	DNM1	DyNaMin-related	dynamin-related GTPase DNM1	3.6.5.5	ExPASy/EC number
+S000003925	YLL002W	RTT109	Regulator of Ty1 Transposition	H3 histone acetyltransferase RTT109|KAT11|KIM2|REM50	2.3.1.48	ExPASy/EC number
+S000003931	YLL008W	DRS1	Deficiency of Ribosomal Subunits	putative ATP-dependent RNA helicase	3.6.4.13	ExPASy/EC number
+S000003935	YLL012W	YEH1	Yeast steryl Ester Hydrolase	sterol esterase	3.1.1.13	ExPASy/EC number
+S000003941	YLL018C	DPS1	""	aspartate--tRNA ligase DPS1|AspRS	6.1.1.12	ExPASy/EC number
+S000003942	YLL019C	KNS1	Kinase Next to SPA2	L124|serine/threonine protein kinase KNS1	2.7.12.1	ExPASy/EC number
+S000003952	YLL029W	FRA1	Fe Repressor of Activation	aminopeptidase P|RUP2	3.4.11.9	ExPASy/EC number
+S000003959	YLL036C	PRP19	Pre-RNA Processing	E3 ubiquitin-protein ligase PRP19|PSO4	2.3.2.27	ExPASy/EC number
+S000003964	YLL041C	SDH2	Succinate DeHydrogenase	ACN17|SDHB|succinate dehydrogenase iron-sulfur protein subunit SDH2	1.3.5.1	ExPASy/EC number
+S000003974	YLL051C	FRE6	Ferric REductase	putative ferric-chelate reductase	1.16.1.9	ExPASy/EC number
+S000003981	YLL058W	""	""	cystathionine gamma-synthase	2.5.1.48	ExPASy/EC number
+S000003983	YLL060C	GTT2	GlutaThione Transferase	glutathione transferase GTT2	2.5.1.18	ExPASy/EC number
+S000003985	YLL062C	MHT1	S-Methylmethionine-Homocysteine methylTransferase	S-adenosylmethionine-homocysteine S-methyltransferase MHT1	2.1.1.10	ExPASy/EC number
+S000003989	YLL066C	""	""	Y' element ATP-dependent helicase	3.6.4.12	ExPASy/EC number
+S000003990	YLL067C	""	""	Y' element ATP-dependent helicase	3.6.4.12	ExPASy/EC number
+S000003997	YLR007W	NSE1	Non-SMC Element	Smc5-Smc6 complex subunit NSE1	2.3.2.27	ExPASy/EC number
+S000004001	YLR011W	LOT6	LOw Temperature-responsive	flavin-dependent quinone reductase	1.5.1.39	ExPASy/EC number
+S000004007	YLR017W	MEU1	Multicopy Enhancer of UAS2	S-methyl-5-thioadenosine phosphorylase	2.4.2.28	ExPASy/EC number
+S000004010	YLR020C	YEH2	Yeast steryl Ester Hydrolase	sterol esterase	3.1.1.13	ExPASy/EC number
+S000004014	YLR024C	UBR2	""	putative ubiquitin-protein ligase UBR2	2.3.2.27	ExPASy/EC number
+S000004017	YLR027C	AAT2	Aspartate AminoTransferase	ASP5|aspartate transaminase AAT2	2.6.1.1	ExPASy/EC number
+S000004018	YLR028C	ADE16	ADEnine	bifunctional phosphoribosylaminoimidazolecarboxamide formyltransferase/IMP cyclohydrolase ADE16	2.1.2.3	ExPASy/EC number
+S000004018	YLR028C	ADE16	ADEnine	bifunctional phosphoribosylaminoimidazolecarboxamide formyltransferase/IMP cyclohydrolase ADE16	3.5.4.10	ExPASy/EC number
+S000004034	YLR044C	PDC1	Pyruvate DeCarboxylase	indolepyruvate decarboxylase 1	4.1.1.43	ExPASy/EC number
+S000004034	YLR044C	PDC1	Pyruvate DeCarboxylase	indolepyruvate decarboxylase 1	4.1.1.72	ExPASy/EC number
+S000004034	YLR044C	PDC1	Pyruvate DeCarboxylase	indolepyruvate decarboxylase 1	4.1.1.74	ExPASy/EC number
+S000004037	YLR047C	FRE8	""	putative ferric-chelate reductase	1.16.1.7	ExPASy/EC number
+S000004046	YLR056W	ERG3	ERGosterol biosynthesis	C-5 sterol desaturase|PSO6|SYR1	1.14.19.20	ExPASy/EC number
+S000004048	YLR058C	SHM2	Serine HydroxyMethyltransferase	glycine hydroxymethyltransferase SHM2|SHMT2	2.1.2.1	ExPASy/EC number
+S000004050	YLR060W	FRS1	phenylalanyl (F)-tRNA Synthetase	phenylalanine--tRNA ligase subunit beta	6.1.1.20	ExPASy/EC number
+S000004053	YLR063W	BMT6	Base Methyltransferase of Twenty five S rRNA 6	25S rRNA (uracil2843-N3)-methyltransferase	2.1.1.312	ExPASy/EC number
+S000004060	YLR070C	XYL2	""	D-xylulose reductase XYL2	1.1.1.9	ExPASy/EC number
+S000004079	YLR089C	ALT1	ALanine Transaminase	alanine transaminase ALT1	2.6.1.2	ExPASy/EC number
+S000004086	YLR096W	KIN2	KINase	serine/threonine protein kinase KIN2	2.7.11.1	ExPASy/EC number
+S000004089	YLR099C	ICT1	Increased Copper Tolerance	lysophosphatidic acid acyltransferase ICT1	2.3.1.51	ExPASy/EC number
+S000004090	YLR100W	ERG27	ERGosterol biosynthesis	3-keto-steroid reductase	1.1.1.270	ExPASy/EC number
+S000004095	YLR105C	SEN2	Splicing ENdonuclease	tRNA splicing endonuclease subunit SEN2	4.6.1.16	ExPASy/EC number
+S000004099	YLR109W	AHP1	Alkyl HydroPeroxide reductase	cTPxIII|thioredoxin peroxidase AHP1	1.11.1.24	ExPASy/EC number
+S000004103	YLR113W	HOG1	High Osmolarity Glycerol response	mitogen-activated protein kinase HOG1|SSK3	2.7.11.24	ExPASy/EC number
+S000004110	YLR120C	YPS1	YaPSin	aspartyl protease|YAP3	3.4.23.41	ExPASy/EC number
+S000004123	YLR133W	CKI1	Choline KInase	bifunctional choline kinase/ethanolamine kinase CKI1	2.7.1.32	ExPASy/EC number
+S000004124	YLR134W	PDC5	Pyruvate DeCarboxylase	indolepyruvate decarboxylase 5	4.1.1.43	ExPASy/EC number
+S000004124	YLR134W	PDC5	Pyruvate DeCarboxylase	indolepyruvate decarboxylase 5	4.1.1.72	ExPASy/EC number
+S000004124	YLR134W	PDC5	Pyruvate DeCarboxylase	indolepyruvate decarboxylase 5	4.1.1.74	ExPASy/EC number
+S000004132	YLR142W	PUT1	Proline UTilization	proline dehydrogenase	1.5.5.2	ExPASy/EC number
+S000004133	YLR143W	DPH6	DiPHthamide biosynthesis	diphthine--ammonia ligase	6.3.1.14	ExPASy/EC number
+S000004134	YLR144C	ACF2	Assembly Complementing Factor	endo-1,3(4)-beta-glucanase|ENG2|PCA1	3.2.1.6	ExPASy/EC number
+S000004136	YLR146C	SPE4	SPErmidine auxotroph	spermine synthase	2.5.1.22	ExPASy/EC number
+S000004141	YLR151C	PCD1	Peroxisomal Coenzyme A Diphosphatase	8-oxo-dGTP diphosphatase	3.6.1.55	ExPASy/EC number
+S000004143	YLR153C	ACS2	Acetyl CoA Synthetase	acetate--CoA ligase ACS2	6.2.1.1	ExPASy/EC number
+S000004145	YLR155C	ASP3-1	ASParaginase	ASP3|asparaginase ASP3-1	3.5.1.1	ExPASy/EC number
+S000004147	YLR157C	ASP3-2	ASParaginase	ASP3|asparaginase ASP3-2	3.5.1.1	ExPASy/EC number
+S000004148	YLR158C	ASP3-3	ASParaginase	ASP3|asparaginase ASP3-3	3.5.1.1	ExPASy/EC number
+S000004150	YLR160C	ASP3-4	ASParaginase	ASP3|asparaginase ASP3-4	3.5.1.1	ExPASy/EC number
+S000004153	YLR163C	MAS1	Mitochondrial ASsembly	MIF1|mitochondrial processing peptidase	3.4.24.64	ExPASy/EC number
+S000004155	YLR165C	PUS5	PseudoUridine Synthase	pseudouridine synthase PUS5	5.4.99.43	ExPASy/EC number
+S000004162	YLR172C	DPH5	DiPHthamide	diphthine synthase	2.1.1.314	ExPASy/EC number
+S000004164	YLR174W	IDP2	Isocitrate Dehydrogenase, NADP-specific	isocitrate dehydrogenase (NADP(+)) IDP2	1.1.1.42	ExPASy/EC number
+S000004170	YLR180W	SAM1	S-AdenosylMethionine requiring	ETH10|methionine adenosyltransferase SAM1	2.5.1.6	ExPASy/EC number
+S000004176	YLR186W	EMG1	Essential for Mitotic Growth	18S rRNA pseudouridine methyltransferase|NEP1	2.1.1.260	ExPASy/EC number
+S000004179	YLR189C	ATG26	AuTophaGy related	sterol 3-beta-glucosyltransferase|UGT51	2.4.1.173	ExPASy/EC number
+S000004185	YLR195C	NMT1	N-Myristoyl Transferase	CDC72|glycylpeptide N-tetradecanoyltransferase NMT1	2.3.1.97	ExPASy/EC number
+S000004199	YLR209C	PNP1	purine nucleoside phosphorylase	purine-nucleoside phosphorylase	2.4.2.1	ExPASy/EC number
+S000004204	YLR214W	FRE1	Ferric REductase	ferric/cupric-chelate reductase	1.16.1.9	ExPASy/EC number
+S000004206	YLR216C	CPR6	Cyclosporin-sensitive Proline Rotamase	CYP40|peptidylprolyl isomerase CPR6	5.2.1.8	ExPASy/EC number
+S000004221	YLR231C	BNA5	Biosynthesis of Nicotinic Acid	kynureninase	3.7.1.3	ExPASy/EC number
+S000004224	YLR234W	TOP3	TOPoisomerase	DNA topoisomerase 3|EDR1	5.6.2.1	ExPASy/EC number
+S000004229	YLR239C	LIP2	LIPoyl ligase	lipoyl(octanoyl) transferase LIP2	2.3.1.181	ExPASy/EC number
+S000004230	YLR240W	VPS34	Vacuolar Protein Sorting	END12|PEP15|phosphatidylinositol 3-kinase VPS34|STT8|VPL7|VPS7|VPT29	2.7.1.137	ExPASy/EC number
+S000004234	YLR244C	MAP1	Methionine AminoPeptidase	methionine aminopeptidase MAP1	3.4.11.18	ExPASy/EC number
+S000004235	YLR245C	CDD1	CytiDine Deaminase	cytidine deaminase	3.5.4.5	ExPASy/EC number
+S000004236	YLR246W	ERF2	Effect on Ras Function	palmitoyltransferase ERF2	2.3.1.225	ExPASy/EC number
+S000004238	YLR248W	RCK2	Radiation sensitivity Complementing Kinase	CLK1|CMK3|serine/threonine protein kinase RCK2	2.7.11.1	ExPASy/EC number
+S000004248	YLR258W	GSY2	Glycogen SYnthase	glycogen (starch) synthase GSY2	2.4.1.11	ExPASy/EC number
+S000004250	YLR260W	LCB5	Long-Chain Base	sphinganine kinase LCB5	2.7.1.91	ExPASy/EC number
+S000004260	YLR270W	DCS1	DeCapping Scavenger	5'-(N(7)-methyl 5'-triphosphoguanosine)-(mRNA) diphosphatase|DcpS	3.6.1.59	ExPASy/EC number
+S000004264	YLR274W	MCM5	MiniChromosome Maintenance	BOB1|CDC46|MCM DNA helicase complex subunit MCM5	3.6.4.12	ExPASy/EC number
+S000004266	YLR276C	DBP9	Dead Box Protein	ATP-dependent DNA/RNA helicase	3.6.4.13	ExPASy/EC number
+S000004274	YLR284C	ECI1	Enoyl-CoA Isomerase	dodecenoyl-CoA isomerase	5.3.3.8	ExPASy/EC number
+S000004276	YLR286C	CTS1	ChiTinaSe	chitinase|SCW2	3.2.1.14	ExPASy/EC number
+S000004290	YLR299W	ECM38	ExtraCellular Mutant	CIS2|gamma-glutamyltransferase	2.3.2.2	ExPASy/EC number
+S000004290	YLR299W	ECM38	ExtraCellular Mutant	CIS2|gamma-glutamyltransferase	3.4.19.13	ExPASy/EC number
+S000004291	YLR300W	EXG1	EXo-1,3-beta-Glucanase	BGL1|glucan 1,3-beta-glucosidase|SCW6	3.2.1.58	ExPASy/EC number
+S000004294	YLR303W	MET17	METhionine requiring	bifunctional cysteine synthase/O-acetylhomoserine aminocarboxypropyltransferase MET17|MET15|MET25	2.5.1.47	ExPASy/EC number
+S000004294	YLR303W	MET17	METhionine requiring	bifunctional cysteine synthase/O-acetylhomoserine aminocarboxypropyltransferase MET17|MET15|MET25	2.5.1.49	ExPASy/EC number
+S000004295	YLR304C	ACO1	ACOnitase	aconitate hydratase ACO1|GLU1	4.2.1.3	ExPASy/EC number
+S000004296	YLR305C	STT4	STaurosporine and Temperature sensitive	1-phosphatidylinositol 4-kinase STT4	2.7.1.67	ExPASy/EC number
+S000004297	YLR306W	UBC12	UBiquitin-Conjugating	NEDD8-conjugating protein UBC12	2.3.2.34	ExPASy/EC number
+S000004298	YLR307W	CDA1	Chitin DeAcetylase	chitin deacetylase CDA1	3.5.1.41	ExPASy/EC number
+S000004299	YLR308W	CDA2	Chitin DeAcetylase	chitin deacetylase CDA2	3.5.1.41	ExPASy/EC number
+S000004310	YLR318W	EST2	Ever Shorter Telomeres	telomerase reverse transcriptase|TERT	2.7.7.49	ExPASy/EC number
+S000004320	YLR328W	NMA1	Nicotinamide Mononucleotide Adenylyltransferase	nicotinamide-nucleotide adenylyltransferase NMA1	2.7.7.1	ExPASy/EC number
+S000004320	YLR328W	NMA1	Nicotinamide Mononucleotide Adenylyltransferase	nicotinamide-nucleotide adenylyltransferase NMA1	2.7.7.18	ExPASy/EC number
+S000004334	YLR342W	FKS1	FK506 Sensitivity	1,3-beta-D-glucan synthase|CND1|CWH53|ETG1|GSC1|PBR1	2.4.1.34	ExPASy/EC number
+S000004337	YLR345W	""	""	bifunctional fructose-2,6-bisphosphate 2-phosphatase/6-phosphofructo-2-kinase	2.7.1.105	ExPASy/EC number
+S000004337	YLR345W	""	""	bifunctional fructose-2,6-bisphosphate 2-phosphatase/6-phosphofructo-2-kinase	3.1.3.46	ExPASy/EC number
+S000004343	YLR351C	NIT3	NITrilase superfamily	putative hydrolase	3.5.1.3	ExPASy/EC number
+S000004346	YLR354C	TAL1	TransALdolase	sedoheptulose-7-phosphate:D-glyceraldehyde-3-phosphate transaldolase TAL1	2.2.1.2	ExPASy/EC number
+S000004347	YLR355C	ILV5	IsoLeucine-plus-Valine requiring	ketol-acid reductoisomerase	1.1.1.86	ExPASy/EC number
+S000004351	YLR359W	ADE13	ADEnine requiring	adenylosuccinase ADE13|BRA1|BRA8	4.3.2.2	ExPASy/EC number
+S000004354	YLR362W	STE11	STErile	mitogen-activated protein kinase kinase kinase STE11	2.7.11.25	ExPASy/EC number
+S000004361	YLR369W	SSQ1	Stress-Seventy subfamily Q	Hsp70 family ATPase SSQ1|SSC2|SSH1	3.6.4.10	ExPASy/EC number
+S000004364	YLR372W	ELO3	fatty acid ELOngation	APA1|fatty acid elongase ELO3|SRE1|SUR4|VBM1	2.3.1.199	ExPASy/EC number
+S000004369	YLR377C	FBP1	Fructose-1,6-BisPhosphatase	ACN8|fructose 1,6-bisphosphate 1-phosphatase	3.1.3.11	ExPASy/EC number
+S000004374	YLR382C	NAM2	Nuclear Accommodation of Mitochondria	leucine--tRNA ligase NAM2|LeuRS|MSL1	6.1.1.4	ExPASy/EC number
+S000004389	YLR397C	AFG2	ATPase Family Gene	AAA family ATPase AFG2|DRG1	3.6.4.10	ExPASy/EC number
+S000004390	YLR398C	SKI2	SuperKIller	SKI complex RNA helicase subunit SKI2	3.6.4.13	ExPASy/EC number
+S000004393	YLR401C	DUS3	DihydroUridine Synthase	tRNA dihydrouridine synthase DUS3	1.3.1.89	ExPASy/EC number
+S000004397	YLR405W	DUS4	DihydroUridine Synthase	tRNA dihydrouridine synthase	1.3.1.90	ExPASy/EC number
+S000004402	YLR410W	VIP1	""	inositol polyphosphate kinase VIP1	2.7.4.21	ExPASy/EC number
+S000004402	YLR410W	VIP1	""	inositol polyphosphate kinase VIP1	2.7.4.24	ExPASy/EC number
+S000004411	YLR419W	""	""	putative helicase	3.6.4.13	ExPASy/EC number
+S000004412	YLR420W	URA4	URAcil requiring	dihydroorotase	3.5.2.3	ExPASy/EC number
+S000004424	YLR432W	IMD3	IMP Dehydrogenase	IMP dehydrogenase IMD3	1.1.1.205	ExPASy/EC number
+S000004425	YLR433C	CNA1	CalciNeurin A	calcineurin catalytic subunit A|CMP1	3.1.3.16	ExPASy/EC number
+S000004430	YLR438W	CAR2	Catabolism of ARginine	cargB|ornithine-oxo-acid transaminase	2.6.1.13	ExPASy/EC number
+S000004438	YLR446W	""	""	hexokinase	2.7.1.1	ExPASy/EC number
+S000004441	YLR449W	FPR4	FKBP Proline Rotamase (isomerase)	peptidylprolyl isomerase FPR4	5.2.1.8	ExPASy/EC number
+S000004442	YLR450W	HMG2	3-Hydroxy-3-MethylGlutaryl-coenzyme a reductase	hydroxymethylglutaryl-CoA reductase (NADPH) HMG2	1.1.1.34	ExPASy/EC number
+S000004458	YLR466W	YRF1-4	""	Y' element ATP-dependent helicase protein 1 copy 4|YRF1	3.6.4.12	ExPASy/EC number
+S000004459	YLR467W	YRF1-5	""	Y' element ATP-dependent helicase protein 1 copy 5|YRF1	3.6.4.12	ExPASy/EC number
+S000004463	YML004C	GLO1	GLyOxalase	lactoylglutathione lyase GLO1	4.4.1.5	ExPASy/EC number
+S000004464	YML005W	TRM12	TRna Methyltransferase	tRNA(Phe) (4-demethylwyosine(37)-C(7)) aminocarboxypropyltransferase|TYW2	2.5.1.114	ExPASy/EC number
+S000004467	YML008C	ERG6	ERGosterol biosynthesis	ISE1|LIS1|SED6|sterol 24-C-methyltransferase|VID1	2.1.1.41	ExPASy/EC number
+S000004476	YML014W	TRM9	TRna Methyltransferase	KTI1|tRNA (carboxymethyluridine(34)-5-O)-methyltransferase	2.1.1.229	ExPASy/EC number
+S000004478	YML016C	PPZ1	Protein Phosphatase Z	salt homeostasis regulator	3.1.3.16	ExPASy/EC number
+S000004483	YML021C	UNG1	Uracil DNA N-Glycosylase	uracil-DNA glycosylase	3.2.2.27	ExPASy/EC number
+S000004484	YML022W	APT1	Adenine PhosphoribosylTransferase	adenine phosphoribosyltransferase APT1	2.4.2.7	ExPASy/EC number
+S000004490	YML028W	TSA1	Thiol-Specific Antioxidant	cTPxI|thioredoxin peroxidase TSA1|TPX1|ZRG14	1.11.1.24	ExPASy/EC number
+S000004498	YML035C	AMD1	AMP Deaminase	AMD3|AMP deaminase	3.5.4.6	ExPASy/EC number
+S000004506	YML042W	CAT2	Carnitine AcetylTransferase	carnitine O-acetyltransferase CAT2|YCAT	2.3.1.7	ExPASy/EC number
+S000004518	YML054C	CYB2	CYtochrome B	FCB2|L-lactate dehydrogenase (cytochrome)	1.1.2.3	ExPASy/EC number
+S000004520	YML056C	IMD4	IMP Dehydrogenase	IMP dehydrogenase IMD4	1.1.1.205	ExPASy/EC number
+S000004521	YML057W	CMP2	CalModulin binding Protein	calcineurin catalytic subunit A|CNA2	3.1.3.16	ExPASy/EC number
+S000004524	YML059C	NTE1	Neuropathy Target Esterase	lysophospholipase	3.1.1.5	ExPASy/EC number
+S000004525	YML060W	OGG1	8-OxoGuanine Glycosylase/lyase	8-oxoguanine glycosylase OGG1	4.2.99.18	ExPASy/EC number
+S000004526	YML061C	PIF1	Petite Integration Frequency	DNA helicase PIF1|TST1	3.6.4.12	ExPASy/EC number
+S000004533	YML068W	ITT1	Inhibitor of Translation Termination	RBR-type E3 ubiquitin transferase	2.3.2.31	ExPASy/EC number
+S000004535	YML070W	DAK1	DihydroxyAcetone Kinase	dihydroxyacetone kinase	2.7.1.28	ExPASy/EC number
+S000004535	YML070W	DAK1	DihydroxyAcetone Kinase	dihydroxyacetone kinase	2.7.1.29	ExPASy/EC number
+S000004539	YML074C	FPR3	Fk 506-sensitive Proline Rotamase	NPI46|peptidylprolyl isomerase FPR3	5.2.1.8	ExPASy/EC number
+S000004540	YML075C	HMG1	3-Hydroxy-3-MethylGlutaryl-coenzyme a reductase	hydroxymethylglutaryl-CoA reductase (NADPH) HMG1	1.1.1.34	ExPASy/EC number
+S000004543	YML078W	CPR3	Cyclosporin A-sensitive Proline Rotamase	CYP3|peptidylprolyl isomerase CPR3	5.2.1.8	ExPASy/EC number
+S000004545	YML080W	DUS1	DihydroUridine Synthase	tRNA dihydrouridine synthase	1.3.1.88	ExPASy/EC number
+S000004547	YML082W	""	""	putative cystathionine gamma-synthase	2.5.1.48	ExPASy/EC number
+S000004551	YML086C	ALO1	D-Arabinono-1,4-Lactone Oxidase	D-arabinono-1,4-lactone oxidase	1.1.3.37	ExPASy/EC number
+S000004556	YML091C	RPM2	RNase P Mitochondrial	ribonuclease P	3.1.26.5	ExPASy/EC number
+S000004574	YML106W	URA5	URAcil requiring	orotate phosphoribosyltransferase URA5|PYR5	2.4.2.10	ExPASy/EC number
+S000004578	YML110C	COQ5	COenzyme Q	2-hexaprenyl-6-methoxy-1,4-benzoquinone methyltransferase|DBI56	2.1.1.201	ExPASy/EC number
+S000004589	YML120C	NDI1	NADH Dehydrogenase Internal	NADH-ubiquinone reductase (H(+)-translocating) NDI1	1.6.5.9	ExPASy/EC number
+S000004594	YML125C	PGA3	Processing of Gas1p and ALP	cytochrome-b5 reductase|NQR1	1.6.2.2	ExPASy/EC number
+S000004595	YML126C	ERG13	ERGosterol biosynthesis	HMGS|hydroxymethylglutaryl-CoA synthase	2.3.3.10	ExPASy/EC number
+S000004602	YML133C	""	""	Y' element ATP-dependent helicase	3.6.4.12	ExPASy/EC number
+S000004603	YMR001C	CDC5	Cell Division Cycle	MSD2|PKX2|polo kinase CDC5	2.7.11.21	ExPASy/EC number
+S000004608	YMR006C	PLB2	PhosphoLipase B	lysophospholipase	3.1.1.5	ExPASy/EC number
+S000004610	YMR008C	PLB1	PhosphoLipase B	lysophospholipase	3.1.1.5	ExPASy/EC number
+S000004611	YMR009W	ADI1	Acireductone DIoxygenase	acireductone dioxygenase (Ni2+-requiring)	1.13.11.54	ExPASy/EC number
+S000004615	YMR013C	SEC59	SECretory	dolichol kinase	2.7.1.108	ExPASy/EC number
+S000004617	YMR015C	ERG5	ERGosterol biosynthesis	C-22 sterol desaturase|CYP61	1.14.19.41	ExPASy/EC number
+S000004622	YMR020W	FMS1	Fenpropimorph-resistance Multicopy Suppressor	polyamine oxidase	1.5.3.17	ExPASy/EC number
+S000004624	YMR022W	UBC7	UBiquitin-Conjugating enzyme	DER2|E2 ubiquitin-conjugating protein UBC7|QRI8	2.3.2.23	ExPASy/EC number
+S000004639	YMR036C	MIH1	Mitotic Inducer Homolog	putative tyrosine protein phosphatase MIH1	3.1.3.48	ExPASy/EC number
+S000004644	YMR041C	ARA2	ARAbinose	D-arabinose 1-dehydrogenase (NAD(P)(+)) ARA2	1.1.1.116	ExPASy/EC number
+S000004666	YMR062C	ARG7	ARGinine requiring	ECM40|glutamate N-acetyltransferase	2.3.1.1	ExPASy/EC number
+S000004666	YMR062C	ARG7	ARGinine requiring	ECM40|glutamate N-acetyltransferase	2.3.1.35	ExPASy/EC number
+S000004673	YMR069W	NAT4	N-AcetylTransferase	NAA40|N-terminal L-serine N(alpha)-acetyltransferase NatD	2.3.1.257	ExPASy/EC number
+S000004688	YMR083W	ADH3	Alcohol DeHydrogenase	alcohol dehydrogenase ADH3	1.1.1.1	ExPASy/EC number
+S000004689	YMR084W	""	""	putative glutamine--fructose-6-phosphate transaminase	2.6.1.16	ExPASy/EC number
+S000004693	YMR087W	PDL32	Protein of Dual Localization of 32 kDa	putative ADP-ribose 1''-phosphate phosphatase|XRR1	3.1.3.84	ExPASy/EC number
+S000004701	YMR095C	SNO1	SNZ proximal Open reading frame	putative pyridoxal 5'-phosphate synthase	3.5.1.2	ExPASy/EC number
+S000004701	YMR095C	SNO1	SNZ proximal Open reading frame	putative pyridoxal 5'-phosphate synthase	4.3.3.6	ExPASy/EC number
+S000004702	YMR096W	SNZ1	SNooZe	pyridoxine biosynthesis protein SNZ1	4.3.3.6	ExPASy/EC number
+S000004705	YMR099C	""	""	glucose-6-phosphate 1-epimerase	5.1.3.15	ExPASy/EC number
+S000004707	YMR101C	SRT1	Suppressor of Rer-Two	ditrans,polycis-polyprenyl diphosphate synthase	2.5.1.87	ExPASy/EC number
+S000004710	YMR104C	YPK2	Yeast Protein Kinase	putative protein kinase YPK2|YKR2	2.7.11.1	ExPASy/EC number
+S000004711	YMR105C	PGM2	PhosphoGlucoMutase	GAL5|phosphoglucomutase PGM2	5.4.2.2	ExPASy/EC number
+S000004712	YMR106C	YKU80	Yeast KU protein	ATP-dependent DNA helicase YKU80|HDF2	3.6.4.12	ExPASy/EC number
+S000004714	YMR108W	ILV2	IsoLeucine-plus-Valine requiring	acetolactate synthase catalytic subunit|SMR1|THI1	2.2.1.6	ExPASy/EC number
+S000004716	YMR110C	HFD1	Homolog of Fatty aldehyde Dehydrogenase	hexadecenal dehydrogenase	1.2.1.3	ExPASy/EC number
+S000004719	YMR113W	FOL3	FOLic acid synthesis	dihydrofolate synthase	6.3.2.12	ExPASy/EC number
+S000004727	YMR120C	ADE17	ADEnine	bifunctional phosphoribosylaminoimidazolecarboxamide formyltransferase/IMP cyclohydrolase ADE17	2.1.2.3	ExPASy/EC number
+S000004727	YMR120C	ADE17	ADEnine	bifunctional phosphoribosylaminoimidazolecarboxamide formyltransferase/IMP cyclohydrolase ADE17	3.5.4.10	ExPASy/EC number
+S000004734	YMR127C	SAS2	Something About Silencing	histone acetyltransferase|KAT8	2.3.1.48	ExPASy/EC number
+S000004735	YMR128W	ECM16	ExtraCellular Mutant	ATP-dependent RNA helicase ECM16|DHR1	3.6.4.13	ExPASy/EC number
+S000004747	YMR139W	RIM11	Regulator of IME2	GSK3|MDS1|serine/threonine protein kinase RIM11	2.7.11.1	ExPASy/EC number
+S000004753	YMR145C	NDE1	NADH Dehydrogenase, External	NADH-ubiquinone reductase (H(+)-translocating) NDE1|NDH1	1.6.5.9	ExPASy/EC number
+S000004765	YMR156C	TPP1	Three Prime Phosphatase	polynucleotide 3'-phosphatase	3.1.3.32	ExPASy/EC number
+S000004772	YMR162C	DNF3	Drs2 Neo1 Family	aminophospholipid-translocating P4-type ATPase DNF3	7.6.2.1	ExPASy/EC number
+S000004775	YMR165C	PAH1	Phosphatidic Acid phosphoHydrolase	phosphatidate phosphatase PAH1|SMP2	3.1.3.4	ExPASy/EC number
+S000004779	YMR169C	ALD3	ALdehyde Dehydrogenase	aldehyde dehydrogenase (NAD(+)) ALD3	1.2.1.3	ExPASy/EC number
+S000004780	YMR170C	ALD2	ALdehyde Dehydrogenase	aldehyde dehydrogenase (NAD(+)) ALD2	1.2.1.3	ExPASy/EC number
+S000004792	YMR180C	CTL1	Capping enzyme mRNA Triphosphatase-Like	CTH1|polynucleotide 5'-phosphatase	3.1.3.33	ExPASy/EC number
+S000004801	YMR189W	GCV2	GlyCine cleaVage	glycine decarboxylase subunit P|GSD2	1.4.4.2	ExPASy/EC number
+S000004802	YMR190C	SGS1	Slow Growth Suppressor	ATP-dependent DNA helicase SGS1	3.6.4.12	ExPASy/EC number
+S000004818	YMR205C	PFK2	PhosphoFructoKinase	6-phosphofructokinase subunit beta	2.7.1.11	ExPASy/EC number
+S000004820	YMR207C	HFA1	""	acetyl-CoA carboxylase HFA1	6.3.4.14	ExPASy/EC number
+S000004820	YMR207C	HFA1	""	acetyl-CoA carboxylase HFA1	6.4.1.2	ExPASy/EC number
+S000004821	YMR208W	ERG12	ERGosterol biosynthesis	mevalonate kinase|RAR1	2.7.1.36	ExPASy/EC number
+S000004829	YMR216C	SKY1	SRPK1-like Kinase in Yeast	serine/threonine protein kinase SKY1	2.7.11.1	ExPASy/EC number
+S000004830	YMR217W	GUA1	GUanine Auxotroph	GMP synthase (glutamine-hydrolyzing)	6.3.5.2	ExPASy/EC number
+S000004833	YMR220W	ERG8	ERGosterol biosynthesis	phosphomevalonate kinase	2.7.4.2	ExPASy/EC number
+S000004836	YMR223W	UBP8	UBiquitin-specific processing Protease	ubiquitin-specific protease UBP8	3.4.19.12	ExPASy/EC number
+S000004839	YMR226C	""	""	oxidoreductase|TMA29	1.1.1.381	ExPASy/EC number
+S000004844	YMR231W	PEP5	carboxyPEPtidase Y-deficient	END1|tethering complex subunit PEP5|VAM1|VPL9|VPS11|VPT11	2.3.2.27	ExPASy/EC number
+S000004847	YMR234W	RNH1	RNase H	RNA-DNA hybrid ribonuclease	3.1.26.4	ExPASy/EC number
+S000004851	YMR238W	DFG5	Defective for Filamentous Growth	putative mannan endo-1,6-alpha-mannosidase	3.2.1.101	ExPASy/EC number
+S000004852	YMR239C	RNT1	RNase Three	ribonuclease III	3.1.26.3	ExPASy/EC number
+S000004860	YMR246W	FAA4	Fatty Acid Activation	long-chain fatty acid-CoA ligase FAA4	6.2.1.3	ExPASy/EC number
+S000004861	YMR247C	RKR1	RING domain mutant Killed by Rtf1 deletion	LTN1|ubiquitin-protein ligase RKR1	2.3.2.27	ExPASy/EC number
+S000004862	YMR250W	GAD1	GlutAmate Decarboxylase	glutamate decarboxylase GAD1	4.1.1.15	ExPASy/EC number
+S000004863	YMR251W	GTO3	Glutathione Transferase Omega-like	omega-class glutathione transferase	2.5.1.18	ExPASy/EC number
+S000004880	YMR267W	PPA2	PyroPhosphatAse	inorganic diphosphatase PPA2|IPP2	3.6.1.1	ExPASy/EC number
+S000004884	YMR271C	URA10	URAcil requiring	orotate phosphoribosyltransferase URA10	2.4.2.10	ExPASy/EC number
+S000004885	YMR272C	SCS7	Suppressor of Ca2+ Sensitivity	FAH1|fatty acid alpha-hydroxylase	1.14.18.6	ExPASy/EC number
+S000004885	YMR272C	SCS7	Suppressor of Ca2+ Sensitivity	FAH1|fatty acid alpha-hydroxylase	1.14.18.7	ExPASy/EC number
+S000004890	YMR277W	FCP1	tfiiF-associating component of Ctd Phosphatase	protein serine/threonine phosphatase	3.1.3.16	ExPASy/EC number
+S000004891	YMR278W	PRM15	Phospho Ribo Mutase	PGM3|phosphoribomutase PRM15	5.4.2.7	ExPASy/EC number
+S000004894	YMR281W	GPI12	GlycosylPhosphatidylInositol anchor biosynthesis	N-acetylglucosaminylphosphatidylinositol deacetylase	3.5.1.89	ExPASy/EC number
+S000004897	YMR284W	YKU70	Yeast KU protein	ATP-dependent DNA helicase YKU70|HDF1|KU70|NES24	3.6.4.12	ExPASy/EC number
+S000004900	YMR287C	DSS1	Deletion of SUV3 Supressor	exoribonuclease II|MSU1	3.1.13.1	ExPASy/EC number
+S000004902	YMR289W	ABZ2	para-AminoBenZoic acid (PABA) biosynthesis	aminodeoxychorismate lyase ABZ2	4.1.3.38	ExPASy/EC number
+S000004903	YMR290C	HAS1	Helicase Associated with Set1	ATP-dependent RNA helicase HAS1	3.6.4.13	ExPASy/EC number
+S000004905	YMR291W	TDA1	Topoisomerase I Damage Affected	protein kinase TDA1	2.7.11.1	ExPASy/EC number
+S000004907	YMR293C	HER2	Hmg2p ER Remodeling	GEP6|glutamyl-tRNA(Gln) amidotransferase subunit HER2|LRC6|QRS1|RRG6	6.3.5.7	ExPASy/EC number
+S000004911	YMR296C	LCB1	Long-Chain Base	END8|serine C-palmitoyltransferase LCB1|TSC2	2.3.1.50	ExPASy/EC number
+S000004912	YMR297W	PRC1	PRoteinase C	carboxypeptidase C PRC1|CPY|CPY1|LBC1	3.4.16.5	ExPASy/EC number
+S000004915	YMR300C	ADE4	ADEnine requiring	amidophosphoribosyltransferase	2.4.2.14	ExPASy/EC number
+S000004918	YMR303C	ADH2	Alcohol DeHydrogenase	ADR2|alcohol dehydrogenase ADH2	1.1.1.1	ExPASy/EC number
+S000004920	YMR304W	UBP15	UBiquitin-specific Protease	ubiquitin-specific protease UBP15	3.4.19.12	ExPASy/EC number
+S000004923	YMR306W	FKS3	FK506 Sensitivity	putative 1,3-beta-D-glucan synthase	2.4.1.34	ExPASy/EC number
+S000004930	YMR313C	TGL3	TriacylGlycerol Lipase	bifunctional triglyceride lipase/lysophosphatidylethanolamine acyltransferase	3.1.1.3	ExPASy/EC number
+S000004937	YMR318C	ADH6	Alcohol DeHydrogenase	ADHVI|NADP-dependent alcohol dehydrogenase	1.1.1.2	ExPASy/EC number
+S000004941	YMR322C	SNO4	SNZ proximal Open reading frame	glutathione-independent methylglyoxalase family protein|HSP34	4.2.1.130	ExPASy/EC number
+S000004942	YMR323W	ERR3	Enolase-Related Repeat	phosphopyruvate hydratase ERR3	4.2.1.11	ExPASy/EC number
+S000004954	YNL009W	IDP3	Isocitrate Dehydrogenase, NADP-dependent	isocitrate dehydrogenase (NADP(+)) IDP3	1.1.1.42	ExPASy/EC number
+S000004965	YNL020C	ARK1	Actin Regulating Kinase	serine/threonine protein kinase ARK1	2.7.11.1	ExPASy/EC number
+S000004966	YNL021W	HDA1	Histone DeAcetylase	histone deacetylase HDA1	3.5.1.98	ExPASy/EC number
+S000004967	YNL022C	RCM1	""	rRNA (cytosine-C5-)-methyltransferase RCM1	2.1.1.311	ExPASy/EC number
+S000004977	YNL032W	SIW14	Synthetic Interaction with Whi2	OCA3|putative tyrosine protein phosphatase SIW14	3.6.1.52	ExPASy/EC number
+S000004981	YNL036W	NCE103	NonClassical Export	carbonate dehydratase NCE103|NCE3	4.2.1.1	ExPASy/EC number
+S000004982	YNL037C	IDH1	Isocitrate DeHydrogenase	isocitrate dehydrogenase (NAD(+)) IDH1	1.1.1.41	ExPASy/EC number
+S000004983	YNL038W	GPI15	GlycosylPhosphatidylInositol anchor biosynthesis	phosphatidylinositol N-acetylglucosaminyltransferase GPI15	2.4.1.198	ExPASy/EC number
+S000004990	YNL045W	LAP2	Leucine AminoPeptidases	bifunctional aminopeptidase/epoxide hydrolase	3.3.2.10	ExPASy/EC number
+S000004993	YNL048W	ALG11	Asparagine-Linked Glycosylation	alpha-1,2-mannosyltransferase ALG11	2.4.1.131	ExPASy/EC number
+S000004998	YNL053W	MSG5	Multicopy Suppressor of GPA1	tyrosine/serine/threonine protein phosphatase MSG5	3.1.3.48	ExPASy/EC number
+S000005005	YNL061W	NOP2	NucleOlar Protein	rRNA (cytosine-C5-)-methyltransferase NOP2|YNA1	2.1.1.310	ExPASy/EC number
+S000005007	YNL063W	MTQ1	Methyltransferase	S-adenosylmethionine-dependent methyltransferase	2.1.1.297	ExPASy/EC number
+S000005015	YNL071W	LAT1	""	dihydrolipoyllysine-residue acetyltransferase|ODP2|PDA2	2.3.1.12	ExPASy/EC number
+S000005016	YNL072W	RNH201	RNase H	ribonuclease H2 catalytic subunit RNH201|Rnh2A|RNH35	3.1.26.4	ExPASy/EC number
+S000005017	YNL073W	MSK1	Mitochondrial aminoacyl-tRNA Synthetase, lysine (K)	lysine--tRNA ligase MSK1	6.1.1.6	ExPASy/EC number
+S000005032	YNL088W	TOP2	TOPoisomerase	DNA topoisomerase 2|TOR3|TRF3	5.6.2.2	ExPASy/EC number
+S000005036	YNL092W	""	""	S-adenosylmethionine-dependent methyltransferase	2.1.1.22	ExPASy/EC number
+S000005038	YNL094W	APP1	Actin Patch Protein	phosphatidate phosphatase APP1	3.1.3.4	ExPASy/EC number
+S000005042	YNL098C	RAS2	homologous to RAS proto-oncogene	CTN5|CYR3|GLC5|Ras family GTPase RAS2|TSL7	3.6.5.2	ExPASy/EC number
+S000005043	YNL099C	OCA1	Oxidant-induced Cell-cycle Arrest	putative tyrosine protein phosphatase OCA1	3.1.3.48	ExPASy/EC number
+S000005046	YNL102W	POL1	POLymerase	CDC17|CRT5|DNA-directed DNA polymerase alpha catalytic subunit POL1|HPR3	2.7.7.7	ExPASy/EC number
+S000005048	YNL104C	LEU4	LEUcine biosynthesis	2-isopropylmalate synthase LEU4	2.3.3.13	ExPASy/EC number
+S000005050	YNL106C	INP52	INositol polyphosphate 5-Phosphatase	phosphatidylinositol-3-/phosphoinositide 5-phosphatase INP52|SJL2	3.1.3.36	ExPASy/EC number
+S000005056	YNL112W	DBP2	Dead Box Protein	DEAD-box ATP-dependent RNA helicase DBP2	3.6.4.13	ExPASy/EC number
+S000005060	YNL116W	DMA2	Defective in Mitotic Arrest	CHF2|ubiquitin-conjugating protein DMA2	2.3.2.27	ExPASy/EC number
+S000005061	YNL117W	MLS1	MaLate Synthase	malate synthase MLS1	2.3.3.9	ExPASy/EC number
+S000005062	YNL118C	DCP2	mRNA DeCaPping	decapping enzyme complex catalytic subunit|PSU1	3.6.1.62	ExPASy/EC number
+S000005072	YNL128W	TEP1	TEnsin-like Phosphatase	putative phosphatidylinositol-3,4,5-trisphosphate 3-phosphatase	3.1.3.67	ExPASy/EC number
+S000005073	YNL129W	NRK1	Nicotinamide Riboside Kinase	ribosylnicotinamide kinase	2.7.1.173	ExPASy/EC number
+S000005073	YNL129W	NRK1	Nicotinamide Riboside Kinase	ribosylnicotinamide kinase	2.7.1.22	ExPASy/EC number
+S000005074	YNL130C	CPT1	CholinePhosphoTransferase	diacylglycerol cholinephosphotransferase	2.7.8.2	ExPASy/EC number
+S000005079	YNL135C	FPR1	Fk 506-sensitive Proline Rotamase	FKB1|peptidylprolyl isomerase FPR1|RBP1	5.2.1.8	ExPASy/EC number
+S000005085	YNL141W	AAH1	Adenine AminoHydrolase	adenine deaminase	3.5.4.2	ExPASy/EC number
+S000005098	YNL154C	YCK2	Yeast Casein Kinase	serine/threonine protein kinase YCK2	2.7.11.1	ExPASy/EC number
+S000005105	YNL161W	CBK1	Cell wall Biosynthesis Kinase	serine/threonine protein kinase CBK1	2.7.11.1	ExPASy/EC number
+S000005113	YNL169C	PSD1	PhosphatidylSerine Decarboxylase	phosphatidylserine decarboxylase 1	4.1.1.65	ExPASy/EC number
+S000005127	YNL183C	NPR1	Nitrogen Permease Reactivator	serine/threonine protein kinase NPR1	2.7.11.1	ExPASy/EC number
+S000005130	YNL186W	UBP10	UBiquitin-specific Protease	DOT4|ubiquitin-specific protease UBP10	3.4.19.12	ExPASy/EC number
+S000005136	YNL192W	CHS1	CHitin Synthase	chitin synthase CHS1|USA4	2.4.1.16	ExPASy/EC number
+S000005144	YNL200C	NNR1	Nicotinamide Nucleotide Repair	NADHX epimerase	5.1.99.6	ExPASy/EC number
+S000005146	YNL202W	SPS19	SPorulation-Specific	2,4-dienoyl-CoA reductase (NADPH)|SPX19	1.3.1.124	ExPASy/EC number
+S000005151	YNL207W	RIO2	RIght Open reading frame	protein kinase RIO2	2.7.11.1	ExPASy/EC number
+S000005153	YNL209W	SSB2	Stress-Seventy subfamily B	Hsp70 family ATPase SSB2|YG103	3.6.4.10	ExPASy/EC number
+S000005163	YNL219C	ALG9	Asparagine-Linked Glycosylation	dolichyl-P-Man:Man(6)GlcNAc(2)-PP-dolichol alpha-1,2-mannosyltransferase	2.4.1.259	ExPASy/EC number
+S000005163	YNL219C	ALG9	Asparagine-Linked Glycosylation	dolichyl-P-Man:Man(6)GlcNAc(2)-PP-dolichol alpha-1,2-mannosyltransferase	2.4.1.261	ExPASy/EC number
+S000005164	YNL220W	ADE12	ADEnine requiring	adenylosuccinate synthase|BRA9	6.3.4.4	ExPASy/EC number
+S000005165	YNL221C	POP1	Processing Of Precursor RNAs	ribonuclease P/MRP protein subunit POP1	3.1.26.5	ExPASy/EC number
+S000005166	YNL222W	SSU72	Suppressor of SUa7, gene 2	RNA polymerase II subunit A C-terminal domain phosphatase	3.1.3.16	ExPASy/EC number
+S000005173	YNL229C	URE2	UREidosuccinate transport	glutathione peroxidase|[URE3]	1.11.1.9	ExPASy/EC number
+S000005182	YNL238W	KEX2	Killer EXpression defective	kexin KEX2|QDS1|SRB1|VMA45|yscF	3.4.21.61	ExPASy/EC number
+S000005183	YNL239W	LAP3	Leucine AminoPeptidases	bleomycin hydrolase|BLH1|GAL6|YCP1	3.4.22.40	ExPASy/EC number
+S000005185	YNL241C	ZWF1	ZWischenFerment	glucose-6-phosphate dehydrogenase|MET19|POS10	1.1.1.49	ExPASy/EC number
+S000005191	YNL247W	CRS1	Cysteinyl-tRNA Synthetase, CysRS	cysteine--tRNA ligase	6.1.1.16	ExPASy/EC number
+S000005200	YNL256W	FOL1	FOLic acid synthesis	trifunctional dihydropteroate synthetase/dihydrohydroxymethylpterin pyrophosphokinase/dihydroneopterin aldolase FOL1	2.5.1.15	ExPASy/EC number
+S000005200	YNL256W	FOL1	FOLic acid synthesis	trifunctional dihydropteroate synthetase/dihydrohydroxymethylpterin pyrophosphokinase/dihydroneopterin aldolase FOL1	2.7.6.3	ExPASy/EC number
+S000005200	YNL256W	FOL1	FOLic acid synthesis	trifunctional dihydropteroate synthetase/dihydrohydroxymethylpterin pyrophosphokinase/dihydroneopterin aldolase FOL1	4.1.2.25	ExPASy/EC number
+S000005206	YNL262W	POL2	POLymerase	DNA polymerase epsilon catalytic subunit|DUN2	2.7.7.7	ExPASy/EC number
+S000005211	YNL267W	PIK1	Phosphatidyl Inositol Kinase	1-phosphatidylinositol 4-kinase|PIK120|PIK41	2.7.1.67	ExPASy/EC number
+S000005218	YNL274C	GOR1	GlyOxylate Reductase	glyoxylate reductase	1.1.1.26	ExPASy/EC number
+S000005221	YNL277W	MET2	METhionine requiring	homoserine O-acetyltransferase	2.3.1.31	ExPASy/EC number
+S000005224	YNL280C	ERG24	ERGosterol biosynthesis	delta(14)-sterol reductase	1.3.1.70	ExPASy/EC number
+S000005236	YNL292W	PUS4	PseudoUridine Synthase	pseudouridine synthase PUS4	5.4.99.25	ExPASy/EC number
+S000005242	YNL298W	CLA4	CLn Activity dependant	ERC10|serine/threonine protein kinase CLA4	2.7.11.1	ExPASy/EC number
+S000005243	YNL299W	TRF5	Topoisomerase one-Related Function	non-canonical poly(A) polymerase TRF5	2.7.7.19	ExPASy/EC number
+S000005251	YNL307C	MCK1	Meiosis and Centromere regulatory Kinase	CMS1|serine/threonine/tyrosine protein kinase MCK1|YPK1	2.7.12.1	ExPASy/EC number
+S000005260	YNL316C	PHA2	PHenylAlanine requiring	prephenate dehydratase PHA2	4.2.1.51	ExPASy/EC number
+S000005270	YNL326C	PFA3	Protein Fatty Acyltransferase	palmitoyltransferase PFA3	2.3.1.225	ExPASy/EC number
+S000005274	YNL330C	RPD3	Reduced Potassium Dependency	histone deacetylase RPD3|MOF6|REC3|SDI2|SDS6	3.5.1.98	ExPASy/EC number
+S000005277	YNL333W	SNZ2	SNooZe	pyridoxine biosynthesis protein SNZ2	4.3.3.6	ExPASy/EC number
+S000005278	YNL334C	SNO2	SNZ proximal Open reading frame	putative pyridoxal 5'-phosphate synthase	3.5.1.2	ExPASy/EC number
+S000005278	YNL334C	SNO2	SNZ proximal Open reading frame	putative pyridoxal 5'-phosphate synthase	4.3.3.6	ExPASy/EC number
+S000005279	YNL335W	DDI3	DNA Damage Inducible	cyanamide hydratase	4.2.1.69	ExPASy/EC number
+S000005283	YNL339C	YRF1-6	""	Y' element ATP-dependent helicase protein 1 copy 6|YRF1	3.6.4.12	ExPASy/EC number
+S000005284	YNR001C	CIT1	CITrate synthase	citrate (Si)-synthase CIT1|CS1|LYS6	2.3.3.1	ExPASy/EC number
+S000005291	YNR008W	LRO1	Lecithin cholesterol acyl transferase Related Open reading frame	phospholipid:diacylglycerol acyltransferase	2.3.1.158	ExPASy/EC number
+S000005294	YNR011C	PRP2	Pre-mRNA Processing	DEAH-box RNA-dependent ATPase PRP2|RNA2	3.6.4.13	ExPASy/EC number
+S000005295	YNR012W	URK1	URidine Kinase	uridine kinase URK1	2.7.1.48	ExPASy/EC number
+S000005298	YNR015W	SMM1	Suppressor of Mitochondrial Mutation	DUS2|tRNA-dihydrouridine(20) synthase (NAD(+))	1.3.1.91	ExPASy/EC number
+S000005299	YNR016C	ACC1	Acetyl-CoA Carboxylase	ABP2|acetyl-CoA carboxylase ACC1|FAS3|MTR7	6.3.4.14	ExPASy/EC number
+S000005299	YNR016C	ACC1	Acetyl-CoA Carboxylase	ABP2|acetyl-CoA carboxylase ACC1|FAS3|MTR7	6.4.1.2	ExPASy/EC number
+S000005310	YNR027W	BUD17	BUD site selection	putative pyridoxal kinase BUD17	2.7.1.35	ExPASy/EC number
+S000005311	YNR028W	CPR8	Cyclosporin-sensitive Proline Rotamase	peptidylprolyl isomerase family protein CPR8	5.2.1.8	ExPASy/EC number
+S000005313	YNR030W	ALG12	Asparagine-Linked Glycosylation	dolichyl-P-Man:Man(7)GlcNAc(2)-PP-dolichol alpha-1,6-mannosyltransferase|ECM39	2.4.1.260	ExPASy/EC number
+S000005314	YNR031C	SSK2	Suppressor of Sensor Kinase	mitogen-activated protein kinase kinase kinase SSK2	2.7.11.25	ExPASy/EC number
+S000005315	YNR032W	PPG1	Protein Phosphatase involved in Glycogen accumulation	putative serine/threonine-protein kinase PPG1	3.1.3.16	ExPASy/EC number
+S000005316	YNR033W	ABZ1	para-AminoBenZoic acid (PABA) biosynthesis	4-amino-4-deoxychorismate synthase	2.6.1.85	ExPASy/EC number
+S000005321	YNR038W	DBP6	Dead Box Protein	putative ATP-dependent RNA helicase DBP6	3.6.4.13	ExPASy/EC number
+S000005324	YNR041C	COQ2	COenzyme Q	4-hydroxybenzoate octaprenyltransferase	2.5.1.39	ExPASy/EC number
+S000005326	YNR043W	MVD1	MeValonate pyrophosphate Decarboxylase	diphosphomevalonate decarboxylase MVD1|ERG19	4.1.1.33	ExPASy/EC number
+S000005330	YNR047W	FPK1	FliPase Kinase 1	serine/threonine protein kinase FPK1	2.7.11.1	ExPASy/EC number
+S000005333	YNR050C	LYS9	LYSine requiring	LYS13|saccharopine dehydrogenase (NADP+, L-glutamate-forming)	1.5.1.10	ExPASy/EC number
+S000005335	YNR052C	POP2	PGK promoter directed OverProduction	CAF1|CCR4-NOT core DEDD family RNase subunit POP2	3.1.13.4	ExPASy/EC number
+S000005340	YNR057C	BIO4	BIOtin	dethiobiotin synthase	6.3.3.3	ExPASy/EC number
+S000005341	YNR058W	BIO3	BIOtin	adenosylmethionine-8-amino-7-oxononanoate transaminase	2.6.1.62	ExPASy/EC number
+S000005343	YNR060W	FRE4	Ferric REductase	ferric-chelate reductase	1.16.1.9	ExPASy/EC number
+S000005350	YNR067C	DSE4	Daughter Specific Expression	endo-1,3(4)-beta-glucanase|ENG1	3.2.1.6	ExPASy/EC number
+S000005356	YNR073C	MAN2	MANnitol dehydrogenase	putative mannitol dehydrogenase	1.1.1.67	ExPASy/EC number
+S000005363	YOL003C	PFA4	Protein Fatty Acyltransferase	palmitoyltransferase PFA4	2.3.1.225	ExPASy/EC number
+S000005366	YOL006C	TOP1	TOPoisomerase	DNA topoisomerase 1|MAK1|MAK17	5.6.2.1	ExPASy/EC number
+S000005371	YOL011W	PLB3	PhosphoLipase B	lysophospholipase	3.1.1.5	ExPASy/EC number
+S000005373	YOL013C	HRD1	HMG-coA Reductase Degradation	DER3|E3 ubiquitin-protein ligase HRD1	2.3.2.27	ExPASy/EC number
+S000005376	YOL016C	CMK2	CalModulin dependent protein Kinase	calmodulin-dependent protein kinase CMK2	2.7.11.17	ExPASy/EC number
+S000005393	YOL033W	MSE1	Mitochondrial aminoacyl-tRNA Synthetase, Glutamate (E)	glutamate--tRNA ligase MSE1	6.1.1.17	ExPASy/EC number
+S000005403	YOL043C	NTG2	eNdonuclease Three-like Glycosylase	bifunctional N-glycosylase/AP lyase NTG2|SCR2	4.2.99.18	ExPASy/EC number
+S000005405	YOL045W	PSK2	Pas domain-containing Serine/threonine protein Kinase	serine/threonine protein kinase PSK2	2.7.11.1	ExPASy/EC number
+S000005409	YOL049W	GSH2	Glutathione	glutathione synthase	6.3.2.3	ExPASy/EC number
+S000005412	YOL052C	SPE2	SPErmidine auxotroph	adenosylmethionine decarboxylase SPE2	4.1.1.50	ExPASy/EC number
+S000005416	YOL055C	THI20	THIamine metabolism	trifunctional hydroxymethylpyrimidine kinase/phosphomethylpyrimidine kinase/thiaminase	2.7.1.49	ExPASy/EC number
+S000005416	YOL055C	THI20	THIamine metabolism	trifunctional hydroxymethylpyrimidine kinase/phosphomethylpyrimidine kinase/thiaminase	2.7.4.7	ExPASy/EC number
+S000005417	YOL056W	GPM3	Glycerate PhosphoMutase	phosphoglycerate mutase family protein GPM3	5.4.2.11	ExPASy/EC number
+S000005418	YOL057W	""	""	dipeptidyl-peptidase III	3.4.14.4	ExPASy/EC number
+S000005419	YOL058W	ARG1	ARGinine requiring	ARG10|argininosuccinate synthase	6.3.4.5	ExPASy/EC number
+S000005420	YOL059W	GPD2	Glycerol-3-Phosphate Dehydrogenase	glycerol-3-phosphate dehydrogenase (NAD(+)) GPD2|GPD3	1.1.1.8	ExPASy/EC number
+S000005422	YOL061W	PRS5	PhosphoRibosylpyrophosphate Synthetase	ribose phosphate diphosphokinase subunit PRS5	2.7.6.1	ExPASy/EC number
+S000005425	YOL064C	MET22	METhionine requiring	3'(2'),5'-bisphosphate nucleotidase|HAL2	3.1.3.7	ExPASy/EC number
+S000005426	YOL065C	INP54	INositol polyphosphate 5-Phosphatase	phosphoinositide 5-phosphatase INP54	3.1.3.36	ExPASy/EC number
+S000005427	YOL066C	RIB2	RIBoflavin biosynthesis	bifunctional DRAP deaminase/tRNA pseudouridine synthase RIB2|PUS8	3.5.4.26	ExPASy/EC number
+S000005427	YOL066C	RIB2	RIBoflavin biosynthesis	bifunctional DRAP deaminase/tRNA pseudouridine synthase RIB2|PUS8	5.4.99.28	ExPASy/EC number
+S000005429	YOL068C	HST1	Homolog of SIR Two (SIR2)	histone deacetylase HST1	2.3.1.286	ExPASy/EC number
+S000005446	YOL086C	ADH1	Alcohol DeHydrogenase	ADC1|alcohol dehydrogenase ADH1	1.1.1.1	ExPASy/EC number
+S000005448	YOL088C	MPD2	Multicopy suppressor of PDI1 deletion	protein disulfide isomerase MPD2	5.3.4.1	ExPASy/EC number
+S000005453	YOL093W	TRM10	Transfer RNA Methyltransferase	tRNA (guanine(9)-N(1))-methyltransferase	2.1.1.221	ExPASy/EC number
+S000005455	YOL095C	HMI1	Helicase in MItochondria	ATP-dependent 3'-5' DNA helicase	3.6.4.12	ExPASy/EC number
+S000005456	YOL096C	COQ3	COenzyme Q	hexaprenyldihydroxybenzoate methyltransferase	2.1.1.114	ExPASy/EC number
+S000005456	YOL096C	COQ3	COenzyme Q	hexaprenyldihydroxybenzoate methyltransferase	2.1.1.64	ExPASy/EC number
+S000005457	YOL097C	WRS1	W (tryptophan) RS (tRNA synthetase)	HRE342|tryptophan--tRNA ligase WRS1	6.1.1.2	ExPASy/EC number
+S000005460	YOL100W	PKH2	Pkb-activating Kinase Homolog	serine/threonine protein kinase PKH2	2.7.11.1	ExPASy/EC number
+S000005462	YOL102C	TPT1	tRNA 2'-PhosphoTransferase	tRNA 2'-phosphotransferase	2.7.1.160	ExPASy/EC number
+S000005473	YOL113W	SKM1	STE20/PAK homologous Kinase related to Morphogenesis	putative serine/threonine protein kinase SKM1	2.7.11.1	ExPASy/EC number
+S000005475	YOL115W	PAP2	Poly(A) Polymerase	non-canonical poly(A) polymerase PAP2|TRF4	2.7.7.19	ExPASy/EC number
+S000005484	YOL124C	TRM11	TRna Methyltransferase	tRNA (guanine-N2-)-methyltransferase	2.1.1.214	ExPASy/EC number
+S000005485	YOL125W	TRM13	TRna Methyltransferase	tRNA:m4X modification enzyme	2.1.1.225	ExPASy/EC number
+S000005486	YOL126C	MDH2	Malate DeHydrogenase	malate dehydrogenase MDH2	1.1.1.37	ExPASy/EC number
+S000005488	YOL128C	YGK3	Yeast homolog of Glycogen synthase Kinase	serine/threonine protein kinase YGK3	2.7.11.1	ExPASy/EC number
+S000005496	YOL136C	PFK27	6-PhosphoFructo-2-Kinase	6-phosphofructo-2-kinase|PFK-2	2.7.1.105	ExPASy/EC number
+S000005500	YOL140W	ARG8	ARGinine requiring	acetylornithine transaminase	2.6.1.11	ExPASy/EC number
+S000005501	YOL141W	PPM2	Protein Phosphatase Methyltransferase	tRNA methyltransferase PPM2|TYW4	2.1.1.290	ExPASy/EC number
+S000005501	YOL141W	PPM2	Protein Phosphatase Methyltransferase	tRNA methyltransferase PPM2|TYW4	2.3.1.231	ExPASy/EC number
+S000005503	YOL143C	RIB4	RIBoflavin biosynthesis	lumazine synthase RIB4	2.5.1.78	ExPASy/EC number
+S000005511	YOL151W	GRE2	Genes de Respuesta a Estres (stress responsive genes)	methylglyoxal reductase (NADPH-dependent) GRE2	1.1.1.265	ExPASy/EC number
+S000005511	YOL151W	GRE2	Genes de Respuesta a Estres (stress responsive genes)	methylglyoxal reductase (NADPH-dependent) GRE2	1.1.1.283	ExPASy/EC number
+S000005512	YOL152W	FRE7	Ferric REductase	putative ferric-chelate reductase	1.16.1.9	ExPASy/EC number
+S000005517	YOL157C	IMA2	IsoMAltase	oligo-1,6-glucosidase IMA2	3.2.1.10	ExPASy/EC number
+S000005528	YOR002W	ALG6	Asparagine-Linked Glycosylation	dolichyl-P-Glc:Man(9)GlcNAc(2)-PP-dolichol alpha-1,3-glucosyltransferase	2.4.1.267	ExPASy/EC number
+S000005531	YOR005C	DNL4	DNA Ligase	DNA ligase (ATP) DNL4|LIG4	6.5.1.1	ExPASy/EC number
+S000005551	YOR025W	HST3	Homolog of SIR Two (SIR2)	NAD-dependent histone deacetylase HST3	2.3.1.286	ExPASy/EC number
+S000005560	YOR034C	AKR2	AnKyrin Repeat-containing protein	putative palmitoyltransferase AKR2	2.3.1.225	ExPASy/EC number
+S000005566	YOR040W	GLO4	GLyOxalase	hydroxyacylglutathione hydrolase GLO4	3.1.2.6	ExPASy/EC number
+S000005572	YOR046C	DBP5	Dead Box Protein	ATP-dependent RNA helicase DBP5|RAT8	3.6.4.13	ExPASy/EC number
+S000005585	YOR059C	LPL1	LD phospholipase	putative hydrolase|YOR29-10	3.1.1.4	ExPASy/EC number
+S000005587	YOR061W	CKA2	Casein Kinase Alpha' subunit	casein kinase 2 catalytic subunit CKA2|YOR29-12	2.7.11.1	ExPASy/EC number
+S000005591	YOR065W	CYT1	CYTochrome c1	CTC1|ubiquinol--cytochrome-c reductase catalytic subunit CYT1|YOR29-16	7.1.1.8	ExPASy/EC number
+S000005593	YOR067C	ALG8	Asparagine-Linked Glycosylation	dolichyl-P-Glc:Glc1Man(9)GlcNAc(2)-PP-dolichol alpha-1,3-glucosyltransferase|YOR29-18	2.4.1.265	ExPASy/EC number
+S000005600	YOR074C	CDC21	Cell Division Cycle	CRT9|thymidylate synthase|TMP1|YOR29-25	2.1.1.45	ExPASy/EC number
+S000005607	YOR081C	TGL5	TriacylGlycerol Lipase	STC2|triacylglycerol lipase	3.1.1.3	ExPASy/EC number
+S000005616	YOR090C	PTC5	Phosphatase Two C	PPP1|type 2C protein phosphatase PTC5	3.1.3.43	ExPASy/EC number
+S000005621	YOR095C	RKI1	Ribose-5-phosphate Ketol-Isomerase	ribose-5-phosphate isomerase RKI1	5.3.1.6	ExPASy/EC number
+S000005627	YOR101W	RAS1	homologous to RAS proto-oncogene	Ras family GTPase RAS1	3.6.5.2	ExPASy/EC number
+S000005634	YOR108W	LEU9	LEUcine biosynthesis	2-isopropylmalate synthase LEU9	2.3.3.13	ExPASy/EC number
+S000005635	YOR109W	INP53	INositol polyphosphate 5-Phosphatase	phosphatidylinositol-3-/phosphoinositide 5-phosphatase INP53|SJL3|SOP2	3.1.3.36	ExPASy/EC number
+S000005637	YOR111W	""	""	nucleotide diphosphatase	3.6.1.9	ExPASy/EC number
+S000005642	YOR116C	RPO31	RNA POlymerase	C160|DNA-directed RNA polymerase III core subunit RPO31|RPC1|RPC160	2.7.7.6	ExPASy/EC number
+S000005645	YOR119C	RIO1	RIght Open reading frame	protein kinase RIO1|RRP10	2.7.11.1	ExPASy/EC number
+S000005646	YOR120W	GCY1	Galactose-inducible Crystallin-like Yeast protein	GCY|glycerol 2-dehydrogenase (NADP(+)) GCY1	1.1.1.156	ExPASy/EC number
+S000005650	YOR124C	UBP2	UBiquitin-specific Protease	ubiquitin-specific protease UBP2	3.4.19.12	ExPASy/EC number
+S000005651	YOR125C	CAT5	CATabolite repression	COQ7|putative monooxygenase CAT5	1.14.99.60	ExPASy/EC number
+S000005652	YOR126C	IAH1	Isoamyl Acetate-Hydrolyzing esterase	isoamyl acetate-hydrolyzing esterase	3.1.1.112	ExPASy/EC number
+S000005654	YOR128C	ADE2	ADEnine requiring	phosphoribosylaminoimidazole carboxylase ADE2	4.1.1.21	ExPASy/EC number
+S000005662	YOR136W	IDH2	Isocitrate DeHydrogenase	isocitrate dehydrogenase (NAD(+)) IDH2	1.1.1.41	ExPASy/EC number
+S000005668	YOR142W	LSC1	Ligase of Succinyl-CoA	succinate--CoA ligase (GDP-forming) subunit alpha	6.2.1.5	ExPASy/EC number
+S000005669	YOR143C	THI80	THIamine metabolism	thiamine diphosphokinase	2.7.6.2	ExPASy/EC number
+S000005677	YOR151C	RPB2	RNA Polymerase B	B150|DNA-directed RNA polymerase II core subunit RPB2|RPB150|RPO22|SIT2|SOH2	2.7.7.6	ExPASy/EC number
+S000005681	YOR155C	ISN1	IMP-Specific 5'-Nucleotidase	IMP 5'-nucleotidase	3.1.3.99	ExPASy/EC number
+S000005683	YOR157C	PUP1	PUtative Proteasome subunit	proteasome core particle subunit beta 2	3.4.25.1	ExPASy/EC number
+S000005689	YOR163W	DDP1	Diadenosine and Diphosphoinositol Polyphosphate phosphohydrolase	polyphosphatase DDP1	3.6.1.52	ExPASy/EC number
+S000005689	YOR163W	DDP1	Diadenosine and Diphosphoinositol Polyphosphate phosphohydrolase	polyphosphatase DDP1	3.6.1.60	ExPASy/EC number
+S000005694	YOR168W	GLN4	GLutamiNe metabolism	glutamine--tRNA ligase	6.1.1.18	ExPASy/EC number
+S000005697	YOR171C	LCB4	Long-Chain Base	sphinganine kinase LCB4	2.7.1.91	ExPASy/EC number
+S000005701	YOR175C	ALE1	Acyltransferase for Lyso-phosphatidylEthanolamine	LCA1|LPT1|lysophospholipid acyltransferase|SLC4	2.3.1.23	ExPASy/EC number
+S000005701	YOR175C	ALE1	Acyltransferase for Lyso-phosphatidylEthanolamine	LCA1|LPT1|lysophospholipid acyltransferase|SLC4	2.3.1.51	ExPASy/EC number
+S000005701	YOR175C	ALE1	Acyltransferase for Lyso-phosphatidylEthanolamine	LCA1|LPT1|lysophospholipid acyltransferase|SLC4	2.3.1.n6	ExPASy/EC number
+S000005701	YOR175C	ALE1	Acyltransferase for Lyso-phosphatidylEthanolamine	LCA1|LPT1|lysophospholipid acyltransferase|SLC4	2.3.1.n7	ExPASy/EC number
+S000005702	YOR176W	HEM15	HEMe biosynthesis	ferrochelatase HEM15	4.99.1.1	ExPASy/EC number
+S000005710	YOR184W	SER1	SERine requiring	ADE9|O-phospho-L-serine:2-oxoglutarate transaminase	2.6.1.52	ExPASy/EC number
+S000005716	YOR190W	SPR1	SPorulation Regulated	glucan 1,3-beta-glucosidase|SSG1	3.2.1.58	ExPASy/EC number
+S000005722	YOR196C	LIP5	LIPoic acid	putative lipoate synthase	2.8.1.8	ExPASy/EC number
+S000005728	YOR202W	HIS3	HIStidine	HIS10|HIS8|imidazoleglycerol-phosphate dehydratase HIS3	4.2.1.19	ExPASy/EC number
+S000005730	YOR204W	DED1	Defines Essential Domain	DEAD-box ATP-dependent RNA helicase DED1|SPP81	3.6.4.13	ExPASy/EC number
+S000005733	YOR207C	RET1	Reduced Efficiency of Termination	C128|DNA-directed RNA polymerase III core subunit RET1|PDS2|RPC128|RPC2	2.7.7.6	ExPASy/EC number
+S000005734	YOR208W	PTP2	Protein Tyrosine Phosphatase	tyrosine protein phosphatase PTP2	3.1.3.48	ExPASy/EC number
+S000005735	YOR209C	NPT1	Nicotinate PhosphoribosylTransferase	nicotinate phosphoribosyltransferase	6.3.4.21	ExPASy/EC number
+S000005747	YOR221C	MCT1	Malonyl-CoA:ACP Transferase	[acyl-carrier-protein] S-malonyltransferase	2.3.1.39	ExPASy/EC number
+S000005757	YOR231W	MKK1	Mitogen-activated protein Kinase-Kinase	mitogen-activated protein kinase kinase MKK1|SSP32	2.7.12.2	ExPASy/EC number
+S000005759	YOR233W	KIN4	KINase	KIN3|KIN31|putative serine/threonine protein kinase KIN4	2.7.11.1	ExPASy/EC number
+S000005762	YOR236W	DFR1	DihydroFolate Reductase	dihydrofolate reductase	1.5.1.3	ExPASy/EC number
+S000005765	YOR239W	ABP140	Actin Binding Protein	TRM140|tRNA(Thr) (cytosine(32)-N(3))-methyltransferase|YOR240W	2.1.1.268	ExPASy/EC number
+S000005767	YOR241W	MET7	METhionine requiring	MET23|tetrahydrofolate synthase	6.3.2.17	ExPASy/EC number
+S000005769	YOR243C	PUS7	PseudoUridine Synthase	pseudouridine synthase PUS7	5.4.99.27	ExPASy/EC number
+S000005770	YOR244W	ESA1	""	KAT5|NuA4 histone acetyltransferase complex catalytic subunit ESA1|TAS1	2.3.1.48	ExPASy/EC number
+S000005771	YOR245C	DGA1	DiacylGlycerol Acyltransferase	diacylglycerol O-acyltransferase	2.3.1.20	ExPASy/EC number
+S000005771	YOR245C	DGA1	DiacylGlycerol Acyltransferase	diacylglycerol O-acyltransferase	2.3.1.22	ExPASy/EC number
+S000005777	YOR251C	TUM1	ThioUridine Modification	thiosulfate sulfurtransferase	2.8.1.1	ExPASy/EC number
+S000005779	YOR253W	NAT5	N-terminal AcetylTransferase	ARD2|NAA50|peptide alpha-N-acetyltransferase subunit NAT5|ROG2	2.3.1.258	ExPASy/EC number
+S000005784	YOR258W	HNT3	Histidine triad NucleoTide-binding	DNA 5'-adenosine monophosphate hydrolase	3.6.1.71	ExPASy/EC number
+S000005784	YOR258W	HNT3	Histidine triad NucleoTide-binding	DNA 5'-adenosine monophosphate hydrolase	3.6.1.72	ExPASy/EC number
+S000005793	YOR267C	HRK1	Hygromycin Resistance Kinase	putative serine/threonine protein kinase HRK1	2.7.11.1	ExPASy/EC number
+S000005800	YOR274W	MOD5	tRNA MODification	[MOD+]|tRNA dimethylallyltransferase	2.5.1.75	ExPASy/EC number
+S000005804	YOR278W	HEM4	HEMe biosynthesis	SLU2|uroporphyrinogen-III synthase HEM4	4.2.1.75	ExPASy/EC number
+S000005812	YOR286W	RDL2	RhoDanese-Like protein	AIM42|FMP31|thiosulfate sulfurtransferase RDL2	2.8.1.1	ExPASy/EC number
+S000005814	YOR288C	MPD1	Multicopy suppressor of PDI1 deletion	protein disulfide isomerase MPD1	5.3.4.1	ExPASy/EC number
+S000005829	YOR303W	CPA1	Carbamyl Phosphate synthetase A	carbamoyl-phosphate synthase (glutamine-hydrolyzing) CPA1	6.3.5.5	ExPASy/EC number
+S000005838	YOR311C	DGK1	DiacylGlycerol Kinase	diacylglycerol kinase|HSD1	2.7.1.174	ExPASy/EC number
+S000005844	YOR317W	FAA1	Fatty Acid Activation	long-chain fatty acid-CoA ligase FAA1	6.2.1.3	ExPASy/EC number
+S000005848	YOR321W	PMT3	Protein O-MannosylTransferase	dolichyl-phosphate-mannose-protein mannosyltransferase PMT3	2.4.1.109	ExPASy/EC number
+S000005850	YOR323C	PRO2	PROline requiring	glutamate-5-semialdehyde dehydrogenase	1.2.1.41	ExPASy/EC number
+S000005857	YOR330C	MIP1	MItochondrial DNA Polymerase	DNA-directed DNA polymerase gamma MIP1	2.7.7.7	ExPASy/EC number
+S000005862	YOR335C	ALA1	ALAnyl-tRNA synthetase	alanine--tRNA ligase|CDC64	6.1.1.7	ExPASy/EC number
+S000005866	YOR339C	UBC11	UBiquitin Carrier	putative E2 ubiquitin-protein ligase UBC11	2.3.2.23	ExPASy/EC number
+S000005868	YOR341W	RPA190	RNA Polymerase A	A190|DNA-directed RNA polymerase I core subunit RPA190|RRN1	2.7.7.6	ExPASy/EC number
+S000005874	YOR347C	PYK2	PYruvate Kinase	pyruvate kinase PYK2	2.7.1.40	ExPASy/EC number
+S000005878	YOR351C	MEK1	MEiotic Kinase	MRE4|serine/threonine protein kinase MEK1	2.7.11.1	ExPASy/EC number
+S000005883	YOR356W	CIR2	Changed Intracellular Redox state	putative electron-transferring-flavoprotein dehydrogenase	1.5.5.1	ExPASy/EC number
+S000005887	YOR360C	PDE2	PhosphoDiEsterase	3',5'-cyclic-nucleotide phosphodiesterase PDE2|SRA5	3.1.4.53	ExPASy/EC number
+S000005901	YOR374W	ALD4	ALdehyde Dehydrogenase	ALD7|aldehyde dehydrogenase (NADP(+)) ALD4|ALDH2	1.2.1.5	ExPASy/EC number
+S000005902	YOR375C	GDH1	Glutamate DeHydrogenase	DHE4|GDHA|GDH-A|glutamate dehydrogenase (NADP(+)) GDH1|URE1	1.4.1.4	ExPASy/EC number
+S000005904	YOR377W	ATF1	AcetylTransFerase	alcohol O-acetyltransferase	2.3.1.84	ExPASy/EC number
+S000005904	YOR377W	ATF1	AcetylTransFerase	alcohol O-acetyltransferase	3.1.2.20	ExPASy/EC number
+S000005908	YOR381W	FRE3	Ferric REductase	ferric-chelate reductase	1.16.1.9	ExPASy/EC number
+S000005911	YOR384W	FRE5	Ferric REductase	putative ferric-chelate reductase	1.16.1.9	ExPASy/EC number
+S000005913	YOR386W	PHR1	PHotoreactivation Repair deficient	deoxyribodipyrimidine photo-lyase PHR1	4.1.99.3	ExPASy/EC number
+S000005915	YOR388C	FDH1	Formate DeHydrogenase	formate dehydrogenase (NAD+)	1.17.1.9	ExPASy/EC number
+S000005918	YOR391C	HSP33	Heat-Shock Protein	glutathione-independent methylglyoxalase family protein	4.2.1.130	ExPASy/EC number
+S000005920	YOR393W	ERR1	Enolase-Related Repeat	phosphopyruvate hydratase ERR1	4.2.1.11	ExPASy/EC number
+S000005922	YPL001W	HAT1	Histone AcetylTransferase	histone acetyltransferase catalytic subunit HAT1|KAT1	2.3.1.48	ExPASy/EC number
+S000005929	YPL008W	CHL1	CHromosome Loss	CTF1|DNA helicase|LPA9|MCM12	3.6.4.12	ExPASy/EC number
+S000005936	YPL015C	HST2	Homolog of SIR Two (SIR2)	histone deacetylase HST2	2.3.1.286	ExPASy/EC number
+S000005941	YPL020C	ULP1	UbL-specific Protease	NIB1|SUMO protease ULP1	3.4.22.68	ExPASy/EC number
+S000005944	YPL023C	MET12	METhionine requiring	methylenetetrahydrofolate reductase (NAD(P)H) MET12	1.5.1.20	ExPASy/EC number
+S000005947	YPL026C	SKS1	Suppressor Kinase of SNF3	putative serine/threonine protein kinase SKS1|SHA3	2.7.11.1	ExPASy/EC number
+S000005949	YPL028W	ERG10	ERGosterol biosynthesis	acetyl-CoA C-acetyltransferase|LPB3|TSM0115	2.3.1.9	ExPASy/EC number
+S000005950	YPL029W	SUV3	SUppressor of Var1	ATP-dependent RNA helicase SUV3|LPB2	3.6.4.13	ExPASy/EC number
+S000005951	YPL030W	TRM44	TRna Methyltransferase	tRNA (uracil) methyltransferase	2.1.1.211	ExPASy/EC number
+S000005952	YPL031C	PHO85	PHOsphate metabolism	cyclin-dependent serine/threonine-protein kinase PHO85|LDB15|phoU	2.7.11.22	ExPASy/EC number
+S000005957	YPL036W	PMA2	Plasma Membrane ATPase	H(+)-exporting P2-type ATPase PMA2	7.1.2.1	ExPASy/EC number
+S000005961	YPL040C	ISM1	Isoleucyl tRNA Synthetase of Mitochondria	isoleucine--tRNA ligase ISM1	6.1.1.5	ExPASy/EC number
+S000005963	YPL042C	SSN3	Suppressor of SNf1	CDK8|cyclin-dependent serine/threonine protein kinase SSN3|GIG2|NUT7|RYE5|SRB10|SSX7|UME5|URR1	2.7.11.22	ExPASy/EC number
+S000005963	YPL042C	SSN3	Suppressor of SNf1	CDK8|cyclin-dependent serine/threonine protein kinase SSN3|GIG2|NUT7|RYE5|SRB10|SSX7|UME5|URR1	2.7.11.23	ExPASy/EC number
+S000005982	YPL061W	ALD6	ALdehyde Dehydrogenase	ALD1|aldehyde dehydrogenase (NADP(+)) ALD6	1.2.1.4	ExPASy/EC number
+S000005985	YPL064C	CWC27	Complexed With Cef1p	putative peptidylprolyl isomerase CWC27	5.2.1.8	ExPASy/EC number
+S000005990	YPL069C	BTS1	Bet Two Suppressor	farnesyltranstransferase	2.5.1.1	ExPASy/EC number
+S000005990	YPL069C	BTS1	Bet Two Suppressor	farnesyltranstransferase	2.5.1.10	ExPASy/EC number
+S000005990	YPL069C	BTS1	Bet Two Suppressor	farnesyltranstransferase	2.5.1.29	ExPASy/EC number
+S000005993	YPL072W	UBP16	UBiquitin-specific Protease	putative ubiquitin-specific protease UBP16	3.4.19.12	ExPASy/EC number
+S000005997	YPL076W	GPI2	GlycosylPhosphatidylInositol anchor biosynthesis	GCR4|phosphatidylinositol N-acetylglucosaminyltransferase	2.4.1.198	ExPASy/EC number
+S000006012	YPL091W	GLR1	GLutathione Reductase	glutathione-disulfide reductase GLR1|LPG17	1.8.1.7	ExPASy/EC number
+S000006016	YPL095C	EEB1	Ethyl Ester Biosynthesis	medium-chain fatty acid ethyl ester synthase/esterase	2.3.1.84	ExPASy/EC number
+S000006017	YPL096W	PNG1	Peptide N-Glycanase	peptide-N4-(N-acetyl-beta-glucosaminyl)asparagine amidase	3.5.1.52	ExPASy/EC number
+S000006018	YPL097W	MSY1	Mitochondrial aminoacyl-tRNA Synthetase, tyrosine (Y)	tyrosine--tRNA ligase MSY1	6.1.1.1	ExPASy/EC number
+S000006024	YPL103C	FMP30	Found in Mitochondrial Proteome	N-acetylphosphatidylethanolamine-hydrolyzing phospholipase D	3.1.4.54	ExPASy/EC number
+S000006025	YPL104W	MSD1	Mitochondrial aminoacyl-tRNA Synthetase, Aspartate (D)	aspartate--tRNA ligase MSD1|LPG5	6.1.1.12	ExPASy/EC number
+S000006031	YPL110C	GDE1	GlycerophosphoDiEsterase	glycerophosphocholine phosphodiesterase	3.1.4.2	ExPASy/EC number
+S000006032	YPL111W	CAR1	Catabolism of ARginine	arginase|cargA|LPH15	3.5.3.1	ExPASy/EC number
+S000006037	YPL116W	HOS3	Hda One Similar	histone deacetylase	3.5.1.98	ExPASy/EC number
+S000006038	YPL117C	IDI1	Isopentenyl Diphosphate Isomerase	BOT2|isopentenyl-diphosphate delta-isomerase IDI1|LPH10	5.3.3.2	ExPASy/EC number
+S000006040	YPL119C	DBP1	Dead Box Protein	LPH8|putative DEAD-box ATP-dependent RNA helicase DBP1	3.6.4.13	ExPASy/EC number
+S000006044	YPL123C	RNY1	RiboNuclease from Yeast	ribonuclease T2	4.6.1.19	ExPASy/EC number
+S000006061	YPL140C	MKK2	Mitogen-activated Kinase Kinase	LPI6|putative mitogen-activated protein kinase kinase MKK2|SSP33	2.7.12.2	ExPASy/EC number
+S000006062	YPL141C	FRK1	Fatty acyl-CoA synthetase and RNA processing-associated Kinase	protein kinase FRK1	2.7.11.1	ExPASy/EC number
+S000006069	YPL148C	PPT2	Phosphopantetheine:Protein Transferase	holo-[acyl-carrier-protein] synthase	2.7.8.7	ExPASy/EC number
+S000006071	YPL150W	""	""	non-specific serine/threonine protein kinase	2.7.11.1	ExPASy/EC number
+S000006073	YPL152W	RRD2	Resistant to Rapamycin Deletion	peptidylprolyl isomerase RRD2|YPA2	5.2.1.8	ExPASy/EC number
+S000006074	YPL153C	RAD53	RADiation sensitive	LSD1|MEC2|serine/threonine/tyrosine protein kinase RAD53|SPK1	2.7.12.1	ExPASy/EC number
+S000006075	YPL154C	PEP4	carboxyPEPtidase Y-deficient	PHO9|PRA1|proteinase A|yscA	3.4.23.25	ExPASy/EC number
+S000006081	YPL160W	CDC60	Cell Division Cycle	leucine--tRNA ligase CDC60|LeuRS	6.1.1.4	ExPASy/EC number
+S000006088	YPL167C	REV3	REVersionless	DNA-directed DNA polymerase|PSO1	2.7.7.7	ExPASy/EC number
+S000006092	YPL171C	OYE3	Old Yellow Enzyme	NADPH dehydrogenase|ZRG6	1.6.99.1	ExPASy/EC number
+S000006096	YPL175W	SPT14	SuPpressor of Ty	CWH6|GPI3|phosphatidylinositol N-acetylglucosaminyltransferase SPT14	2.4.1.198	ExPASy/EC number
+S000006100	YPL179W	PPQ1	Protein Phosphatase Q	protein-serine/threonine phosphatase|SAL6	3.1.3.16	ExPASy/EC number
+S000006109	YPL188W	POS5	PerOxide Sensitive	NADH kinase	2.7.1.86	ExPASy/EC number
+S000006112	YPL191C	""	""	MIY1|ubiquitinyl hydrolase 1	3.4.19.12	ExPASy/EC number
+S000006124	YPL203W	TPK2	Takashi's Protein Kinase	cAMP-dependent protein kinase catalytic subunit TPK2|PKA2|PKA3|YKR1	2.7.11.11	ExPASy/EC number
+S000006125	YPL204W	HRR25	HO and Radiation Repair	KTI14|serine/threonine protein kinase HRR25	2.7.11.1	ExPASy/EC number
+S000006128	YPL207W	TYW1	Trna-YW synthesizing protein	putative tRNA 4-demethylwyosine synthase	4.1.3.44	ExPASy/EC number
+S000006130	YPL209C	IPL1	Increase in PLoidy	aurora kinase|PAC15	2.7.11.1	ExPASy/EC number
+S000006135	YPL214C	THI6	THIamine biosynthesis	bifunctional hydroxyethylthiazole kinase/thiamine-phosphate diphosphorylase	2.5.1.3	ExPASy/EC number
+S000006135	YPL214C	THI6	THIamine biosynthesis	bifunctional hydroxyethylthiazole kinase/thiamine-phosphate diphosphorylase	2.7.1.50	ExPASy/EC number
+S000006148	YPL227C	ALG5	Asparagine-Linked Glycosylation	dolichyl-phosphate beta-glucosyltransferase	2.4.1.117	ExPASy/EC number
+S000006149	YPL228W	CET1	Capping Enzyme Triphosphatase	CES5|polynucleotide 5'-phosphatase	3.1.3.33	ExPASy/EC number
+S000006152	YPL231W	FAS2	Fatty Acid Synthetase	trifunctional fatty acid synthase subunit FAS2	1.1.1.100	ExPASy/EC number
+S000006152	YPL231W	FAS2	Fatty Acid Synthetase	trifunctional fatty acid synthase subunit FAS2	2.3.1.41	ExPASy/EC number
+S000006152	YPL231W	FAS2	Fatty Acid Synthetase	trifunctional fatty acid synthase subunit FAS2	2.3.1.86	ExPASy/EC number
+S000006156	YPL235W	RVB2	RuVB-like	RuvB family ATP-dependent DNA helicase reptin|TIH2|TIP48|TIP49B	3.6.4.12	ExPASy/EC number
+S000006157	YPL236C	ENV7	late ENdosome and Vacuole interface function	putative serine/threonine protein kinase ENV7	2.7.11.1	ExPASy/EC number
+S000006179	YPL258C	THI21	THIamine metabolism	bifunctional hydroxymethylpyrimidine kinase/phosphomethylpyrimidine kinase	2.7.1.49	ExPASy/EC number
+S000006179	YPL258C	THI21	THIamine metabolism	bifunctional hydroxymethylpyrimidine kinase/phosphomethylpyrimidine kinase	2.7.4.7	ExPASy/EC number
+S000006183	YPL262W	FUM1	FUMarase	fumarase FUM1	4.2.1.2	ExPASy/EC number
+S000006187	YPL266W	DIM1	DIMethylase	CDH1|putative dimethyladenosine transferase	2.1.1.183	ExPASy/EC number
+S000006189	YPL268W	PLC1	PhosphoLipase C	phosphatidylinositol phospholipase C	3.1.4.11	ExPASy/EC number
+S000006194	YPL273W	SAM4	S-AdenosylMethionine metabolism	S-adenosylmethionine-homocysteine S-methyltransferase SAM4	2.1.1.10	ExPASy/EC number
+S000006201	YPL280W	HSP32	Heat-Shock Protein	glutathione-independent methylglyoxalase family protein	4.2.1.130	ExPASy/EC number
+S000006202	YPL281C	ERR2	Enolase-Related Repeat	phosphopyruvate hydratase ERR2	4.2.1.11	ExPASy/EC number
+S000006204	YPL283C	YRF1-7	""	Y' element ATP-dependent helicase protein 1 copy 7|YRF1	3.6.4.12	ExPASy/EC number
+S000006205	YPR001W	CIT3	CITrate synthase	citrate (Si)-synthase CIT3	2.3.3.1	ExPASy/EC number
+S000006206	YPR002W	PDH1	prpD Homolog	putative 2-methylcitrate dehydratase	4.2.1.79	ExPASy/EC number
+S000006210	YPR006C	ICL2	IsoCitrate Lyase	methylisocitrate lyase ICL2	4.1.3.30	ExPASy/EC number
+S000006214	YPR010C	RPA135	RNA Polymerase A	A135|DNA-directed RNA polymerase I core subunit RPA135|RPA2|RRN2|SRP3	2.7.7.6	ExPASy/EC number
+S000006223	YPR019W	MCM4	MiniChromosome Maintenance	CDC54|HCD21|MCM DNA helicase complex subunit MCM4	3.6.4.12	ExPASy/EC number
+S000006230	YPR026W	ATH1	Acid TreHalase	alpha,alpha-trehalase ATH1	3.2.1.28	ExPASy/EC number
+S000006237	YPR033C	HTS1	Histidine-Trna Synthetase	histidine--tRNA ligase|TS4572|TSM4572	6.1.1.21	ExPASy/EC number
+S000006239	YPR035W	GLN1	GLutamiNe metabolism	glutamate--ammonia ligase	6.3.1.2	ExPASy/EC number
+S000006241	YPR037C	ERV2	Essential for Respiration and Viability	flavin-linked sulfhydryl oxidase	1.8.3.2	ExPASy/EC number
+S000006251	YPR047W	MSF1	Mitochondrial aminoacyl-tRNA Synthetase, Phenylalanine (F)	phenylalanine--tRNA ligase	6.1.1.20	ExPASy/EC number
+S000006255	YPR051W	MAK3	MAintenance of Killer	NAA30|peptide alpha-N-acetyltransferase MAK3	2.3.1.256	ExPASy/EC number
+S000006258	YPR054W	SMK1	""	mitogen-activated protein kinase SMK1	2.7.11.24	ExPASy/EC number
+S000006264	YPR060C	ARO7	AROmatic amino acid requiring	chorismate mutase ARO7|HGS1|OSM2|TYR7	5.4.99.5	ExPASy/EC number
+S000006266	YPR062W	FCY1	FluoroCYtosine resistance	cytosine deaminase|yCD	3.5.4.1	ExPASy/EC number
+S000006270	YPR066W	UBA3	UBiquitin-like protein-Activating enzyme	NEDD8-activating protein UBA3	6.2.1.64	ExPASy/EC number
+S000006272	YPR068C	HOS1	Hda One Similar	CST3|histone deacetylase	3.5.1.98	ExPASy/EC number
+S000006273	YPR069C	SPE3	SPErmidine auxotroph	spermidine synthase	2.5.1.16	ExPASy/EC number
+S000006277	YPR073C	LTP1	Low molecular weight protein Tyrosine Phosphatase	tyrosine protein phosphatase LTP1	3.1.3.2	ExPASy/EC number
+S000006277	YPR073C	LTP1	Low molecular weight protein Tyrosine Phosphatase	tyrosine protein phosphatase LTP1	3.1.3.48	ExPASy/EC number
+S000006278	YPR074C	TKL1	TransKetoLase	transketolase TKL1	2.2.1.1	ExPASy/EC number
+S000006285	YPR081C	GRS2	Glycyl-tRNA Synthase	putative glycine--tRNA ligase	6.1.1.14	ExPASy/EC number
+S000006307	YPR103W	PRE2	PRoteinase yscE	DOA3|PRG1|proteasome core particle subunit beta 5|SRR2	3.4.25.1	ExPASy/EC number
+S000006310	YPR106W	ISR1	Inhibition of Staurosporine Resistance	putative protein kinase ISR1	2.7.11.1	ExPASy/EC number
+S000006315	YPR111W	DBF20	DumbBell Forming	serine/threonine-protein kinase DBF20	2.7.11.1	ExPASy/EC number
+S000006317	YPR113W	PIS1	Phosphatidyl Inositol Synthase	CDP-diacylglycerol--inositol 3-phosphatidyltransferase	2.7.8.11	ExPASy/EC number
+S000006322	YPR118W	MRI1	MethylthioRibose-1-phosphate Isomerase	S-methyl-5-thioribose-1-phosphate isomerase MRI1	5.3.1.23	ExPASy/EC number
+S000006331	YPR127W	""	""	pyridoxine 4-dehydrogenase	1.1.1.65	ExPASy/EC number
+S000006335	YPR131C	NAT3	N-terminal AcetylTransferase	NAA20|peptide alpha-N-acetyltransferase complex B subunit NAT3|RAD56	2.3.1.254	ExPASy/EC number
+S000006343	YPR139C	LOA1	Lysophosphatidic acid: Oleoyl-CoA Acyltransferase	lysophosphatidic acid acyltransferase LOA1|VPS66	2.3.1.51	ExPASy/EC number
+S000006344	YPR140W	TAZ1	TAfaZzin	lysophosphatidylcholine acyltransferase	2.3.1.23	ExPASy/EC number
+S000006349	YPR145W	ASN1	ASparagiNe requiring	asparagine synthase (glutamine-hydrolyzing) 1	6.3.5.4	ExPASy/EC number
+S000006364	YPR160W	GPH1	Glycogen PHosphorylase	glycogen phosphorylase	2.4.1.1	ExPASy/EC number
+S000006365	YPR161C	SGV1	Suppressor of Gpa1-Val50 mutation	BUR1|cyclin-dependent serine/threonine protein kinase SGV1	2.7.11.22	ExPASy/EC number
+S000006365	YPR161C	SGV1	Suppressor of Gpa1-Val50 mutation	BUR1|cyclin-dependent serine/threonine protein kinase SGV1	2.7.11.23	ExPASy/EC number
+S000006371	YPR167C	MET16	METhionine requiring	phosphoadenylyl-sulfate reductase (thioredoxin)	1.8.4.8	ExPASy/EC number
+S000006380	YPR176C	BET2	Blocked Early in Transport	Rab geranylgeranyltransferase BET2	2.5.1.60	ExPASy/EC number
+S000006387	YPR183W	DPM1	Dolichol Phosphate Mannose synthase	dolichyl-phosphate beta-D-mannosyltransferase|SED3	2.4.1.83	ExPASy/EC number
+S000006388	YPR184W	GDB1	Glycogen DeBranching	bifunctional 4-alpha-glucanotransferase/amylo-alpha-1,6-glucosidase	2.4.1.25	ExPASy/EC number
+S000006388	YPR184W	GDB1	Glycogen DeBranching	bifunctional 4-alpha-glucanotransferase/amylo-alpha-1,6-glucosidase	3.2.1.33	ExPASy/EC number
+S000006397	YPR193C	HPA2	Histone and other Protein Acetyltransferase	histone acetyltransferase|KAT10	2.3.1.48	ExPASy/EC number
+S000006408	YPR204W	""	""	Y' element ATP-dependent helicase|Y' -Help1	3.6.4.12	ExPASy/EC number
+S000006409	YEL077C	""	""	Y' element ATP-dependent helicase	3.6.4.12	ExPASy/EC number
+S000007260	Q0045	COX1	Cytochrome c OXidase	cytochrome c oxidase subunit 1|OXI3	7.1.1.9	ExPASy/EC number
+S000007270	Q0105	COB	CytochrOme B	COB1|CYTB|cytochrome b	7.1.1.8	ExPASy/EC number
+S000007281	Q0250	COX2	Cytochrome c OXidase	cytochrome c oxidase subunit 2|OXI1|OXII	7.1.1.9	ExPASy/EC number
+S000007283	Q0275	COX3	Cytochrome c OXidase	cytochrome c oxidase subunit 3|OXI2	7.1.1.9	ExPASy/EC number
+S000007526	YOR396W	YRF1-8	""	Y' element ATP-dependent helicase protein 1 copy 8	3.6.4.12	ExPASy/EC number
