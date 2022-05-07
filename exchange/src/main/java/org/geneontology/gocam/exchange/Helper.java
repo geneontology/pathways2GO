@@ -4,12 +4,16 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.biopax.paxtools.model.level3.RelationshipXref;
+import org.biopax.paxtools.model.level3.Xref;
 import org.semanticweb.owlapi.formats.OBODocumentFormat;
 import org.semanticweb.owlapi.formats.TurtleDocumentFormat;
 import org.semanticweb.owlapi.io.FileDocumentTarget;
@@ -156,13 +160,14 @@ public class Helper {
 		ont.getOWLOntologyManager().setOntologyFormat(ont, new OBODocumentFormat());	
 		ont.getOWLOntologyManager().saveOntology(ont,outf);
 	}
-	
+
 	public static Map<String, String> parseMonomerToSgdIdFile(String monomerToSgdIdFilePath, String gpiFile) throws IOException {
 		Map<String, String> uniprotToSgdLookup = new HashMap<String, String>();
 		Map<String, String> monomerSgdLookup = new HashMap<String, String>();
 		
 		// First, retrieve UniProtID-to-SGDID mappings
-		BufferedReader reader = new BufferedReader(new FileReader(gpiFile));
+		InputStream stream = Helper.class.getResourceAsStream(gpiFile);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 		String line = reader.readLine();
 		while(line!=null) {
 			if(line.startsWith("!")) {
@@ -190,7 +195,8 @@ public class Helper {
 		}
 		reader.close();
 		
-		BufferedReader mon2SgdReader = new BufferedReader(new FileReader(monomerToSgdIdFilePath));
+		InputStream mon2SgdStream = Helper.class.getResourceAsStream(monomerToSgdIdFilePath);
+		BufferedReader mon2SgdReader = new BufferedReader(new InputStreamReader(mon2SgdStream));
 		String monSgdLine = mon2SgdReader.readLine();
 		while(monSgdLine!=null) {
 			String[] cols = monSgdLine.split("	");
@@ -206,5 +212,116 @@ public class Helper {
 		mon2SgdReader.close();
 		
 		return monomerSgdLookup;
+	}
+
+	public static Map<String, String> parseGPI(String gpiFile) throws IOException {
+		Map<String, String> idLookup = new HashMap<String, String>();
+		
+		//neo needs e.g.
+		//http://identifiers.org/sgd/S000001024
+		//we get e.g.
+		//YeastCyc YIL155C-MONOMER
+		//we get the mapping from a YeastCyc GPI file downloaded from http://sgd-archive.yeastgenome.org/curation/literature/ 
+		//e.g. http://sgd-archive.yeastgenome.org/curation/literature/gp_information.559292_sgd.gpi.gz
+		InputStream stream = Helper.class.getResourceAsStream(gpiFile);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+		String line = reader.readLine();
+		while(line!=null) {
+			if(line.startsWith("!")) {
+				line = reader.readLine();
+			}else {
+				String[] cols = line.split("	");
+				String yeastcyc = cols[4];
+				Set<String> yeastcyc_ids = new HashSet<String>();
+				if(yeastcyc.contains("|")) {
+					String[] ids = yeastcyc.split("\\|");
+					for(String id : ids) {
+						yeastcyc_ids.add(id);
+					}
+				}else {
+					yeastcyc_ids.add(yeastcyc);
+				}
+				if(cols[0].contentEquals("ComplexPortal")) {
+					for(String yeastacc : yeastcyc_ids) {
+						idLookup.put(yeastacc, "https://www.ebi.ac.uk/complexportal/complex/"+cols[1]);
+					}	
+				}else if(cols.length>=8) {
+					String sgd = cols[8];
+					Set<String> sgd_ids = new HashSet<String>();
+					if(sgd.contains("|")) {
+						String[] ids = sgd.split("\\|");
+						for(String id : ids) {
+							sgd_ids.add(id);
+						}
+					}else {
+						sgd_ids.add(sgd);
+					}				
+					for(String yeastacc : yeastcyc_ids) {
+						for(String sgdid : sgd_ids) {
+							idLookup.put(yeastacc, sgdid.replace("SGD:", "http://identifiers.org/sgd/"));
+						}
+					}					
+				}
+				line = reader.readLine();
+			}
+		}
+		reader.close();
+		
+		return idLookup;
+	}
+		
+	
+	public static Map<String, String> parseSgdIdToEcFile(String sgdIdToEcFilePath) throws IOException {
+		Map<String, Set<String>> ecLookup = new HashMap<String, Set<String>>();  // First track SGDIDs having multiple EC mappings
+		
+		InputStream stream = Helper.class.getResourceAsStream(sgdIdToEcFilePath);
+		BufferedReader sgd2ECReader = new BufferedReader(new InputStreamReader(stream));
+		String sgdLine = sgd2ECReader.readLine();
+		while(sgdLine!=null) {
+			String[] cols = sgdLine.split("	");
+			String yeastcyc = cols[1];
+			String ecNumber = cols[5];
+			if(!ecLookup.containsKey(yeastcyc)) {
+				ecLookup.put(yeastcyc, new HashSet<String>());
+			}
+			if(!ecLookup.get(yeastcyc).contains(ecNumber)) {
+				ecLookup.get(yeastcyc).add(ecNumber);
+			}
+			
+			sgdLine = sgd2ECReader.readLine();
+		}
+		sgd2ECReader.close();
+		
+		Map<String, String> cleanedEcLookup = new HashMap<String, String>();
+		for(Map.Entry<String, Set<String>> ecMapping : ecLookup.entrySet()) {
+			String yeastcyc = ecMapping.getKey();
+			Set<String> ecNumbers = ecMapping.getValue();
+			// Ensure only 1:1 mappings are used
+			if(ecNumbers.size() == 1) {
+				cleanedEcLookup.put(yeastcyc, ecNumbers.iterator().next());
+			}
+		}
+		return cleanedEcLookup;
+	}
+	
+	public static HashSet<String> extractGoTermsFromXrefs(Set<Xref> xrefs) {
+		HashSet<String> extractedGos = new HashSet<String>();
+		for(Xref xref : xrefs) {
+			//dig out any xreferenced GO processes and assign them as types
+			if(xref.getModelInterface().equals(RelationshipXref.class)) {
+				RelationshipXref r = (RelationshipXref)xref;	    			
+				//System.out.println(xref.getDb()+" "+xref.getId()+" "+xref.getUri()+"----"+r.getRelationshipType());
+				//note that relationship types are not defined beyond text strings like RelationshipTypeVocabulary_gene ontology term for cellular process
+				//you just have to know what to do.
+				//here we add the referenced GO class as a type.  
+				String db = r.getDb().toLowerCase();
+				if(db.contains("gene ontology")) {
+					String goid = r.getId().replaceAll(":", "_");
+					//record mappings
+					extractedGos.add(goid);
+				}
+			}
+		}
+		return extractedGos;
 	}
 }
