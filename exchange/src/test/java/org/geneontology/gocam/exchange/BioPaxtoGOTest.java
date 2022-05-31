@@ -1228,4 +1228,29 @@ BP has_part R
 		// acceptor is subclassOf chemical_role
 		assertTrue("There are 'acceptor' type assertions in "+pathway, n==0);
 	}
+	
+	@Test
+	public final void testYeastComplexComponents() {
+		System.out.println("testing expression of YeastCyc complexes");
+		String pathway = "<http://model.geneontology.org/SO4ASSIM-PWY>";
+		String reaction_node = "<http://model.geneontology.org/SULFITE-REDUCT-RXN>";
+		String pcc_type = "<http://purl.obolibrary.org/obo/GO_0032991>";
+		String sgd_met5_type = "<http://identifiers.org/sgd/S000003898>";
+		String q =  
+				" prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+				+ "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> "
+				+ "prefix RO: <http://purl.obolibrary.org/obo/RO_> "
+				+ "prefix BFO: <http://purl.obolibrary.org/obo/BFO_> "
+				+ "SELECT ?component_gp_type  \n" + 
+				"WHERE {\n" + 
+				"  GRAPH "+pathway+"  {  \n" + 
+				"    	"+reaction_node+" RO:0002333 ?complex_node . \n" +
+				"    	?complex_node rdf:type "+pcc_type +" . \n" +
+				"       ?complex_node BFO:0000051 ?component_gp_node . \n " +
+				"       ?component_gp_node rdf:type "+sgd_met5_type +
+				"    }\n" + 
+				"  } \n";
+		int n = runQueryAndGetCount(q);
+		assertTrue("No has_part MET5 SGD:S000003898 complex component assertion for "+reaction_node, n==1);
+	}
 }

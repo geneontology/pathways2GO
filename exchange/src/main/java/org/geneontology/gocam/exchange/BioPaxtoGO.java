@@ -149,6 +149,7 @@ public class BioPaxtoGO {
 	String default_namespace_prefix = "Reactome"; //this is used to generate curi structured references - e.g. Reactome:HSA-007
 	Set<String> drug_process_ids = new HashSet<String>(); 
 	Map<String, String> accession_neo = new HashMap<String, String>(); //in case we need to store mappings to neo IRIs, use this
+	Map<String, String> monomerToSgdMappings = new HashMap<String, String>();
 	Map<String, String> yeastcyc2EC = new HashMap<String, String>(); //used to store mappings from YeastCyc ID to EC number in SGDIDs_to_ExPASy-ECs.txt
 	public BioPaxtoGO(){
 		strategy = ImportStrategy.NoctuaCuration; 
@@ -194,7 +195,15 @@ public class BioPaxtoGO {
 			for (Map.Entry<String, String> sgdEcMapping : sgdToEcMappings.entrySet()) {
 				yeastcyc2EC.put(sgdEcMapping.getKey(), sgdEcMapping.getValue());
 			}
+			
+			// Also also parse MONOMER3O-## to SGD IDs lookup file
+			String monomerSgdIdLkpFilePath = "/YeastCyc/sgd_MONOMER3O_uniprot_lkp.tsv";
+			monomerToSgdMappings = Helper.parseMonomerToSgdIdFile(monomerSgdIdLkpFilePath, sgdGPIPath);
+			for (Map.Entry<String, String> sgdMapping : monomerToSgdMappings.entrySet()) {
+				accession_neo.put(sgdMapping.getKey(), sgdMapping.getValue());
+			}
 		}
+		
 		//read biopax pathway(s)
 		BioPAXIOHandler handler = new SimpleIOHandler();
 		FileInputStream f = new FileInputStream(input_biopax);
@@ -945,6 +954,22 @@ public class BioPaxtoGO {
 			IRI entity_class_iri = getPhysicalEntityIRI(entity);
 			OWLClass entity_class = go_cam.df.getOWLClass(entity_class_iri); 
 			go_cam.addTypeAssertion(e,  entity_class);
+			
+			if(entityStrategy.equals(EntityStrategy.YeastCyc) && entity_class.toString().equals("<http://purl.obolibrary.org/obo/GO_0032991>")) {
+				// Dig out component protein IDs
+				Set<PhysicalEntity> components = ((Complex) entity).getComponent();
+				for(PhysicalEntity c : components) {
+					String component_id = getEntityReferenceId(c);
+					System.out.println("Complex component ID: "+component_id);
+					IRI sgd_class_iri = getPhysicalEntityIRI(c);
+					String sgd_id = sgd_class_iri.toString().replace("http://identifiers.org/sgd/", "SGD:");
+					IRI iri = GoCAM.makeGoCamifiedIRI(null, (sgd_id+"_"+entity_id+"_component").replace(":", "_"));
+					OWLNamedIndividual component_e = go_cam.makeAnnotatedIndividual(iri);
+					OWLClass sgd_class = go_cam.df.getOWLClass(sgd_class_iri); 
+					go_cam.addTypeAssertion(component_e,  sgd_class);
+					go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_part, component_e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+				}
+			}
 
 			Set<String> drug_ids = Helper.getAnnotations(entity_class, tbox_qrunner.tbox_class_reasoner.getRootOntology(), GoCAM.iuphar_id);
 			if(drug_ids!=null&&drug_ids.size()>0) {

@@ -160,7 +160,60 @@ public class Helper {
 		ont.getOWLOntologyManager().setOntologyFormat(ont, new OBODocumentFormat());	
 		ont.getOWLOntologyManager().saveOntology(ont,outf);
 	}
-	
+
+	public static Map<String, String> parseMonomerToSgdIdFile(String monomerToSgdIdFilePath, String gpiFile) throws IOException {
+		Map<String, String> uniprotToSgdLookup = new HashMap<String, String>();
+		Map<String, String> monomerSgdLookup = new HashMap<String, String>();
+		
+		// First, retrieve UniProtID-to-SGDID mappings
+		InputStream stream = Helper.class.getResourceAsStream(gpiFile);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+		String line = reader.readLine();
+		while(line!=null) {
+			if(line.startsWith("!")) {
+				line = reader.readLine();
+			}else {
+				String[] cols = line.split("	");
+				if(cols[0].contentEquals("UniProtKB") && cols.length>=8) {
+					String uniprotId = cols[1];
+					String sgd = cols[8];
+					Set<String> sgd_ids = new HashSet<String>();
+					if(sgd.contains("|")) {
+						String[] ids = sgd.split("\\|");
+						for(String id : ids) {
+							sgd_ids.add(id);
+						}
+					}else {
+						sgd_ids.add(sgd);
+					}
+					for(String sgdid : sgd_ids) {
+						uniprotToSgdLookup.put(uniprotId, sgdid.replace("SGD:", "http://identifiers.org/sgd/"));
+					}
+				}
+			}
+			line = reader.readLine();
+		}
+		reader.close();
+		
+		InputStream mon2SgdStream = Helper.class.getResourceAsStream(monomerToSgdIdFilePath);
+		BufferedReader mon2SgdReader = new BufferedReader(new InputStreamReader(mon2SgdStream));
+		String monSgdLine = mon2SgdReader.readLine();
+		while(monSgdLine!=null) {
+			String[] cols = monSgdLine.split("	");
+			String uniprotId = cols[0];
+			String monomerId = cols[2];
+			monomerId = monomerId.split(":")[1];
+			
+			String sgdId = uniprotToSgdLookup.get(uniprotId);
+			monomerSgdLookup.put(monomerId, sgdId);
+			
+			monSgdLine = mon2SgdReader.readLine();
+		}
+		mon2SgdReader.close();
+		
+		return monomerSgdLookup;
+	}
+
 	public static Map<String, String> parseGPI(String gpiFile) throws IOException {
 		Map<String, String> idLookup = new HashMap<String, String>();
 		
@@ -216,6 +269,7 @@ public class Helper {
 		
 		return idLookup;
 	}
+		
 	
 	public static Map<String, String> parseSgdIdToEcFile(String sgdIdToEcFilePath) throws IOException {
 		Map<String, Set<String>> ecLookup = new HashMap<String, Set<String>>();  // First track SGDIDs having multiple EC mappings

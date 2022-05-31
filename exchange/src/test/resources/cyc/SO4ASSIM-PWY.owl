@@ -1,0 +1,1725 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+ xml:base="http://http://pathway-2a.yeastgenome.org:8080//YEAST/pathway-biopax?type=3%38object=SO4ASSIM-PWY"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema#"
+ xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#"
+>
+ <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://www.biopax.org/release/biopax-level3.owl"/>
+ <rdfs:comment>This%32BioPAX%32Level%323%32output%32for%32organism%32Saccharomyces%3732cerevisiae%44%32pathway%32assimilatory%3732sulfate%3732reduction%3732I%10was%32automatically%32generated%32from%32URL%32http%58%47%47http%58%47%47pathway%452a%46yeastgenome%46org%588080%47%47YEAST%47pathway%45biopax%63type%613%3738object%61SO4ASSIM%45PWY%32on%3205%45Jan%452021%32%3216%5827%5847%46%32%32Note%32that%32all%32IDs%32are%32auto%45generated%44%10and%32are%32valid%32in%32the%32scope%32of%32this%32file%32only%46%32%32If%32the%32data%32is%32regenerated%32at%32some%32later%10time%44%32or%32data%32for%32another%32pathway%32is%32generated%32from%32this%32same%32site%44%32there%32are%32no%32%10guarantees%32that%32the%32same%32IDs%32will%32refer%32to%32the%32same%32objects%46%32%32To%32retrieve%32a%32file%32%10containing%32a%32complete%32list%32of%32pathways%32for%32this%32organism%32in%32BioPAX%32format%44%32please%10visit%32http%58%47%47biocyc%46org%47download%45flatfiles%46shtml</rdfs:comment>
+ </owl:Ontology>
+  <bp:Stoichiometry rdf:ID="Stoichiometry65218">
+    <bp:physicalEntity>
+      <bp:SmallMolecule rdf:ID="SmallMolecule65216">
+        <bp:xref>
+          <bp:RelationshipXref rdf:ID="RelationshipXref65217">
+            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PPI</bp:id>
+            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+            <bp:relationshipType>
+              <bp:RelationshipTypeVocabulary rdf:ID="RelationshipTypeVocabulary65119">
+                <bp:term rdf:datatype="http://www.w3.org/2001/XMLSchema#string">BioCyc-ID</bp:term>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65120">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">BioCyc-ID</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">BioCyc</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+              </bp:RelationshipTypeVocabulary>
+            </bp:relationshipType>
+          </bp:RelationshipXref>
+        </bp:xref>
+        <bp:dataSource>
+          <bp:Provenance rdf:ID="Provenance65102">
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NIL</bp:name>
+          </bp:Provenance>
+        </bp:dataSource>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PPi</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PP</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pyrophosphate</bp:name>
+        <bp:entityReference>
+          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference65204">
+            <bp:structure>
+              <bp:ChemicalStructure rdf:ID="ChemicalStructure65215">
+                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI</bp:structureFormat>
+                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI=1S/H4O7P2/c1-8(2,3)7-9(4,5)6/h(H2,1,2,3)(H2,4,5,6)/p-3</bp:structureData>
+              </bp:ChemicalStructure>
+            </bp:structure>
+            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">174.951</bp:molecularWeight>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">diphosphate</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PPi</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PP</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pyrophosphate</bp:name>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65214">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PPI</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65213">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2466-09-3</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65212">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00013</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">KEGG LIGAND</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65211">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1023</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem-compound</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65210">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">996</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChemSpider</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65209">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DB04160</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DrugBank</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65208">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB00250</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65207">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MTBLC33019</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MetaboLights</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65206">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:29888</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65205">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ppi</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IAF1260</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+          </bp:SmallMoleculeReference>
+        </bp:entityReference>
+        <bp:cellularLocation>
+          <bp:CellularLocationVocabulary rdf:ID="CellularLocationVocabulary65106">
+            <bp:term rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cytosol</bp:term>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65107">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GO:0005829</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GO</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+          </bp:CellularLocationVocabulary>
+        </bp:cellularLocation>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">diphosphate</bp:standardName>
+      </bp:SmallMolecule>
+    </bp:physicalEntity>
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry65203">
+    <bp:physicalEntity>
+      <bp:SmallMolecule rdf:ID="SmallMolecule65201">
+        <bp:xref>
+          <bp:RelationshipXref rdf:ID="RelationshipXref65202">
+            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SULFATE</bp:id>
+            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+            <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary65119"/>
+          </bp:RelationshipXref>
+        </bp:xref>
+        <bp:dataSource rdf:resource="#Provenance65102"/>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sulfuric acid</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">H2SO4</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sulphate</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SO&lt;SUB&gt;4&lt;/SUB&gt;&lt;SUP&gt;-2&lt;/SUP&gt;</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SO&lt;SUB&gt;4&lt;/SUB&gt;&lt;SUP&gt;2-&lt;/SUP&gt;</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SO&lt;SUB&gt;4&lt;/SUB&gt;&lt;SUP&gt;--&lt;/SUP&gt;</bp:name>
+        <bp:entityReference>
+          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference65190">
+            <bp:structure>
+              <bp:ChemicalStructure rdf:ID="ChemicalStructure65200">
+                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI</bp:structureFormat>
+                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI=1S/H2O4S/c1-5(2,3)4/h(H2,1,2,3,4)/p-2</bp:structureData>
+              </bp:ChemicalStructure>
+            </bp:structure>
+            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">96.058</bp:molecularWeight>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sulfate</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sulfuric acid</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">H2SO4</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sulphate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SO&lt;SUB&gt;4&lt;/SUB&gt;&lt;SUP&gt;-2&lt;/SUP&gt;</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SO&lt;SUB&gt;4&lt;/SUB&gt;&lt;SUP&gt;2-&lt;/SUP&gt;</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SO&lt;SUB&gt;4&lt;/SUB&gt;&lt;SUP&gt;--&lt;/SUP&gt;</bp:name>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65199">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SULFATE</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65198">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">14808-79-8</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65197">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1117</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem-compound</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65196">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:16189</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65195">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1085</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChemSpider</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65194">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB01448</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65193">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00059</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">KEGG LIGAND</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65192">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MTBLC16189</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MetaboLights</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65191">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">so4</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IAF1260</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+          </bp:SmallMoleculeReference>
+        </bp:entityReference>
+        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary65106"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sulfate</bp:standardName>
+      </bp:SmallMolecule>
+    </bp:physicalEntity>
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+  </bp:Stoichiometry>
+  <bp:UnificationXref rdf:ID="UnificationXref65189">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SULFATE-ADENYLYLTRANS-RXN</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:BiochemicalReaction rdf:ID="BiochemicalReaction65188">
+    <bp:participantStoichiometry rdf:resource="#Stoichiometry65218"/>
+    <bp:participantStoichiometry>
+      <bp:Stoichiometry rdf:ID="Stoichiometry65122">
+        <bp:physicalEntity>
+          <bp:SmallMolecule rdf:ID="SmallMolecule65118">
+            <bp:dataSource rdf:resource="#Provenance65102"/>
+            <bp:displayName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">APS</bp:displayName>
+            <bp:xref>
+              <bp:RelationshipXref rdf:ID="RelationshipXref65121">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">APS</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary65119"/>
+              </bp:RelationshipXref>
+            </bp:xref>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenylyl-sulfate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine phosphosulfate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine 5&apos;-sulphatophosphate</bp:name>
+            <bp:entityReference>
+              <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference65108">
+                <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">425.266</bp:molecularWeight>
+                <bp:structure>
+                  <bp:ChemicalStructure rdf:ID="ChemicalStructure65117">
+                    <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI</bp:structureFormat>
+                    <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI=1S/C10H14N5O10PS/c11-8-5-9(13-2-12-8)15(3-14-5)10-7(17)6(16)4(24-10)1-23-26(18,19)25-27(20,21)22/h2-4,6-7,10,16-17H,1H2,(H,18,19)(H2,11,12,13)(H,20,21,22)/p-2/t4-,6-,7-,10-/m1/s1</bp:structureData>
+                  </bp:ChemicalStructure>
+                </bp:structure>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65116">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">APS</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65115">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">485-84-7</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65114">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00224</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">KEGG LIGAND</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65113">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB01003</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65112">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MTBLC58243</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MetaboLights</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65111">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:58243</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65110">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">49852317</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem-compound</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65109">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aps</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IAF1260</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine 5&apos;-phosphosulfate</bp:standardName>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenylyl-sulfate</bp:name>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine phosphosulfate</bp:name>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine 5&apos;-sulphatophosphate</bp:name>
+                <bp:displayName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">APS</bp:displayName>
+              </bp:SmallMoleculeReference>
+            </bp:entityReference>
+            <bp:cellularLocation rdf:resource="#CellularLocationVocabulary65106"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine 5&apos;-phosphosulfate</bp:standardName>
+          </bp:SmallMolecule>
+        </bp:physicalEntity>
+        <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+      </bp:Stoichiometry>
+    </bp:participantStoichiometry>
+    <bp:participantStoichiometry>
+      <bp:Stoichiometry rdf:ID="Stoichiometry65137">
+        <bp:physicalEntity>
+          <bp:SmallMolecule rdf:ID="SmallMolecule65135">
+            <bp:xref>
+              <bp:RelationshipXref rdf:ID="RelationshipXref65136">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ATP</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary65119"/>
+              </bp:RelationshipXref>
+            </bp:xref>
+            <bp:dataSource rdf:resource="#Provenance65102"/>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenylpyrophosphate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-triphosphate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-5&apos;-triphosphate</bp:name>
+            <bp:entityReference>
+              <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference65123">
+                <bp:structure>
+                  <bp:ChemicalStructure rdf:ID="ChemicalStructure65134">
+                    <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI</bp:structureFormat>
+                    <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI=1S/C10H16N5O13P3/c11-8-5-9(13-2-12-8)15(3-14-5)10-7(17)6(16)4(26-10)1-25-30(21,22)28-31(23,24)27-29(18,19)20/h2-4,6-7,10,16-17H,1H2,(H,21,22)(H,23,24)(H2,11,12,13)(H2,18,19,20)/p-4/t4-,6-,7-,10-/m1/s1</bp:structureData>
+                  </bp:ChemicalStructure>
+                </bp:structure>
+                <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">503.152</bp:molecularWeight>
+                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ATP</bp:standardName>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenylpyrophosphate</bp:name>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-triphosphate</bp:name>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-5&apos;-triphosphate</bp:name>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65133">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ATP</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65132">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">56-65-5</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65131">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00002</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">KEGG LIGAND</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65130">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">5461108</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem-compound</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65129">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:30616</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65128">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">4574455</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChemSpider</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65127">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB00538</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65126">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MTBLC30616</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MetaboLights</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65125">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">atp</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IAF1260</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65124">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ATP</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RefMet</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+              </bp:SmallMoleculeReference>
+            </bp:entityReference>
+            <bp:cellularLocation rdf:resource="#CellularLocationVocabulary65106"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ATP</bp:standardName>
+          </bp:SmallMolecule>
+        </bp:physicalEntity>
+        <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+      </bp:Stoichiometry>
+    </bp:participantStoichiometry>
+    <bp:participantStoichiometry rdf:resource="#Stoichiometry65203"/>
+    <bp:participantStoichiometry>
+      <bp:Stoichiometry rdf:ID="Stoichiometry65150">
+        <bp:physicalEntity>
+          <bp:SmallMolecule rdf:ID="SmallMolecule65148">
+            <bp:xref>
+              <bp:RelationshipXref rdf:ID="RelationshipXref65149">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PROTON</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary65119"/>
+              </bp:RelationshipXref>
+            </bp:xref>
+            <bp:dataSource rdf:resource="#Provenance65102"/>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">hydrogen ion</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">proton</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">H</bp:name>
+            <bp:entityReference>
+              <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference65138">
+                <bp:structure>
+                  <bp:ChemicalStructure rdf:ID="ChemicalStructure65147">
+                    <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI</bp:structureFormat>
+                    <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI=1S/p+1</bp:structureData>
+                  </bp:ChemicalStructure>
+                </bp:structure>
+                <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">1.008</bp:molecularWeight>
+                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">H&lt;SUP&gt;+&lt;/SUP&gt;</bp:standardName>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">hydrogen ion</bp:name>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">proton</bp:name>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">H</bp:name>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65146">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PROTON</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65145">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00080</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">KEGG LIGAND</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65144">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12408-02-5</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65143">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:15378</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65142">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1038</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem-compound</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65141">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1010</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChemSpider</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65140">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB59597</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65139">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">h</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IAF1260</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+              </bp:SmallMoleculeReference>
+            </bp:entityReference>
+            <bp:cellularLocation rdf:resource="#CellularLocationVocabulary65106"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">H&lt;SUP&gt;+&lt;/SUP&gt;</bp:standardName>
+          </bp:SmallMolecule>
+        </bp:physicalEntity>
+        <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+      </bp:Stoichiometry>
+    </bp:participantStoichiometry>
+    <bp:right rdf:resource="#SmallMolecule65118"/>
+    <bp:right rdf:resource="#SmallMolecule65216"/>
+    <bp:eCNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2.7.7.4</bp:eCNumber>
+    <bp:left rdf:resource="#SmallMolecule65148"/>
+    <bp:left rdf:resource="#SmallMolecule65201"/>
+    <bp:left rdf:resource="#SmallMolecule65135"/>
+    <bp:dataSource rdf:resource="#Provenance65102"/>
+    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sulfate + ATP + H&lt;SUP&gt;+&lt;/SUP&gt;  &amp;harr;  adenosine 5&apos;-phosphosulfate + diphosphate</bp:standardName>
+    <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sulfate adenylate transferase</bp:name>
+    <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sulfurylase</bp:name>
+    <bp:xref rdf:resource="#UnificationXref65189"/>
+  </bp:BiochemicalReaction>
+  <bp:BiochemicalPathwayStep rdf:ID="BiochemicalPathwayStep65187">
+    <bp:nextStep>
+      <bp:BiochemicalPathwayStep rdf:ID="BiochemicalPathwayStep65103">
+        <bp:nextStep>
+          <bp:BiochemicalPathwayStep rdf:ID="BiochemicalPathwayStep65225">
+            <bp:nextStep>
+              <bp:BiochemicalPathwayStep rdf:ID="BiochemicalPathwayStep65270">
+                <bp:stepConversion>
+                  <bp:BiochemicalReaction rdf:ID="BiochemicalReaction65271">
+                    <bp:participantStoichiometry>
+                      <bp:Stoichiometry rdf:ID="Stoichiometry65331">
+                        <bp:physicalEntity>
+                          <bp:SmallMolecule rdf:ID="SmallMolecule65329">
+                            <bp:xref>
+                              <bp:RelationshipXref rdf:ID="RelationshipXref65330">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADPH</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                                <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary65119"/>
+                              </bp:RelationshipXref>
+                            </bp:xref>
+                            <bp:dataSource rdf:resource="#Provenance65102"/>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">reduced nicotinamide adenine dinucleotide phosphate</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADPH2</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADPH&lt;SUB&gt;2&lt;/SUB&gt;</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dihydrotriphosphopyridine nucleotide</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">reduced dihydrotriphosphopyridine nucleotide</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dihydronicotinamide adenine dinucleotide phosphate</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dihydronicotinamide adenine dinucleotide phosphate reduced</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">reduced NADP</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADP-red</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">TPNH</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dihydronicotinamide adenine dinucleotide-P</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">&amp;beta;-NADPH</bp:name>
+                            <bp:entityReference>
+                              <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference65317">
+                                <bp:structure>
+                                  <bp:ChemicalStructure rdf:ID="ChemicalStructure65328">
+                                    <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI</bp:structureFormat>
+                                    <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI=1S/C21H30N7O17P3/c22-17-12-19(25-7-24-17)28(8-26-12)21-16(44-46(33,34)35)14(30)11(43-21)6-41-48(38,39)45-47(36,37)40-5-10-13(29)15(31)20(42-10)27-3-1-2-9(4-27)18(23)32/h1,3-4,7-8,10-11,13-16,20-21,29-31H,2,5-6H2,(H2,23,32)(H,36,37)(H,38,39)(H2,22,24,25)(H2,33,34,35)/p-4/t10-,11-,13-,14-,15-,16-,20-,21-/m1/s1</bp:structureData>
+                                  </bp:ChemicalStructure>
+                                </bp:structure>
+                                <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">741.394</bp:molecularWeight>
+                                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADPH</bp:standardName>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">reduced nicotinamide adenine dinucleotide phosphate</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADPH2</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADPH&lt;SUB&gt;2&lt;/SUB&gt;</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dihydrotriphosphopyridine nucleotide</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">reduced dihydrotriphosphopyridine nucleotide</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dihydronicotinamide adenine dinucleotide phosphate</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dihydronicotinamide adenine dinucleotide phosphate reduced</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">reduced NADP</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADP-red</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">TPNH</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dihydronicotinamide adenine dinucleotide-P</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">&amp;beta;-NADPH</bp:name>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65327">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADPH</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65326">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00005</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">KEGG LIGAND</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65325">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2646-71-1</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65324">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">15983949</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem-compound</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65323">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:57783</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65322">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">10239199</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChemSpider</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65321">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB00221</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65320">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MTBLC57783</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MetaboLights</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65319">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nadph</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IAF1260</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65318">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADPH</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RefMet</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                              </bp:SmallMoleculeReference>
+                            </bp:entityReference>
+                            <bp:cellularLocation rdf:resource="#CellularLocationVocabulary65106"/>
+                            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADPH</bp:standardName>
+                          </bp:SmallMolecule>
+                        </bp:physicalEntity>
+                        <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">3</bp:stoichiometricCoefficient>
+                      </bp:Stoichiometry>
+                    </bp:participantStoichiometry>
+                    <bp:participantStoichiometry>
+                      <bp:Stoichiometry rdf:ID="Stoichiometry65253">
+                        <bp:physicalEntity>
+                          <bp:SmallMolecule rdf:ID="SmallMolecule65251">
+                            <bp:xref>
+                              <bp:RelationshipXref rdf:ID="RelationshipXref65252">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SO3</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                                <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary65119"/>
+                              </bp:RelationshipXref>
+                            </bp:xref>
+                            <bp:dataSource rdf:resource="#Provenance65102"/>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SO&lt;SUB&gt;3&lt;/SUB&gt;</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SO&lt;SUB&gt;3&lt;/SUB&gt;&lt;SUP&gt;-2&lt;/SUP&gt;</bp:name>
+                            <bp:entityReference>
+                              <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference65242">
+                                <bp:structure>
+                                  <bp:ChemicalStructure rdf:ID="ChemicalStructure65250">
+                                    <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI</bp:structureFormat>
+                                    <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI=1S/H2O3S/c1-4(2)3/h(H2,1,2,3)/p-2</bp:structureData>
+                                  </bp:ChemicalStructure>
+                                </bp:structure>
+                                <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">80.058</bp:molecularWeight>
+                                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sulfite</bp:standardName>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SO&lt;SUB&gt;3&lt;/SUB&gt;</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SO&lt;SUB&gt;3&lt;/SUB&gt;&lt;SUP&gt;-2&lt;/SUP&gt;</bp:name>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65249">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SO3</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65248">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:17359</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65247">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1099</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem-compound</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65246">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">14265-45-3</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65245">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1068</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChemSpider</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65244">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB00240</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65243">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">so3</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IAF1260</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                              </bp:SmallMoleculeReference>
+                            </bp:entityReference>
+                            <bp:cellularLocation rdf:resource="#CellularLocationVocabulary65106"/>
+                            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sulfite</bp:standardName>
+                          </bp:SmallMolecule>
+                        </bp:physicalEntity>
+                        <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+                      </bp:Stoichiometry>
+                    </bp:participantStoichiometry>
+                    <bp:participantStoichiometry>
+                      <bp:Stoichiometry rdf:ID="Stoichiometry65316">
+                        <bp:physicalEntity rdf:resource="#SmallMolecule65148"/>
+                        <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">5</bp:stoichiometricCoefficient>
+                      </bp:Stoichiometry>
+                    </bp:participantStoichiometry>
+                    <bp:participantStoichiometry>
+                      <bp:Stoichiometry rdf:ID="Stoichiometry65315">
+                        <bp:physicalEntity>
+                          <bp:SmallMolecule rdf:ID="SmallMolecule65313">
+                            <bp:xref>
+                              <bp:RelationshipXref rdf:ID="RelationshipXref65314">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HS</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                                <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary65119"/>
+                              </bp:RelationshipXref>
+                            </bp:xref>
+                            <bp:dataSource rdf:resource="#Provenance65102"/>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sulfide</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">H&lt;SUB&gt;2&lt;/SUB&gt;S</bp:name>
+                            <bp:entityReference>
+                              <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference65302">
+                                <bp:structure>
+                                  <bp:ChemicalStructure rdf:ID="ChemicalStructure65312">
+                                    <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI</bp:structureFormat>
+                                    <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI=1S/H2S/h1H2</bp:structureData>
+                                  </bp:ChemicalStructure>
+                                </bp:structure>
+                                <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">34.076</bp:molecularWeight>
+                                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">hydrogen sulfide</bp:standardName>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sulfide</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">H&lt;SUB&gt;2&lt;/SUB&gt;S</bp:name>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65311">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HS</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65310">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:16136</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65309">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">7783-06-4</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65308">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">402</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem-compound</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65307">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00283</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">KEGG LIGAND</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65306">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">391</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChemSpider</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65305">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB03276</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65304">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MTBLC16136</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MetaboLights</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65303">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">h2s</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IAF1260</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                              </bp:SmallMoleculeReference>
+                            </bp:entityReference>
+                            <bp:cellularLocation rdf:resource="#CellularLocationVocabulary65106"/>
+                            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">hydrogen sulfide</bp:standardName>
+                          </bp:SmallMolecule>
+                        </bp:physicalEntity>
+                        <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+                      </bp:Stoichiometry>
+                    </bp:participantStoichiometry>
+                    <bp:participantStoichiometry>
+                      <bp:Stoichiometry rdf:ID="Stoichiometry65301">
+                        <bp:physicalEntity>
+                          <bp:SmallMolecule rdf:ID="SmallMolecule65299">
+                            <bp:xref>
+                              <bp:RelationshipXref rdf:ID="RelationshipXref65300">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADP</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                                <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary65119"/>
+                              </bp:RelationshipXref>
+                            </bp:xref>
+                            <bp:dataSource rdf:resource="#Provenance65102"/>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">coenzyme II</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">triphosphopyridine nucleotide</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nicotinamide adenine dinucleotide phosphate</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADP-oxidized</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADP-ox</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">TPN</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">TPN+</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">TPN-ox</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nicotinamide adenine dinucleotide-P</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADP(+)</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADP</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">&amp;beta;-NADP&lt;sup&gt;+&lt;/sup&gt;</bp:name>
+                            <bp:entityReference>
+                              <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference65287">
+                                <bp:structure>
+                                  <bp:ChemicalStructure rdf:ID="ChemicalStructure65298">
+                                    <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI</bp:structureFormat>
+                                    <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI=1S/C21H28N7O17P3/c22-17-12-19(25-7-24-17)28(8-26-12)21-16(44-46(33,34)35)14(30)11(43-21)6-41-48(38,39)45-47(36,37)40-5-10-13(29)15(31)20(42-10)27-3-1-2-9(4-27)18(23)32/h1-4,7-8,10-11,13-16,20-21,29-31H,5-6H2,(H7-,22,23,24,25,32,33,34,35,36,37,38,39)/p-3/t10-,11-,13-,14-,15-,16-,20-,21-/m1/s1</bp:structureData>
+                                  </bp:ChemicalStructure>
+                                </bp:structure>
+                                <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">740.386</bp:molecularWeight>
+                                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADP&lt;sup&gt;+&lt;/sup&gt;</bp:standardName>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">coenzyme II</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">triphosphopyridine nucleotide</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nicotinamide adenine dinucleotide phosphate</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADP-oxidized</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADP-ox</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">TPN</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">TPN+</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">TPN-ox</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nicotinamide adenine dinucleotide-P</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADP(+)</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADP</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">&amp;beta;-NADP&lt;sup&gt;+&lt;/sup&gt;</bp:name>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65297">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADP</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65296">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">53-59-8</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65295">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00006</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">KEGG LIGAND</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65294">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">15938972</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem-compound</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65293">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:58349</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65292">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">10239198</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChemSpider</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65291">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB00217</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65290">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MTBLC58349</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MetaboLights</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65289">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nadp</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IAF1260</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65288">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADP+</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RefMet</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                              </bp:SmallMoleculeReference>
+                            </bp:entityReference>
+                            <bp:cellularLocation rdf:resource="#CellularLocationVocabulary65106"/>
+                            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NADP&lt;sup&gt;+&lt;/sup&gt;</bp:standardName>
+                          </bp:SmallMolecule>
+                        </bp:physicalEntity>
+                        <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">3</bp:stoichiometricCoefficient>
+                      </bp:Stoichiometry>
+                    </bp:participantStoichiometry>
+                    <bp:participantStoichiometry>
+                      <bp:Stoichiometry rdf:ID="Stoichiometry65286">
+                        <bp:physicalEntity>
+                          <bp:SmallMolecule rdf:ID="SmallMolecule65284">
+                            <bp:xref>
+                              <bp:RelationshipXref rdf:ID="RelationshipXref65285">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">WATER</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                                <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary65119"/>
+                              </bp:RelationshipXref>
+                            </bp:xref>
+                            <bp:dataSource rdf:resource="#Provenance65102"/>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">H2O</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">hydrogen oxide</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">water</bp:name>
+                            <bp:entityReference>
+                              <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference65273">
+                                <bp:structure>
+                                  <bp:ChemicalStructure rdf:ID="ChemicalStructure65283">
+                                    <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI</bp:structureFormat>
+                                    <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI=1S/H2O/h1H2</bp:structureData>
+                                  </bp:ChemicalStructure>
+                                </bp:structure>
+                                <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">18.015</bp:molecularWeight>
+                                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">H&lt;sub&gt;2&lt;/sub&gt;O</bp:standardName>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">H2O</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">hydrogen oxide</bp:name>
+                                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">water</bp:name>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65282">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">WATER</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65281">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">7732-18-5</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65280">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00001</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">KEGG LIGAND</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65279">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">962</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem-compound</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65278">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:15377</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65277">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">937</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChemSpider</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65276">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB02111</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65275">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MTBLC15377</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MetaboLights</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                                <bp:xref>
+                                  <bp:UnificationXref rdf:ID="UnificationXref65274">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">h2o</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IAF1260</bp:db>
+                                  </bp:UnificationXref>
+                                </bp:xref>
+                              </bp:SmallMoleculeReference>
+                            </bp:entityReference>
+                            <bp:cellularLocation rdf:resource="#CellularLocationVocabulary65106"/>
+                            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">H&lt;sub&gt;2&lt;/sub&gt;O</bp:standardName>
+                          </bp:SmallMolecule>
+                        </bp:physicalEntity>
+                        <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">3</bp:stoichiometricCoefficient>
+                      </bp:Stoichiometry>
+                    </bp:participantStoichiometry>
+                    <bp:left rdf:resource="#SmallMolecule65284"/>
+                    <bp:left rdf:resource="#SmallMolecule65299"/>
+                    <bp:left rdf:resource="#SmallMolecule65313"/>
+                    <bp:right rdf:resource="#SmallMolecule65148"/>
+                    <bp:right rdf:resource="#SmallMolecule65251"/>
+                    <bp:right rdf:resource="#SmallMolecule65329"/>
+                    <bp:eCNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1.8.1.2</bp:eCNumber>
+                    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">hydrogen sulfide + 3 NADP&lt;sup&gt;+&lt;/sup&gt; + 3 H&lt;sub&gt;2&lt;/sub&gt;O  &amp;larr;  sulfite + 3 NADPH + 5 H&lt;SUP&gt;+&lt;/SUP&gt;</bp:standardName>
+                    <bp:xref>
+                      <bp:UnificationXref rdf:ID="UnificationXref65272">
+                        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SULFITE-REDUCT-RXN</bp:id>
+                        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                      </bp:UnificationXref>
+                    </bp:xref>
+                    <bp:dataSource rdf:resource="#Provenance65102"/>
+                  </bp:BiochemicalReaction>
+                </bp:stepConversion>
+                <bp:stepProcess>
+                  <bp:Catalysis rdf:ID="Catalysis65332">
+                    <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+                    <bp:controller>
+                      <bp:Complex rdf:ID="Complex65334">
+                        <bp:componentStoichiometry>
+                          <bp:Stoichiometry rdf:ID="Stoichiometry65347">
+                            <bp:physicalEntity>
+                              <bp:Protein rdf:ID="Protein65345">
+                                <bp:dataSource rdf:resource="#Provenance65102"/>
+                                <bp:entityReference>
+                                  <bp:ProteinReference rdf:ID="ProteinReference65343">
+                                    <bp:organism>
+                                      <bp:BioSource rdf:ID="BioSource65184">
+                                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Saccharomyces cerevisiae</bp:name>
+                                      </bp:BioSource>
+                                    </bp:organism>
+                                    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">beta subunit</bp:standardName>
+                                    <bp:xref>
+                                      <bp:UnificationXref rdf:ID="UnificationXref65344">
+                                        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MONOMER3O-22</bp:id>
+                                        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                                      </bp:UnificationXref>
+                                    </bp:xref>
+                                    <bp:sequence rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MTASDLLTLPQLLAQYSSSAPQNKVFYTTSTKNSHSSFKGLESVATDATHLLNNQDPLNTIKDQLSKDILTTVFTDETTLVKSIHHLYSLPNKLPLVITVDLNLQDYSAIPALKDLSFPILISSDLQTAISNADSSYKIATSSLTPVFHFLNLEKIGTSTAIEQDIDFPTLEIANEETKVALSEATDSLTNFELVKGKESITTVIVNLSPYDAEFSSVLPSNVGLIKIRVYRPWNFSKFLEILPSSVTKIAVLQGVSKKSQSNEFQPFLLDFFGNFNELVSRNIEQVVLTNIGNVNDYGNVINTVISNINKKEPDNNLFLGESNEKAEEQAEVTQLISSVKKVVNLEDAYIKVLKQLFSSNLQILNQFSSETIEPSNPEFGFGRFLKQEAQREELISLAKTSLDPSLYLSEDANKIVQLLSKWLSFNGRDLDEAQLQEANATGLEIFQLLQSNQDSSTVLKFLKIAPTSDSFIFKSSWLIGSDAWSYDLGHSGIQQVLSSRKNINVLLIDSEPYDHRKQNQDRKKDVGLYAMNYYSAYVASVAVYASYTQLLTAIIEASKYNGPSIVLAYLPYNSENDTPLEVLKETKNAVESGYWPLYRFNPVYDDPSTDKEAFSLDSSVIRKQLQDFLDRENKLTLLTRKDPSLSRNLKQSAGDALTRKQEKRSKAAFDQLLEGLSGPPLHVYYASDGGNAANLAKRLAARASARGLKATVLSMDDIILEELPGEENVVFITSTAGQGEFPQDGKSFWEALKNDTDLDLASLNVAVFGLGDSEYWPRKEDKHYFNKPSQDLFKRLELLSAKALIPLGLGDDQDADGFQTAYSEWEPKLWEALGVSGAAVDDEPKPVTNEDIKRESNFLRGTISENLKDTSSGGVTHANEQLMKFHGIYTQDDRDIREIRKSQGLEPYYMFMARARLPGGKTTPQQWLALDHLSDTSGNGTLKLTTRATFQIHGVLKKNLKHTLRGMNAVLMDTLAAAGDVNRNVMVSALPTNAKVHQQIADMGKLISDHFLPKTTAYHEVWLEGPEEQDDDPSWPSIFENRKDGPRKKKTLVSGNALVDIEPIYGPTYLPRKFKFNIAVPPYNDVDVLSIDVGLVAIVNPETQIVEGYNVFVGGGMGTTHNNKKTYPRLGSCLGFVKTEDIIPPLEGIVIVQRDHGDRKDRKHARLKYTVDDMGVEGFKQKVEEYWGKKFEPERPFEFKSNIDYFGWIKDETGLNHFTAFIENGRVEDTPDLPQKTGIRKVAEYMLKTNSGHFRLTGNQHLVISNITDEHVAGIKSILKTYKLDNTDFSGLRLSSSSCVGLPTCGLAFAESERFLPDIITQLEDCLEEYGLRHDSIIMRMTGCPNGCSRPWLGELALVGKAPHTYNLMLGGGYLGQRLNKLYKANVKDEEIVDYIKPLFKRYALEREEGEHFGDFCIRVGIIKPTTEGKYFHEDVSEDAY</bp:sequence>
+                                  </bp:ProteinReference>
+                                </bp:entityReference>
+                                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">beta subunit</bp:standardName>
+                                <bp:xref>
+                                  <bp:RelationshipXref rdf:ID="RelationshipXref65346">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MONOMER3O-22</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                                    <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary65119"/>
+                                  </bp:RelationshipXref>
+                                </bp:xref>
+                              </bp:Protein>
+                            </bp:physicalEntity>
+                            <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">2</bp:stoichiometricCoefficient>
+                          </bp:Stoichiometry>
+                        </bp:componentStoichiometry>
+                        <bp:componentStoichiometry>
+                          <bp:Stoichiometry rdf:ID="Stoichiometry65342">
+                            <bp:physicalEntity>
+                              <bp:Protein rdf:ID="Protein65340">
+                                <bp:dataSource rdf:resource="#Provenance65102"/>
+                                <bp:entityReference>
+                                  <bp:ProteinReference rdf:ID="ProteinReference65338">
+                                    <bp:organism rdf:resource="#BioSource65184"/>
+                                    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">alpha subunit</bp:standardName>
+                                    <bp:xref>
+                                      <bp:UnificationXref rdf:ID="UnificationXref65339">
+                                        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MONOMER3O-21</bp:id>
+                                        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                                      </bp:UnificationXref>
+                                    </bp:xref>
+                                    <bp:sequence rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MPVEFATNPFGEAKNATSLPKYGTPVTAISSVLFNNVDSIFAYKSFSQPDLLHQDLKKWSEKRGNESRGKPFFQELDIRSGAGLAPLGFSHGLKNTTAIVAPGFSLPYFINSLKTVSHDGKFLLNVGALNYDNATGSVTNDYVTALDAASKLKYGVVTPISANEVQSVALLALAIATFSNNSGAINLFDGLNYSKTVLPLVESVPEASILAKLSKVIAPDAAFDDVLDKFNELTGLRLHNFQYFGAQDAETVFITYGSLESELFNSAISGNNSKIGLINVRVPLPFNVAKFVTHVPSTTKQIVVIGQTLDGSSPSFLRSQVSAALFYHGRTSISVSEYIYQPDFIWSPKAVKSIVSSFIPEFTYNADSSFGEGFIYWASDKSINIDVASKLVKALSLEDGKFVSLRTKFDNLANAGTFQAQFVTSKEQIPVSNIDSTKLSVVEDVSLLKHLDVAATVAEQGSIALVSQKAVKDLDLNSVESYVKNLGIPESFLISIAKKNIKLFIIDGETTNDESKLSLFIQAVFWKLAFGLDVAECTNRIWKSIDSGADISAASISEFLTGAFKNFLSEVPLALYTKFSEINIEKKEDEEEPAALPIFVNETSFLPNNSTIEEIPLPETSEISDIAKKLSFKEAYEVENKLRPDLPVKNFVVKVKENRRVTPADYDRYIFHIEFDISGTGMTYDIGEALGIHARNNESLVKEFLTFYGLNESDVVLVPNKDNHHLLETRTVLQAFVENLDIFGKPPKRFYESLIPYASNEEEKKKLEDLVTPAGAVDLKRFQDVEYYTYADIFELFPSVRPSLEELVTIIEPLKRREYSIASSQKVHPNEVHLLIVVVDWVDNKGRKRYGQASKYISDLAVGSELVVSVKPSVMKLPPSPKQPVIMSGLGTGLAPFKAIVEEKLWQKQQGYEIGEVFLYLGSRHKREEYLYGELWEAYKDAGIITHIGAAFSRDQPQKIYIQDRIKENLDELKTAMIDNKGSFYLCGPTWPVPDITQALQDILAKDAEERGIKVDLDAAIEELKEASRYILEVY</bp:sequence>
+                                  </bp:ProteinReference>
+                                </bp:entityReference>
+                                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">alpha subunit</bp:standardName>
+                                <bp:xref>
+                                  <bp:RelationshipXref rdf:ID="RelationshipXref65341">
+                                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MONOMER3O-21</bp:id>
+                                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                                    <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary65119"/>
+                                  </bp:RelationshipXref>
+                                </bp:xref>
+                              </bp:Protein>
+                            </bp:physicalEntity>
+                            <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">2</bp:stoichiometricCoefficient>
+                          </bp:Stoichiometry>
+                        </bp:componentStoichiometry>
+                        <bp:component rdf:resource="#Protein65345"/>
+                        <bp:component rdf:resource="#Protein65340"/>
+                        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sulfite reductase</bp:standardName>
+                        <bp:xref>
+                          <bp:UnificationXref rdf:ID="UnificationXref65337">
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CPLX3O-23</bp:id>
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                          </bp:UnificationXref>
+                        </bp:xref>
+                        <bp:xref>
+                          <bp:PublicationXref rdf:ID="PublicationXref65336">
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:db>
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">6758854</bp:id>
+                            <bp:year rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1982</bp:year>
+                            <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Kobayashi K</bp:author>
+                            <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Yoshimoto A</bp:author>
+                            <bp:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Studies on yeast sulfite reductase. VI. Use of the effects of ionic strength as a probe for enzyme structure and mechanism.</bp:title>
+                            <bp:source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Biochim Biophys Acta 709(1);46-52</bp:source>
+                          </bp:PublicationXref>
+                        </bp:xref>
+                        <bp:xref>
+                          <bp:PublicationXref rdf:ID="PublicationXref65335">
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:db>
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">6751400</bp:id>
+                            <bp:year rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1982</bp:year>
+                            <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Kobayashi K</bp:author>
+                            <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Yoshimoto A</bp:author>
+                            <bp:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Studies on yeast sulfite reductase. IV. Structure and steady-state kinetics.</bp:title>
+                            <bp:source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Biochim Biophys Acta 705(3);348-56</bp:source>
+                          </bp:PublicationXref>
+                        </bp:xref>
+                        <bp:dataSource rdf:resource="#Provenance65102"/>
+                      </bp:Complex>
+                    </bp:controller>
+                    <bp:controlled rdf:resource="#BiochemicalReaction65271"/>
+                    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sulfite reductase (NADPH)</bp:standardName>
+                    <bp:xref>
+                      <bp:UnificationXref rdf:ID="UnificationXref65333">
+                        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-24</bp:id>
+                        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                      </bp:UnificationXref>
+                    </bp:xref>
+                    <bp:dataSource rdf:resource="#Provenance65102"/>
+                  </bp:Catalysis>
+                </bp:stepProcess>
+                <bp:stepDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RIGHT-TO-LEFT</bp:stepDirection>
+              </bp:BiochemicalPathwayStep>
+            </bp:nextStep>
+            <bp:stepConversion>
+              <bp:BiochemicalReaction rdf:ID="BiochemicalReaction65226">
+                <bp:participantStoichiometry>
+                  <bp:Stoichiometry rdf:ID="Stoichiometry65262">
+                    <bp:physicalEntity>
+                      <bp:Protein rdf:ID="Protein65260">
+                        <bp:dataSource rdf:resource="#Provenance65102"/>
+                        <bp:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Thioredoxin is a small electron-transfer protein that contains a cysteine disulfide/dithiol active site in the form of C-X-X-C.  It functions in a wide variety of cellular processes. 
+
+Thioredoxin is reduced by NADPH in a reaction catalyzed by |FRAME: THIOREDOXIN-REDUCT-NADPH-CPLX|. The conversion between the oxidized and reduced forms results in a change of conformation and a significant change in functional properties. The reduced thioredoxin is a powerful protein disulfide reductase that catalyzes dithiol-disulfide exchange reactions with many substrates.
+
+The oxidized form of thioredoxin has been crystallized, the reduced form has been solved by NMR |CITS: [6378624][3896121][3152490][2187529] [2193685] [8098620] [2181145]|.</bp:comment>
+                        <bp:xref>
+                          <bp:RelationshipXref rdf:ID="RelationshipXref65261">
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Red-Thioredoxin</bp:id>
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                            <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary65119"/>
+                          </bp:RelationshipXref>
+                        </bp:xref>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a reduced thioredoxin</bp:name>
+                        <bp:entityReference>
+                          <bp:ProteinReference rdf:ID="ProteinReference65254">
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref65255">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Red-Thioredoxin</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:organism rdf:resource="#BioSource65184"/>
+                          </bp:ProteinReference>
+                        </bp:entityReference>
+                        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary65106"/>
+                        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a reduced thioredoxin</bp:standardName>
+                      </bp:Protein>
+                    </bp:physicalEntity>
+                    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+                  </bp:Stoichiometry>
+                </bp:participantStoichiometry>
+                <bp:participantStoichiometry>
+                  <bp:Stoichiometry rdf:ID="Stoichiometry65164">
+                    <bp:physicalEntity>
+                      <bp:SmallMolecule rdf:ID="SmallMolecule65162">
+                        <bp:dataSource rdf:resource="#Provenance65102"/>
+                        <bp:displayName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PAPS</bp:displayName>
+                        <bp:xref>
+                          <bp:RelationshipXref rdf:ID="RelationshipXref65163">
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PAPS</bp:id>
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                            <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary65119"/>
+                          </bp:RelationshipXref>
+                        </bp:xref>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">phosphoadenosine-5&apos;-phosphosulfate</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">phosphoadenosine phosphosulfate</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3&apos;-phosphoadenosine-5&apos;-phosphosulfate</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3&apos;-phosphoadenylyl sulfate</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3&apos;-phospho-5&apos;-adenylyl sulfate</bp:name>
+                        <bp:entityReference>
+                          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference65151">
+                            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">503.23</bp:molecularWeight>
+                            <bp:structure>
+                              <bp:ChemicalStructure rdf:ID="ChemicalStructure65161">
+                                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI</bp:structureFormat>
+                                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI=1S/C10H15N5O13P2S/c11-8-5-9(13-2-12-8)15(3-14-5)10-6(16)7(27-29(17,18)19)4(26-10)1-25-30(20,21)28-31(22,23)24/h2-4,6-7,10,16H,1H2,(H,20,21)(H2,11,12,13)(H2,17,18,19)(H,22,23,24)/p-4/t4-,6-,7-,10-/m1/s1</bp:structureData>
+                              </bp:ChemicalStructure>
+                            </bp:structure>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref65160">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PAPS</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref65159">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">482-67-7</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref65158">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00053</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">KEGG LIGAND</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref65157">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00007446</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">KNApSAcK</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref65156">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">46926099</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem-compound</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref65155">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:58339</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref65154">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB01134</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref65153">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MTBLC58339</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MetaboLights</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref65152">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">paps</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IAF1260</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3&apos;-phosphoadenylyl-sulfate</bp:standardName>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">phosphoadenosine-5&apos;-phosphosulfate</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">phosphoadenosine phosphosulfate</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3&apos;-phosphoadenosine-5&apos;-phosphosulfate</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3&apos;-phosphoadenylyl sulfate</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3&apos;-phospho-5&apos;-adenylyl sulfate</bp:name>
+                            <bp:displayName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PAPS</bp:displayName>
+                          </bp:SmallMoleculeReference>
+                        </bp:entityReference>
+                        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary65106"/>
+                        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3&apos;-phosphoadenylyl-sulfate</bp:standardName>
+                      </bp:SmallMolecule>
+                    </bp:physicalEntity>
+                    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+                  </bp:Stoichiometry>
+                </bp:participantStoichiometry>
+                <bp:participantStoichiometry>
+                  <bp:Stoichiometry rdf:ID="Stoichiometry65259">
+                    <bp:physicalEntity rdf:resource="#SmallMolecule65148"/>
+                    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">2</bp:stoichiometricCoefficient>
+                  </bp:Stoichiometry>
+                </bp:participantStoichiometry>
+                <bp:participantStoichiometry>
+                  <bp:Stoichiometry rdf:ID="Stoichiometry65258">
+                    <bp:physicalEntity>
+                      <bp:Protein rdf:ID="Protein65256">
+                        <bp:dataSource rdf:resource="#Provenance65102"/>
+                        <bp:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Thioredoxin is a small electron-transfer protein that contains a cysteine disulfide/dithiol active site in the form of C-X-X-C.  It functions in a wide variety of cellular processes. 
+
+Thioredoxin is reduced by NADPH in a reaction catalyzed by |FRAME: THIOREDOXIN-REDUCT-NADPH-CPLX|. The conversion between the oxidized and reduced forms results in a change of conformation and a significant change in functional properties. The reduced thioredoxin is a powerful protein disulfide reductase that catalyzes dithiol-disulfide exchange reactions with many substrates.
+
+The oxidized form of thioredoxin has been crystallized, the reduced form has been solved by NMR |CITS: [6378624][3896121][3152490][2187529] [2193685] [8098620] [2181145]|.</bp:comment>
+                        <bp:xref>
+                          <bp:RelationshipXref rdf:ID="RelationshipXref65257">
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ox-Thioredoxin</bp:id>
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                            <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary65119"/>
+                          </bp:RelationshipXref>
+                        </bp:xref>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">an oxidized thioredoxin</bp:name>
+                        <bp:entityReference rdf:resource="#ProteinReference65254"/>
+                        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary65106"/>
+                        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">an oxidized thioredoxin</bp:standardName>
+                      </bp:Protein>
+                    </bp:physicalEntity>
+                    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+                  </bp:Stoichiometry>
+                </bp:participantStoichiometry>
+                <bp:participantStoichiometry rdf:resource="#Stoichiometry65253"/>
+                <bp:participantStoichiometry>
+                  <bp:Stoichiometry rdf:ID="Stoichiometry65241">
+                    <bp:physicalEntity>
+                      <bp:SmallMolecule rdf:ID="SmallMolecule65239">
+                        <bp:dataSource rdf:resource="#Provenance65102"/>
+                        <bp:displayName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3&apos;,5&apos;-ADP</bp:displayName>
+                        <bp:xref>
+                          <bp:RelationshipXref rdf:ID="RelationshipXref65240">
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3-5-ADP</bp:id>
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                            <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary65119"/>
+                          </bp:RelationshipXref>
+                        </bp:xref>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-3&apos;,5&apos;-bisphosphate</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">phosphoadenosine phosphate</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PAP</bp:name>
+                        <bp:entityReference>
+                          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference65228">
+                            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">423.172</bp:molecularWeight>
+                            <bp:structure>
+                              <bp:ChemicalStructure rdf:ID="ChemicalStructure65238">
+                                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI</bp:structureFormat>
+                                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI=1S/C10H15N5O10P2/c11-8-5-9(13-2-12-8)15(3-14-5)10-6(16)7(25-27(20,21)22)4(24-10)1-23-26(17,18)19/h2-4,6-7,10,16H,1H2,(H2,11,12,13)(H2,17,18,19)(H2,20,21,22)/p-4/t4-,6-,7-,10-/m1/s1</bp:structureData>
+                              </bp:ChemicalStructure>
+                            </bp:structure>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref65237">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3-5-ADP</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref65236">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00054</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">KEGG LIGAND</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref65235">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1053-73-2</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref65234">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">23615194</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem-compound</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref65233">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:58343</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref65232">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">19951095</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChemSpider</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref65231">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB00061</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref65230">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MTBLC58343</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MetaboLights</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref65229">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pap</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IAF1260</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine 3&apos;,5&apos;-bisphosphate</bp:standardName>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-3&apos;,5&apos;-bisphosphate</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">phosphoadenosine phosphate</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PAP</bp:name>
+                            <bp:displayName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3&apos;,5&apos;-ADP</bp:displayName>
+                          </bp:SmallMoleculeReference>
+                        </bp:entityReference>
+                        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary65106"/>
+                        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine 3&apos;,5&apos;-bisphosphate</bp:standardName>
+                      </bp:SmallMolecule>
+                    </bp:physicalEntity>
+                    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+                  </bp:Stoichiometry>
+                </bp:participantStoichiometry>
+                <bp:right rdf:resource="#SmallMolecule65162"/>
+                <bp:right rdf:resource="#Protein65260"/>
+                <bp:eCNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1.8.4.8</bp:eCNumber>
+                <bp:left rdf:resource="#SmallMolecule65239"/>
+                <bp:left rdf:resource="#SmallMolecule65251"/>
+                <bp:left rdf:resource="#Protein65256"/>
+                <bp:left rdf:resource="#SmallMolecule65148"/>
+                <bp:dataSource rdf:resource="#Provenance65102"/>
+                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine 3&apos;,5&apos;-bisphosphate + sulfite + an oxidized thioredoxin + 2 H&lt;SUP&gt;+&lt;/SUP&gt;  &amp;harr;  3&apos;-phosphoadenylyl-sulfate + a reduced thioredoxin</bp:standardName>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Phosphoadenosine-phosphosulfate reductase</bp:name>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PAPS sulfotransferase</bp:name>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Thioredoxin:3&apos;-phospho-adenylylsulfate reductase</bp:name>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3&apos;-phosphoadenylylsulfate reductase</bp:name>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Thioredoxin:adenosine 3&apos;-phosphate 5&apos;-phosphosulfate reductase</bp:name>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PAdoPS reductase</bp:name>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65227">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1.8.4.8-RXN</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+              </bp:BiochemicalReaction>
+            </bp:stepConversion>
+            <bp:stepProcess>
+              <bp:Catalysis rdf:ID="Catalysis65263">
+                <bp:controller>
+                  <bp:Protein rdf:ID="Protein65268">
+                    <bp:dataSource rdf:resource="#Provenance65102"/>
+                    <bp:entityReference>
+                      <bp:ProteinReference rdf:ID="ProteinReference65266">
+                        <bp:organism rdf:resource="#BioSource65184"/>
+                        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3&apos;phosphoadenylylsulfate reductase</bp:standardName>
+                        <bp:xref>
+                          <bp:UnificationXref rdf:ID="UnificationXref65267">
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YPR167C-MONOMER</bp:id>
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                          </bp:UnificationXref>
+                        </bp:xref>
+                        <bp:sequence rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MKTYHLNNDIIVTQEQLDHWNEQLIKLETPQEIIAWSIVTFPHLFQTTAFGLTGLVTIDMLSKLSEKYYMPELLFIDTLHHFPQTLTLKNEIEKKYYQPKNQTIHVYKPDGCESEADFASKYGDFLWEKDDDKYDYLAKVEPAHRAYKELHISAVFTGRRKSQGSARSQLSIIEIDELNGILKINPLINWTFEQVKQYIDANNVPYNELLDLGYRSIGDYHSTQPVKEGEDERAGRWKGKAKTECGIHEASRFAQFLKQDA</bp:sequence>
+                      </bp:ProteinReference>
+                    </bp:entityReference>
+                    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3&apos;phosphoadenylylsulfate reductase</bp:standardName>
+                    <bp:xref>
+                      <bp:RelationshipXref rdf:ID="RelationshipXref65269">
+                        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YPR167C-MONOMER</bp:id>
+                        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                        <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary65119"/>
+                      </bp:RelationshipXref>
+                    </bp:xref>
+                  </bp:Protein>
+                </bp:controller>
+                <bp:controlled rdf:resource="#BiochemicalReaction65226"/>
+                <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+                <bp:dataSource rdf:resource="#Provenance65102"/>
+                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PAPS reductase</bp:standardName>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">phosphoadenylyl-sulfate reductase (thioredoxin)</bp:name>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65265">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-27</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:PublicationXref rdf:ID="PublicationXref65264">
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:db>
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3060034</bp:id>
+                    <bp:year rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1988</bp:year>
+                    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Schwenn JD</bp:author>
+                    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Krone FA</bp:author>
+                    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Husmann K</bp:author>
+                    <bp:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Yeast PAPS reductase: properties and requirements of the purified enzyme.</bp:title>
+                    <bp:source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Arch Microbiol 150(4);313-9</bp:source>
+                  </bp:PublicationXref>
+                </bp:xref>
+              </bp:Catalysis>
+            </bp:stepProcess>
+            <bp:stepDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RIGHT-TO-LEFT</bp:stepDirection>
+          </bp:BiochemicalPathwayStep>
+        </bp:nextStep>
+        <bp:stepConversion>
+          <bp:BiochemicalReaction rdf:ID="BiochemicalReaction65104">
+            <bp:participantStoichiometry>
+              <bp:Stoichiometry rdf:ID="Stoichiometry65179">
+                <bp:physicalEntity>
+                  <bp:SmallMolecule rdf:ID="SmallMolecule65177">
+                    <bp:xref>
+                      <bp:RelationshipXref rdf:ID="RelationshipXref65178">
+                        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ADP</bp:id>
+                        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                        <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary65119"/>
+                      </bp:RelationshipXref>
+                    </bp:xref>
+                    <bp:dataSource rdf:resource="#Provenance65102"/>
+                    <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine pyrophosphate</bp:name>
+                    <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine 5&apos;-pyrophosphate</bp:name>
+                    <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-5&apos;-diphosphate</bp:name>
+                    <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-diphosphate</bp:name>
+                    <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-5-diphosphate</bp:name>
+                    <bp:entityReference>
+                      <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference65165">
+                        <bp:structure>
+                          <bp:ChemicalStructure rdf:ID="ChemicalStructure65176">
+                            <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI</bp:structureFormat>
+                            <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI=1S/C10H15N5O10P2/c11-8-5-9(13-2-12-8)15(3-14-5)10-7(17)6(16)4(24-10)1-23-27(21,22)25-26(18,19)20/h2-4,6-7,10,16-17H,1H2,(H,21,22)(H2,11,12,13)(H2,18,19,20)/p-3/t4-,6-,7-,10-/m1/s1</bp:structureData>
+                          </bp:ChemicalStructure>
+                        </bp:structure>
+                        <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">424.18</bp:molecularWeight>
+                        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ADP</bp:standardName>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine pyrophosphate</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine 5&apos;-pyrophosphate</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-5&apos;-diphosphate</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-diphosphate</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine-5-diphosphate</bp:name>
+                        <bp:xref>
+                          <bp:UnificationXref rdf:ID="UnificationXref65175">
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ADP</bp:id>
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                          </bp:UnificationXref>
+                        </bp:xref>
+                        <bp:xref>
+                          <bp:UnificationXref rdf:ID="UnificationXref65174">
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">58-64-0</bp:id>
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+                          </bp:UnificationXref>
+                        </bp:xref>
+                        <bp:xref>
+                          <bp:UnificationXref rdf:ID="UnificationXref65173">
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00008</bp:id>
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">KEGG LIGAND</bp:db>
+                          </bp:UnificationXref>
+                        </bp:xref>
+                        <bp:xref>
+                          <bp:UnificationXref rdf:ID="UnificationXref65172">
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">7058055</bp:id>
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem-compound</bp:db>
+                          </bp:UnificationXref>
+                        </bp:xref>
+                        <bp:xref>
+                          <bp:UnificationXref rdf:ID="UnificationXref65171">
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:456216</bp:id>
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+                          </bp:UnificationXref>
+                        </bp:xref>
+                        <bp:xref>
+                          <bp:UnificationXref rdf:ID="UnificationXref65170">
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">5414423</bp:id>
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChemSpider</bp:db>
+                          </bp:UnificationXref>
+                        </bp:xref>
+                        <bp:xref>
+                          <bp:UnificationXref rdf:ID="UnificationXref65169">
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB01341</bp:id>
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB</bp:db>
+                          </bp:UnificationXref>
+                        </bp:xref>
+                        <bp:xref>
+                          <bp:UnificationXref rdf:ID="UnificationXref65168">
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MTBLC456216</bp:id>
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MetaboLights</bp:db>
+                          </bp:UnificationXref>
+                        </bp:xref>
+                        <bp:xref>
+                          <bp:UnificationXref rdf:ID="UnificationXref65167">
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adp</bp:id>
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IAF1260</bp:db>
+                          </bp:UnificationXref>
+                        </bp:xref>
+                        <bp:xref>
+                          <bp:UnificationXref rdf:ID="UnificationXref65166">
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ADP</bp:id>
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RefMet</bp:db>
+                          </bp:UnificationXref>
+                        </bp:xref>
+                      </bp:SmallMoleculeReference>
+                    </bp:entityReference>
+                    <bp:cellularLocation rdf:resource="#CellularLocationVocabulary65106"/>
+                    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ADP</bp:standardName>
+                  </bp:SmallMolecule>
+                </bp:physicalEntity>
+                <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+              </bp:Stoichiometry>
+            </bp:participantStoichiometry>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry65164"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry65150"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry65137"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry65122"/>
+            <bp:right rdf:resource="#SmallMolecule65148"/>
+            <bp:right rdf:resource="#SmallMolecule65162"/>
+            <bp:right rdf:resource="#SmallMolecule65177"/>
+            <bp:eCNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2.7.1.25</bp:eCNumber>
+            <bp:left rdf:resource="#SmallMolecule65118"/>
+            <bp:left rdf:resource="#SmallMolecule65135"/>
+            <bp:dataSource rdf:resource="#Provenance65102"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenosine 5&apos;-phosphosulfate + ATP  &amp;harr;  3&apos;-phosphoadenylyl-sulfate + ADP + H&lt;SUP&gt;+&lt;/SUP&gt;</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Adenosine-5&apos;phosphosulfate kinase</bp:name>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65105">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ADENYLYLSULFKIN-RXN</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+          </bp:BiochemicalReaction>
+        </bp:stepConversion>
+        <bp:stepProcess>
+          <bp:Catalysis rdf:ID="Catalysis65180">
+            <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+            <bp:controller>
+              <bp:Protein rdf:ID="Protein65185">
+                <bp:dataSource rdf:resource="#Provenance65102"/>
+                <bp:entityReference>
+                  <bp:ProteinReference rdf:ID="ProteinReference65182">
+                    <bp:organism rdf:resource="#BioSource65184"/>
+                    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenylylsulfate kinase</bp:standardName>
+                    <bp:xref>
+                      <bp:UnificationXref rdf:ID="UnificationXref65183">
+                        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YKL001C-MONOMER</bp:id>
+                        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                      </bp:UnificationXref>
+                    </bp:xref>
+                    <bp:sequence rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MATNITWHPNLTYDERKALRKQDGCTIWLTGLSASGKSTIACALEQLLLQKNLSAYRLDGDNIRFGLNKDLGFSEKDRNENIRRISEVSKLFADSCAISITSFISPYRVDRDRARELHKEAGLKFIEIFVDVPLEVAEQRDPKGLYKKAREGVIKEFTGISAPYEAPKAPELHLRTDQKTVEECATIIYEYLISEKIIRKHL</bp:sequence>
+                  </bp:ProteinReference>
+                </bp:entityReference>
+                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenylylsulfate kinase</bp:standardName>
+                <bp:xref>
+                  <bp:RelationshipXref rdf:ID="RelationshipXref65186">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YKL001C-MONOMER</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                    <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary65119"/>
+                  </bp:RelationshipXref>
+                </bp:xref>
+              </bp:Protein>
+            </bp:controller>
+            <bp:controlled rdf:resource="#BiochemicalReaction65104"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">adenylylsulfate kinase</bp:standardName>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref65181">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-1364</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:dataSource rdf:resource="#Provenance65102"/>
+          </bp:Catalysis>
+        </bp:stepProcess>
+        <bp:stepDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LEFT-TO-RIGHT</bp:stepDirection>
+      </bp:BiochemicalPathwayStep>
+    </bp:nextStep>
+    <bp:stepConversion rdf:resource="#BiochemicalReaction65188"/>
+    <bp:stepProcess>
+      <bp:Catalysis rdf:ID="Catalysis65219">
+        <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+        <bp:controller>
+          <bp:Protein rdf:ID="Protein65223">
+            <bp:dataSource rdf:resource="#Provenance65102"/>
+            <bp:entityReference>
+              <bp:ProteinReference rdf:ID="ProteinReference65221">
+                <bp:organism rdf:resource="#BioSource65184"/>
+                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ATP sulfurylase</bp:standardName>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref65222">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YJR010W-MONOMER</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:sequence rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MPAPHGGILQDLIARDALKKNELLSEAQSSDILVWNLTPRQLCDIELILNGGFSPLTGFLNENDYSSVVTDSRLADGTLWTIPITLDVDEAFANQIKPDTRIALFQDDEIPIAILTVQDVYKPNKTIEAEKVFRGDPEHPAISYLFNVAGDYYVGGSLEAIQLPQHYDYPGLRKTPAQLRLEFQSRQWDRVVAFQTRNPMHRAHRELTVRAAREANAKVLIHPVVGLTKPGDIDHHTRVRVYQEIIKRYPNGIAFLSLLPLAMRMSGDREAVWHAIIRKNYGASHFIVGRDHAGPGKNSKGVDFYGPYDAQELVESYKHELDIEVVPFRMVTYLPDEDRYAPIDQIDTTKTRTLNISGTELRRRLRVGGEIPEWFSYPEVVKILRESNPPRPKQGFSIVLGNSLTVSREQLSIALLSTFLQFGGGRYYKIFEHNNKTELLSLIQDFIGSGSGLIIPNQWEDDKDSVVGKQNVYLLDTSSSADIQLESADEPISHIVQKVVLFLEDNGFFVF</bp:sequence>
+              </bp:ProteinReference>
+            </bp:entityReference>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ATP sulfurylase</bp:standardName>
+            <bp:xref>
+              <bp:RelationshipXref rdf:ID="RelationshipXref65224">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YJR010W-MONOMER</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary65119"/>
+              </bp:RelationshipXref>
+            </bp:xref>
+          </bp:Protein>
+        </bp:controller>
+        <bp:controlled rdf:resource="#BiochemicalReaction65188"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ATP sulfurylase</bp:standardName>
+        <bp:xref>
+          <bp:UnificationXref rdf:ID="UnificationXref65220">
+            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-1304</bp:id>
+            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+          </bp:UnificationXref>
+        </bp:xref>
+        <bp:dataSource rdf:resource="#Provenance65102"/>
+      </bp:Catalysis>
+    </bp:stepProcess>
+    <bp:stepDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LEFT-TO-RIGHT</bp:stepDirection>
+  </bp:BiochemicalPathwayStep>
+  <bp:UnificationXref rdf:ID="UnificationXref65101">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SO4ASSIM-PWY</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:Pathway rdf:ID="Pathway65100">
+    <bp:pathwayComponent rdf:resource="#Catalysis65332"/>
+    <bp:pathwayComponent rdf:resource="#BiochemicalReaction65271"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis65263"/>
+    <bp:pathwayComponent rdf:resource="#BiochemicalReaction65226"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis65219"/>
+    <bp:pathwayComponent rdf:resource="#BiochemicalReaction65188"/>
+    <bp:pathwayComponent rdf:resource="#BiochemicalReaction65104"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis65180"/>
+    <bp:pathwayOrder rdf:resource="#BiochemicalPathwayStep65270"/>
+    <bp:pathwayOrder rdf:resource="#BiochemicalPathwayStep65225"/>
+    <bp:pathwayOrder rdf:resource="#BiochemicalPathwayStep65187"/>
+    <bp:pathwayOrder rdf:resource="#BiochemicalPathwayStep65103"/>
+    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">assimilatory sulfate reduction I</bp:standardName>
+    <bp:xref rdf:resource="#UnificationXref65101"/>
+    <bp:dataSource rdf:resource="#Provenance65102"/>
+  </bp:Pathway>
+</rdf:RDF>
