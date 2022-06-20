@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -413,9 +414,10 @@ public class PhysicalEntityOntologyBuilder {
 			go_cam.addSeeAlso(e, reactome_url);
 			go_cam.addComment(e, "BioPAX type: "+entity.getModelInterface());
 			//add specific drug reference if its there - reactions with drugs are treated differently
-			String iuphar_id = getDrugReferenceId(entity);
-			if(iuphar_id!=null) {
-				go_cam.addDrugReference(e, "IUPHAR:"+iuphar_id);
+			Xref drug_id_xref = getDrugReferenceId(entity);
+			if(drug_id_xref!=null) {
+				String drug_ref_id = drug_id_xref.getId();
+				go_cam.addDrugReference(e, "IUPHAR:"+drug_ref_id);
 			}
 			if(pro_exact_map.containsKey(entity_id)) {
 				for(String pro_id : pro_exact_map.get(entity_id)) {
@@ -513,8 +515,9 @@ public class PhysicalEntityOntologyBuilder {
 				Set<Stoichiometry> stoichs = complex.getComponentStoichiometry();
 				for(Stoichiometry stoich : stoichs) {
 					PhysicalEntity part = stoich.getPhysicalEntity();
-					String iuphar_id = getDrugReferenceId(part);
-					if(iuphar_id!=null){
+					Xref iuphar_id_xref = getDrugReferenceId(part);
+					if(iuphar_id_xref!=null) {
+						String iuphar_id = iuphar_id_xref.getId();
 						go_cam.addDrugReference(e, "IUPHAR:"+iuphar_id);
 					}
 					Integer s = (int) stoich.getStoichiometricCoefficient();
@@ -535,8 +538,9 @@ public class PhysicalEntityOntologyBuilder {
 				Set<OWLClassExpression> owl_parts = new HashSet<OWLClassExpression>();
 				Set<PhysicalEntity> known_parts = complex.getComponent();
 				for(PhysicalEntity part : known_parts) {
-					String iuphar_id = getDrugReferenceId(part);
-					if(iuphar_id!=null){
+					Xref iuphar_id_xref = getDrugReferenceId(part);
+					if(iuphar_id_xref!=null) {
+						String iuphar_id = iuphar_id_xref.getId();
 						go_cam.addDrugReference(e, "IUPHAR:"+iuphar_id);
 					}
 					OWLClassExpression owl_part = definePhysicalEntity(go_cam, part,null, model_id);
@@ -873,8 +877,9 @@ public class PhysicalEntityOntologyBuilder {
 			Set<OWLClass> main_types = new HashSet<OWLClass>();
 			boolean reference_found = false;
 			for(PhysicalEntity part : parts_list) {
-				String iuphar_id = getDrugReferenceId(part);
-				if(iuphar_id!=null){
+				Xref iuphar_id_xref = getDrugReferenceId(part);
+				if(iuphar_id_xref!=null) {
+					String iuphar_id = iuphar_id_xref.getId();
 					go_cam.addDrugReference(e, "IUPHAR:"+iuphar_id);
 				}
 				OWLClassExpression part_exp = definePhysicalEntity(go_cam, part, null, model_id);
@@ -1009,8 +1014,10 @@ public class PhysicalEntityOntologyBuilder {
 		return id;
 	}
 
-	public static String getDrugReferenceId(Entity bp_entity) {
+	public static Xref getDrugReferenceId(Entity bp_entity) {
 		String id = null;
+		Xref drug_ref = null;
+		Set<String> drugDbs = new HashSet<>(Arrays.asList("IUPHAR", "Guide to Pharmacology"));
 		try {
 			EntityReference r = null;
 			if(bp_entity.getModelInterface().equals(Protein.class)) {
@@ -1031,8 +1038,9 @@ public class PhysicalEntityOntologyBuilder {
 			if(r!=null) {
 				Set<Xref> erefs = r.getXref();
 				for(Xref eref : erefs) {
-					if(eref.getDb().equals("IUPHAR")) {
+					if(drugDbs.contains(eref.getDb())) {
 						id = eref.getId();
+						drug_ref = eref;
 					}
 				}
 			}
@@ -1042,7 +1050,7 @@ public class PhysicalEntityOntologyBuilder {
 		//		if(id!=null) {
 		//			System.out.println("found drug id "+id+" "+bp_BioPaxtoGO.getBioPaxName(entity));
 		//		}
-		return id;
+		return drug_ref;
 	}
 
 	public void countPhysical(Model biopax_model) throws IOException {
@@ -1067,11 +1075,12 @@ public class PhysicalEntityOntologyBuilder {
 				n_all_pro++;
 				in_pro = true;
 			}
-			String drug_id = getDrugReferenceId(e);
-			if(drug_id==null) {
+			Xref drug_id_xref = getDrugReferenceId(e);
+			String drug_id = null;
+			if(drug_id_xref==null) {
 				drug_id = "no_IUPHAR";
 			}else {
-				drug_id = "IUPHAR:"+drug_id;
+				drug_id = "IUPHAR:"+drug_id_xref.getId();
 				n_drug++;
 			}
 

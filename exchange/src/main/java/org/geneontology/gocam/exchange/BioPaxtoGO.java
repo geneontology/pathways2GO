@@ -971,8 +971,8 @@ public class BioPaxtoGO {
 				}
 			}
 
-			Set<String> drug_ids = Helper.getAnnotations(entity_class, tbox_qrunner.tbox_class_reasoner.getRootOntology(), GoCAM.iuphar_id);
-			if(drug_ids!=null&&drug_ids.size()>0) {
+			Xref drug_id_xref = PhysicalEntityOntologyBuilder.getDrugReferenceId(entity);
+			if(drug_id_xref!=null) {
 				Set<Interaction> entity_processes = entity.getParticipantOf();
 				for(Interaction process : entity_processes) {
 					if(process instanceof Conversion) {
@@ -1227,9 +1227,9 @@ public class BioPaxtoGO {
 					for(Controller controller_entity : controller_entities) {
 						String controller_entity_id = getEntityReferenceId(controller_entity);
 						IRI entity_class_iri = IRI.create(GoCAM.reacto_base_iri+controller_entity_id);
-						OWLClass entity_class = go_cam.df.getOWLClass(entity_class_iri); 						
-						Set<String> drug_ids = Helper.getAnnotations(entity_class, tbox_qrunner.tbox_class_reasoner.getRootOntology(), GoCAM.iuphar_id);
-						if(drug_ids!=null&&drug_ids.size()>0) {
+						OWLClass entity_class = go_cam.df.getOWLClass(entity_class_iri);
+						Xref drug_id_xref = PhysicalEntityOntologyBuilder.getDrugReferenceId(controller_entity);
+						if(drug_id_xref!=null) {
 							skip_drug_controller = true;
 							break;
 						}
