@@ -1189,8 +1189,8 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 						Set<OWLAnnotation> annos = getDefaultAnnotations();
 						annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(reason)));	
 						String loc_id = o.reaction_uri.replace("http://model.geneontology.org/", "reaction_")+"_location_"+occurs_location_uri.replace("http://purl.obolibrary.org/obo/","loci");
-						IRI place_iri = makeGoCamifiedIRI(null, loc_id);						
-						OWLNamedIndividual placeInstance = df.getOWLNamedIndividual(place_iri);
+						IRI place_iri = makeGoCamifiedIRI(null, loc_id);
+						OWLNamedIndividual placeInstance = makeAnnotatedIndividual(place_iri);
 						addTypeAssertion(placeInstance, location_class);
 						addRefBackedObjectPropertyAssertion(reaction, GoCAM.occurs_in, placeInstance, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, annos, model_id);
 					}
