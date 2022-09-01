@@ -33,6 +33,7 @@ import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level2.catalysis;
+import org.biopax.paxtools.model.level3.BiochemicalPathwayStep;
 import org.biopax.paxtools.model.level3.BiochemicalReaction;
 import org.biopax.paxtools.model.level3.Catalysis;
 import org.biopax.paxtools.model.level3.CellularLocationVocabulary;
@@ -63,6 +64,7 @@ import org.biopax.paxtools.model.level3.Rna;
 import org.biopax.paxtools.model.level3.RnaRegion;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.biopax.paxtools.model.level3.SmallMolecule;
+import org.biopax.paxtools.model.level3.StepDirection;
 import org.biopax.paxtools.model.level3.TemplateDirectionType;
 import org.biopax.paxtools.model.level3.TemplateReaction;
 import org.biopax.paxtools.model.level3.UnificationXref;
@@ -1152,13 +1154,33 @@ public class BioPaxtoGO {
 					}
 				}
 
-				ConversionDirectionType direction = ((Conversion) entity).getConversionDirection();
+				PathwayStep pathway_step = ((Conversion) entity).getStepProcessOf().iterator().next();
+				
+				ConversionDirectionType direction = null;
+				if(entityStrategy.equals(EntityStrategy.YeastCyc)) {
+					StepDirection stepDirection = ((BiochemicalPathwayStep) pathway_step).getStepDirection();
+					if(stepDirection.equals(StepDirection.RIGHT_TO_LEFT)) {
+						direction = ConversionDirectionType.RIGHT_TO_LEFT;
+					}else {
+						direction = ConversionDirectionType.LEFT_TO_RIGHT;
+					}
+				}else {
+					direction = ((Conversion) entity).getConversionDirection();
+				}
 				if(direction==null&&(entity instanceof Degradation)) {
 					direction = ConversionDirectionType.LEFT_TO_RIGHT;
 				}
 
 				Set<PhysicalEntity> inputs = null;
 				Set<PhysicalEntity> outputs = null;
+				Set<PhysicalEntity> previous_outputs = null;
+				Set<PathwayStep> previous_steps = null;
+				
+//				Set<PathwayStep> previous_steps = pathway_step.getNextStepOf();
+//				for(PathwayStep previous_step : previous_steps) {
+//					Conversion step_conversion = ((BiochemicalPathwayStep) previous_step).getStepConversion();
+//					Set<PhysicalEntity> things = step_conversion.getLeft();
+//				}
 
 				if(direction==null||direction.equals(ConversionDirectionType.LEFT_TO_RIGHT)||direction.equals(ConversionDirectionType.REVERSIBLE)) {
 					inputs = ((Conversion) entity).getLeft();
@@ -1168,9 +1190,21 @@ public class BioPaxtoGO {
 					if(direction!=null&&direction.equals(ConversionDirectionType.REVERSIBLE)){
 						System.out.println("REVERSIBLE reaction found!  Defaulting to assumption of left to right "+getBioPaxName(entity)+" "+entity.getUri());
 					}
+					previous_steps = pathway_step.getNextStepOf();
+					for(PathwayStep previous_step : previous_steps) {
+						Conversion step_conversion = ((BiochemicalPathwayStep) previous_step).getStepConversion();
+						Set<PhysicalEntity> things = step_conversion.getLeft();
+						System.out.println("yo");
+					}
 				}else if(direction.equals(ConversionDirectionType.RIGHT_TO_LEFT)) {
 					outputs = ((Conversion) entity).getLeft();
 					inputs = ((Conversion) entity).getRight();
+					previous_steps = pathway_step.getNextStep();
+					for(PathwayStep previous_step : previous_steps) {
+						Conversion step_conversion = ((BiochemicalPathwayStep) previous_step).getStepConversion();
+						Set<PhysicalEntity> things = step_conversion.getLeft();
+						System.out.println("yo");
+					}
 					System.out.println("Right to left reaction found!  "+getBioPaxName(entity)+" "+entity.getUri());
 				}else  {
 					System.out.println("Reaction direction "+direction+" unknown");
@@ -1186,6 +1220,7 @@ public class BioPaxtoGO {
 						}
 						i_iri = GoCAM.makeGoCamifiedIRI(null, input_id+"_"+entity_id);
 						OWLNamedIndividual input_entity = go_cam.df.getOWLNamedIndividual(i_iri);
+						// Query previous step's outputs
 						defineReactionEntity(go_cam, input, i_iri, true, model_id, root_pathway_iri);
 						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_input, input_entity,dbids, GoCAM.eco_imported_auto,  default_namespace_prefix, go_cam.getDefaultAnnotations(), model_id);
 					}}
