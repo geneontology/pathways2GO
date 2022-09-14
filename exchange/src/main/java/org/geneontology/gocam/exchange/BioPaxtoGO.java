@@ -15,6 +15,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -612,6 +613,27 @@ public class BioPaxtoGO {
 		return n;
 	}
 
+	public ConversionDirectionType getDirection(Entity entity) {
+		PathwayStep pathway_step = ((Conversion) entity).getStepProcessOf().iterator().next();
+		
+		ConversionDirectionType direction = null;
+		if(entityStrategy.equals(EntityStrategy.YeastCyc)) {
+			StepDirection stepDirection = ((BiochemicalPathwayStep) pathway_step).getStepDirection();
+			if(stepDirection.equals(StepDirection.RIGHT_TO_LEFT)) {
+				direction = ConversionDirectionType.RIGHT_TO_LEFT;
+			}else {
+				direction = ConversionDirectionType.LEFT_TO_RIGHT;
+			}
+		}else {
+			direction = ((Conversion) entity).getConversionDirection();
+		}
+		if(direction==null&&(entity instanceof Degradation)) {
+			direction = ConversionDirectionType.LEFT_TO_RIGHT;
+		}
+		
+		return direction;
+	}
+	
 	private OWLNamedIndividual definePathwayEntity(GoCAM go_cam, Pathway pathway, String model_id, boolean expand_subpathways, boolean add_components) throws IOException {
 		IRI pathway_iri = GoCAM.makeGoCamifiedIRI(model_id, model_id);
 		System.out.println("defining pathway "+getBioPaxName(pathway)+" "+expand_subpathways+" "+add_components+" "+model_id);
@@ -1154,33 +1176,14 @@ public class BioPaxtoGO {
 					}
 				}
 
+				ConversionDirectionType direction = getDirection(entity);
 				PathwayStep pathway_step = ((Conversion) entity).getStepProcessOf().iterator().next();
 				
-				ConversionDirectionType direction = null;
-				if(entityStrategy.equals(EntityStrategy.YeastCyc)) {
-					StepDirection stepDirection = ((BiochemicalPathwayStep) pathway_step).getStepDirection();
-					if(stepDirection.equals(StepDirection.RIGHT_TO_LEFT)) {
-						direction = ConversionDirectionType.RIGHT_TO_LEFT;
-					}else {
-						direction = ConversionDirectionType.LEFT_TO_RIGHT;
-					}
-				}else {
-					direction = ((Conversion) entity).getConversionDirection();
-				}
-				if(direction==null&&(entity instanceof Degradation)) {
-					direction = ConversionDirectionType.LEFT_TO_RIGHT;
-				}
-
 				Set<PhysicalEntity> inputs = null;
 				Set<PhysicalEntity> outputs = null;
-				Set<PhysicalEntity> previous_outputs = null;
-				Set<PathwayStep> previous_steps = null;
-				
-//				Set<PathwayStep> previous_steps = pathway_step.getNextStepOf();
-//				for(PathwayStep previous_step : previous_steps) {
-//					Conversion step_conversion = ((BiochemicalPathwayStep) previous_step).getStepConversion();
-//					Set<PhysicalEntity> things = step_conversion.getLeft();
-//				}
+				Set<PathwayStep> previous_steps = pathway_step.getNextStepOf();
+				Set<String> small_mol_do_not_join_ids = new HashSet<>(Arrays.asList("CHEBI_15378",  // hydron 
+																					"CHEBI_15377"));// water
 
 				if(direction==null||direction.equals(ConversionDirectionType.LEFT_TO_RIGHT)||direction.equals(ConversionDirectionType.REVERSIBLE)) {
 					inputs = ((Conversion) entity).getLeft();
@@ -1190,21 +1193,9 @@ public class BioPaxtoGO {
 					if(direction!=null&&direction.equals(ConversionDirectionType.REVERSIBLE)){
 						System.out.println("REVERSIBLE reaction found!  Defaulting to assumption of left to right "+getBioPaxName(entity)+" "+entity.getUri());
 					}
-					previous_steps = pathway_step.getNextStepOf();
-					for(PathwayStep previous_step : previous_steps) {
-						Conversion step_conversion = ((BiochemicalPathwayStep) previous_step).getStepConversion();
-						Set<PhysicalEntity> things = step_conversion.getLeft();
-						System.out.println("yo");
-					}
 				}else if(direction.equals(ConversionDirectionType.RIGHT_TO_LEFT)) {
 					outputs = ((Conversion) entity).getLeft();
 					inputs = ((Conversion) entity).getRight();
-					previous_steps = pathway_step.getNextStep();
-					for(PathwayStep previous_step : previous_steps) {
-						Conversion step_conversion = ((BiochemicalPathwayStep) previous_step).getStepConversion();
-						Set<PhysicalEntity> things = step_conversion.getLeft();
-						System.out.println("yo");
-					}
 					System.out.println("Right to left reaction found!  "+getBioPaxName(entity)+" "+entity.getUri());
 				}else  {
 					System.out.println("Reaction direction "+direction+" unknown");
@@ -1214,14 +1205,36 @@ public class BioPaxtoGO {
 				if(inputs!=null) {
 					for(PhysicalEntity input : inputs) {
 						IRI i_iri = null;
+						OWLNamedIndividual input_entity = null;
 						String input_id = getEntityReferenceId(input);
 						if(input_id==null){ //failed to find a chebi reference
 							input_id = UUID.randomUUID().toString();
 						}
-						i_iri = GoCAM.makeGoCamifiedIRI(null, input_id+"_"+entity_id);
-						OWLNamedIndividual input_entity = go_cam.df.getOWLNamedIndividual(i_iri);
-						// Query previous step's outputs
-						defineReactionEntity(go_cam, input, i_iri, true, model_id, root_pathway_iri);
+						if(!small_mol_do_not_join_ids.contains(input_id)){
+							// Try to reuse previous rxn's output instance
+							for(PathwayStep previous_step : previous_steps) {
+								Conversion prev_step_conversion = ((BiochemicalPathwayStep) previous_step).getStepConversion();
+								ConversionDirectionType prev_step_direction = getDirection(prev_step_conversion);
+								Set<PhysicalEntity> previous_outputs = null;
+								if(prev_step_direction.equals(ConversionDirectionType.RIGHT_TO_LEFT)) {
+									previous_outputs = prev_step_conversion.getLeft();
+								} else {
+									previous_outputs = prev_step_conversion.getRight();
+								}
+								if(previous_outputs.contains(input)) { // We can reuse this previous rxn's output instance
+									String prev_entity_id = getEntityReferenceId(prev_step_conversion);
+									i_iri = GoCAM.makeGoCamifiedIRI(null, input_id+"_"+prev_entity_id);
+									input_entity = go_cam.df.getOWLNamedIndividual(i_iri);
+									break;
+								}
+							}
+						}
+						if(i_iri==null){
+							i_iri = GoCAM.makeGoCamifiedIRI(null, input_id+"_"+entity_id);
+							input_entity = go_cam.df.getOWLNamedIndividual(i_iri);
+							// Query previous step's outputs
+							defineReactionEntity(go_cam, input, i_iri, true, model_id, root_pathway_iri);
+						}
 						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_input, input_entity,dbids, GoCAM.eco_imported_auto,  default_namespace_prefix, go_cam.getDefaultAnnotations(), model_id);
 					}}
 				if(outputs!=null) {
