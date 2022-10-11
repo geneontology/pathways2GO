@@ -269,7 +269,7 @@ public class BioPaxtoGO {
 				base_ont_title = getBioPaxName(currentPathway)+" - imported from: "+datasource;
 				iri = "http://model.geneontology.org/"+model_id; 
 				ont_iri = IRI.create(iri);	
-				go_cam = new GoCAM(ont_iri, base_ont_title, contributor_link, null, base_provider, add_lego_import, taxa);
+				go_cam = new GoCAM(ont_iri, base_ont_title, base_contributor, null, base_provider, add_lego_import, taxa);
 				//journal is by default in 'append' mode - keeping the same journal reference add each pathway to same journal
 				go_cam.path2bgjournal = blazegraph_output_journal;
 				go_cam.blazegraphdb = blaze;
