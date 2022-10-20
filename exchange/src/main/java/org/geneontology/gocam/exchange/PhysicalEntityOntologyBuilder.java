@@ -1032,8 +1032,22 @@ public class PhysicalEntityOntologyBuilder {
 				r = ((RnaRegion) bp_entity).getEntityReference();
 			}else if(bp_entity.getModelInterface().equals(DnaRegion.class)){
 				r = ((DnaRegion) bp_entity).getEntityReference();
+			}else if(bp_entity.getModelInterface().equals(Complex.class)){
+				// For every component in Complex, run getDrugReferenceId and return if not null
+				for(Entity component : ((Complex) bp_entity).getComponent()) {
+					drug_ref = PhysicalEntityOntologyBuilder.getDrugReferenceId(component);
+					if(drug_ref!=null) {
+						return drug_ref;
+					}
+				}
 			}else if(bp_entity.getModelInterface().equals(PhysicalEntity.class)) {
-				//System.err.println("Can not access EntityReference for untyped physical entity: "+bp_BioPaxtoGO.getBioPaxName(entity));
+				// This may be a Set. So, check if it has member entities and then drug test them all
+				for(Entity member : ((PhysicalEntity) bp_entity).getMemberPhysicalEntity()) {
+					drug_ref = PhysicalEntityOntologyBuilder.getDrugReferenceId(member);
+					if(drug_ref!=null) {
+						return drug_ref;
+					}
+				}
 			}
 			if(r!=null) {
 				Set<Xref> erefs = r.getXref();

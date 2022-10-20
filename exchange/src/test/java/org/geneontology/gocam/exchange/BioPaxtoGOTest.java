@@ -415,7 +415,54 @@ public class BioPaxtoGOTest {
 			}
 		}
 		assertTrue("reaction "+reaction_present+" not present", n>0);
-
+		pathway = "<http://model.geneontology.org/R-HSA-112311>";
+		reaction_delete = "<http://model.geneontology.org/R-HSA-9634834>";
+		reaction_present = "<http://model.geneontology.org/R-HSA-372519>";
+		n = 0;
+		result = null;
+		try {
+			String q2 = all_reaction_q.replace("pathway_id", pathway);
+			q2 = q2.replace("reaction_id", reaction_delete);
+			result = blaze.runSparqlQuery(q2);
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				n++;
+			}
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		assertTrue("drug reaction "+reaction_delete+" not deleted", n==0);
+		n = 0;
+		result = null;
+		try {
+			
+			String q2 = all_reaction_q.replace("pathway_id", pathway);
+			q2 = q2.replace("reaction_id", reaction_present);
+			result = blaze.runSparqlQuery(q2);
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				n++;
+			}
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		assertTrue("reaction "+reaction_present+" not present", n>0);
 	}
 	
 	/**
