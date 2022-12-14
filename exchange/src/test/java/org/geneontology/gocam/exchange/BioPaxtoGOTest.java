@@ -1253,4 +1253,33 @@ BP has_part R
 		int n = runQueryAndGetCount(q);
 		assertTrue("No has_part MET5 SGD:S000003898 complex component assertion for "+reaction_node, n==1);
 	}
+	
+	@Test
+	public final void testYeastStepDirection() {
+		System.out.println("testing parsing of reaction stepDirection in YeastPathways");
+		// For RIB5PISOM-RXN, D-ribofuranose 5-phosphate(2-) is left and D-ribulose 5-phosphate(2-) is right.
+		// But stepDirection is RIGHT-TO-LEFT, so:
+		// Check that RIB5PISOM-RXN [has output] D-ribofuranose 5-phosphate(2-) (CHEBI:78346)
+		// Check that RIB5PISOM-RXN [has input] D-ribulose 5-phosphate(2-) (CHEBI:58121)
+		String pathway = "<http://model.geneontology.org/NONOXIPENT-PWY>";
+		String reaction_node = "<http://model.geneontology.org/RIB5PISOM-RXN>";
+		String output_type = "<http://purl.obolibrary.org/obo/CHEBI_78346>";
+		String input_type = "<http://purl.obolibrary.org/obo/CHEBI_58121>";
+		String q =  
+				" prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+				+ "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> "
+				+ "prefix RO: <http://purl.obolibrary.org/obo/RO_> "
+				+ "prefix BFO: <http://purl.obolibrary.org/obo/BFO_> "
+				+ "SELECT ?component_gp_type  \n" + 
+				"WHERE {\n" + 
+				"  GRAPH "+pathway+"  {  \n" + 
+				"    	"+reaction_node+" RO:0002234 ?output_node . \n" +
+				"    	?output_node rdf:type "+output_type +" . \n" +
+				"       "+reaction_node+" RO:0002233 ?input_node . \n " +
+				"       ?input_node rdf:type "+input_type +
+				"    }\n" + 
+				"  } \n";
+		int n = runQueryAndGetCount(q);
+		assertTrue("Incorrect or complete lack of has_input and has_output given stepDirection for "+reaction_node, n==1);
+	}
 }

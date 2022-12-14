@@ -34,6 +34,7 @@ import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level2.catalysis;
 import org.biopax.paxtools.model.level3.BiochemicalReaction;
+import org.biopax.paxtools.model.level3.BiochemicalPathwayStep;
 import org.biopax.paxtools.model.level3.Catalysis;
 import org.biopax.paxtools.model.level3.CellularLocationVocabulary;
 import org.biopax.paxtools.model.level3.Complex;
@@ -63,6 +64,7 @@ import org.biopax.paxtools.model.level3.Rna;
 import org.biopax.paxtools.model.level3.RnaRegion;
 import org.biopax.paxtools.model.level3.SimplePhysicalEntity;
 import org.biopax.paxtools.model.level3.SmallMolecule;
+import org.biopax.paxtools.model.level3.StepDirection;
 import org.biopax.paxtools.model.level3.TemplateDirectionType;
 import org.biopax.paxtools.model.level3.TemplateReaction;
 import org.biopax.paxtools.model.level3.UnificationXref;
@@ -1162,7 +1164,18 @@ public class BioPaxtoGO {
 					}
 				}
 
-				ConversionDirectionType direction = ((Conversion) entity).getConversionDirection();
+				ConversionDirectionType direction = null;
+				if(entityStrategy.equals(EntityStrategy.YeastCyc)) {
+					PathwayStep pathway_step = ((Conversion) entity).getStepProcessOf().iterator().next();
+					StepDirection stepDirection = ((BiochemicalPathwayStep) pathway_step).getStepDirection();
+					if(stepDirection.equals(StepDirection.RIGHT_TO_LEFT)) {
+						direction = ConversionDirectionType.RIGHT_TO_LEFT;
+					}else {
+						direction = ConversionDirectionType.LEFT_TO_RIGHT;
+					}
+				}else {
+					direction = ((Conversion) entity).getConversionDirection();
+				}
 				if(direction==null&&(entity instanceof Degradation)) {
 					direction = ConversionDirectionType.LEFT_TO_RIGHT;
 				}
