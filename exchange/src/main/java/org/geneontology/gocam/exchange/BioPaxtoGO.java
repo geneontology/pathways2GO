@@ -325,7 +325,8 @@ public class BioPaxtoGO {
 		String id = null;
 		Set<Xref> references = null;
 		//first check for entity reference
-		if(entityStrategy.equals(EntityStrategy.YeastCyc) && bp_entity instanceof SimplePhysicalEntity) {
+		if((entityStrategy.equals(EntityStrategy.YeastCyc) && bp_entity instanceof SimplePhysicalEntity)
+				|| bp_entity instanceof SmallMolecule) {
 			SimplePhysicalEntity entity = (SimplePhysicalEntity) bp_entity;
 			EntityReference entity_ref = entity.getEntityReference();
 			if(entity_ref!=null) {
@@ -348,6 +349,9 @@ public class BioPaxtoGO {
 						if(id.startsWith("R-")) {
 							break;
 						}
+					}else if(r.getDb().equalsIgnoreCase("ChEBI") && bp_entity instanceof SmallMolecule) {
+						id = r.getId().replace(":", "_");
+						break;
 					}
 				}
 			}
@@ -923,15 +927,13 @@ public class BioPaxtoGO {
 		//add entity to ontology, whatever it is
 		OWLNamedIndividual e = go_cam.makeAnnotatedIndividual(this_iri);
 		go_cam.addSkosNote(e, entity.getModelInterface().getCanonicalName());
-		//check specifically for Reactome id
-		String reactome_entity_id = getEntityReferenceId(entity);
 		//add xrefs
 		for(Xref xref : entity.getXref()) {
 			if(xref.getModelInterface().equals(UnificationXref.class)) {
 				UnificationXref r = (UnificationXref)xref;	    			
 				if(r.getDb().equals("Reactome")) {
 					go_cam.addDatabaseXref(e, "Reactome:"+r.getId());
-					dbids.add(reactome_entity_id);
+					dbids.add(entity_id);
 				}
 			}
 		}
@@ -1454,8 +1456,8 @@ public class BioPaxtoGO {
 							go_cam.addRefBackedObjectPropertyAssertion(e,GoCAM.part_of, bp_i, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 							//use the same name and id as the entity in question as, from Reactome perspective, its about the same thing and otherwise we have no name..
 							go_cam.addLabel(bp_i, "reaction:"+entity_name+": is xrefed to this process");
-							if(reactome_entity_id!=null) {
-								go_cam.addDatabaseXref(bp_i, reactome_entity_id);
+							if(entity_id!=null) {
+								go_cam.addDatabaseXref(bp_i, entity_id);
 							}
 							//Per https://github.com/geneontology/pathways2GO/issues/66
 							//remove the default part_of pathway relationship when one of these is added. 
@@ -1524,20 +1526,20 @@ public class BioPaxtoGO {
 	private IRI getPhysicalEntityIRI(Entity entity) {
 		String entity_id = getEntityReferenceId(entity);
 		if(entity_id!=null) {
+			if(entity_id.startsWith("CHEBI")) {
+				IRI entity_class_iri = IRI.create("http://purl.obolibrary.org/obo/"+entity_id);
+				if(golego.chebi_roles.contains(entity_class_iri.toString())) {
+					// No roles of any kind can be treated as physical entities - fall back on 'chemical entity'
+					return IRI.create("http://purl.obolibrary.org/obo/CHEBI_24431");
+				}
+				return entity_class_iri;
+			}
 			if(entityStrategy.equals(EntityStrategy.REACTO)) {
 				//if it is a physical entity, then we should already have created a class to describe it based on the unique id.  
 				//this will exist in the REACTO ontology
 				IRI entity_class_iri = IRI.create(GoCAM.reacto_base_iri+entity_id);
 				return entity_class_iri;
 			}else if(entityStrategy.equals(EntityStrategy.YeastCyc)) {
-				if(entity_id.startsWith("CHEBI")) {
-					IRI entity_class_iri = IRI.create("http://purl.obolibrary.org/obo/"+entity_id);
-					if(golego.chebi_roles.contains(entity_class_iri.toString())) {
-						// No roles of any kind can be treated as physical entities - fall back on 'chemical entity'
-						return IRI.create("http://purl.obolibrary.org/obo/CHEBI_24431");
-					}
-					return entity_class_iri;
-				}
 				String neo_iri = accession_neo.get(entity_id);
 				if(neo_iri==null) {
 					String trimmed = entity_id.replace("-MONOMER", "");
