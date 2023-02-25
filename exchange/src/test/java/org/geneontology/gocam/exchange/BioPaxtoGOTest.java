@@ -599,13 +599,14 @@ public class BioPaxtoGOTest {
 		try {
 			String query =
 					"prefix obo: <http://purl.obolibrary.org/obo/> "
-					+ "select ?type (count(distinct ?output) AS ?outputs) (count(distinct ?input) AS ?inputs) " + 
+					+ "select ?type (count(distinct ?primary_input) AS ?inputs) " + 
 					"where { " + 
 					" VALUES ?reaction { <http://model.geneontology.org/R-HSA-201669> } "
 					+ " ?reaction rdf:type ?type . " + 
 					"  filter(?type != owl:NamedIndividual) "
-					+ " ?reaction obo:RO_0002234 ?output . " + 
-					" ?reaction obo:RO_0002233 ?input . " + 
+//					+ " ?reaction obo:RO_0002234 ?output . " + 
+//					" ?reaction obo:RO_0002233 ?input . " + 
+					+ " ?reaction obo:RO_0004009 ?primary_input . " + 
 					"  ?reaction obo:RO_0002339 ?endlocation . " + 
 					"  ?endlocation rdf:type <http://purl.obolibrary.org/obo/GO_0005654> . " + 
 					"  ?reaction obo:RO_0002338 ?startlocation . " + 
@@ -619,14 +620,14 @@ public class BioPaxtoGOTest {
 			while (result.hasNext()) {
 				BindingSet bindingSet = result.next();
 				type = bindingSet.getValue("type").stringValue();
-				outputs = Integer.parseInt(bindingSet.getValue("outputs").stringValue());
+//				outputs = Integer.parseInt(bindingSet.getValue("outputs").stringValue());
 				inputs = Integer.parseInt(bindingSet.getValue("inputs").stringValue());
 				n++;
 			}
 			assertTrue(n==1);
 			assertTrue("type is "+type, type.equals("http://purl.obolibrary.org/obo/GO_0140318"));
-			assertTrue(inputs==1);
-			assertTrue(outputs==1);
+			assertTrue(inputs==2);
+//			assertTrue(outputs==1);
 		} catch (QueryEvaluationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

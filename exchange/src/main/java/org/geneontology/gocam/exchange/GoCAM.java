@@ -41,6 +41,7 @@ import org.geneontology.gocam.exchange.QRunner.InferredEnabler;
 import org.geneontology.gocam.exchange.QRunner.InferredOccursIn;
 import org.geneontology.gocam.exchange.QRunner.InferredRegulator;
 import org.geneontology.gocam.exchange.QRunner.InferredTransport;
+import org.geneontology.gocam.exchange.QRunner.ReactionInputOutput;
 import org.geneontology.jena.SesameJena;
 import org.geneontology.rules.engine.Explanation;
 import org.geneontology.rules.engine.RuleEngine;
@@ -1068,15 +1069,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 			for(InferredTransport transport_reaction : transports) {
 				OWLNamedIndividual thing = this.makeAnnotatedIndividual(transport_reaction.thing_uri);
 				OWLNamedIndividual reaction = this.makeAnnotatedIndividual(transport_reaction.reaction_uri);
-				if(!transport_reactions.add(transport_reaction.reaction_uri)){
+				if(transport_reactions.add(transport_reaction.reaction_uri)){
 					//should only end up with one per reaction.. make sure
-					
-					//but still emit thing
-					IRI new_iri = makeGoCamifiedIRI(null,"transported_"+thing.toString().replace("http://model.geneontology.org/", ""));
-					OWLNamedIndividual transported_thing = cloneIndividual(thing, model_id, true, false, false, true, new_iri);
-					Set<OWLAnnotation> annos2 = getDefaultAnnotations();
-					addRefBackedObjectPropertyAssertion(reaction, has_primary_input, transported_thing, Collections.singleton(model_id), GoCAM.eco_inferred_auto,default_namespace_prefix, annos2, model_id);
-				} else {
 					transport_pathways.add(transport_reaction.pathway_uri);
 					OWLClass reaction_type = df.getOWLClass(IRI.create(transport_reaction.reaction_type_uri));
 					boolean add_type = false;
@@ -1128,10 +1122,23 @@ final long counterValue = instanceCounter.getAndIncrement();
 					Set<OWLAnnotation> annos2 = getDefaultAnnotations();
 					annos2.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain2)));
 					addRefBackedObjectPropertyAssertion(reaction, has_target_end_location, end_loc, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos2, model_id);
-					//needed to support inferences into the localization hierarchy
-					IRI new_iri = makeGoCamifiedIRI(null,"transported_"+thing.toString().replace("http://model.geneontology.org/", ""));
-					OWLNamedIndividual transported_thing = cloneIndividual(thing, model_id, true, false, false, true, new_iri);
-					addRefBackedObjectPropertyAssertion(reaction, has_primary_input, transported_thing, Collections.singleton(model_id), GoCAM.eco_inferred_auto,default_namespace_prefix, annos2, model_id);
+				}
+				//but still always emit thing
+				IRI new_iri = makeGoCamifiedIRI(null,"transported_"+thing.toString().replace("http://model.geneontology.org/", ""));
+				OWLNamedIndividual transported_thing = cloneIndividual(thing, model_id, true, false, false, true, new_iri);
+				Set<OWLAnnotation> annos2 = getDefaultAnnotations();
+				addRefBackedObjectPropertyAssertion(reaction, has_primary_input, transported_thing, Collections.singleton(model_id), GoCAM.eco_inferred_auto,default_namespace_prefix, annos2, model_id);
+			}
+			// qrunner query to find all has_input, has_output edges for rxns
+			Set<ReactionInputOutput> rxn_ins_and_outs = qrunner.findReactionInputsOutputs();
+			for(ReactionInputOutput in_out : rxn_ins_and_outs) {
+				// Remove these if they are from a transport reaction
+				if(transport_reactions.contains(in_out.reaction_uri)) {
+					applyAnnotatedTripleRemover(IRI.create(in_out.reaction_uri), 
+							IRI.create(in_out.prop_uri), 
+							IRI.create(in_out.entity_uri));
+					OWLNamedIndividual thing_ind = makeUnannotatedIndividual(in_out.entity_uri);
+					deleteOwlEntityAndAllReferencesToIt(thing_ind);
 				}
 			}
 			//enabled by needs to know if there are any transport reactions as these should not be included
