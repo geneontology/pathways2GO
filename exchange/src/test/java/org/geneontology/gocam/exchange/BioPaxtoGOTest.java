@@ -1329,4 +1329,28 @@ BP has_part R
 		int n = runQueryAndGetCount(q);
 		assertTrue("Incorrect or complete lack of has_input and has_output given stepDirection for "+reaction_node, n==1);
 	}
+	
+	@Test
+	public final void testReactomeChebiMoleculeIds() {
+		System.out.println("testing ChEBI ID extraction for Reactome small molecules");
+		// Using example pathway "Tetrahydrobiopterin (BH4) synthesis, recycling, salvage and regulation" R-HSA-1474151,
+		// test that ChEBI:17804 is used for input small mol PTHP (R-ALL-1474179) 
+		String pathway = "<http://model.geneontology.org/R-HSA-1474151>";
+		String reaction_node = "<http://model.geneontology.org/R-HSA-1475414>";
+		String input_type = "<http://purl.obolibrary.org/obo/CHEBI_17804>";
+		String q =  
+				" prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+				+ "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> "
+				+ "prefix RO: <http://purl.obolibrary.org/obo/RO_> "
+				+ "prefix BFO: <http://purl.obolibrary.org/obo/BFO_> "
+				+ "SELECT ?component_gp_type  \n" + 
+				"WHERE {\n" + 
+				"  GRAPH "+pathway+"  {  \n" + 
+				"       "+reaction_node+" RO:0002233 ?input_node . \n " +
+				"       ?input_node rdf:type "+input_type +
+				"    }\n" + 
+				"  } \n";
+		int n = runQueryAndGetCount(q);
+		assertTrue("Missing "+reaction_node+" has_input "+input_type+" statement", n==1);
+	}
 }
