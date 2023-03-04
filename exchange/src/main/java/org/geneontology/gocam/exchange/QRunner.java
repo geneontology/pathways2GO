@@ -672,6 +672,52 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		return transports;
 	}
 	
+	class ReactionInputOutput {
+		String reaction_uri;
+		String prop_uri;
+		String entity_uri;
+		String entity_type_uri;
+		ReactionInputOutput(String rxn_uri, String p_uri, String entity, String entity_type){
+			reaction_uri = rxn_uri;
+			prop_uri = p_uri;
+			entity_uri = entity;
+			entity_type_uri = entity_type;
+		}
+	}
+	
+	Set<ReactionInputOutput> findReactionInputsOutputs(){
+		Set<ReactionInputOutput> rxn_ins_or_outs = new HashSet<ReactionInputOutput>();
+		String query = null;
+		try {		
+			query = IOUtils.toString(QRunner.class.getResourceAsStream("query2update_has_inputs_outputs.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL update from jar \n"+e);
+		}
+		QueryExecution qe = QueryExecutionFactory.create(query, jena);
+		ResultSet results = qe.execSelect();
+		
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Resource reaction = qs.getResource("reaction");
+			String reaction_uri = reaction.getURI();
+			Resource relation = qs.getResource("relation");
+			String relation_uri = relation.getURI();
+			Resource entity = qs.getResource("entity");
+			String entity_uri = entity.getURI();
+			Resource entity_type = qs.getResource("entity_type");
+			String entity_type_uri = entity_type.getURI();
+			
+			if(reaction_uri==null){
+				continue;
+			}
+			ReactionInputOutput in_out = new ReactionInputOutput(reaction_uri, relation_uri, entity_uri, entity_type_uri);
+			rxn_ins_or_outs.add(in_out);
+		}
+		qe.close();
+		
+		return rxn_ins_or_outs;
+	}
+	
 	public class InferredOccursIn {
 		String pathway_uri;
 		String reaction_uri;
