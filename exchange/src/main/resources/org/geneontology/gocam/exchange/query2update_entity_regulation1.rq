@@ -15,10 +15,12 @@ prefix skos: <http://www.w3.org/2004/02/skos/core#>
 #R enabled_by E2
 #BP has_part R
 
-select ?regulator ?prop ?reaction ?pathway ?enabler 
+select ?regulator ?prop ?reaction ?pathway ?enabler ?regulator_type
 where {
    VALUES ?prop {obo:RO_0002430 obo:RO_0002429} . 
    ?regulator ?prop  ?reaction .   
+   ?regulator rdf:type ?regulator_type .
+   filter(?regulator_type != <http://www.w3.org/2002/07/owl#NamedIndividual>) .
    OPTIONAL {?reaction obo:BFO_0000050 ?pathway . }   
    OPTIONAL {?reaction obo:RO_0002333 ?enabler .  }
 }

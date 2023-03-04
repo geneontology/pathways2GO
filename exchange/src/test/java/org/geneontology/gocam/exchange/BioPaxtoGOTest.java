@@ -890,27 +890,24 @@ R enabled_by E2
 BP has_part R
 	 */
 	@Test 
-	public final void testConvertEntityRegulatorsToBindingFunctions() {
+	public final void testInferSmallMoleculeRegulators() {
 		System.out.println("Testing convert entity regulators to binding functions");
 		TupleQueryResult result = null;
 		try {
-			result = blaze.runSparqlQuery(
-				"select distinct ?binding_reaction " + 
-				"where { " + 
-				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-71670> } ."  
-				+ " ?binding_reaction <http://purl.obolibrary.org/obo/RO_0002212> ?reaction1 . " //
-				+ "?binding_reaction rdf:type <http://purl.obolibrary.org/obo/GO_0005488> . "
-				+ "?binding_reaction <http://purl.obolibrary.org/obo/RO_0002233> ?input1 . "
-				+ "?binding_reaction <http://purl.obolibrary.org/obo/RO_0002333> ?input2 . "
-				+ "filter(?input1 != ?input2) "
-				+"}"); 
+			String query = "prefix obo: <http://purl.obolibrary.org/obo/> " +
+					"select distinct ?reg_relation ?regulator " +
+					"where { " +
+					"<http://model.geneontology.org/R-HSA-71670> ?reg_relation ?regulator . " +
+					"VALUES ?reg_relation { obo:RO_0012001 obo:RO_0012002 } . " +
+					"}";
+			result = blaze.runSparqlQuery(query);
 			int n = 0; 
 			while (result.hasNext()) {
 				BindingSet bindingSet = result.next();
-				String br = bindingSet.getValue("binding_reaction").stringValue();
+				String br = bindingSet.getValue("regulator").stringValue();
 				n++;
 			}
-			assertTrue("should have been 3, but got n results: "+n, n==3);
+			assertTrue("should have been 4, but got n results: "+n, n==4);
 		} catch (QueryEvaluationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -922,7 +919,7 @@ BP has_part R
 				e.printStackTrace();
 			}
 		}
-		System.out.println("Done testing testConvertEntityRegulatorsToBindingFunctions");
+		System.out.println("Done testing testInferSmallMoleculeRegulators");
 	}
 	
 	/**
