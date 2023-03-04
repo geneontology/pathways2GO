@@ -1,0 +1,24 @@
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+prefix obo: <http://purl.obolibrary.org/obo/>
+prefix skos: <http://www.w3.org/2004/02/skos/core#>
+
+
+#get all the has_input and has_output edges for each reaction
+
+select distinct ?reaction ?relation ?entity ?entity_type  
+where {
+  	?reaction ?relation ?entity . 
+  	?entity rdf:type ?entity_type .  
+	filter(?entity_type != <http://www.w3.org/2002/07/owl#NamedIndividual>) .
+	VALUES ?relation { obo:RO_0002233 obo:RO_0002234} 
+}
+
+# protein containing complex <http://purl.obolibrary.org/obo/GO_0032991>
+#located_in = obo:RO_0001025
+# obo:RO_0002233 has input 
+# obo:RO_0002333 enabled by
+# RO_0002234 has output
+# obo:BFO_0000051 has part
+# obo:RO_0002413 provides direct input for
