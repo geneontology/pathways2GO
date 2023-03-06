@@ -321,6 +321,72 @@ public class BioPaxtoGO {
 		}
 	}
 
+	public String checkXrefsReacto(Set<Xref> xrefs, Entity bp_entity) {
+		if(bp_entity instanceof SmallMolecule) {
+			return getEntityReferenceIdForSmallMolecule(bp_entity);
+		}
+		String pulled_id = null;
+		for(Xref ref : xrefs) {
+			if(ref.getModelInterface().equals(UnificationXref.class)) {
+				UnificationXref r = (UnificationXref)ref;	    			
+				if(r.getDb().equals("Reactome")) {
+					pulled_id = r.getId();
+					if(pulled_id.startsWith("R-")) {
+						break;
+					}
+				}else if(r.getDb().equalsIgnoreCase("ChEBI") && bp_entity instanceof SmallMolecule) {
+					pulled_id = r.getId().replace(":", "_");
+					break;
+				}
+			}
+		}
+		return pulled_id;
+	}
+	
+	public String getEntityReferenceIdForSmallMolecule(Entity bp_entity) {
+		String id = null;
+		Set<Xref> references = new HashSet<Xref>();
+		
+		// Pile together all xrefs from bp_entity and entityReference
+		for(Xref ref : bp_entity.getXref()) {
+			if(ref.getModelInterface().equals(UnificationXref.class)) {
+				references.add(ref);
+			}
+		}
+		SimplePhysicalEntity entity = (SimplePhysicalEntity) bp_entity;
+		EntityReference entity_ref = entity.getEntityReference();
+		if(entity_ref!=null) {
+			for(Xref ref : entity_ref.getXref()) {
+				if(ref.getModelInterface().equals(UnificationXref.class)) {
+					references.add(ref);
+				}
+			}
+		}
+		
+		// Preference order - ChEBI first
+		for(Xref ref : references) {
+			UnificationXref r = (UnificationXref)ref;	   
+			if(r.getDb().equalsIgnoreCase("ChEBI") && bp_entity instanceof SmallMolecule) {
+				id = r.getId().replace(":", "_");
+				break;
+			}
+		}
+		// Then Reactome
+		if(id==null) {
+			for(Xref ref : references) {
+				UnificationXref r = (UnificationXref)ref;
+				if(r.getDb().equals("Reactome")) {
+					id = r.getId();
+					if(id.startsWith("R-")) {
+						break;
+					}
+				}
+			}
+		}
+		
+		return id;
+	}
+	
 	public String getEntityReferenceId(Entity bp_entity) {
 		String id = null;
 		Set<Xref> references = null;
@@ -341,20 +407,7 @@ public class BioPaxtoGO {
 			references = bp_entity.getXref();
 		}
 		if(entityStrategy.equals(EntityStrategy.REACTO)) {
-			for(Xref ref : references) {
-				if(ref.getModelInterface().equals(UnificationXref.class)) {
-					UnificationXref r = (UnificationXref)ref;	    			
-					if(r.getDb().equals("Reactome")) {
-						id = r.getId();
-						if(id.startsWith("R-")) {
-							break;
-						}
-					}else if(r.getDb().equalsIgnoreCase("ChEBI") && bp_entity instanceof SmallMolecule) {
-						id = r.getId().replace(":", "_");
-						break;
-					}
-				}
-			}
+			id = checkXrefsReacto(references, bp_entity);
 			//if id not found in unification references, check on other xrefs - use only for reactome
 			if(id==null) {
 				//Reactome Database ID
