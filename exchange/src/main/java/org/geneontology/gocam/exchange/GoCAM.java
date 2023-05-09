@@ -206,7 +206,7 @@ public class GoCAM {
 			default_namespace_prefix = "wikipathways";
 		}else if(base_provider.equals("https://www.pathwaycommons.org/")) {
 			default_namespace_prefix = "pathwaycommons";
-		}else if(base_provider.equals("https://yeastcyc.org")) {
+		}else if(base_provider.equals("http://www.yeastgenome.org")) {
 			default_namespace_prefix = "SGD";
 		}
 		
