@@ -960,7 +960,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 	 * @param tbox_qrunner 
 	 * @throws IOException 
 	 */
-	RuleResults applySparqlRules(String model_id, QRunner tbox_qrunner) {
+	RuleResults applySparqlRules(String model_id, QRunner tbox_qrunner) throws IOException {
 
 		RuleResults r = new RuleResults();
 		//NOTE that the order these are run matters.
@@ -1516,7 +1516,7 @@ R enabled_by E2
 BP has_part R
 	 * @return 
 	 */
-	private RuleResults inferSmallMoleculeRegulators(String model_id, RuleResults r, QRunner tbox_qrunner) {		
+	private RuleResults inferSmallMoleculeRegulators(String model_id, RuleResults r, QRunner tbox_qrunner) {
 		String entity_regulator_rule = "Entity Regulator Rule";
 		Integer entity_regulator_count = r.checkInitCount(entity_regulator_rule, r);
 		Set<String> entity_regulator_pathways = r.checkInitPathways(entity_regulator_rule, r);
@@ -1549,13 +1549,14 @@ BP has_part R
 				}
 				//now get the actual regulating entities
 				Set<String> regulating_entities = new HashSet<String>();
-				for(InferredRegulator er : reaction_regulators.get(reaction_uri)) {
+				for(InferredRegulator er : regs) {
 					OWLClass entity_type_class = this.df.getOWLClass(IRI.create(er.entity_type_uri));
 					Set<OWLClass> entity_types = tbox_qrunner.getSuperClasses(entity_type_class, false);
+					entity_types.add(entity_type_class);  // Some of these are directly chebi_chemical
 					//Only do this for chemical entities but not if nucleic acid or descendant
-					if(!entity_types.contains(chebi_chemical) || entity_types.contains(chebi_nucleic_acid)) {
-						continue;
-					}
+//					if(!entity_types.contains(chebi_chemical) || entity_types.contains(chebi_nucleic_acid)) {
+//						continue;
+//					}
 					//catch cases where there may be more than one of the same entity
 					//avoid making multiple redundant binding functions for the same entity
 					if(!regulating_entities.add(er.entity_uri)) {
@@ -1564,23 +1565,83 @@ BP has_part R
 					Set<OWLAnnotation> annos = getDefaultAnnotations();
 					OWLNamedIndividual regulator = makeUnannotatedIndividual(er.entity_uri);
 
-					OWLObjectProperty prop_for_deletion = GoCAM.involved_in_negative_regulation_of;
-					OWLObjectProperty regulator_prop = GoCAM.has_small_molecule_inhibitor;
-					String explain = "Entity Regulator Rule.  The relation was added to account for an assertion about an entity regulating the target reaction.";
-					if(er.prop_uri.equals("http://purl.obolibrary.org/obo/RO_0002429")) {
-						//String reg = " is involved in positive regulation of ";
-						annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
-						prop_for_deletion = GoCAM.involved_in_positive_regulation_of;
-						regulator_prop = GoCAM.has_small_molecule_activator;
-					}else {
-						//String reg = " is involved in negative regulation of ";
-						annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
+//					// TODO: Determine if complex: entity_type_class.getIRI().getRemainder().equals("REACTO_R-HSA-5634107")
+//					if(entity_types!=null&&(entity_types.contains(chebi_protein)||entity_types.contains(go_complex))) {
+//						OWLObjectProperty prop_for_deletion = GoCAM.involved_in_negative_regulation_of;
+//						OWLObjectProperty regulator_prop = GoCAM.negatively_regulates;
+//						String explain = "Entity Regulator Rule.  The relation was added to account for an assertion about an entity regulating the target reaction.";
+//						if(er.prop_uri.equals("http://purl.obolibrary.org/obo/RO_0002429")) {
+//							//String reg = " is involved in positive regulation of ";
+//							annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
+//							prop_for_deletion = GoCAM.involved_in_positive_regulation_of;	
+//							regulator_prop = GoCAM.positively_regulates;
+//						}else {
+//							//String reg = " is involved in negative regulation of ";
+//							annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
+//						}
+//						//make the MF node
+//						String reaction_unique_id = reaction.toString().replace("http://model.geneontology.org/", "").replaceAll("<", "").replaceAll(">","");
+//						String prop_id = regulator_prop.toString().replace("http://purl.obolibrary.org/obo/", "").replaceAll("<", "").replaceAll(">","");
+//						String regulator_id = regulator.toString().replace("http://model.geneontology.org/", "").replaceAll("<", "").replaceAll(">","");
+//						IRI new_mf_node_iri = makeGoCamifiedIRI(null, reaction_unique_id+"_regulator_"+prop_id+"_"+regulator_id);
+//						OWLNamedIndividual binding_node = makeAnnotatedIndividual(new_mf_node_iri);
+//						addComment(binding_node, "Produced by Entity Regulator Rule");					
+//					
+//						addRefBackedObjectPropertyAssertion(binding_node, has_input, regulator, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
+//						addRefBackedObjectPropertyAssertion(binding_node, regulator_prop, reaction, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
+//
+//						if(er.enabler_uri!=null) {
+//							addTypeAssertion(binding_node, binding);
+//							IRI new_enabler_node_iri = makeGoCamifiedIRI(null, reaction.toString().replace("http://model.geneontology.org/", "").replaceAll(">", "").replaceAll("<", "")+"_regulator_enabler_"+er.enabler_uri.toString().replace("http://model.geneontology.org/", "")+"_"+regulator.toString().replace("http://model.geneontology.org/", ""));						
+//							OWLNamedIndividual enabler = cloneIndividual(er.enabler_uri, model_id, true, false, false, true, new_enabler_node_iri);
+//							addRefBackedObjectPropertyAssertion(binding_node, enabled_by, enabler, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
+//							//delete the cloned enable relation
+//							applyAnnotatedTripleRemover(reaction.getIRI(), enabled_by.getIRI(), enabler.getIRI());
+//							//just in case the enabler was double inserted as a controller
+//							applyAnnotatedTripleRemover(enabler.getIRI(), prop_for_deletion.getIRI(), reaction.getIRI());
+//							applyAnnotatedTripleRemover(IRI.create(er.enabler_uri), prop_for_deletion.getIRI(), reaction.getIRI());
+//						}else {
+//							addTypeAssertion(binding_node, molecular_event);
+//						}
+//						//make a BP node
+//						IRI new_bp_node_iri = makeGoCamifiedIRI(null, reaction_unique_id+"_regulator_bp_"+prop_id+"_"+regulator_id);
+//						OWLNamedIndividual bp_node = makeAnnotatedIndividual(new_bp_node_iri);
+//						addComment(bp_node, "Produced by Entity Regulator Rule");
+//						addTypeAssertion(bp_node, bp_class);
+//						addRefBackedObjectPropertyAssertion(binding_node, part_of, bp_node, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
+//						if(pathway!=null) {
+//							addRefBackedObjectPropertyAssertion(bp_node, regulator_prop, pathway, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);					
+//						}
+//						//delete the original entity regulates process relation 
+//						applyAnnotatedTripleRemover(regulator.getIRI(), prop_for_deletion.getIRI(), reaction.getIRI());
+//					}else if(entity_types.contains(chebi_chemical) && !entity_types.contains(chebi_nucleic_acid)) {
+					if(entity_types.contains(chebi_chemical) && !entity_types.contains(chebi_nucleic_acid)) {
+						OWLObjectProperty prop_for_deletion = GoCAM.involved_in_negative_regulation_of;
+						OWLObjectProperty regulator_prop = GoCAM.has_small_molecule_inhibitor;
+						String explain = "Entity Regulator Rule.  The relation was added to account for an assertion about an entity regulating the target reaction.";
+						if(er.prop_uri.equals("http://purl.obolibrary.org/obo/RO_0002429")) {
+							//String reg = " is involved in positive regulation of ";
+							annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
+							prop_for_deletion = GoCAM.involved_in_positive_regulation_of;
+							regulator_prop = GoCAM.has_small_molecule_activator;
+						}else {
+							//String reg = " is involved in negative regulation of ";
+							annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
+						}
+						//Connect the regulator to reaction via has_small_molecule_... relation
+						addRefBackedObjectPropertyAssertion(reaction, regulator_prop, regulator, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
+						
+						//delete the original entity regulates process relation 
+						applyAnnotatedTripleRemover(regulator.getIRI(), prop_for_deletion.getIRI(), reaction.getIRI());
+					} else {
+						// Delete individuals and log these out
+						String deleted_regulator_line = entity_type_class.getIRI().toString();
+						deleted_regulator_line += "\t"+this.getaLabel(entity_type_class);
+						deleted_regulator_line += "\t"+reaction_uri.toString();
+						deleted_regulator_line += "\t"+model_id;
+						System.out.println("DELETING_NON_SMALL_MOL_REGULATOR\t"+deleted_regulator_line);
+						deleteOwlEntityAndAllReferencesToIt(regulator);
 					}
-					//Connect the regulator to reaction via has_small_molecule_... relation
-					addRefBackedObjectPropertyAssertion(reaction, regulator_prop, regulator, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
-					
-					//delete the original entity regulates process relation 
-					applyAnnotatedTripleRemover(regulator.getIRI(), prop_for_deletion.getIRI(), reaction.getIRI());
 				}
 			}
 		}
