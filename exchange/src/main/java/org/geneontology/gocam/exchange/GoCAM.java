@@ -689,7 +689,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 				IRI anno_iri = makeGoCamifiedIRI(null, "ev_w_id_"+source_id+"_"+prop_id+"_"+target_id+"_"+id);
 				OWLNamedIndividual evidence = makeAnnotatedIndividual(anno_iri);					
 				addTypeAssertion(evidence, evidence_class);
-				addLiteralAnnotations2Individual(anno_iri, GoCAM.source_prop, namespace_prefix+":"+id);
+				String ev_source_id = id.replace("YeastCyc-", "");  // Ugly hack to take added model ID prefix back out for source
+				addLiteralAnnotations2Individual(anno_iri, GoCAM.source_prop, namespace_prefix+":"+ev_source_id);
 				OWLAnnotation anno = df.getOWLAnnotation(GoCAM.evidence_prop, anno_iri);
 				annos.add(anno);
 			}

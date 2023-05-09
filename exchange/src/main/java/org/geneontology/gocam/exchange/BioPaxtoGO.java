@@ -179,7 +179,7 @@ public class BioPaxtoGO {
 		}else if(base_provider.equals("https://www.pathwaycommons.org/")) {
 			datasource = "Pathway Commons";
 			default_namespace_prefix = "pathwaycommons";
-		}else if(base_provider.equals("https://yeastgenome.org")) {
+		}else if(base_provider.equals("http://www.yeastgenome.org")) {
 			datasource = "Saccharomyces Genome Database";
 			default_namespace_prefix = "SGD";
 		}
@@ -238,6 +238,7 @@ public class BioPaxtoGO {
 				continue;
 			}
 			String model_id = null;
+			String pathway_id = getEntityReferenceId(currentPathway);
 			Set<String> pathway_source_comments = new HashSet<String>();
 			n_pathways++;
 			System.out.println(n_pathways+" of "+total_pathways+" Pathway:"+currentPathway.getName()); 
@@ -246,11 +247,12 @@ public class BioPaxtoGO {
 				model_id = ""+URLEncoder.encode(base_ont_title, StandardCharsets.UTF_8.toString());
 				String contributor_link = base_provider;
 				//See if there is a specific pathway reference to allow a direct link
-				model_id = getEntityReferenceId(currentPathway);
+				model_id = pathway_id;
 				if(base_provider.equals("https://reactome.org")) {
 					contributor_link = "https://reactome.org/content/detail/"+model_id;
-				}else if(base_provider.equals("https://yeastgenome.org")) {
-					contributor_link = "https://pathway.yeastgenome.org/YEAST/NEW-IMAGE?object="+model_id;
+				}else if(entityStrategy.equals(EntityStrategy.YeastCyc)) {
+					model_id = "YeastCyc-"+pathway_id;
+					contributor_link = "https://pathway.yeastgenome.org/YEAST/NEW-IMAGE?object="+pathway_id;
 				}else {
 					contributor_link = base_provider+"/"+model_id;					
 				}
