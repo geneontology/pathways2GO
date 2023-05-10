@@ -278,6 +278,7 @@ public class BioPaxtoGO {
 				go_cam.path2bgjournal = blazegraph_output_journal;
 				go_cam.blazegraphdb = blaze;
 				go_cam.name = getBioPaxName(currentPathway);
+				go_cam.contributor_link = contributor_link;
 			}
 			//make the OWL individual representing the pathway so it can be used below
 			OWLNamedIndividual p = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(null, model_id));
@@ -285,6 +286,7 @@ public class BioPaxtoGO {
 			for(String comment : pathway_source_comments) {
 				go_cam.addComment(p, comment);
 			}
+			go_cam.addComment(p, go_cam.contributor_link);
 			//define it (add types etc)
 			definePathwayEntity(go_cam, currentPathway, model_id, expand_subpathways, add_pathway_components);	
 			//get and set parent pathways
