@@ -1065,7 +1065,7 @@ BP has_part R
 	@Test
 	public final void testAny() {
 		System.out.println("testing ");
-		String pathway = "<http://model.geneontology.org/YeastCyc-GLYCLEAV-PWY>";
+		String pathway = "<http://model.geneontology.org/YeastPathways_GLYCLEAV-PWY>";
 		String q =  
 				" prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
 				+ "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"
@@ -1107,8 +1107,8 @@ BP has_part R
 	@Test
 	public final void testSSSOMbp() {
 		System.out.println("testing sssom BP mapping additions");
-		String pathway = "<http://model.geneontology.org/YeastCyc-GLYCLEAV-PWY>";
-		String pathway_node = "<http://model.geneontology.org/YeastCyc-GLYCLEAV-PWY/YeastCyc-GLYCLEAV-PWY>";
+		String pathway = "<http://model.geneontology.org/YeastPathways_GLYCLEAV-PWY>";
+		String pathway_node = "<http://model.geneontology.org/YeastPathways_GLYCLEAV-PWY/YeastPathways_GLYCLEAV-PWY>";
 		String pathway_go_type = "<http://purl.obolibrary.org/obo/GO_0019464>";
 		String q =  
 				" prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
@@ -1148,7 +1148,7 @@ BP has_part R
 	@Test
 	public final void testSSSOMmf() {
 		System.out.println("testing sssom BP mapping additions");
-		String pathway = "<http://model.geneontology.org/YeastCyc-PWY3O-981>";
+		String pathway = "<http://model.geneontology.org/YeastPathways_PWY3O-981>";
 		String reaction_node = "<http://model.geneontology.org/ACETOINDEHYDROG-RXN>";
 		String reaction_go_type = "<http://purl.obolibrary.org/obo/GO_0019152>";
 		String q =  
@@ -1189,7 +1189,7 @@ BP has_part R
 	@Test
 	public final void testSGDIdLookup() {
 		System.out.println("testing EC->MF lookup via SGD ID");
-		String pathway = "<http://model.geneontology.org/YeastCyc-YEAST-SALV-PYRMID-DNTP>";
+		String pathway = "<http://model.geneontology.org/YeastPathways_YEAST-SALV-PYRMID-DNTP>";
 		String reaction_node = "<http://model.geneontology.org/RXN3O-314>";
 		String reaction_go_type = "<http://purl.obolibrary.org/obo/GO_0045437>";
 		String reaction_gp_type = "<http://identifiers.org/sgd/S000002808>";
@@ -1235,7 +1235,7 @@ BP has_part R
 	@Test
 	public final void testChemicalRoleReplacement() {
 		System.out.println("testing replacement of CHEBI chemical role with chemical entity");
-		String pathway = "<http://model.geneontology.org/YeastCyc-ERGOSTEROL-SYN-PWY-1>";
+		String pathway = "<http://model.geneontology.org/YeastPathways_ERGOSTEROL-SYN-PWY-1>";
 		String reaction_node = "<http://model.geneontology.org/RXN3O-9816>";
 		String chemical_entity_type = "<http://purl.obolibrary.org/obo/CHEBI_24431>";
 		String chemical_acceptor_type = "<http://purl.obolibrary.org/obo/CHEBI_15339>";
@@ -1272,7 +1272,7 @@ BP has_part R
 	@Test
 	public final void testYeastComplexComponents() {
 		System.out.println("testing expression of YeastCyc complexes");
-		String pathway = "<http://model.geneontology.org/YeastCyc-SO4ASSIM-PWY>";
+		String pathway = "<http://model.geneontology.org/YeastPathways_SO4ASSIM-PWY>";
 		String reaction_node = "<http://model.geneontology.org/SULFITE-REDUCT-RXN>";
 		String pcc_type = "<http://purl.obolibrary.org/obo/GO_0032991>";
 		String sgd_met5_type = "<http://identifiers.org/sgd/S000003898>";
@@ -1301,7 +1301,7 @@ BP has_part R
 		// But stepDirection is RIGHT-TO-LEFT, so:
 		// Check that RIB5PISOM-RXN [has output] D-ribofuranose 5-phosphate(2-) (CHEBI:78346)
 		// Check that RIB5PISOM-RXN [has input] D-ribulose 5-phosphate(2-) (CHEBI:58121)
-		String pathway = "<http://model.geneontology.org/YeastCyc-NONOXIPENT-PWY>";
+		String pathway = "<http://model.geneontology.org/YeastPathways_NONOXIPENT-PWY>";
 		String reaction_node = "<http://model.geneontology.org/RIB5PISOM-RXN>";
 		String output_type = "<http://purl.obolibrary.org/obo/CHEBI_78346>";
 		String input_type = "<http://purl.obolibrary.org/obo/CHEBI_58121>";
