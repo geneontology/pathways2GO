@@ -251,7 +251,7 @@ public class BioPaxtoGO {
 				if(base_provider.equals("https://reactome.org")) {
 					contributor_link = "https://reactome.org/content/detail/"+model_id;
 				}else if(entityStrategy.equals(EntityStrategy.YeastCyc)) {
-					model_id = "YeastCyc-"+pathway_id;
+					model_id = "YeastPathways_"+pathway_id;
 					contributor_link = "https://pathway.yeastgenome.org/YEAST/NEW-IMAGE?object="+pathway_id;
 				}else {
 					contributor_link = base_provider+"/"+model_id;					
