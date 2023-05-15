@@ -153,7 +153,7 @@ public class GoCAM {
 	//for convenience
 	String name;
 	String default_namespace_prefix;
-	String contributor_link;
+	String contributor_link_comment;
 
 	public GoCAM() throws OWLOntologyCreationException {
 		ontman = OWLManager.createOWLOntologyManager();				
@@ -489,7 +489,7 @@ public class GoCAM {
 		annos.add(df.getOWLAnnotation(contributor_prop, df.getOWLLiteral(this.base_contributor)));
 		annos.add(df.getOWLAnnotation(date_prop, df.getOWLLiteral(this.base_date)));
 		annos.add(df.getOWLAnnotation(provided_by_prop, df.getOWLLiteral(this.base_provider)));
-		annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(this.contributor_link)));
+		annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(this.contributor_link_comment)));
 		return annos;
 	}
 
