@@ -150,7 +150,7 @@ public class BioPaxtoGOTest {
 	public static void fullBuildYeastCyc() throws Exception{
 		String sssom_file = "./target/classes/YeastCyc/obomatch-go-yeastpathway.sssom.tsv.txt";
 		String input_yeastcyc_biopax = "./src/test/resources/cyc/";
-		String default_provider = "https://yeastgenome.org";
+		String default_provider = "http://www.yeastgenome.org";
 		
 		bp2g.entityStrategy = BioPaxtoGO.EntityStrategy.YeastCyc;
 		bp2g.sssom = new SSSOM(sssom_file);
@@ -415,7 +415,54 @@ public class BioPaxtoGOTest {
 			}
 		}
 		assertTrue("reaction "+reaction_present+" not present", n>0);
-
+		pathway = "<http://model.geneontology.org/R-HSA-112311>";
+		reaction_delete = "<http://model.geneontology.org/R-HSA-9634834>";
+		reaction_present = "<http://model.geneontology.org/R-HSA-372519>";
+		n = 0;
+		result = null;
+		try {
+			String q2 = all_reaction_q.replace("pathway_id", pathway);
+			q2 = q2.replace("reaction_id", reaction_delete);
+			result = blaze.runSparqlQuery(q2);
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				n++;
+			}
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		assertTrue("drug reaction "+reaction_delete+" not deleted", n==0);
+		n = 0;
+		result = null;
+		try {
+			
+			String q2 = all_reaction_q.replace("pathway_id", pathway);
+			q2 = q2.replace("reaction_id", reaction_present);
+			result = blaze.runSparqlQuery(q2);
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				n++;
+			}
+		} catch (QueryEvaluationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		assertTrue("reaction "+reaction_present+" not present", n>0);
 	}
 	
 	/**
@@ -599,19 +646,17 @@ public class BioPaxtoGOTest {
 		try {
 			String query =
 					"prefix obo: <http://purl.obolibrary.org/obo/> "
-					+ "select ?type (count(distinct ?output) AS ?outputs) (count(distinct ?input) AS ?inputs) " + 
+					+ "select ?type (count(distinct ?primary_input) AS ?inputs) " + 
 					"where { " + 
 					" VALUES ?reaction { <http://model.geneontology.org/R-HSA-201669> } "
 					+ " ?reaction rdf:type ?type . " + 
 					"  filter(?type != owl:NamedIndividual) "
-					+ " ?reaction obo:RO_0002234 ?output . " + 
-					" ?reaction obo:RO_0002233 ?input . " + 
+					+ " ?reaction obo:RO_0004009 ?primary_input . " + 
 					"  ?reaction obo:RO_0002339 ?endlocation . " + 
 					"  ?endlocation rdf:type <http://purl.obolibrary.org/obo/GO_0005654> . " + 
 					"  ?reaction obo:RO_0002338 ?startlocation . " + 
 					"  ?startlocation rdf:type <http://purl.obolibrary.org/obo/GO_0005829> . "
-					+ "?input rdf:type ?entityclass . "
-					+ "?output rdf:type ?entityclass ." + 
+					+ "?primary_input rdf:type ?entityclass ." +
 					"}"
 				+" group by ?type ";
 			result = blaze.runSparqlQuery(query);
@@ -619,14 +664,12 @@ public class BioPaxtoGOTest {
 			while (result.hasNext()) {
 				BindingSet bindingSet = result.next();
 				type = bindingSet.getValue("type").stringValue();
-				outputs = Integer.parseInt(bindingSet.getValue("outputs").stringValue());
 				inputs = Integer.parseInt(bindingSet.getValue("inputs").stringValue());
 				n++;
 			}
 			assertTrue(n==1);
 			assertTrue("type is "+type, type.equals("http://purl.obolibrary.org/obo/GO_0140318"));
 			assertTrue(inputs==1);
-			assertTrue(outputs==1);
 		} catch (QueryEvaluationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -843,27 +886,24 @@ R enabled_by E2
 BP has_part R
 	 */
 	@Test 
-	public final void testConvertEntityRegulatorsToBindingFunctions() {
+	public final void testInferSmallMoleculeRegulators() {
 		System.out.println("Testing convert entity regulators to binding functions");
 		TupleQueryResult result = null;
 		try {
-			result = blaze.runSparqlQuery(
-				"select distinct ?binding_reaction " + 
-				"where { " + 
-				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-71670> } ."  
-				+ " ?binding_reaction <http://purl.obolibrary.org/obo/RO_0002212> ?reaction1 . " //
-				+ "?binding_reaction rdf:type <http://purl.obolibrary.org/obo/GO_0005488> . "
-				+ "?binding_reaction <http://purl.obolibrary.org/obo/RO_0002233> ?input1 . "
-				+ "?binding_reaction <http://purl.obolibrary.org/obo/RO_0002333> ?input2 . "
-				+ "filter(?input1 != ?input2) "
-				+"}"); 
+			String query = "prefix obo: <http://purl.obolibrary.org/obo/> " +
+					"select distinct ?reg_relation ?regulator " +
+					"where { " +
+					"<http://model.geneontology.org/R-HSA-71670> ?reg_relation ?regulator . " +
+					"VALUES ?reg_relation { obo:RO_0012001 obo:RO_0012002 } . " +
+					"}";
+			result = blaze.runSparqlQuery(query);
 			int n = 0; 
 			while (result.hasNext()) {
 				BindingSet bindingSet = result.next();
-				String br = bindingSet.getValue("binding_reaction").stringValue();
+				String br = bindingSet.getValue("regulator").stringValue();
 				n++;
 			}
-			assertTrue("should have been 3, but got n results: "+n, n==3);
+			assertTrue("should have been 4, but got n results: "+n, n==4);
 		} catch (QueryEvaluationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -875,7 +915,7 @@ BP has_part R
 				e.printStackTrace();
 			}
 		}
-		System.out.println("Done testing testConvertEntityRegulatorsToBindingFunctions");
+		System.out.println("Done testing testInferSmallMoleculeRegulators");
 	}
 	
 	/**
@@ -1025,7 +1065,7 @@ BP has_part R
 	@Test
 	public final void testAny() {
 		System.out.println("testing ");
-		String pathway = "<http://model.geneontology.org/GLYCLEAV-PWY>";
+		String pathway = "<http://model.geneontology.org/YeastPathways_GLYCLEAV-PWY>";
 		String q =  
 				" prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
 				+ "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"
@@ -1067,8 +1107,8 @@ BP has_part R
 	@Test
 	public final void testSSSOMbp() {
 		System.out.println("testing sssom BP mapping additions");
-		String pathway = "<http://model.geneontology.org/GLYCLEAV-PWY>";
-		String pathway_node = "<http://model.geneontology.org/GLYCLEAV-PWY/GLYCLEAV-PWY>";
+		String pathway = "<http://model.geneontology.org/YeastPathways_GLYCLEAV-PWY>";
+		String pathway_node = "<http://model.geneontology.org/YeastPathways_GLYCLEAV-PWY/YeastPathways_GLYCLEAV-PWY>";
 		String pathway_go_type = "<http://purl.obolibrary.org/obo/GO_0019464>";
 		String q =  
 				" prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
@@ -1108,7 +1148,7 @@ BP has_part R
 	@Test
 	public final void testSSSOMmf() {
 		System.out.println("testing sssom BP mapping additions");
-		String pathway = "<http://model.geneontology.org/PWY3O-981>";
+		String pathway = "<http://model.geneontology.org/YeastPathways_PWY3O-981>";
 		String reaction_node = "<http://model.geneontology.org/ACETOINDEHYDROG-RXN>";
 		String reaction_go_type = "<http://purl.obolibrary.org/obo/GO_0019152>";
 		String q =  
@@ -1149,7 +1189,7 @@ BP has_part R
 	@Test
 	public final void testSGDIdLookup() {
 		System.out.println("testing EC->MF lookup via SGD ID");
-		String pathway = "<http://model.geneontology.org/YEAST-SALV-PYRMID-DNTP>";
+		String pathway = "<http://model.geneontology.org/YeastPathways_YEAST-SALV-PYRMID-DNTP>";
 		String reaction_node = "<http://model.geneontology.org/RXN3O-314>";
 		String reaction_go_type = "<http://purl.obolibrary.org/obo/GO_0045437>";
 		String reaction_gp_type = "<http://identifiers.org/sgd/S000002808>";
@@ -1195,7 +1235,7 @@ BP has_part R
 	@Test
 	public final void testChemicalRoleReplacement() {
 		System.out.println("testing replacement of CHEBI chemical role with chemical entity");
-		String pathway = "<http://model.geneontology.org/ERGOSTEROL-SYN-PWY-1>";
+		String pathway = "<http://model.geneontology.org/YeastPathways_ERGOSTEROL-SYN-PWY-1>";
 		String reaction_node = "<http://model.geneontology.org/RXN3O-9816>";
 		String chemical_entity_type = "<http://purl.obolibrary.org/obo/CHEBI_24431>";
 		String chemical_acceptor_type = "<http://purl.obolibrary.org/obo/CHEBI_15339>";
@@ -1232,7 +1272,7 @@ BP has_part R
 	@Test
 	public final void testYeastComplexComponents() {
 		System.out.println("testing expression of YeastCyc complexes");
-		String pathway = "<http://model.geneontology.org/SO4ASSIM-PWY>";
+		String pathway = "<http://model.geneontology.org/YeastPathways_SO4ASSIM-PWY>";
 		String reaction_node = "<http://model.geneontology.org/SULFITE-REDUCT-RXN>";
 		String pcc_type = "<http://purl.obolibrary.org/obo/GO_0032991>";
 		String sgd_met5_type = "<http://identifiers.org/sgd/S000003898>";
@@ -1252,5 +1292,58 @@ BP has_part R
 				"  } \n";
 		int n = runQueryAndGetCount(q);
 		assertTrue("No has_part MET5 SGD:S000003898 complex component assertion for "+reaction_node, n==1);
+	}
+	
+	@Test
+	public final void testYeastStepDirection() {
+		System.out.println("testing parsing of reaction stepDirection in YeastPathways");
+		// For RIB5PISOM-RXN, D-ribofuranose 5-phosphate(2-) is left and D-ribulose 5-phosphate(2-) is right.
+		// But stepDirection is RIGHT-TO-LEFT, so:
+		// Check that RIB5PISOM-RXN [has output] D-ribofuranose 5-phosphate(2-) (CHEBI:78346)
+		// Check that RIB5PISOM-RXN [has input] D-ribulose 5-phosphate(2-) (CHEBI:58121)
+		String pathway = "<http://model.geneontology.org/YeastPathways_NONOXIPENT-PWY>";
+		String reaction_node = "<http://model.geneontology.org/RIB5PISOM-RXN>";
+		String output_type = "<http://purl.obolibrary.org/obo/CHEBI_78346>";
+		String input_type = "<http://purl.obolibrary.org/obo/CHEBI_58121>";
+		String q =  
+				" prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+				+ "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> "
+				+ "prefix RO: <http://purl.obolibrary.org/obo/RO_> "
+				+ "prefix BFO: <http://purl.obolibrary.org/obo/BFO_> "
+				+ "SELECT ?component_gp_type  \n" + 
+				"WHERE {\n" + 
+				"  GRAPH "+pathway+"  {  \n" + 
+				"    	"+reaction_node+" RO:0002234 ?output_node . \n" +
+				"    	?output_node rdf:type "+output_type +" . \n" +
+				"       "+reaction_node+" RO:0002233 ?input_node . \n " +
+				"       ?input_node rdf:type "+input_type +
+				"    }\n" + 
+				"  } \n";
+		int n = runQueryAndGetCount(q);
+		assertTrue("Incorrect or complete lack of has_input and has_output given stepDirection for "+reaction_node, n==1);
+	}
+	
+	@Test
+	public final void testReactomeChebiMoleculeIds() {
+		System.out.println("testing ChEBI ID extraction for Reactome small molecules");
+		// Using example pathway "Tetrahydrobiopterin (BH4) synthesis, recycling, salvage and regulation" R-HSA-1474151,
+		// test that ChEBI:17804 is used for input small mol PTHP (R-ALL-1474179) 
+		String pathway = "<http://model.geneontology.org/R-HSA-1474151>";
+		String reaction_node = "<http://model.geneontology.org/R-HSA-1475414>";
+		String input_type = "<http://purl.obolibrary.org/obo/CHEBI_17804>";
+		String q =  
+				" prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+				+ "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> "
+				+ "prefix RO: <http://purl.obolibrary.org/obo/RO_> "
+				+ "prefix BFO: <http://purl.obolibrary.org/obo/BFO_> "
+				+ "SELECT ?component_gp_type  \n" + 
+				"WHERE {\n" + 
+				"  GRAPH "+pathway+"  {  \n" + 
+				"       "+reaction_node+" RO:0002233 ?input_node . \n " +
+				"       ?input_node rdf:type "+input_type +
+				"    }\n" + 
+				"  } \n";
+		int n = runQueryAndGetCount(q);
+		assertTrue("Missing "+reaction_node+" has_input "+input_type+" statement", n==1);
 	}
 }

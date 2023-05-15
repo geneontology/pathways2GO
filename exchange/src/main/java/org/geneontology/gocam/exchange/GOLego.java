@@ -11,17 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.AxiomType;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLAnnotation;
-import org.semanticweb.owlapi.model.OWLAnnotationProperty;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLClassExpression;
-import org.semanticweb.owlapi.model.OWLDataFactory;
-import org.semanticweb.owlapi.model.OWLLiteral;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.reasoner.NodeSet;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
@@ -128,11 +118,12 @@ public class GOLego {
 			molecular_functions.add(fc.getIRI().toString());
 		}
 		//make uber list of deprecated
-		OWLClass thing = golego_ont.getOWLOntologyManager().getOWLDataFactory().getOWLClass(IRI.create(OWL.THING));
+		OWLDataFactory fac = golego_ont.getOWLOntologyManager().getOWLDataFactory();
+		OWLClass thing = fac.getOWLThing();
 		Set<OWLClass> things = getSubClasses(thing, true, golego_reasoner);
 		deprecated = new HashSet<String>();
 		replaced_by_map = new HashMap<String, String>();
-		OWLAnnotationProperty dep = df.getOWLAnnotationProperty(IRI.create(OWL.DEPRECATED));
+		OWLAnnotationProperty dep = fac.getOWLDeprecated();
 		OWLAnnotationProperty term_replaced_by = df.getOWLAnnotationProperty(IRI.create(obo_base+"IAO_0100001"));
 		for(OWLClass c : things) {
 			Collection<OWLAnnotation> annos = EntitySearcher.getAnnotationObjects(c, golego_ont, dep);
@@ -142,8 +133,18 @@ public class GOLego {
 					//add to replaced by list if present
 					Collection<OWLAnnotation> replaced_by = EntitySearcher.getAnnotationObjects(c, golego_ont, term_replaced_by);
 					for(OWLAnnotation rep : replaced_by) {
-						String rep_iri = rep.getValue().toString();
-						replaced_by_map.put(c.getIRI().toString(), rep_iri);
+						OWLAnnotationValue value = rep.getValue();
+						if (value.isIRI()) {
+							replaced_by_map.put(c.getIRI().toString(), value.asIRI().get().toString());
+						} else if (value.isLiteral()) {
+							String stringValue = value.asLiteral().get().getLiteral();
+							if (stringValue.startsWith("http")) {
+								replaced_by_map.put(c.getIRI().toString(), stringValue);
+							} else {
+								String oboIRI = obo_base + stringValue.replace(":", "_");
+								replaced_by_map.put(c.getIRI().toString(), oboIRI);
+							}
+						}
 					}
 				}
 			}

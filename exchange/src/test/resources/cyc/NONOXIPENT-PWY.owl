@@ -1,0 +1,1164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+ xml:base="http://http://pathway-2a.yeastgenome.org:8080//YEAST/pathway-biopax?type=3%38object=NONOXIPENT-PWY"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema#"
+ xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#"
+>
+ <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://www.biopax.org/release/biopax-level3.owl"/>
+ <rdfs:comment>This%32BioPAX%32Level%323%32output%32for%32organism%32Saccharomyces%3732cerevisiae%44%32pathway%32pentose%3732phosphate%3732pathway%3732%3740non%3745oxidative%3732branch%3741%10was%32automatically%32generated%32from%32URL%32http%58%47%47http%58%47%47pathway%452a%46yeastgenome%46org%588080%47%47YEAST%47pathway%45biopax%63type%613%3738object%61NONOXIPENT%45PWY%32on%3205%45Jan%452021%32%3216%5827%5808%46%32%32Note%32that%32all%32IDs%32are%32auto%45generated%44%10and%32are%32valid%32in%32the%32scope%32of%32this%32file%32only%46%32%32If%32the%32data%32is%32regenerated%32at%32some%32later%10time%44%32or%32data%32for%32another%32pathway%32is%32generated%32from%32this%32same%32site%44%32there%32are%32no%32%10guarantees%32that%32the%32same%32IDs%32will%32refer%32to%32the%32same%32objects%46%32%32To%32retrieve%32a%32file%32%10containing%32a%32complete%32list%32of%32pathways%32for%32this%32organism%32in%32BioPAX%32format%44%32please%10visit%32http%58%47%47biocyc%46org%47download%45flatfiles%46shtml</rdfs:comment>
+ </owl:Ontology>
+  <bp:Stoichiometry rdf:ID="Stoichiometry34364">
+    <bp:physicalEntity>
+      <bp:SmallMolecule rdf:ID="SmallMolecule34362">
+        <bp:xref>
+          <bp:RelationshipXref rdf:ID="RelationshipXref34363">
+            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GAP</bp:id>
+            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+            <bp:relationshipType>
+              <bp:RelationshipTypeVocabulary rdf:ID="RelationshipTypeVocabulary34284">
+                <bp:term rdf:datatype="http://www.w3.org/2001/XMLSchema#string">BioCyc-ID</bp:term>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref34285">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">BioCyc-ID</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">BioCyc</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+              </bp:RelationshipTypeVocabulary>
+            </bp:relationshipType>
+          </bp:RelationshipXref>
+        </bp:xref>
+        <bp:dataSource>
+          <bp:Provenance rdf:ID="Provenance34268">
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NIL</bp:name>
+          </bp:Provenance>
+        </bp:dataSource>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3-phosphoglyceraldehyde</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-glyceraldehyde-3-P</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glyceraldehyde 3-phosphate</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GAP</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glyceraldehyde-phosphate</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glyceraldehyde-P</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glyceraldehyde-3-P</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(2&lt;i&gt;R&lt;/i&gt;)-2-hydroxy-3-(phosphooxy)-propanal</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">triose phosphate</bp:name>
+        <bp:entityReference>
+          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference34352">
+            <bp:structure>
+              <bp:ChemicalStructure rdf:ID="ChemicalStructure34361">
+                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI</bp:structureFormat>
+                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI=1S/C3H7O6P/c4-1-3(5)2-9-10(6,7)8/h1,3,5H,2H2,(H2,6,7,8)/p-2/t3-/m0/s1</bp:structureData>
+              </bp:ChemicalStructure>
+            </bp:structure>
+            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">168.043</bp:molecularWeight>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-glyceraldehyde 3-phosphate</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3-phosphoglyceraldehyde</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-glyceraldehyde-3-P</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glyceraldehyde 3-phosphate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GAP</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glyceraldehyde-phosphate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glyceraldehyde-P</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">glyceraldehyde-3-P</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(2&lt;i&gt;R&lt;/i&gt;)-2-hydroxy-3-(phosphooxy)-propanal</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">triose phosphate</bp:name>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref34360">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GAP</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref34359">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">24794350</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem-compound</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref34358">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:59776</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref34357">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">591-57-1</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref34356">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00118</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">KEGG LIGAND</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref34355">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB01112</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref34354">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">g3p</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IAF1260</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref34353">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Glyceraldehyde-3-phosphate</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RefMet</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+          </bp:SmallMoleculeReference>
+        </bp:entityReference>
+        <bp:cellularLocation>
+          <bp:CellularLocationVocabulary rdf:ID="CellularLocationVocabulary34272">
+            <bp:term rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cytosol</bp:term>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref34273">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GO:0005829</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GO</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+          </bp:CellularLocationVocabulary>
+        </bp:cellularLocation>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-glyceraldehyde 3-phosphate</bp:standardName>
+      </bp:SmallMolecule>
+    </bp:physicalEntity>
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+  </bp:Stoichiometry>
+  <bp:Stoichiometry rdf:ID="Stoichiometry34351">
+    <bp:physicalEntity>
+      <bp:SmallMolecule rdf:ID="SmallMolecule34349">
+        <bp:dataSource rdf:resource="#Provenance34268"/>
+        <bp:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">|FRAME: D-SEDOHEPTULOSE-7-P| is an intermediate molecule of primary glucose metabolism.</bp:comment>
+        <bp:xref>
+          <bp:RelationshipXref rdf:ID="RelationshipXref34350">
+            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-SEDOHEPTULOSE-7-P</bp:id>
+            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+            <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary34284"/>
+          </bp:RelationshipXref>
+        </bp:xref>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-Sedoheptulose-7-P</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">heptulose 7-phosphate</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sedoheptulose-7-P</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sedo-heptulose-7-phosphate</bp:name>
+        <bp:entityReference>
+          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference34337">
+            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">288.147</bp:molecularWeight>
+            <bp:structure>
+              <bp:ChemicalStructure rdf:ID="ChemicalStructure34348">
+                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI</bp:structureFormat>
+                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI=1S/C7H15O10P/c8-1-3(9)5(11)7(13)6(12)4(10)2-17-18(14,15)16/h4-8,10-13H,1-2H2,(H2,14,15,16)/p-2/t4-,5-,6-,7+/m1/s1</bp:structureData>
+              </bp:ChemicalStructure>
+            </bp:structure>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref34347">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-SEDOHEPTULOSE-7-P</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref34346">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2646-35-7</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref34345">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">46878379</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem-compound</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref34344">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:57483</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref34343">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C05382</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">KEGG LIGAND</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref34342">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">34485</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IAF1260</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref34341">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB01068</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref34340">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MTBLC57483</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MetaboLights</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref34339">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">s7p</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IAF1260</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref34338">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sedoheptulose 7-phosphate</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RefMet</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-sedoheptulose 7-phosphate</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-Sedoheptulose-7-P</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">heptulose 7-phosphate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sedoheptulose-7-P</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sedo-heptulose-7-phosphate</bp:name>
+            <bp:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">|FRAME: D-SEDOHEPTULOSE-7-P| is an intermediate molecule of primary glucose metabolism.</bp:comment>
+          </bp:SmallMoleculeReference>
+        </bp:entityReference>
+        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary34272"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-sedoheptulose 7-phosphate</bp:standardName>
+      </bp:SmallMolecule>
+    </bp:physicalEntity>
+    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+  </bp:Stoichiometry>
+  <bp:UnificationXref rdf:ID="UnificationXref34336">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1TRANSKETO-RXN</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:BiochemicalReaction rdf:ID="BiochemicalReaction34335">
+    <bp:participantStoichiometry>
+      <bp:Stoichiometry rdf:ID="Stoichiometry34327">
+        <bp:physicalEntity>
+          <bp:SmallMolecule rdf:ID="SmallMolecule34325">
+            <bp:xref>
+              <bp:RelationshipXref rdf:ID="RelationshipXref34326">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">XYLULOSE-5-PHOSPHATE</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary34284"/>
+              </bp:RelationshipXref>
+            </bp:xref>
+            <bp:dataSource rdf:resource="#Provenance34268"/>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">xylulose 5-phosphate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">xylulose-phosphate</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-xylulose-5-P</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">xylulose-P</bp:name>
+            <bp:entityReference>
+              <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference34313">
+                <bp:structure>
+                  <bp:ChemicalStructure rdf:ID="ChemicalStructure34324">
+                    <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI</bp:structureFormat>
+                    <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI=1S/C5H11O8P/c6-1-3(7)5(9)4(8)2-13-14(10,11)12/h4-6,8-9H,1-2H2,(H2,10,11,12)/p-2/t4-,5-/m1/s1</bp:structureData>
+                  </bp:ChemicalStructure>
+                </bp:structure>
+                <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">228.095</bp:molecularWeight>
+                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-xylulose 5-phosphate</bp:standardName>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">xylulose 5-phosphate</bp:name>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">xylulose-phosphate</bp:name>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-xylulose-5-P</bp:name>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">xylulose-P</bp:name>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref34323">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">XYLULOSE-5-PHOSPHATE</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref34322">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">60802-29-1</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref34321">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00231</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">KEGG LIGAND</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref34320">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">5459820</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem-compound</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref34319">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:57737</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref34318">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">20015725</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChemSpider</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref34317">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB00868</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref34316">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MTBLC57737</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MetaboLights</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref34315">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">xu5p__D</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IAF1260</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref34314">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Xylulose-5-phosphate</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RefMet</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+              </bp:SmallMoleculeReference>
+            </bp:entityReference>
+            <bp:cellularLocation rdf:resource="#CellularLocationVocabulary34272"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-xylulose 5-phosphate</bp:standardName>
+          </bp:SmallMolecule>
+        </bp:physicalEntity>
+        <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+      </bp:Stoichiometry>
+    </bp:participantStoichiometry>
+    <bp:participantStoichiometry>
+      <bp:Stoichiometry rdf:ID="Stoichiometry34287">
+        <bp:physicalEntity>
+          <bp:SmallMolecule rdf:ID="SmallMolecule34283">
+            <bp:dataSource rdf:resource="#Provenance34268"/>
+            <bp:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Please note that the structure shown here is that of |FRAME: CPD-15895|, and is not accurate for this generic class, which also contains the furanose forms of D-ribose 5-phosphate.</bp:comment>
+            <bp:xref>
+              <bp:RelationshipXref rdf:ID="RelationshipXref34286">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RIBOSE-5P</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary34284"/>
+              </bp:RelationshipXref>
+            </bp:xref>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-ribose-5-phosphoric acid</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ribose-5-phosphoric acid</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ribose-5P</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-ribose-5-P</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ribose-5-P</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-ribose 5&apos;-phosphate</bp:name>
+            <bp:entityReference>
+              <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference34274">
+                <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">228.095</bp:molecularWeight>
+                <bp:structure>
+                  <bp:ChemicalStructure rdf:ID="ChemicalStructure34282">
+                    <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI</bp:structureFormat>
+                    <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI=1S/C5H11O8P/c6-1-3(7)5(9)4(8)2-13-14(10,11)12/h1,3-5,7-9H,2H2,(H2,10,11,12)/p-2/t3-,4+,5-/m0/s1</bp:structureData>
+                  </bp:ChemicalStructure>
+                </bp:structure>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref34281">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RIBOSE-5P</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref34280">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">4300-28-1</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref34279">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00117</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">KEGG LIGAND</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref34278">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">24794349</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem-compound</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref34277">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">42420</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IAF1260</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref34276">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB01548</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref34275">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:78346</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-ribose 5-phosphate</bp:standardName>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-ribose-5-phosphoric acid</bp:name>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ribose-5-phosphoric acid</bp:name>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ribose-5P</bp:name>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-ribose-5-P</bp:name>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ribose-5-P</bp:name>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-ribose 5&apos;-phosphate</bp:name>
+                <bp:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Please note that the structure shown here is that of |FRAME: CPD-15895|, and is not accurate for this generic class, which also contains the furanose forms of D-ribose 5-phosphate.</bp:comment>
+              </bp:SmallMoleculeReference>
+            </bp:entityReference>
+            <bp:cellularLocation rdf:resource="#CellularLocationVocabulary34272"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-ribose 5-phosphate</bp:standardName>
+          </bp:SmallMolecule>
+        </bp:physicalEntity>
+        <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+      </bp:Stoichiometry>
+    </bp:participantStoichiometry>
+    <bp:participantStoichiometry rdf:resource="#Stoichiometry34364"/>
+    <bp:participantStoichiometry rdf:resource="#Stoichiometry34351"/>
+    <bp:conversionDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">REVERSIBLE</bp:conversionDirection>
+    <bp:right rdf:resource="#SmallMolecule34283"/>
+    <bp:right rdf:resource="#SmallMolecule34325"/>
+    <bp:eCNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2.2.1.1</bp:eCNumber>
+    <bp:left rdf:resource="#SmallMolecule34349"/>
+    <bp:left rdf:resource="#SmallMolecule34362"/>
+    <bp:dataSource rdf:resource="#Provenance34268"/>
+    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-sedoheptulose 7-phosphate + D-glyceraldehyde 3-phosphate  &amp;harr;  D-ribose 5-phosphate + D-xylulose 5-phosphate</bp:standardName>
+    <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Glycoaldehyde transferase</bp:name>
+    <bp:xref rdf:resource="#UnificationXref34336"/>
+  </bp:BiochemicalReaction>
+  <bp:BiochemicalPathwayStep rdf:ID="BiochemicalPathwayStep34334">
+    <bp:nextStep>
+      <bp:BiochemicalPathwayStep rdf:ID="BiochemicalPathwayStep34408">
+        <bp:nextStep>
+          <bp:BiochemicalPathwayStep rdf:ID="BiochemicalPathwayStep34377">
+            <bp:stepConversion>
+              <bp:BiochemicalReaction rdf:ID="BiochemicalReaction34378">
+                <bp:conversionDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">REVERSIBLE</bp:conversionDirection>
+                <bp:participantStoichiometry rdf:resource="#Stoichiometry34364"/>
+                <bp:participantStoichiometry>
+                  <bp:Stoichiometry rdf:ID="Stoichiometry34405">
+                    <bp:physicalEntity>
+                      <bp:SmallMolecule rdf:ID="SmallMolecule34403">
+                        <bp:dataSource rdf:resource="#Provenance34268"/>
+                        <bp:displayName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">F6P</bp:displayName>
+                        <bp:xref>
+                          <bp:RelationshipXref rdf:ID="RelationshipXref34404">
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">FRUCTOSE-6P</bp:id>
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                            <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary34284"/>
+                          </bp:RelationshipXref>
+                        </bp:xref>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-fructose-6-phosphate</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">fructose-6P</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">fructose-6-P</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">fruc6p</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">fru-6-P</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">fructose-6-phosphate</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A-D-fructose-6-P</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-fructose-6-P</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-fructose 6-phosphate</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-fructofuranose 6-phosphate</bp:name>
+                        <bp:entityReference>
+                          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference34395">
+                            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">258.121</bp:molecularWeight>
+                            <bp:structure>
+                              <bp:ChemicalStructure rdf:ID="ChemicalStructure34402">
+                                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI</bp:structureFormat>
+                                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI=1S/C6H13O9P/c7-2-6(10)5(9)4(8)3(15-6)1-14-16(11,12)13/h3-5,7-10H,1-2H2,(H2,11,12,13)/p-2/t3-,4-,5+,6-/m1/s1</bp:structureData>
+                              </bp:ChemicalStructure>
+                            </bp:structure>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref34401">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">FRUCTOSE-6P</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref34400">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">643-13-0</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref34399">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">21604863</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem-compound</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref34398">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:57634</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref34397">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">10239172</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChemSpider</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref34396">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">f6p</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IAF1260</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">&amp;beta;-D-fructofuranose 6-phosphate</bp:standardName>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-fructose-6-phosphate</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">fructose-6P</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">fructose-6-P</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">fruc6p</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">fru-6-P</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">fructose-6-phosphate</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A-D-fructose-6-P</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-fructose-6-P</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-fructose 6-phosphate</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-fructofuranose 6-phosphate</bp:name>
+                            <bp:displayName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">F6P</bp:displayName>
+                          </bp:SmallMoleculeReference>
+                        </bp:entityReference>
+                        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary34272"/>
+                        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">&amp;beta;-D-fructofuranose 6-phosphate</bp:standardName>
+                      </bp:SmallMolecule>
+                    </bp:physicalEntity>
+                    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+                  </bp:Stoichiometry>
+                </bp:participantStoichiometry>
+                <bp:participantStoichiometry rdf:resource="#Stoichiometry34327"/>
+                <bp:participantStoichiometry>
+                  <bp:Stoichiometry rdf:ID="Stoichiometry34394">
+                    <bp:physicalEntity>
+                      <bp:SmallMolecule rdf:ID="SmallMolecule34392">
+                        <bp:xref>
+                          <bp:RelationshipXref rdf:ID="RelationshipXref34393">
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ERYTHROSE-4P</bp:id>
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                            <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary34284"/>
+                          </bp:RelationshipXref>
+                        </bp:xref>
+                        <bp:dataSource rdf:resource="#Provenance34268"/>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">erythrose-4P</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">threose 4-phosphate</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">erythrose-4-phosphate</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">erythrose-4-P</bp:name>
+                        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-erythrose-4-P</bp:name>
+                        <bp:entityReference>
+                          <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference34380">
+                            <bp:structure>
+                              <bp:ChemicalStructure rdf:ID="ChemicalStructure34391">
+                                <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI</bp:structureFormat>
+                                <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI=1S/C4H9O7P/c5-1-3(6)4(7)2-11-12(8,9)10/h1,3-4,6-7H,2H2,(H2,8,9,10)/p-2/t3-,4+/m0/s1</bp:structureData>
+                              </bp:ChemicalStructure>
+                            </bp:structure>
+                            <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">198.069</bp:molecularWeight>
+                            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-erythrose 4-phosphate</bp:standardName>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">erythrose-4P</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">threose 4-phosphate</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">erythrose-4-phosphate</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">erythrose-4-P</bp:name>
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-erythrose-4-P</bp:name>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref34390">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ERYTHROSE-4P</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref34389">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">585-18-2</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref34388">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00279</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">KEGG LIGAND</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref34387">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">5459862</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem-compound</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref34386">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:16897</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref34385">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">4573609</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChemSpider</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref34384">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB01321</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref34383">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MTBLC16897</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MetaboLights</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref34382">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">e4p</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IAF1260</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                            <bp:xref>
+                              <bp:UnificationXref rdf:ID="UnificationXref34381">
+                                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Erythrose 4-phosphate</bp:id>
+                                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RefMet</bp:db>
+                              </bp:UnificationXref>
+                            </bp:xref>
+                          </bp:SmallMoleculeReference>
+                        </bp:entityReference>
+                        <bp:cellularLocation rdf:resource="#CellularLocationVocabulary34272"/>
+                        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-erythrose 4-phosphate</bp:standardName>
+                      </bp:SmallMolecule>
+                    </bp:physicalEntity>
+                    <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+                  </bp:Stoichiometry>
+                </bp:participantStoichiometry>
+                <bp:left rdf:resource="#SmallMolecule34392"/>
+                <bp:left rdf:resource="#SmallMolecule34325"/>
+                <bp:right rdf:resource="#SmallMolecule34403"/>
+                <bp:right rdf:resource="#SmallMolecule34362"/>
+                <bp:eCNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2.2.1.1</bp:eCNumber>
+                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-erythrose 4-phosphate + D-xylulose 5-phosphate  &amp;harr;  &amp;beta;-D-fructofuranose 6-phosphate + D-glyceraldehyde 3-phosphate</bp:standardName>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref34379">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2TRANSKETO-RXN</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:dataSource rdf:resource="#Provenance34268"/>
+              </bp:BiochemicalReaction>
+            </bp:stepConversion>
+            <bp:stepProcess>
+              <bp:Catalysis rdf:ID="Catalysis34406">
+                <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+                <bp:controller>
+                  <bp:Protein rdf:ID="Protein34369">
+                    <bp:dataSource rdf:resource="#Provenance34268"/>
+                    <bp:entityReference>
+                      <bp:ProteinReference rdf:ID="ProteinReference34367">
+                        <bp:organism>
+                          <bp:BioSource rdf:ID="BioSource34307">
+                            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Saccharomyces cerevisiae</bp:name>
+                          </bp:BioSource>
+                        </bp:organism>
+                        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">transketolase</bp:standardName>
+                        <bp:xref>
+                          <bp:UnificationXref rdf:ID="UnificationXref34368">
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YPR074C-MONOMER</bp:id>
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                          </bp:UnificationXref>
+                        </bp:xref>
+                        <bp:xref>
+                          <bp:PublicationXref rdf:ID="PublicationXref34265">
+                            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:db>
+                            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1737042</bp:id>
+                            <bp:year rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1992</bp:year>
+                            <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Fletcher TS</bp:author>
+                            <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Kwee IL</bp:author>
+                            <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Nakada T</bp:author>
+                            <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Largman C</bp:author>
+                            <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Martin BM</bp:author>
+                            <bp:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DNA sequence of the yeast transketolase gene.</bp:title>
+                            <bp:source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Biochemistry 31(6);1892-6</bp:source>
+                          </bp:PublicationXref>
+                        </bp:xref>
+                        <bp:sequence rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MTQFTDIDKLAVSTIRILAVDTVSKANSGHPGAPLGMAPAAHVLWSQMRMNPTNPDWINRDRFVLSNGHAVALLYSMLHLTGYDLSIEDLKQFRQLGSRTPGHPEFELPGVEVTTGPLGQGISNAVGMAMAQANLAATYNKPGFTLSDNYTYVFLGDGCLQEGISSEASSLAGHLKLGNLIAIYDDNKITIDGATSISFDEDVAKRYEAYGWEVLYVENGNEDLAGIAKAIAQAKLSKDKPTLIKMTTTIGYGSLHAGSHSVHGAPLKADDVKQLKSKFGFNPDKSFVVPQEVYDHYQKTILKPGVEANNKWNKLFSEYQKKFPELGAELARRLSGQLPANWESKLPTYTAKDSAVATRKLSETVLEDVYNQLPELIGGSADLTPSNLTRWKEALDFQPPSSGSGNYSGRYIRYGIREHAMGAIMNGISAFGANYKPYGGTFLNFVSYAAGAVRLSALSGHPVIWVATHDSIGVGEDGPTHQPIETLAHFRSLPNIQVWRPADGNEVSAAYKNSLESKHTPSIIALSRQNLPQLEGSSIESASKGGYVLQDVANPDIILVATGSEVSLSVEAAKTLAAKNIKARVVSLPDFFTFDKQPLEYRLSVLPDNVPIMSVEVLATTCWGKYAHQSFGIDRFGASGKAPEVFKFFGFTPEGVAERAQKTIAFYKGDKLISPLKKAF</bp:sequence>
+                      </bp:ProteinReference>
+                    </bp:entityReference>
+                    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">transketolase</bp:standardName>
+                    <bp:xref>
+                      <bp:RelationshipXref rdf:ID="RelationshipXref34370">
+                        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YPR074C-MONOMER</bp:id>
+                        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                        <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary34284"/>
+                      </bp:RelationshipXref>
+                    </bp:xref>
+                    <bp:xref rdf:resource="#PublicationXref34265"/>
+                  </bp:Protein>
+                </bp:controller>
+                <bp:controlled rdf:resource="#BiochemicalReaction34378"/>
+                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">transketolase</bp:standardName>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref34407">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-1650</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:dataSource rdf:resource="#Provenance34268"/>
+              </bp:Catalysis>
+            </bp:stepProcess>
+            <bp:stepDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LEFT-TO-RIGHT</bp:stepDirection>
+          </bp:BiochemicalPathwayStep>
+        </bp:nextStep>
+        <bp:stepConversion>
+          <bp:BiochemicalReaction rdf:ID="BiochemicalReaction34409">
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry34394"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry34405"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry34364"/>
+            <bp:participantStoichiometry rdf:resource="#Stoichiometry34351"/>
+            <bp:conversionDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">REVERSIBLE</bp:conversionDirection>
+            <bp:right rdf:resource="#SmallMolecule34403"/>
+            <bp:right rdf:resource="#SmallMolecule34392"/>
+            <bp:eCNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2.2.1.2</bp:eCNumber>
+            <bp:left rdf:resource="#SmallMolecule34349"/>
+            <bp:left rdf:resource="#SmallMolecule34362"/>
+            <bp:dataSource rdf:resource="#Provenance34268"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-sedoheptulose 7-phosphate + D-glyceraldehyde 3-phosphate  &amp;harr;  &amp;beta;-D-fructofuranose 6-phosphate + D-erythrose 4-phosphate</bp:standardName>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Dihydroxyacetone transferase</bp:name>
+            <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Glycerone transferase</bp:name>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref34410">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">TRANSALDOL-RXN</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+          </bp:BiochemicalReaction>
+        </bp:stepConversion>
+        <bp:stepProcess>
+          <bp:Catalysis rdf:ID="Catalysis34411">
+            <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+            <bp:controller>
+              <bp:Protein rdf:ID="Protein34415">
+                <bp:dataSource rdf:resource="#Provenance34268"/>
+                <bp:entityReference>
+                  <bp:ProteinReference rdf:ID="ProteinReference34413">
+                    <bp:organism rdf:resource="#BioSource34307"/>
+                    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">transaldolase</bp:standardName>
+                    <bp:xref>
+                      <bp:UnificationXref rdf:ID="UnificationXref34414">
+                        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YLR354C-MONOMER</bp:id>
+                        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                      </bp:UnificationXref>
+                    </bp:xref>
+                    <bp:xref>
+                      <bp:PublicationXref rdf:ID="PublicationXref34264">
+                        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:db>
+                        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2185015</bp:id>
+                        <bp:year rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1990</bp:year>
+                        <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Schaaff I</bp:author>
+                        <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Hohmann S</bp:author>
+                        <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Zimmermann FK</bp:author>
+                        <bp:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Molecular analysis of the structural gene for yeast transaldolase.</bp:title>
+                        <bp:source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Eur J Biochem 188(3);597-603</bp:source>
+                      </bp:PublicationXref>
+                    </bp:xref>
+                    <bp:sequence rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MSEPAQKKQKVANNSLEQLKASGTVVVADTGDFGSIAKFQPQDSTTNPSLILAAAKQPTYAKLIDVAVEYGKKHGKTTEEQVENAVDRLLVEFGKEILKIVPGRVSTEVDARLSFDTQATIEKARHIIKLFEQEGVSKERVLIKIASTWEGIQAAKELEEKDGIHCNLTLLFSFVQAVACAEAQVTLISPFVGRILDWYKSSTGKDYKGEADPGVISVKKIYNYYKKYGYKTIVMGASFRSTDEIKNLAGVDYLTISPALLDKLMNSTEPFPRVLDPVSAKKEAGDKISYISDESKFRFDLNEDAMATEKLSEGIRKFSADIVTLFDLIEKKVTA</bp:sequence>
+                  </bp:ProteinReference>
+                </bp:entityReference>
+                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">transaldolase</bp:standardName>
+                <bp:xref>
+                  <bp:RelationshipXref rdf:ID="RelationshipXref34416">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YLR354C-MONOMER</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                    <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary34284"/>
+                  </bp:RelationshipXref>
+                </bp:xref>
+                <bp:xref rdf:resource="#PublicationXref34264"/>
+              </bp:Protein>
+            </bp:controller>
+            <bp:controlled rdf:resource="#BiochemicalReaction34409"/>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">transaldolase</bp:standardName>
+            <bp:xref>
+              <bp:UnificationXref rdf:ID="UnificationXref34412">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-1380</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+              </bp:UnificationXref>
+            </bp:xref>
+            <bp:dataSource rdf:resource="#Provenance34268"/>
+          </bp:Catalysis>
+        </bp:stepProcess>
+        <bp:stepDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LEFT-TO-RIGHT</bp:stepDirection>
+      </bp:BiochemicalPathwayStep>
+    </bp:nextStep>
+    <bp:stepConversion rdf:resource="#BiochemicalReaction34335"/>
+    <bp:stepProcess>
+      <bp:Catalysis rdf:ID="Catalysis34365">
+        <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+        <bp:controller rdf:resource="#Protein34369"/>
+        <bp:controlled rdf:resource="#BiochemicalReaction34335"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">transketolase</bp:standardName>
+        <bp:xref>
+          <bp:UnificationXref rdf:ID="UnificationXref34366">
+            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-1602</bp:id>
+            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+          </bp:UnificationXref>
+        </bp:xref>
+        <bp:dataSource rdf:resource="#Provenance34268"/>
+      </bp:Catalysis>
+    </bp:stepProcess>
+    <bp:stepProcess>
+      <bp:Catalysis rdf:ID="Catalysis34371">
+        <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+        <bp:controller>
+          <bp:Protein rdf:ID="Protein34375">
+            <bp:dataSource rdf:resource="#Provenance34268"/>
+            <bp:entityReference>
+              <bp:ProteinReference rdf:ID="ProteinReference34373">
+                <bp:organism rdf:resource="#BioSource34307"/>
+                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">transketolase</bp:standardName>
+                <bp:xref>
+                  <bp:UnificationXref rdf:ID="UnificationXref34374">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YBR117C-MONOMER</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                  </bp:UnificationXref>
+                </bp:xref>
+                <bp:xref>
+                  <bp:PublicationXref rdf:ID="PublicationXref34266">
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:db>
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">7916691</bp:id>
+                    <bp:year rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1993</bp:year>
+                    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Schaaff-Gerstenschlager I</bp:author>
+                    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Mannhaupt G</bp:author>
+                    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Vetter I</bp:author>
+                    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Zimmermann FK</bp:author>
+                    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Feldmann H</bp:author>
+                    <bp:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">TKL2, a second transketolase gene of Saccharomyces cerevisiae. Cloning, sequence and deletion analysis of the gene.</bp:title>
+                    <bp:source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Eur J Biochem 217(1);487-92</bp:source>
+                  </bp:PublicationXref>
+                </bp:xref>
+                <bp:sequence rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MAQFSDIDKLAVSTLRLLSVDQVESAQSGHPGAPLGLAPVAHVIFKQLRCNPNNEHWINRDRFVLSNGHSCALLYSMLHLLGYDYSIEDLRQFRQVNSRTPGHPEFHSAGVEITSGPLGQGISNAVGMAIAQANFAATYNEDGFPISDSYTFAIVGDGCLQEGVSSETSSLAGHLQLGNLITFYDSNSISIDGKTSYSFDEDVLKRYEAYGWEVMEVDKGDDDMESISSALEKAKLSKDKPTIIKVTTTIGFGSLQQGTAGVHGSALKADDVKQLKKRWGFDPNKSFVVPQEVYDYYKKTVVEPGQKLNEEWDRMFEEYKTKFPEKGKELQRRLNGELPEGWEKHLPKFTPDDDALATRKTSQQVLTNMVQVLPELIGGSADLTPSNLTRWEGAVDFQPPITQLGNYAGRYIRYGVREHGMGAIMNGISAFGANYKPYGGTFLNFVSYAAGAVRLAALSGNPVIWVATHDSIGLGEDGPTHQPIETLAHLRAIPNMHVWRPADGNETSAAYYSAIKSGRTPSVVALSRQNLPQLEHSSFEKALKGGYVIHDVENPDIILVSTGSEVSISIDAAKKLYDTKKIKARVVSLPDFYTFDRQSEEYRFSVLPDGVPIMSFEVLATSSWGKYAHQSFGLDEFGRSGKGPEIYKLFDFTADGVASRAEKTINYYKGKQLLSPMGRAF</bp:sequence>
+              </bp:ProteinReference>
+            </bp:entityReference>
+            <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">transketolase</bp:standardName>
+            <bp:xref>
+              <bp:RelationshipXref rdf:ID="RelationshipXref34376">
+                <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YBR117C-MONOMER</bp:id>
+                <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary34284"/>
+              </bp:RelationshipXref>
+            </bp:xref>
+            <bp:xref rdf:resource="#PublicationXref34266"/>
+          </bp:Protein>
+        </bp:controller>
+        <bp:controlled rdf:resource="#BiochemicalReaction34335"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">transketolase</bp:standardName>
+        <bp:xref>
+          <bp:UnificationXref rdf:ID="UnificationXref34372">
+            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-941</bp:id>
+            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+          </bp:UnificationXref>
+        </bp:xref>
+        <bp:dataSource rdf:resource="#Provenance34268"/>
+      </bp:Catalysis>
+    </bp:stepProcess>
+    <bp:stepDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RIGHT-TO-LEFT</bp:stepDirection>
+  </bp:BiochemicalPathwayStep>
+  <bp:RelationshipXref rdf:ID="RelationshipXref34333">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YJL121C-MONOMER</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+    <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary34284"/>
+  </bp:RelationshipXref>
+  <bp:Protein rdf:ID="Protein34332">
+    <bp:dataSource rdf:resource="#Provenance34268"/>
+    <bp:entityReference>
+      <bp:ProteinReference rdf:ID="ProteinReference34330">
+        <bp:organism rdf:resource="#BioSource34307"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-ribulose-5-Phosphate 3-epimerase</bp:standardName>
+        <bp:xref>
+          <bp:UnificationXref rdf:ID="UnificationXref34331">
+            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YJL121C-MONOMER</bp:id>
+            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+          </bp:UnificationXref>
+        </bp:xref>
+        <bp:xref>
+          <bp:PublicationXref rdf:ID="PublicationXref34263">
+            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:db>
+            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">8929392</bp:id>
+            <bp:year rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1996</bp:year>
+            <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Miosga T</bp:author>
+            <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Zimmermann FK</bp:author>
+            <bp:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Cloning and characterization of the first two genes of the non-oxidative part of the Saccharomyces cerevisiae pentose-phosphate pathway.</bp:title>
+            <bp:source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Curr Genet 30(5);404-9</bp:source>
+          </bp:PublicationXref>
+        </bp:xref>
+        <bp:sequence rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MVKPIIAPSILASDFANLGCECHKVINAGADWLHIDVMDGHFVPNITLGQPIVTSLRRSVPRPGDASNTEKKPTAFFDCHMMVENPEKWVDDFAKCGADQFTFHYEATQDPLHLVKLIKSKGIKAACAIKPGTSVDVLFELAPHLDMALVMTVEPGFGGQKFMEDMMPKVETLRAKFPHLNIQVDGGLGKETIPKAAKAGANVIVAGTSVFTAADPHDVISFMKEEVSKELRSRDLLD</bp:sequence>
+      </bp:ProteinReference>
+    </bp:entityReference>
+    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-ribulose-5-Phosphate 3-epimerase</bp:standardName>
+    <bp:xref rdf:resource="#RelationshipXref34333"/>
+    <bp:xref rdf:resource="#PublicationXref34263"/>
+  </bp:Protein>
+  <bp:UnificationXref rdf:ID="UnificationXref34329">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-1315</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:Catalysis rdf:ID="Catalysis34328">
+    <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+    <bp:controller rdf:resource="#Protein34332"/>
+    <bp:controlled>
+      <bp:BiochemicalReaction rdf:ID="BiochemicalReaction34311">
+        <bp:participantStoichiometry rdf:resource="#Stoichiometry34327"/>
+        <bp:participantStoichiometry>
+          <bp:Stoichiometry rdf:ID="Stoichiometry34302">
+            <bp:physicalEntity>
+              <bp:SmallMolecule rdf:ID="SmallMolecule34300">
+                <bp:xref>
+                  <bp:RelationshipXref rdf:ID="RelationshipXref34301">
+                    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RIBULOSE-5P</bp:id>
+                    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                    <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary34284"/>
+                  </bp:RelationshipXref>
+                </bp:xref>
+                <bp:dataSource rdf:resource="#Provenance34268"/>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ribulose-5P</bp:name>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-ribulose-5-P</bp:name>
+                <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ribulose-5-P</bp:name>
+                <bp:entityReference>
+                  <bp:SmallMoleculeReference rdf:ID="SmallMoleculeReference34288">
+                    <bp:structure>
+                      <bp:ChemicalStructure rdf:ID="ChemicalStructure34299">
+                        <bp:structureFormat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI</bp:structureFormat>
+                        <bp:structureData rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InChI=1S/C5H11O8P/c6-1-3(7)5(9)4(8)2-13-14(10,11)12/h4-6,8-9H,1-2H2,(H2,10,11,12)/p-2/t4-,5+/m1/s1</bp:structureData>
+                      </bp:ChemicalStructure>
+                    </bp:structure>
+                    <bp:molecularWeight rdf:datatype="http://www.w3.org/2001/XMLSchema#float">228.095</bp:molecularWeight>
+                    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-ribulose 5-phosphate</bp:standardName>
+                    <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ribulose-5P</bp:name>
+                    <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-ribulose-5-P</bp:name>
+                    <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ribulose-5-P</bp:name>
+                    <bp:xref>
+                      <bp:UnificationXref rdf:ID="UnificationXref34298">
+                        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RIBULOSE-5P</bp:id>
+                        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+                      </bp:UnificationXref>
+                    </bp:xref>
+                    <bp:xref>
+                      <bp:UnificationXref rdf:ID="UnificationXref34297">
+                        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">4151-19-3</bp:id>
+                        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CAS</bp:db>
+                      </bp:UnificationXref>
+                    </bp:xref>
+                    <bp:xref>
+                      <bp:UnificationXref rdf:ID="UnificationXref34296">
+                        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C00199</bp:id>
+                        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">KEGG LIGAND</bp:db>
+                      </bp:UnificationXref>
+                    </bp:xref>
+                    <bp:xref>
+                      <bp:UnificationXref rdf:ID="UnificationXref34295">
+                        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">21144996</bp:id>
+                        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubChem-compound</bp:db>
+                      </bp:UnificationXref>
+                    </bp:xref>
+                    <bp:xref>
+                      <bp:UnificationXref rdf:ID="UnificationXref34294">
+                        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CHEBI:58121</bp:id>
+                        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChEBI</bp:db>
+                      </bp:UnificationXref>
+                    </bp:xref>
+                    <bp:xref>
+                      <bp:UnificationXref rdf:ID="UnificationXref34293">
+                        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">20015724</bp:id>
+                        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ChemSpider</bp:db>
+                      </bp:UnificationXref>
+                    </bp:xref>
+                    <bp:xref>
+                      <bp:UnificationXref rdf:ID="UnificationXref34292">
+                        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB00618</bp:id>
+                        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HMDB</bp:db>
+                      </bp:UnificationXref>
+                    </bp:xref>
+                    <bp:xref>
+                      <bp:UnificationXref rdf:ID="UnificationXref34291">
+                        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MTBLC58121</bp:id>
+                        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MetaboLights</bp:db>
+                      </bp:UnificationXref>
+                    </bp:xref>
+                    <bp:xref>
+                      <bp:UnificationXref rdf:ID="UnificationXref34290">
+                        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ru5p__D</bp:id>
+                        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IAF1260</bp:db>
+                      </bp:UnificationXref>
+                    </bp:xref>
+                    <bp:xref>
+                      <bp:UnificationXref rdf:ID="UnificationXref34289">
+                        <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ribulose-5-phosphate</bp:id>
+                        <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RefMet</bp:db>
+                      </bp:UnificationXref>
+                    </bp:xref>
+                  </bp:SmallMoleculeReference>
+                </bp:entityReference>
+                <bp:cellularLocation rdf:resource="#CellularLocationVocabulary34272"/>
+                <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-ribulose 5-phosphate</bp:standardName>
+              </bp:SmallMolecule>
+            </bp:physicalEntity>
+            <bp:stoichiometricCoefficient rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</bp:stoichiometricCoefficient>
+          </bp:Stoichiometry>
+        </bp:participantStoichiometry>
+        <bp:conversionDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">REVERSIBLE</bp:conversionDirection>
+        <bp:right rdf:resource="#SmallMolecule34325"/>
+        <bp:eCNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">5.1.3.1</bp:eCNumber>
+        <bp:left rdf:resource="#SmallMolecule34300"/>
+        <bp:dataSource rdf:resource="#Provenance34268"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-ribulose 5-phosphate  &amp;harr;  D-xylulose 5-phosphate</bp:standardName>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-ribulose-5-phosphate 3-epimerase</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pentose phosphate epimerase</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Erythrose-4-phosphate epimerase</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Pentose-5-phosphate 3-epimerase</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-ribulose phosphate-3-epimerase</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-ribulose-5-phosphate epimerase</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Xylulose phosphate 3-epimerase</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-xylulose-5-phosphate 3-epimerase</bp:name>
+        <bp:xref>
+          <bp:UnificationXref rdf:ID="UnificationXref34312">
+            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RIBULP3EPIM-RXN</bp:id>
+            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+          </bp:UnificationXref>
+        </bp:xref>
+      </bp:BiochemicalReaction>
+    </bp:controlled>
+    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-ribulose-5-Phosphate 3-epimerase</bp:standardName>
+    <bp:xref rdf:resource="#UnificationXref34329"/>
+    <bp:dataSource rdf:resource="#Provenance34268"/>
+  </bp:Catalysis>
+  <bp:BiochemicalPathwayStep rdf:ID="BiochemicalPathwayStep34310">
+    <bp:nextStep rdf:resource="#BiochemicalPathwayStep34334"/>
+    <bp:stepConversion rdf:resource="#BiochemicalReaction34311"/>
+    <bp:stepProcess rdf:resource="#Catalysis34328"/>
+    <bp:stepDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LEFT-TO-RIGHT</bp:stepDirection>
+  </bp:BiochemicalPathwayStep>
+  <bp:RelationshipXref rdf:ID="RelationshipXref34309">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YOR095C-MONOMER</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+    <bp:relationshipType rdf:resource="#RelationshipTypeVocabulary34284"/>
+  </bp:RelationshipXref>
+  <bp:Protein rdf:ID="Protein34308">
+    <bp:dataSource rdf:resource="#Provenance34268"/>
+    <bp:entityReference>
+      <bp:ProteinReference rdf:ID="ProteinReference34305">
+        <bp:organism rdf:resource="#BioSource34307"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ribose-5-phosphate ketol-isomerase</bp:standardName>
+        <bp:xref>
+          <bp:UnificationXref rdf:ID="UnificationXref34306">
+            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YOR095C-MONOMER</bp:id>
+            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+          </bp:UnificationXref>
+        </bp:xref>
+        <bp:xref rdf:resource="#PublicationXref34263"/>
+        <bp:sequence rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MAAGVPKIDALESLGNPLEDAKRAAAYRAVDENLKFDDHKIIGIGSGSTVVYVAERIGQYLHDPKFYEVASKFICIPTGFQSRNLILDNKLQLGSIEQYPRIDIAFDGADEVDENLQLIKGGGACLFQEKLVSTSAKTFIVVADSRKKSPKHLGKNWRQGVPIEIVPSSYVRVKNDLLEQLHAEKVDIRQGGSAKAGPVVTDNNNFIIDADFGEISDPRKLHREIKLLVGVVETGLFIDNASKAYFGNSDGSVEVTEK</bp:sequence>
+      </bp:ProteinReference>
+    </bp:entityReference>
+    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ribose-5-phosphate ketol-isomerase</bp:standardName>
+    <bp:xref rdf:resource="#RelationshipXref34309"/>
+    <bp:xref rdf:resource="#PublicationXref34263"/>
+  </bp:Protein>
+  <bp:UnificationXref rdf:ID="UnificationXref34304">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ENZRXN3O-1569</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:Catalysis rdf:ID="Catalysis34303">
+    <bp:controlType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACTIVATION</bp:controlType>
+    <bp:controller rdf:resource="#Protein34308"/>
+    <bp:controlled>
+      <bp:BiochemicalReaction rdf:ID="BiochemicalReaction34270">
+        <bp:participantStoichiometry rdf:resource="#Stoichiometry34302"/>
+        <bp:participantStoichiometry rdf:resource="#Stoichiometry34287"/>
+        <bp:conversionDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">REVERSIBLE</bp:conversionDirection>
+        <bp:right rdf:resource="#SmallMolecule34300"/>
+        <bp:eCNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">5.3.1.6</bp:eCNumber>
+        <bp:left rdf:resource="#SmallMolecule34283"/>
+        <bp:dataSource rdf:resource="#Provenance34268"/>
+        <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-ribose 5-phosphate  &amp;harr;  D-ribulose 5-phosphate</bp:standardName>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Phosphopentoseisomerase</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Phosphoriboisomerase</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ribose 5-phosphate isomerase</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ribose phosphate isomerase</bp:name>
+        <bp:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">D-ribose-5-phosphate ketol-isomerase</bp:name>
+        <bp:xref>
+          <bp:UnificationXref rdf:ID="UnificationXref34271">
+            <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RIB5PISOM-RXN</bp:id>
+            <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+          </bp:UnificationXref>
+        </bp:xref>
+      </bp:BiochemicalReaction>
+    </bp:controlled>
+    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ribose-5-phosphate ketol-isomerase</bp:standardName>
+    <bp:xref rdf:resource="#UnificationXref34304"/>
+    <bp:dataSource rdf:resource="#Provenance34268"/>
+  </bp:Catalysis>
+  <bp:BiochemicalPathwayStep rdf:ID="BiochemicalPathwayStep34269">
+    <bp:nextStep rdf:resource="#BiochemicalPathwayStep34334"/>
+    <bp:stepConversion rdf:resource="#BiochemicalReaction34270"/>
+    <bp:stepProcess rdf:resource="#Catalysis34303"/>
+    <bp:stepDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RIGHT-TO-LEFT</bp:stepDirection>
+  </bp:BiochemicalPathwayStep>
+  <bp:UnificationXref rdf:ID="UnificationXref34267">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NONOXIPENT-PWY</bp:id>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YeastCyc</bp:db>
+  </bp:UnificationXref>
+  <bp:PublicationXref rdf:ID="PublicationXref34262">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">14690456</bp:id>
+    <bp:year rdf:datatype="http://www.w3.org/2001/XMLSchema#int">2004</bp:year>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:db>
+    <bp:url rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://www.yeastgenome.org/reference/S000076698</bp:url>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Kondo H</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Nakamura Y</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Dong YX</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Nikawa J</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sueda S</bp:author>
+    <bp:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Pyridoxine biosynthesis in yeast: participation of ribose 5-phosphate ketol-isomerase.</bp:title>
+    <bp:source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Biochem J 379(Pt 1);65-70</bp:source>
+  </bp:PublicationXref>
+  <bp:PublicationXref rdf:ID="PublicationXref34261">
+    <bp:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">8534086</bp:id>
+    <bp:year rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1995</bp:year>
+    <bp:db rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PubMed</bp:db>
+    <bp:url rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://www.yeastgenome.org/reference/S000053822</bp:url>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Walfridsson M</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Hallborn J</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Penttila M</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Keranen S</bp:author>
+    <bp:author rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Hahn-Hagerdal B</bp:author>
+    <bp:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Xylose-metabolizing Saccharomyces cerevisiae strains overexpressing the TKL1 and TAL1 genes encoding the pentose phosphate pathway enzymes transketolase and transaldolase.</bp:title>
+    <bp:source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Appl Environ Microbiol 61(12);4184-90</bp:source>
+  </bp:PublicationXref>
+  <bp:Pathway rdf:ID="Pathway34260">
+    <bp:pathwayOrder rdf:resource="#BiochemicalPathwayStep34408"/>
+    <bp:pathwayOrder rdf:resource="#BiochemicalPathwayStep34377"/>
+    <bp:pathwayOrder rdf:resource="#BiochemicalPathwayStep34334"/>
+    <bp:pathwayOrder rdf:resource="#BiochemicalPathwayStep34310"/>
+    <bp:pathwayOrder rdf:resource="#BiochemicalPathwayStep34269"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis34411"/>
+    <bp:pathwayComponent rdf:resource="#BiochemicalReaction34409"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis34406"/>
+    <bp:pathwayComponent rdf:resource="#BiochemicalReaction34378"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis34371"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis34365"/>
+    <bp:pathwayComponent rdf:resource="#BiochemicalReaction34335"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis34328"/>
+    <bp:pathwayComponent rdf:resource="#BiochemicalReaction34311"/>
+    <bp:pathwayComponent rdf:resource="#BiochemicalReaction34270"/>
+    <bp:pathwayComponent rdf:resource="#Catalysis34303"/>
+    <bp:dataSource rdf:resource="#Provenance34268"/>
+    <bp:standardName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">pentose phosphate pathway (non-oxidative branch)</bp:standardName>
+    <bp:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The reactions of the non-oxidative branch of the pentose phosphate pathway are reversible and are important for generating ribose-5-phosphate, which is required for the biosynthesis of several biomolecules, including RNA and DNA. These reactions also catalyze the interconversion of a variety of 3, 5 and 6 carbon sugars, which is important for several biosynthetic pathways, including the biosynthesis of pyrimidines, purines, tryptophan, histidine, and aromatic amino acids |CITS:[8929392]||CITS:[15960801]||CITS:[7916691]||CITS:[14690456]|. The flow of glucose 6-phosphate through glycolysis and the pentose phosphate pathway is linked through two enzymes of the non-oxidative branch of the pentose phosphate pathway, transketolase (Tkl1p and Tkl2p) and transaldolase (Tal1p). The ability of these enzymes to convert one type of sugar into another allows them to convert the byproduct of one pathway into the substrate of another pathway in order to meet the metabolic needs of the cell. For example, if the cell needs ribose 5-phosphate, glyceraldehyde 3-phosphate and fructose 6-phosphate will be converted to ribose 5-phosphate. If the cell needs NADPH or ATP more than ribose 5-phosphate, ribose 5-phosphate will be converted to glyceraldehyde 3-phosphate and fructose 6-phosphate for use by the oxidative branch of the pentose phosphate pathway or glycolysis, respectively |CITS:[11298766]||CITS:[15960801]||CITS:[1628611]|.
+</bp:comment>
+    <bp:xref rdf:resource="#UnificationXref34267"/>
+    <bp:xref rdf:resource="#PublicationXref34266"/>
+    <bp:xref rdf:resource="#PublicationXref34265"/>
+    <bp:xref rdf:resource="#PublicationXref34264"/>
+    <bp:xref rdf:resource="#PublicationXref34263"/>
+    <bp:xref rdf:resource="#PublicationXref34262"/>
+    <bp:xref rdf:resource="#PublicationXref34261"/>
+  </bp:Pathway>
+</rdf:RDF>

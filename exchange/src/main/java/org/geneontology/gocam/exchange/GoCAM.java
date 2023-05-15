@@ -41,6 +41,7 @@ import org.geneontology.gocam.exchange.QRunner.InferredEnabler;
 import org.geneontology.gocam.exchange.QRunner.InferredOccursIn;
 import org.geneontology.gocam.exchange.QRunner.InferredRegulator;
 import org.geneontology.gocam.exchange.QRunner.InferredTransport;
+import org.geneontology.gocam.exchange.QRunner.ReactionInputOutput;
 import org.geneontology.jena.SesameJena;
 import org.geneontology.rules.engine.Explanation;
 import org.geneontology.rules.engine.RuleEngine;
@@ -123,7 +124,8 @@ public class GoCAM {
 	directly_negatively_regulates, directly_positively_regulates, has_role, causally_upstream_of, causally_upstream_of_negative_effect, causally_upstream_of_positive_effect,
 	negatively_regulates, positively_regulates, 
 	has_target_end_location, has_target_start_location, interacts_with, has_participant, functionally_related_to,
-	contributes_to, only_in_taxon, transports_or_maintains_localization_of;
+	contributes_to, only_in_taxon, transports_or_maintains_localization_of, has_primary_input,
+	has_small_molecule_inhibitor, has_small_molecule_activator;
 	public static OWLDataProperty has_start, has_end;
 
 	public static OWLClass 
@@ -151,6 +153,7 @@ public class GoCAM {
 	//for convenience
 	String name;
 	String default_namespace_prefix;
+	String contributor_link_comment;
 
 	public GoCAM() throws OWLOntologyCreationException {
 		ontman = OWLManager.createOWLOntologyManager();				
@@ -204,7 +207,7 @@ public class GoCAM {
 			default_namespace_prefix = "wikipathways";
 		}else if(base_provider.equals("https://www.pathwaycommons.org/")) {
 			default_namespace_prefix = "pathwaycommons";
-		}else if(base_provider.equals("https://yeastcyc.org")) {
+		}else if(base_provider.equals("http://www.yeastgenome.org")) {
 			default_namespace_prefix = "SGD";
 		}
 		
@@ -366,6 +369,9 @@ public class GoCAM {
 		has_target_start_location = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002338"));
 		contributes_to = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002326"));
 		transports_or_maintains_localization_of = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002313"));
+		has_small_molecule_inhibitor = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0012002"));
+		has_small_molecule_activator = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0012001"));
+		has_primary_input = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0004009"));
 		//re-usable restrictions
 		taxon_human = df.getOWLObjectSomeValuesFrom(only_in_taxon, human);
 		//data properties
@@ -483,6 +489,7 @@ public class GoCAM {
 		annos.add(df.getOWLAnnotation(contributor_prop, df.getOWLLiteral(this.base_contributor)));
 		annos.add(df.getOWLAnnotation(date_prop, df.getOWLLiteral(this.base_date)));
 		annos.add(df.getOWLAnnotation(provided_by_prop, df.getOWLLiteral(this.base_provider)));
+		annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(this.contributor_link_comment)));
 		return annos;
 	}
 
@@ -684,7 +691,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 				IRI anno_iri = makeGoCamifiedIRI(null, "ev_w_id_"+source_id+"_"+prop_id+"_"+target_id+"_"+id);
 				OWLNamedIndividual evidence = makeAnnotatedIndividual(anno_iri);					
 				addTypeAssertion(evidence, evidence_class);
-				addLiteralAnnotations2Individual(anno_iri, GoCAM.source_prop, namespace_prefix+":"+id);
+				String ev_source_id = id.replace("YeastPathways_", "");  // Ugly hack to take added model ID prefix back out for source
+				addLiteralAnnotations2Individual(anno_iri, GoCAM.source_prop, namespace_prefix+":"+ev_source_id);
 				OWLAnnotation anno = df.getOWLAnnotation(GoCAM.evidence_prop, anno_iri);
 				annos.add(anno);
 			}
@@ -971,8 +979,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 		r = inferRegulatesViaOutputEnables(model_id, r);
 		logger.debug("inferring provides input for");
 		r = inferProvidesInput(model_id, r);
-		logger.debug("converting entity regulators to (not)binding events");
-		r = convertEntityRegulatorsToBindingFunctions(model_id, r);
+		logger.debug("inferring small molecule regulators");
+		r = inferSmallMoleculeRegulators(model_id, r, tbox_qrunner);
 		logger.debug("deleting complexes with active units");
 		deleteComplexesWithActiveUnits();
 		logger.debug("deleting disallowed relations like that between a non-gene product molecular and the reaction it regulates");		
@@ -1065,67 +1073,79 @@ final long counterValue = instanceCounter.getAndIncrement();
 			transport_count+=transports.size();
 			Set<String> transport_reactions = new HashSet<String>();
 			for(InferredTransport transport_reaction : transports) {
-				if(!transport_reactions.add(transport_reaction.reaction_uri)){
-					//should only end up with one per reaction.. make sure
-					continue;
-				}
-				transport_pathways.add(transport_reaction.pathway_uri);
-				OWLNamedIndividual reaction = this.makeAnnotatedIndividual(transport_reaction.reaction_uri);
-				OWLClass reaction_type = df.getOWLClass(IRI.create(transport_reaction.reaction_type_uri));
-				boolean add_type = false;
-				if(reaction_type.equals(molecular_event)||reaction_type.equals(molecular_function)) {
-					OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(reaction_type, reaction);
-					ontman.removeAxiom(go_cam_ont, classAssertion);
-					add_type = true;
-				}else {
-					Set<OWLClass> mf_types = tbox_qrunner.getSuperClasses(reaction_type, false);
-					if(mf_types!=null&&(!mf_types.contains(transporter_activity))) {
-						//don't do anything if it has a type that isn't a subclass of transporter activity
-						logger.debug("skipping over transport on non-transport reaction "+transport_reaction.reaction_uri);
-						continue;
-					}
-				}
-				String thing_type_uri = transport_reaction.thing_type_uri;
-				OWLClass thing_type = this.df.getOWLClass(IRI.create(thing_type_uri));
 				OWLNamedIndividual thing = this.makeAnnotatedIndividual(transport_reaction.thing_uri);
-				Set<OWLClass> entity_types = tbox_qrunner.getSuperClasses(thing_type, false);
-				String explain = "Transporter Rule.  This reaction represents the activity of transporting ";
-				if(add_type&&entity_types!=null&&entity_types.contains(chebi_protein)) {
-					addTypeAssertion(reaction, protein_transporter_activity);
-					explain+=" a protein.";   
-				}else if(add_type){
-					addTypeAssertion(reaction, transporter_activity);
-					if(entity_types.contains(go_complex)) {
-						explain+=" a complex.";
+				OWLNamedIndividual reaction = this.makeAnnotatedIndividual(transport_reaction.reaction_uri);
+				if(transport_reactions.add(transport_reaction.reaction_uri)){
+					//should only end up with one per reaction.. make sure
+					transport_pathways.add(transport_reaction.pathway_uri);
+					OWLClass reaction_type = df.getOWLClass(IRI.create(transport_reaction.reaction_type_uri));
+					boolean add_type = false;
+					if(reaction_type.equals(molecular_event)||reaction_type.equals(molecular_function)) {
+						OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(reaction_type, reaction);
+						ontman.removeAxiom(go_cam_ont, classAssertion);
+						add_type = true;
+					}else {
+						Set<OWLClass> mf_types = tbox_qrunner.getSuperClasses(reaction_type, false);
+						if(mf_types!=null&&(!mf_types.contains(transporter_activity))) {
+							//don't do anything if it has a type that isn't a subclass of transporter activity
+							logger.debug("skipping over transport on non-transport reaction "+transport_reaction.reaction_uri);
+							continue;
+						}
 					}
-					explain+=" something.";
-				}	
-
-				addLiteralAnnotations2Individual(reaction.getIRI(), rdfs_comment, explain);
-				//record what moved where so the classifier can see it properly
-				IRI start_loc_i = makeGoCamifiedIRI(null, "start_loc_"+transport_reaction.input_loc_class_uri.replace("http://model.geneontology.org/", "")+"_"+reaction.getIRI().toString().replace("http://model.geneontology.org/", ""));
-				OWLNamedIndividual start_loc = makeAnnotatedIndividual(start_loc_i);
-				OWLClass start_loc_type = df.getOWLClass(IRI.create(transport_reaction.input_loc_class_uri));
-				addTypeAssertion(start_loc, start_loc_type);		
-				IRI end_loc_i = makeGoCamifiedIRI(null, "end_loc_"+transport_reaction.output_loc_class_uri.toString().replace("http://model.geneontology.org/", "")+"_"+reaction.getIRI().toString().replace("http://model.geneontology.org/", ""));
-				OWLNamedIndividual end_loc = makeAnnotatedIndividual(end_loc_i);
-				OWLClass end_loc_type = df.getOWLClass(IRI.create(transport_reaction.output_loc_class_uri));
-				addTypeAssertion(end_loc, end_loc_type);				
-				//add relations to enable deeper classification based on OWL axioms in BP branch
-				Set<OWLAnnotation> annos = getDefaultAnnotations();
-				String explain1 = "This relation was inferred because something that was an input to the reaction started out in the target location "+getaLabel(start_loc_type)
-				+ " and then, as a consequence of the reaction/process was transported to "+getaLabel(end_loc_type);
-				annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain1)));				
-				addRefBackedObjectPropertyAssertion(reaction, has_target_start_location, start_loc, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
-				String explain2 = "This relation was inferred because something that was an input to the reaction started in "+getaLabel(start_loc_type)
-						+ " and then, as a consequence of the reaction/process was transported to the target end location "+getaLabel(end_loc_type);
-				Set<OWLAnnotation> annos2 = getDefaultAnnotations();
-				annos2.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain2)));
-				addRefBackedObjectPropertyAssertion(reaction, has_target_end_location, end_loc, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos2, model_id);
-				//needed to support inferences into the localization hierarchy
+					String thing_type_uri = transport_reaction.thing_type_uri;
+					OWLClass thing_type = this.df.getOWLClass(IRI.create(thing_type_uri));
+					Set<OWLClass> entity_types = tbox_qrunner.getSuperClasses(thing_type, false);
+					String explain = "Transporter Rule.  This reaction represents the activity of transporting ";
+					if(add_type&&entity_types!=null&&entity_types.contains(chebi_protein)) {
+						addTypeAssertion(reaction, protein_transporter_activity);
+						explain+=" a protein.";   
+					}else if(add_type){
+						addTypeAssertion(reaction, transporter_activity);
+						if(entity_types.contains(go_complex)) {
+							explain+=" a complex.";
+						}
+						explain+=" something.";
+					}	
+	
+					addLiteralAnnotations2Individual(reaction.getIRI(), rdfs_comment, explain);
+					//record what moved where so the classifier can see it properly
+					IRI start_loc_i = makeGoCamifiedIRI(null, "start_loc_"+transport_reaction.input_loc_class_uri.replace("http://model.geneontology.org/", "")+"_"+reaction.getIRI().toString().replace("http://model.geneontology.org/", ""));
+					OWLNamedIndividual start_loc = makeAnnotatedIndividual(start_loc_i);
+					OWLClass start_loc_type = df.getOWLClass(IRI.create(transport_reaction.input_loc_class_uri));
+					addTypeAssertion(start_loc, start_loc_type);		
+					IRI end_loc_i = makeGoCamifiedIRI(null, "end_loc_"+transport_reaction.output_loc_class_uri.toString().replace("http://model.geneontology.org/", "")+"_"+reaction.getIRI().toString().replace("http://model.geneontology.org/", ""));
+					OWLNamedIndividual end_loc = makeAnnotatedIndividual(end_loc_i);
+					OWLClass end_loc_type = df.getOWLClass(IRI.create(transport_reaction.output_loc_class_uri));
+					addTypeAssertion(end_loc, end_loc_type);				
+					//add relations to enable deeper classification based on OWL axioms in BP branch
+					Set<OWLAnnotation> annos = getDefaultAnnotations();
+					String explain1 = "This relation was inferred because something that was an input to the reaction started out in the target location "+getaLabel(start_loc_type)
+					+ " and then, as a consequence of the reaction/process was transported to "+getaLabel(end_loc_type);
+					annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain1)));				
+					addRefBackedObjectPropertyAssertion(reaction, has_target_start_location, start_loc, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
+					String explain2 = "This relation was inferred because something that was an input to the reaction started in "+getaLabel(start_loc_type)
+							+ " and then, as a consequence of the reaction/process was transported to the target end location "+getaLabel(end_loc_type);
+					Set<OWLAnnotation> annos2 = getDefaultAnnotations();
+					annos2.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain2)));
+					addRefBackedObjectPropertyAssertion(reaction, has_target_end_location, end_loc, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos2, model_id);
+				}
+				//but still always emit thing
 				IRI new_iri = makeGoCamifiedIRI(null,"transported_"+thing.toString().replace("http://model.geneontology.org/", ""));
 				OWLNamedIndividual transported_thing = cloneIndividual(thing, model_id, true, false, false, true, new_iri);
-				addRefBackedObjectPropertyAssertion(reaction, transports_or_maintains_localization_of, transported_thing, Collections.singleton(model_id), GoCAM.eco_inferred_auto,default_namespace_prefix, annos2, model_id);
+				Set<OWLAnnotation> annos2 = getDefaultAnnotations();
+				addRefBackedObjectPropertyAssertion(reaction, has_primary_input, transported_thing, Collections.singleton(model_id), GoCAM.eco_inferred_auto,default_namespace_prefix, annos2, model_id);
+			}
+			// qrunner query to find all has_input, has_output edges for rxns
+			Set<ReactionInputOutput> rxn_ins_and_outs = qrunner.findReactionInputsOutputs();
+			for(ReactionInputOutput in_out : rxn_ins_and_outs) {
+				// Remove these if they are from a transport reaction
+				if(transport_reactions.contains(in_out.reaction_uri)) {
+					applyAnnotatedTripleRemover(IRI.create(in_out.reaction_uri), 
+							IRI.create(in_out.prop_uri), 
+							IRI.create(in_out.entity_uri));
+					OWLNamedIndividual thing_ind = makeUnannotatedIndividual(in_out.entity_uri);
+					deleteOwlEntityAndAllReferencesToIt(thing_ind);
+				}
 			}
 			//enabled by needs to know if there are any transport reactions as these should not be included
 			//hence reload graph from ontology
@@ -1378,7 +1398,7 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 		return r;
 	}
 
-
+	
 	/**
 	 * Rule: entity involved in regulation of function 
 Binding has_input E1
@@ -1475,6 +1495,93 @@ BP has_part R
 					if(pathway!=null) {
 						addRefBackedObjectPropertyAssertion(bp_node, regulator_prop, pathway, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);					
 					}
+					//delete the original entity regulates process relation 
+					applyAnnotatedTripleRemover(regulator.getIRI(), prop_for_deletion.getIRI(), reaction.getIRI());
+				}
+			}
+		}
+		r.rule_hitcount.put(entity_regulator_rule, entity_regulator_count);
+		r.rule_pathways.put(entity_regulator_rule, entity_regulator_pathways);
+		qrunner = new QRunner(go_cam_ont); 
+		return r;
+	}
+	
+
+	/**
+	 * Rule: entity involved in regulation of function 
+Binding has_input E1
+Binding has_input E2
+Binding +-_regulates R
+Binding part_of +-_regulation_of BP
+⇐ 	
+E1 +- involved_in_regulation_of R
+R enabled_by E2
+BP has_part R
+	 * @return 
+	 */
+	private RuleResults inferSmallMoleculeRegulators(String model_id, RuleResults r, QRunner tbox_qrunner) {		
+		String entity_regulator_rule = "Entity Regulator Rule";
+		Integer entity_regulator_count = r.checkInitCount(entity_regulator_rule, r);
+		Set<String> entity_regulator_pathways = r.checkInitPathways(entity_regulator_rule, r);
+		Set<InferredRegulator> ers = qrunner.getInferredAnonymousRegulators();
+
+		Map<String, Set<InferredRegulator>> reaction_regulators = new HashMap<String, Set<InferredRegulator>>();
+		for(InferredRegulator er : ers) {
+			Set<InferredRegulator> reg = reaction_regulators.get(er.reaction1_uri);
+			if(reg == null) {
+				reg = new HashSet<InferredRegulator>();
+			}
+			reg.add(er);
+			reaction_regulators.put(er.reaction1_uri, reg);
+		}
+
+		entity_regulator_count+=ers.size();
+		String obo_base ="http://purl.obolibrary.org/obo/";
+		OWLClass chebi_chemical = df.getOWLClass(IRI.create(obo_base+"CHEBI_24431"));
+		OWLClass chebi_nucleic_acid = df.getOWLClass(IRI.create(obo_base+"CHEBI_33696"));
+		for(String reaction_uri : reaction_regulators.keySet()) {
+			OWLNamedIndividual reaction = makeUnannotatedIndividual(reaction_uri);
+			//just do this once per reaction, most is redundant because of flat response structure
+			Set<InferredRegulator> regs = reaction_regulators.get(reaction_uri);
+			if(!regs.isEmpty()) {
+				InferredRegulator base = regs.iterator().next();
+				OWLNamedIndividual pathway = null;
+				if(base.pathway_uri!=null) {
+					entity_regulator_pathways.add(base.pathway_uri);
+					pathway = makeUnannotatedIndividual(base.pathway_uri);
+				}
+				//now get the actual regulating entities
+				Set<String> regulating_entities = new HashSet<String>();
+				for(InferredRegulator er : reaction_regulators.get(reaction_uri)) {
+					OWLClass entity_type_class = this.df.getOWLClass(IRI.create(er.entity_type_uri));
+					Set<OWLClass> entity_types = tbox_qrunner.getSuperClasses(entity_type_class, false);
+					//Only do this for chemical entities but not if nucleic acid or descendant
+					if(!entity_types.contains(chebi_chemical) || entity_types.contains(chebi_nucleic_acid)) {
+						continue;
+					}
+					//catch cases where there may be more than one of the same entity
+					//avoid making multiple redundant binding functions for the same entity
+					if(!regulating_entities.add(er.entity_uri)) {
+						continue;
+					}
+					Set<OWLAnnotation> annos = getDefaultAnnotations();
+					OWLNamedIndividual regulator = makeUnannotatedIndividual(er.entity_uri);
+
+					OWLObjectProperty prop_for_deletion = GoCAM.involved_in_negative_regulation_of;
+					OWLObjectProperty regulator_prop = GoCAM.has_small_molecule_inhibitor;
+					String explain = "Entity Regulator Rule.  The relation was added to account for an assertion about an entity regulating the target reaction.";
+					if(er.prop_uri.equals("http://purl.obolibrary.org/obo/RO_0002429")) {
+						//String reg = " is involved in positive regulation of ";
+						annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
+						prop_for_deletion = GoCAM.involved_in_positive_regulation_of;
+						regulator_prop = GoCAM.has_small_molecule_activator;
+					}else {
+						//String reg = " is involved in negative regulation of ";
+						annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
+					}
+					//Connect the regulator to reaction via has_small_molecule_... relation
+					addRefBackedObjectPropertyAssertion(reaction, regulator_prop, regulator, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
+					
 					//delete the original entity regulates process relation 
 					applyAnnotatedTripleRemover(regulator.getIRI(), prop_for_deletion.getIRI(), reaction.getIRI());
 				}
