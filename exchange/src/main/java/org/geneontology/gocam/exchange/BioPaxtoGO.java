@@ -155,6 +155,7 @@ public class BioPaxtoGO {
 	Map<String, String> accession_neo = new HashMap<String, String>(); //in case we need to store mappings to neo IRIs, use this
 	Map<String, String> monomerToSgdMappings = new HashMap<String, String>();
 	Map<String, String> yeastcyc2EC = new HashMap<String, String>(); //used to store mappings from YeastCyc ID to EC number in SGDIDs_to_ExPASy-ECs.txt
+	Map<String, String> pathwayIdToGoMappings = new HashMap<String, String>();
 	public BioPaxtoGO(){
 		strategy = ImportStrategy.NoctuaCuration; 
 		report = new GoMappingReport();
@@ -205,6 +206,13 @@ public class BioPaxtoGO {
 			monomerToSgdMappings = Helper.parseMonomerToSgdIdFile(monomerSgdIdLkpFilePath, sgdGPIPath);
 			for (Map.Entry<String, String> sgdMapping : monomerToSgdMappings.entrySet()) {
 				accession_neo.put(sgdMapping.getKey(), sgdMapping.getValue());
+			}
+			
+			// Also also also parse the manually curated yeast_pathway_ids_to_process_gos.tsv
+			String pathwayIdToGoFilePath = "/YeastCyc/yeast_pathway_ids_to_process_gos.tsv";
+			pathwayIdToGoMappings = Helper.parsePathwayIdToGoFile(pathwayIdToGoFilePath);
+			for (Map.Entry<String, String> pathwayIdToGoMapping : pathwayIdToGoMappings.entrySet()) {
+				pathwayIdToGoMappings.put(pathwayIdToGoMapping.getKey(), pathwayIdToGoMapping.getValue());
 			}
 		}
 		
@@ -869,8 +877,16 @@ public class BioPaxtoGO {
 					}
 				}
 				if(!mapped && entityStrategy.equals(EntityStrategy.YeastCyc)) {
-					Set<String> metacyc_gos = golego.xref_gos.get("MetaCyc:"+model_id);
-					if(metacyc_gos!=null) {
+					String pathway_id = getEntityReferenceId(pathway);
+					String manually_mapped_go = pathwayIdToGoMappings.get(pathway_id);
+					Set<String> metacyc_gos = golego.xref_gos.get("MetaCyc:"+pathway_id);
+					// Check first if GO BP is manually mapped
+					if(manually_mapped_go!=null) {
+						OWLClass go = go_cam.df.getOWLClass(IRI.create(manually_mapped_go));
+						go_cam.addTypeAssertion(pathway_e, go);
+						mapped = true;
+					}
+					else if(metacyc_gos!=null) {
 						for(String goid : metacyc_gos) {
 							OWLClass go = go_cam.df.getOWLClass(IRI.create(goid));
 							go_cam.addTypeAssertion(pathway_e, go);

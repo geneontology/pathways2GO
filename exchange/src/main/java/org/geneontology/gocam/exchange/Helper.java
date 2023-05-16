@@ -269,7 +269,29 @@ public class Helper {
 		
 		return idLookup;
 	}
+
+	public static Map<String, String> parsePathwayIdToGoFile(String pathwayIdToGoFilePath) throws IOException {
+		Map<String, String> pathwayIdToGoLookup = new HashMap<String, String>();
 		
+		InputStream pathwayIdToGoStream = Helper.class.getResourceAsStream(pathwayIdToGoFilePath);
+		BufferedReader ptwyToGoReader = new BufferedReader(new InputStreamReader(pathwayIdToGoStream));
+		String ptwyToGoLine = ptwyToGoReader.readLine();
+		while(ptwyToGoLine!=null) {
+			String[] cols = ptwyToGoLine.split("	");
+			String pathwayId = cols[0];
+			String goCurie = cols[1];
+			if(!goCurie.startsWith("GO:")) {
+				continue;
+			}
+			String goUri = goCurie.replace("GO:", "http://purl.obolibrary.org/obo/GO_");
+			pathwayIdToGoLookup.put(pathwayId, goUri);
+			
+			ptwyToGoLine = ptwyToGoReader.readLine();
+		}
+		ptwyToGoReader.close();
+		
+		return pathwayIdToGoLookup;
+	}
 	
 	public static Map<String, String> parseSgdIdToEcFile(String sgdIdToEcFilePath) throws IOException {
 		Map<String, Set<String>> ecLookup = new HashMap<String, Set<String>>();  // First track SGDIDs having multiple EC mappings

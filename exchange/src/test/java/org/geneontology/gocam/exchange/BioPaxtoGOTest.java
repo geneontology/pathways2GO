@@ -1270,6 +1270,26 @@ BP has_part R
 	}
 	
 	@Test
+	public final void testYeastPathwayIdToGoMapping() {
+		System.out.println("testing GO BP mapping to YeastPathways via manual file");
+		String pathway = "<http://model.geneontology.org/YeastPathways_ERGOSTEROL-SYN-PWY-1>";
+		String pathway_node = "<http://model.geneontology.org/YeastPathways_ERGOSTEROL-SYN-PWY-1/YeastPathways_ERGOSTEROL-SYN-PWY-1>";
+		String pathway_go_type = "<http://purl.obolibrary.org/obo/GO_0006696>";
+		String q =  
+				" prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+				+ "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> "
+				+ "SELECT  ?comment  \n" + 
+				"WHERE {\n" + 
+				"  GRAPH "+pathway+"  {  \n" + 
+				"    	"+pathway_node+" rdf:type "+pathway_go_type +" . \n" + 
+				"    	"+pathway_node+" rdfs:comment ?comment "+
+				"    }\n" + 
+				"  } \n";
+		int n = runQueryAndGetCount(q);
+		assertTrue("Didn't get manually-mapped BP type assertion for "+pathway_node, n==1);
+	}
+	
+	@Test
 	public final void testYeastComplexComponents() {
 		System.out.println("testing expression of YeastCyc complexes");
 		String pathway = "<http://model.geneontology.org/YeastPathways_SO4ASSIM-PWY>";
