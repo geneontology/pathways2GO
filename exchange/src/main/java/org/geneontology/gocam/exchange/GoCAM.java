@@ -208,7 +208,7 @@ public class GoCAM {
 		}else if(base_provider.equals("https://www.pathwaycommons.org/")) {
 			default_namespace_prefix = "pathwaycommons";
 		}else if(base_provider.equals("http://www.yeastgenome.org")) {
-			default_namespace_prefix = "SGD";
+			default_namespace_prefix = "SGD_PWY";
 		}
 		
 		//TODO find a better way

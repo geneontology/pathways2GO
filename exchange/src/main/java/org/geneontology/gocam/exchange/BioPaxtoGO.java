@@ -184,7 +184,7 @@ public class BioPaxtoGO {
 			default_namespace_prefix = "pathwaycommons";
 		}else if(base_provider.equals("http://www.yeastgenome.org")) {
 			datasource = "Saccharomyces Genome Database";
-			default_namespace_prefix = "SGD";
+			default_namespace_prefix = "SGD_PWY";
 		}
 		//will determine how classes for physical entities are handled
 		if(entityStrategy.equals(EntityStrategy.YeastCyc)) {
