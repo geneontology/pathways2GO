@@ -417,6 +417,9 @@ public class BioPaxtoGO {
 				}
 			}
 		}
+		if (id!=null) {
+			id = id.replace(" ", "_");
+		}
 		return id;
 	}
 
