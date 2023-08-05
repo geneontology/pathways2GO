@@ -86,6 +86,7 @@ public class Biopax2GOCmdLine {
 		options.addOption("c", true, "Catalog file for tbox");
 		options.addOption("nosplit", false, "If present, do not split the input biopax file into its constituent pathways where one pathway becomes one go-cam model.  Make one big model.");
 		options.addOption("sssom", true, "An sssom formatted mapping file (optional). Will be used to add guessed classes if none are present in the biopax");
+		options.addOption("include_drug_rxns", false, "If present, drug reactions will not be included in the produced model");
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = parser.parse( options, args);
@@ -179,6 +180,10 @@ public class Biopax2GOCmdLine {
 				bp2g.add_neighboring_events_from_other_pathways = true;
 			}else {
 				bp2g.split_by_pathway = true;
+			}
+			if(cmd.hasOption("include_drug_rxns")) {
+				// drop_drug_reactions is true by default
+				bp2g.drop_drug_reactions = false;
 			}
 			if(cmd.hasOption("sssom")) {
 				bp2g.sssom = new SSSOM(cmd.getOptionValue("sssom"));
