@@ -340,7 +340,11 @@ public class BioPaxtoGO {
 		String id = null;
 		Set<Xref> references = null;
 		//first check for entity reference
-		if((entityStrategy.equals(EntityStrategy.YeastCyc) && bp_entity instanceof SimplePhysicalEntity)
+		boolean is_drug = PhysicalEntityOntologyBuilder.getDrugReferenceId(bp_entity) != null;
+		if(is_drug) {
+			references = bp_entity.getXref();
+		}
+		else if((entityStrategy.equals(EntityStrategy.YeastCyc) && bp_entity instanceof SimplePhysicalEntity)
 				|| bp_entity instanceof SmallMolecule) {
 			SimplePhysicalEntity entity = (SimplePhysicalEntity) bp_entity;
 			EntityReference entity_ref = entity.getEntityReference();
@@ -357,16 +361,28 @@ public class BioPaxtoGO {
 		}
 		if(entityStrategy.equals(EntityStrategy.REACTO)) {
 			for(Xref ref : references) {
-				if(ref.getModelInterface().equals(UnificationXref.class)) {
-					UnificationXref r = (UnificationXref)ref;	    			
-					if(r.getDb().equals("Reactome")) {
-						id = r.getId();
-						if(id.startsWith("R-")) {
+				if (is_drug) {
+					if (ref.getModelInterface().equals(RelationshipXref.class)) {
+						RelationshipXref r = (RelationshipXref)ref;
+						if(r.getDb().equalsIgnoreCase("ChEBI")) {
+							// "CHEBI:" not included in id for these
+							id = "CHEBI_" + r.getId();
 							break;
 						}
-					}else if(r.getDb().equalsIgnoreCase("ChEBI") && bp_entity instanceof SmallMolecule) {
-						id = r.getId().replace(":", "_");
-						break;
+					}
+				}
+				else {
+					if(ref.getModelInterface().equals(UnificationXref.class)) {
+						UnificationXref r = (UnificationXref)ref;	    			
+						if(r.getDb().equals("Reactome")) {
+							id = r.getId();
+							if(id.startsWith("R-")) {
+								break;
+							}
+						}else if(r.getDb().equalsIgnoreCase("ChEBI") && bp_entity instanceof SmallMolecule) {
+							id = r.getId().replace(":", "_");
+							break;
+						}
 					}
 				}
 			}
@@ -400,6 +416,9 @@ public class BioPaxtoGO {
 					}
 				}
 			}
+		}
+		if (id!=null) {
+			id = id.replace(" ", "_");
 		}
 		return id;
 	}
@@ -1406,6 +1425,9 @@ public class BioPaxtoGO {
 									}
 								}
 							}
+						}
+						if (drop_drug_reactions && drug_process_ids.contains(entity_id)) {
+							continue;
 						}
 						//this is the non-recursive part.. (and we usually aren't recursing anyway)
 						IRI iri = null;
