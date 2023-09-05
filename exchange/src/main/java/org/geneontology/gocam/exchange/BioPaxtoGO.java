@@ -156,6 +156,7 @@ public class BioPaxtoGO {
 	Map<String, String> monomerToSgdMappings = new HashMap<String, String>();
 	Map<String, String> yeastcyc2EC = new HashMap<String, String>(); //used to store mappings from YeastCyc ID to EC number in SGDIDs_to_ExPASy-ECs.txt
 	Map<String, String> pathwayIdToGoMappings = new HashMap<String, String>();
+	Map<String, String> yeastcy2ChebiMappings = new HashMap<String, String>();
 	public BioPaxtoGO(){
 		strategy = ImportStrategy.NoctuaCuration; 
 		report = new GoMappingReport();
@@ -214,6 +215,9 @@ public class BioPaxtoGO {
 			for (Map.Entry<String, String> pathwayIdToGoMapping : pathwayIdToGoMappings.entrySet()) {
 				pathwayIdToGoMappings.put(pathwayIdToGoMapping.getKey(), pathwayIdToGoMapping.getValue());
 			}
+			
+			String yeastcy2ChebiFilePath = "/YeastCyc/yeastcyc_id_to_chebi.tsv";
+			yeastcy2ChebiMappings = Helper.parseYeastCycToChebiFile(yeastcy2ChebiFilePath);
 		}
 		
 		//read biopax pathway(s)
@@ -404,6 +408,14 @@ public class BioPaxtoGO {
 				if(ref.getModelInterface().equals(UnificationXref.class)) {
 					UnificationXref r = (UnificationXref)ref;	    			
 					if(bp_entity instanceof SmallMolecule) {
+						if(r.getDb().equalsIgnoreCase("YeastCyc")) {
+							String tmp_id = r.getId();
+							// Try looking up a ChEBI xref
+							if (yeastcy2ChebiMappings.containsKey(tmp_id)) {
+								id = yeastcy2ChebiMappings.get(tmp_id);
+								break;
+							}
+						}
 						if(r.getDb().equalsIgnoreCase("ChEBI")) {
 							id = r.getId().replace(":", "_");
 							break;

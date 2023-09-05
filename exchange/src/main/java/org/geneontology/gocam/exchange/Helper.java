@@ -213,6 +213,29 @@ public class Helper {
 		
 		return monomerSgdLookup;
 	}
+	
+	public static Map<String, String> parseYeastCycToChebiFile(String yeastcycToChebiFilePath) throws IOException {
+		Map<String, String> yeastcyc2ChebiLookup = new HashMap<String, String>();
+		
+		InputStream yeast2ChebiStream = Helper.class.getResourceAsStream(yeastcycToChebiFilePath);
+		BufferedReader yeast2ChebiReader = new BufferedReader(new InputStreamReader(yeast2ChebiStream));
+		String yeastChebiLine = yeast2ChebiReader.readLine();
+		while(yeastChebiLine!=null) {
+			String[] cols = yeastChebiLine.split("	");
+			String yeastcycId = cols[0];
+			String chebiId = cols[1];
+			String idPrefix = "";
+			idPrefix = chebiId.split(":")[0];
+			if (idPrefix.equalsIgnoreCase("CHEBI")) {
+				chebiId = chebiId.split(":")[1];
+				yeastcyc2ChebiLookup.put(yeastcycId, "CHEBI_" + chebiId);
+			}
+			yeastChebiLine = yeast2ChebiReader.readLine();
+		}
+		yeast2ChebiReader.close();
+		
+		return yeastcyc2ChebiLookup;
+	}
 
 	public static Map<String, String> parseGPI(String gpiFile) throws IOException {
 		Map<String, String> idLookup = new HashMap<String, String>();
