@@ -434,6 +434,39 @@ public class BioPaxtoGO {
 		}
 		return id;
 	}
+	
+	public String getReactomeId(Entity bp_entity) {
+		String id = null;
+		Set<Xref> references = bp_entity.getXref();
+		for(Xref ref : references) {
+			if(ref.getModelInterface().equals(UnificationXref.class)) {
+				UnificationXref r = (UnificationXref)ref;	    			
+				if(r.getDb().equals("Reactome")) {
+					id = r.getId();
+					if(id.startsWith("R-")) {
+						break;
+					}
+				}
+			}
+		}
+		//if id not found in unification references, check on other xrefs - use only for reactome
+		if(id==null) {
+			//Reactome Database ID
+			for(Xref r : references) {   			
+				if(r.getDb().startsWith("Reactome Database ID")) {
+					id = r.getId();
+					break;
+				}
+				else {
+					id = r.getDb()+"_"+r.getId();
+				}
+			}
+		}
+		if (id!=null) {
+			id = id.replace(" ", "_");
+		}
+		return id;
+	}
 
 	/**
 	 * Only keep it if it has some useful content
@@ -1287,7 +1320,13 @@ public class BioPaxtoGO {
 					for(PhysicalEntity input : inputs) {
 						IRI i_iri = null;
 						OWLNamedIndividual input_entity = null;
-						String input_id = getEntityReferenceId(input);
+						String input_id = null;
+						if (entityStrategy.equals(EntityStrategy.REACTO)) {
+							input_id = getReactomeId(input);  // This should be Reactome ID for IRI
+						}
+						else {
+							input_id = getEntityReferenceId(input);
+						}
 						if(input_id==null){ //failed to find a chebi reference
 							input_id = UUID.randomUUID().toString();
 						}
@@ -1320,7 +1359,13 @@ public class BioPaxtoGO {
 				if(outputs!=null) {
 					for(PhysicalEntity output : outputs) {
 						IRI o_iri = null;
-						String output_id = getEntityReferenceId(output);
+						String output_id = null;
+						if (entityStrategy.equals(EntityStrategy.REACTO)) {
+							output_id = getReactomeId(output);  // This should be Reactome ID for IRI
+						}
+						else {
+							output_id = getEntityReferenceId(output);
+						}
 						if(output_id==null) {
 							output_id = UUID.randomUUID().toString();
 						}
