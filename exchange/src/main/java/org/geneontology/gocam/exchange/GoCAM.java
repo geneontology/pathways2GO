@@ -977,8 +977,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 		r = inferRegulatesViaOutputRegulates(model_id, r); //must be run before convertEntityRegulatorsToBindingFunctions		
 		logger.debug("inferring regulates from output enables");
 		r = inferRegulatesViaOutputEnables(model_id, r);
-		logger.debug("inferring provides input for");
-		r = inferProvidesInput(model_id, r);
+		logger.debug("inferring provides input for then removing causal relation");
+		r = inferProvidesInputRemoveCausalRelation(model_id, r);
 		logger.debug("inferring small molecule regulators");
 		r = inferSmallMoleculeRegulators(model_id, r, tbox_qrunner);
 		logger.debug("deleting complexes with active units");
@@ -1398,6 +1398,28 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 		return r;
 	}
 
+	private RuleResults inferProvidesInputRemoveCausalRelation(String model_id, RuleResults r) {
+		/*
+		 * Searches for inferred input reaction pairs to delete causally_upstream_of relation added earlier
+		 */
+		String provides_input_rule = "Provides Input For Rule";
+		Integer provides_input_count = r.checkInitCount(provides_input_rule, r);
+		Set<String> provides_input_pathways = r.checkInitPathways(provides_input_rule, r);
+
+		Set<InferredRegulator> provides_input = qrunner.getInferredInputProviders();
+		provides_input_count+=provides_input.size();
+		for(InferredRegulator ir : provides_input) {
+			provides_input_pathways.add(ir.pathway_uri);
+			//create ?reaction2 obo:RO_0002333 ?input
+			OWLNamedIndividual r1 = this.makeAnnotatedIndividual(ir.reaction1_uri);
+			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ir.reaction2_uri);
+			applyAnnotatedTripleRemover(r1.getIRI(), causally_upstream_of.getIRI(), r2.getIRI());
+		}	
+		r.rule_hitcount.put(provides_input_rule, provides_input_count);
+		r.rule_pathways.put(provides_input_rule, provides_input_pathways);
+		qrunner = new QRunner(go_cam_ont); 
+		return r;
+	}
 	
 	/**
 	 * Rule: entity involved in regulation of function 
