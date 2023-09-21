@@ -124,8 +124,8 @@ public class BioPaxtoGO {
 	enum ImportStrategy {
 		NoctuaCuration, 
 	}
-	EntityStrategy entityStrategy;
-	enum EntityStrategy {
+	public EntityStrategy entityStrategy;
+	public enum EntityStrategy {
 		REACTO,
 		YeastCyc
 	}
