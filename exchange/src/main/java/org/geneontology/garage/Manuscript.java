@@ -13,6 +13,10 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.ParseException;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QuerySolution;
@@ -28,6 +32,7 @@ import org.biopax.paxtools.model.level3.Pathway;
 import org.biopax.paxtools.model.level3.PathwayStep;
 import org.biopax.paxtools.model.level3.Process;
 import org.geneontology.gocam.exchange.BioPaxtoGO;
+import org.geneontology.gocam.exchange.BioPaxtoGO.EntityStrategy;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.query.BindingSet;
@@ -97,17 +102,34 @@ public class Manuscript {
 	public Manuscript(String bg_jnl) {
 		this.alldata_repo = initializeRepository(bg_jnl);
 		bp2go = new BioPaxtoGO();
+		bp2go.entityStrategy = EntityStrategy.REACTO;
 	}
 
-	public static void main(String[] args) throws IOException {
-		Manuscript m = new Manuscript("/Users/benjamingood/blazegraph/reactome-lego-reasoned-oct23-2020.jnl"); 
-		//m.runCounts();
-		//m.buildVenn("/Users/benjamingood/test/manuscript/reactome-report-oct23/venn_data/");
-		m.getCausalComparison("/Users/benjamingood/test/reactome/", 
-				"/Users/benjamingood/test/biopax/June2020_Homo_sapiens.owl",
-				 "/Users/benjamingood/test/manuscript/reactome-report-oct23/");
-		//m.getInterestingInferences("/Users/benjamingood/test/manuscript/mf_inferences.txt");
-	}
+    public static void main(String[] args) throws IOException, ParseException {
+        org.apache.commons.cli.Options options = new org.apache.commons.cli.Options();
+        options.addOption("b", true, "biopax pathway file to convert");
+        options.addOption("j", true, "blazegraph journal output from conversion process");
+        options.addOption("g", true, "directory containing GO-CAM TTL files");
+        options.addOption("r", true, "directory for report output");
+        
+        CommandLineParser parser = new DefaultParser();
+        CommandLine cmd = parser.parse( options, args);
+        String input_biopax = cmd.getOptionValue("b");
+        String blazegraph_jnl = cmd.getOptionValue("j");
+        String go_cam_dir = cmd.getOptionValue("g");
+        String report_dir = cmd.getOptionValue("r");
+        
+        Manuscript m = new Manuscript(blazegraph_jnl); 
+        m.runCounts();
+        m.buildVenn(report_dir);
+//      m.getCausalComparison("/Users/benjamingood/test/reactome/", 
+//                      "/Users/benjamingood/test/biopax/June2020_Homo_sapiens.owl",
+//                       "/Users/benjamingood/test/manuscript/reactome-report-oct23/");
+        m.getCausalComparison(go_cam_dir, 
+                        input_biopax,
+                        report_dir);
+        //m.getInterestingInferences("/Users/benjamingood/test/manuscript/mf_inferences.txt");
+}
 	
 	private void getInterestingInferences(String out) throws IOException {
 		String mf_inferences_q = 
