@@ -1,0 +1,5 @@
+SELECT DISTINCT ?source_graph
+WHERE {
+  GRAPH ?source_graph { ?s ?p ?o . }
+FILTER (?source_graph != <http://model.geneontology.org/inferences> )
+}
