@@ -38,6 +38,7 @@ import org.biopax.paxtools.model.level3.Xref;
 import org.geneontology.gocam.exchange.QRunner.BindingInput;
 import org.geneontology.gocam.exchange.QRunner.ComplexInput;
 import org.geneontology.gocam.exchange.QRunner.InferredEnabler;
+import org.geneontology.gocam.exchange.QRunner.InferredInputRegulator;
 import org.geneontology.gocam.exchange.QRunner.InferredOccursIn;
 import org.geneontology.gocam.exchange.QRunner.InferredRegulator;
 import org.geneontology.gocam.exchange.QRunner.InferredTransport;
@@ -1374,22 +1375,25 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 		Integer provides_input_count = r.checkInitCount(provides_input_rule, r);
 		Set<String> provides_input_pathways = r.checkInitPathways(provides_input_rule, r);
 
-		Set<InferredRegulator> provides_input = qrunner.getInferredInputProviders();
+		Set<InferredInputRegulator> provides_input = qrunner.getInferredInputProviders();
 		provides_input_count+=provides_input.size();
-		for(InferredRegulator ir : provides_input) {
+		for(InferredInputRegulator ir : provides_input) {
 			provides_input_pathways.add(ir.pathway_uri);
 			//create ?reaction2 obo:RO_0002333 ?input
 			OWLNamedIndividual r1 = this.makeAnnotatedIndividual(ir.reaction1_uri);
 			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ir.reaction2_uri);
-			OWLObjectProperty o = df.getOWLObjectProperty(IRI.create(ir.prop_uri));
-			String r1_label = "'"+this.getaLabel(r1)+"'";
-			String r2_label = "'"+this.getaLabel(r2)+"'";
-			String o_label = "'"+this.getaLabel(o)+"'";
-			Set<OWLAnnotation> annos = getDefaultAnnotations();
-			String explain = "Provides Input For Rule. The relation "+r1_label+" "+o_label+" "+r2_label+" was inferred because:\n "+
-					"reaction1 has an output that is an input of reaction 2. ";
-			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
-			this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
+			//Check if rxns are already connected via common input/output instance
+			if (!ir.input_instance_uri.equals(ir.output_instance_uri)) {
+				OWLObjectProperty o = df.getOWLObjectProperty(IRI.create(ir.prop_uri));
+				String r1_label = "'"+this.getaLabel(r1)+"'";
+				String r2_label = "'"+this.getaLabel(r2)+"'";
+				String o_label = "'"+this.getaLabel(o)+"'";
+				Set<OWLAnnotation> annos = getDefaultAnnotations();
+				String explain = "Provides Input For Rule. The relation "+r1_label+" "+o_label+" "+r2_label+" was inferred because:\n "+
+						"reaction1 has an output that is an input of reaction 2. ";
+				annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
+				this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
+			}
 			applyAnnotatedTripleRemover(r1.getIRI(), causally_upstream_of.getIRI(), r2.getIRI());
 		}	
 		r.rule_hitcount.put(provides_input_rule, provides_input_count);
@@ -1397,7 +1401,6 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 		qrunner = new QRunner(go_cam_ont); 
 		return r;
 	}
-
 	
 	/**
 	 * Rule: entity involved in regulation of function 

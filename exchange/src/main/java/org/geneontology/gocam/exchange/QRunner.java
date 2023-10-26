@@ -440,6 +440,18 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		}
 	}
 	
+	class InferredInputRegulator extends InferredRegulator {
+		String output_instance_uri;
+		String input_instance_uri;
+		InferredInputRegulator(String r1_uri, String p_uri, String r2_uri, String pathway, String entity,
+				String entity_type, String output_uri, String input_uri) {
+			super(r1_uri, p_uri, r2_uri, pathway, entity, entity_type);
+			output_instance_uri = output_uri;
+			input_instance_uri = input_uri;
+		}
+		
+	}
+	
 	Set<InferredRegulator> getInferredRegulatorsQ1() {
 		Set<InferredRegulator> ir = new HashSet<InferredRegulator>();
 		String query = null;
@@ -587,8 +599,8 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		return irs;
 	}
 	
-	Set<InferredRegulator> getInferredInputProviders() {
-		Set<InferredRegulator> ir = new HashSet<InferredRegulator>();
+	Set<InferredInputRegulator> getInferredInputProviders() {
+		Set<InferredInputRegulator> ir = new HashSet<InferredInputRegulator>();
 		String query = null;
 		try {		
 			query = IOUtils.toString(QRunner.class.getResourceAsStream("query2update_provides_input_for.rq"), StandardCharsets.UTF_8);
@@ -602,12 +614,14 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			Resource reaction1 = qs.getResource("reaction1"); 
 			Resource reaction2 = qs.getResource("reaction2"); 
 			Resource pathway = qs.getResource("pathway");
+			Resource r1output = qs.getResource("r1output");
+			Resource r2input = qs.getResource("reaction2input");
 			//reaction1  provides_input_for reaction 2
 			String pathway_uri = "";
 			if(pathway!=null) {
 				pathway_uri = pathway.getURI();
 			}
-			ir.add(new InferredRegulator(reaction1.getURI(), GoCAM.provides_direct_input_for.getIRI().toString(), reaction2.getURI(), pathway_uri, "", ""));
+			ir.add(new InferredInputRegulator(reaction1.getURI(), GoCAM.provides_direct_input_for.getIRI().toString(), reaction2.getURI(), pathway_uri, "", "", r1output.getURI(), r2input.getURI()));
 		}
 		qe.close();
 		return ir;
