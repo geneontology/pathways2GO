@@ -10,7 +10,7 @@ prefix skos: <http://www.w3.org/2004/02/skos/core#>
 #and reaction1 causally_upstream_of reaction2 
 #then reaction1 directly_positively_regulates reaction2
 
-select distinct ?reaction2 ?reaction1 ?reaction2inputLabel ?reaction2Label ?reaction1Label ?pathway 
+select distinct ?reaction2 ?reaction1 ?reaction2inputLabel ?reaction2Label ?reaction1Label ?pathway ?r1output ?reaction2input
 where { 
   # limit to relationships in the same Pathway
   # promiscuous molecules make this important to avoid explosions
