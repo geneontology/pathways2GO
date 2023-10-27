@@ -1330,6 +1330,13 @@ public class BioPaxtoGO {
 						if(input_id==null){ //failed to find a chebi reference
 							input_id = UUID.randomUUID().toString();
 						}
+						String input_location = null;
+						if (small_mol_do_not_join_ids.contains(input_id) || input.getCellularLocation() == null) {
+							// Gotta make these locations specific to rxn ID for do_not_join classes
+							input_location = entity_id;
+						} else {
+							input_location = String.join("_", input.getCellularLocation().getTerm());
+						}
 						if(entityStrategy.equals(EntityStrategy.YeastCyc) && !small_mol_do_not_join_ids.contains(input_id)){
 							// Try to reuse previous rxn's output instance
 							for(PathwayStep previous_step : previous_steps) {
@@ -1342,15 +1349,13 @@ public class BioPaxtoGO {
 									previous_outputs = reaction.getRight();
 								}
 								if(previous_outputs.contains(input)) { // We can reuse this previous rxn's output instance
-									String prev_entity_id = getEntityReferenceId(reaction);
-									i_iri = GoCAM.makeGoCamifiedIRI(null, input_id+"_"+prev_entity_id);
+									i_iri = GoCAM.makeGoCamifiedIRI(null, input_id+"_"+input_location);
 									input_entity = go_cam.df.getOWLNamedIndividual(i_iri);
-									break;
 								}
 							}
 						}
 						if(i_iri==null){
-							i_iri = GoCAM.makeGoCamifiedIRI(null, input_id+"_"+entity_id);
+							i_iri = GoCAM.makeGoCamifiedIRI(null, input_id+"_"+input_location);
 							input_entity = go_cam.df.getOWLNamedIndividual(i_iri);
 							defineReactionEntity(go_cam, input, i_iri, true, model_id, root_pathway_iri);
 						}
@@ -1369,7 +1374,14 @@ public class BioPaxtoGO {
 						if(output_id==null) {
 							output_id = UUID.randomUUID().toString();
 						}
-						o_iri = GoCAM.makeGoCamifiedIRI(null, output_id+"_"+entity_id);
+						String output_location = null;
+						if (small_mol_do_not_join_ids.contains(output_id) || output.getCellularLocation() == null) {
+							// Gotta make these locations specific to rxn ID for do_not_join classes
+							output_location = entity_id;
+						} else {
+							output_location = String.join("_", output.getCellularLocation().getTerm());
+						}
+						o_iri = GoCAM.makeGoCamifiedIRI(null, output_id+"_"+output_location);
 						OWLNamedIndividual output_entity = go_cam.df.getOWLNamedIndividual(o_iri);
 						defineReactionEntity(go_cam, output, o_iri, true, model_id, root_pathway_iri);
 						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_output, output_entity, dbids, GoCAM.eco_imported_auto,  default_namespace_prefix, go_cam.getDefaultAnnotations(), model_id);
