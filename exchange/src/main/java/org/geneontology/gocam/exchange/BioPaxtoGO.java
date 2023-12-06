@@ -1331,7 +1331,7 @@ public class BioPaxtoGO {
 							input_id = UUID.randomUUID().toString();
 						}
 						String input_location = null;
-						if (small_mol_do_not_join_ids.contains(input_id) || input.getCellularLocation() == null) {
+						if (small_mol_do_not_join_ids.contains(input_id) || input.getCellularLocation() == null || entityStrategy.equals(EntityStrategy.REACTO)) {
 							// Gotta make these locations specific to rxn ID for do_not_join classes
 							input_location = entity_id;
 						} else {
@@ -1379,7 +1379,7 @@ public class BioPaxtoGO {
 							output_id = UUID.randomUUID().toString();
 						}
 						String output_location = null;
-						if (small_mol_do_not_join_ids.contains(output_id) || output.getCellularLocation() == null) {
+						if (small_mol_do_not_join_ids.contains(output_id) || output.getCellularLocation() == null || entityStrategy.equals(EntityStrategy.REACTO)) {
 							// Gotta make these locations specific to rxn ID for do_not_join classes
 							output_location = entity_id;
 						} else {

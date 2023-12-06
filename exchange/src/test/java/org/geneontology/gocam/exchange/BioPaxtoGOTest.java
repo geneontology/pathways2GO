@@ -1013,20 +1013,31 @@ BP has_part R
 		System.out.println("Done testing regulates via output enables");
 	}
 	
+	//gomodel:R-HSA-4641262/R-HSA-201677 / RO:0002413 / gomodel:R-HSA-4641262/R-HSA-201691
+	// #inferProvidesInput	
+	/**
+	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferProvidesInput}.
+	 * Use pathway R-HSA-4641262 , reaction1 = R-HSA-201677 reaction2 = R-HSA-201691
+	 * Relation should be RO:0002413 directly positive regulates
+	 * Phosphorylation of LRP5/6 cytoplasmic domain by membrane-associated GSK3beta
+	 * Phosphorylation of LRP5/6 cytoplasmic domain by CSNKI
+	 * 	https://reactome.org/content/detail/R-HSA-4641262 
+	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-4641262
+	 * 
+	 * Also an active site detection test
+	 */
 	@Test
-	public final void testSharedIntermediateInputs() {
+	public final void testInferProvidesInput() {
 		System.out.println("Testing provides input");
 		TupleQueryResult result = null;
 		try {
-			// Check for shared input/output entity instance between rxns
 			result = blaze.runSparqlQuery(
 				"prefix obo: <http://purl.obolibrary.org/obo/> "
 				+ "select ?pathway " + 
 				"where { " + 
 				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-201677> } . "+ 
 				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-201691> } . "+
-				" ?reaction1 obo:RO_0002234 ?small_mol . " +
-				" ?reaction2 obo:RO_0002233 ?small_mol . "
+				" ?reaction1 obo:RO_0002413 ?reaction2 . "
 				+ "?reaction1 obo:BFO_0000050 ?pathway "+				
 				"}");
 			int n = 0; String pathway = null;
@@ -1048,7 +1059,7 @@ BP has_part R
 				e.printStackTrace();
 			}
 		}
-		System.out.println("Done testing sharing of intermediate small molecules");
+		System.out.println("Done testing regulates via output enables");
 	}
 	
 	@Test
