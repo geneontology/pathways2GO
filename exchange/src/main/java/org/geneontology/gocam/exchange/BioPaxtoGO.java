@@ -1335,7 +1335,11 @@ public class BioPaxtoGO {
 							// Gotta make these locations specific to rxn ID for do_not_join classes
 							input_location = entity_id;
 						} else {
-							input_location = String.join("_", input.getCellularLocation().getTerm());
+							Set<String> in_location_terms = new HashSet<String>();
+							for (String loc_term : input.getCellularLocation().getTerm()) {
+								in_location_terms.add(loc_term.replace(" ", "_"));
+							}
+							input_location = String.join("_", in_location_terms);
 						}
 						if(entityStrategy.equals(EntityStrategy.YeastCyc) && !small_mol_do_not_join_ids.contains(input_id)){
 							// Try to reuse previous rxn's output instance
@@ -1379,7 +1383,11 @@ public class BioPaxtoGO {
 							// Gotta make these locations specific to rxn ID for do_not_join classes
 							output_location = entity_id;
 						} else {
-							output_location = String.join("_", output.getCellularLocation().getTerm());
+							Set<String> out_location_terms = new HashSet<String>();
+							for (String loc_term : output.getCellularLocation().getTerm()) {
+								out_location_terms.add(loc_term.replace(" ", "_"));
+							}
+							output_location = String.join("_", out_location_terms);
 						}
 						o_iri = GoCAM.makeGoCamifiedIRI(null, output_id+"_"+output_location);
 						OWLNamedIndividual output_entity = go_cam.df.getOWLNamedIndividual(o_iri);
