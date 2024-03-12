@@ -1331,7 +1331,7 @@ public class BioPaxtoGO {
 							input_id = UUID.randomUUID().toString();
 						}
 						String input_location = null;
-						if (small_mol_do_not_join_ids.contains(input_id) || input.getCellularLocation() == null || entityStrategy.equals(EntityStrategy.REACTO)) {
+						if (small_mol_do_not_join_ids.contains(input_id) || input.getCellularLocation() == null) {
 							// Gotta make these locations specific to rxn ID for do_not_join classes
 							input_location = entity_id;
 						} else {
@@ -1341,7 +1341,7 @@ public class BioPaxtoGO {
 							}
 							input_location = String.join("_", in_location_terms);
 						}
-						if(entityStrategy.equals(EntityStrategy.YeastCyc) && !small_mol_do_not_join_ids.contains(input_id)){
+						if(!small_mol_do_not_join_ids.contains(input_id)){
 							// Try to reuse previous rxn's output instance
 							for(PathwayStep previous_step : previous_steps) {
 								BiochemicalReaction reaction = getBiochemicalReaction(previous_step);
@@ -1379,7 +1379,7 @@ public class BioPaxtoGO {
 							output_id = UUID.randomUUID().toString();
 						}
 						String output_location = null;
-						if (small_mol_do_not_join_ids.contains(output_id) || output.getCellularLocation() == null || entityStrategy.equals(EntityStrategy.REACTO)) {
+						if (small_mol_do_not_join_ids.contains(output_id) || output.getCellularLocation() == null) {
 							// Gotta make these locations specific to rxn ID for do_not_join classes
 							output_location = entity_id;
 						} else {
