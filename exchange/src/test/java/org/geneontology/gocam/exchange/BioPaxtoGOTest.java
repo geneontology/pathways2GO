@@ -1027,40 +1027,40 @@ BP has_part R
      * Also an active site detection test
      */
     @Test
-    public final void testInferProvidesInput() {
-            System.out.println("Testing provides input");
-            TupleQueryResult result = null;
-            try {
-                    result = blaze.runSparqlQuery(
-                            "prefix obo: <http://purl.obolibrary.org/obo/> "
-                            + "select ?pathway " + 
-                            "where { " + 
-                            "VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-201677> } . "+ 
-                            "VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-201691> } . "+
-                            " ?reaction1 obo:RO_0002413 ?reaction2 . "
-                            + "?reaction1 obo:BFO_0000050 ?pathway "+                               
-                            "}");
-                    int n = 0; String pathway = null;
-                    while (result.hasNext()) {
-                            BindingSet bindingSet = result.next();
-                            pathway = bindingSet.getValue("pathway").stringValue();
-                            n++;
-                    }
-                    assertTrue(n==1);
-                    assertTrue("got "+pathway, pathway.equals("http://model.geneontology.org/R-HSA-4641262/R-HSA-4641262"));
-            } catch (QueryEvaluationException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-            } finally {
-                    try {
-                            result.close();
-                    } catch (QueryEvaluationException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                    }
-            }
-            System.out.println("Done testing regulates via output enables");
-    }
+	public final void testInferProvidesInput() {
+	    System.out.println("Testing provides input");
+	    TupleQueryResult result = null;
+	    try {
+	        result = blaze.runSparqlQuery(
+	            "prefix obo: <http://purl.obolibrary.org/obo/> "
+	            + "select ?pathway " + 
+	            "where { " + 
+	            "VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-201677> } . "+ 
+	            "VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-201691> } . "+
+	            " ?reaction1 obo:RO_0002413 ?reaction2 . "
+	            + "?reaction1 obo:BFO_0000050 ?pathway "+                               
+	            "}");
+	        int n = 0; String pathway = null;
+	        while (result.hasNext()) {
+	            BindingSet bindingSet = result.next();
+	            pathway = bindingSet.getValue("pathway").stringValue();
+	            n++;
+	        }
+	        assertTrue(n==1);
+	        assertTrue("got "+pathway, pathway.equals("http://model.geneontology.org/R-HSA-4641262/R-HSA-4641262"));
+	    } catch (QueryEvaluationException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	        	result.close();
+	        } catch (QueryEvaluationException e) {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+	        }
+	    }
+	    System.out.println("Done testing regulates via output enables");
+	}
 	
 	@Test
 	public final void testSharedIntermediateInputs() {
