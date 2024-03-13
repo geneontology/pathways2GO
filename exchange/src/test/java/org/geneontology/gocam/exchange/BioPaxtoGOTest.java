@@ -1013,20 +1013,20 @@ BP has_part R
 		System.out.println("Done testing regulates via output enables");
 	}
 	
-    //gomodel:R-HSA-4641262/R-HSA-201677 / RO:0002413 / gomodel:R-HSA-4641262/R-HSA-201691
-    // #inferProvidesInput  
-    /**
-     * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferProvidesInput}.
-     * Use pathway R-HSA-4641262 , reaction1 = R-HSA-201677 reaction2 = R-HSA-201691
-     * Relation should be RO:0002413 directly positive regulates
-     * Phosphorylation of LRP5/6 cytoplasmic domain by membrane-associated GSK3beta
-     * Phosphorylation of LRP5/6 cytoplasmic domain by CSNKI
-     *      https://reactome.org/content/detail/R-HSA-4641262 
-     * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-4641262
-     * 
-     * Also an active site detection test
-     */
-    @Test
+	//gomodel:R-HSA-4641262/R-HSA-201677 / RO:0002413 / gomodel:R-HSA-4641262/R-HSA-201691
+	// #inferProvidesInput  
+	/**
+	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferProvidesInput}.
+	 * Use pathway R-HSA-4641262 , reaction1 = R-HSA-201677 reaction2 = R-HSA-201691
+	 * Relation should be RO:0002413 directly positive regulates
+	 * Phosphorylation of LRP5/6 cytoplasmic domain by membrane-associated GSK3beta
+	 * Phosphorylation of LRP5/6 cytoplasmic domain by CSNKI
+	 *      https://reactome.org/content/detail/R-HSA-4641262 
+	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-4641262
+	 * 
+	 * Also an active site detection test
+	 */
+	@Test
 	public final void testInferProvidesInput() {
 	    System.out.println("Testing provides input");
 	    TupleQueryResult result = null;
