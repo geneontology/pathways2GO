@@ -1296,8 +1296,6 @@ public class BioPaxtoGO {
 				Set<PhysicalEntity> inputs = null;
 				Set<PhysicalEntity> outputs = null;
 				Set<PathwayStep> previous_steps = pathway_step.getNextStepOf();
-				Set<String> small_mol_do_not_join_ids = new HashSet<>(Arrays.asList("CHEBI_15378",  // hydron 
-																					"CHEBI_15377"));// water
 
 				if(direction==null||direction.equals(ConversionDirectionType.LEFT_TO_RIGHT)||direction.equals(ConversionDirectionType.REVERSIBLE)) {
 					inputs = ((Conversion) entity).getLeft();
@@ -1332,7 +1330,7 @@ public class BioPaxtoGO {
 							input_id = UUID.randomUUID().toString();
 						}
 						String input_location = null;
-						if (small_mol_do_not_join_ids.contains(entity_ref_id) || input.getCellularLocation() == null || !(input instanceof SmallMolecule)) {
+						if (GoCAM.small_mol_do_not_join_ids.contains(entity_ref_id) || input.getCellularLocation() == null || !(input instanceof SmallMolecule)) {
 							// Gotta make these locations specific to rxn ID for do_not_join classes
 							input_location = entity_id;
 						} else {
@@ -1342,10 +1340,13 @@ public class BioPaxtoGO {
 							}
 							input_location = String.join("_", in_location_terms);
 						}
-						if(!small_mol_do_not_join_ids.contains(entity_ref_id) && input instanceof SmallMolecule){
+						if(!GoCAM.small_mol_do_not_join_ids.contains(entity_ref_id) && input instanceof SmallMolecule){
 							// Try to reuse previous rxn's output instance
 							for(PathwayStep previous_step : previous_steps) {
 								BiochemicalReaction reaction = getBiochemicalReaction(previous_step);
+								if (reaction == null) {
+									continue;
+								}
 								ConversionDirectionType prev_step_direction = getDirection(reaction);
 								Set<PhysicalEntity> previous_outputs = null;
 								if(prev_step_direction.equals(ConversionDirectionType.RIGHT_TO_LEFT)) {
@@ -1381,7 +1382,7 @@ public class BioPaxtoGO {
 							output_id = UUID.randomUUID().toString();
 						}
 						String output_location = null;
-						if (small_mol_do_not_join_ids.contains(entity_ref_id) || output.getCellularLocation() == null) {
+						if (GoCAM.small_mol_do_not_join_ids.contains(entity_ref_id) || output.getCellularLocation() == null) {
 							// Gotta make these locations specific to rxn ID for do_not_join classes
 							output_location = entity_id;
 						} else {

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -115,6 +116,8 @@ public class GoCAM {
 	public static final IRI obo_iri = IRI.create("http://purl.obolibrary.org/obo/");
 	public static final IRI reacto_base_iri = IRI.create("http://purl.obolibrary.org/obo/go/extensions/reacto.owl#REACTO_");
 	public static final IRI uniprot_iri = IRI.create("http://identifiers.org/uniprot/");
+	public static final Set<String> small_mol_do_not_join_ids = new HashSet<>(Arrays.asList("CHEBI_15378",  // hydron 
+																							"CHEBI_15377"));// water
 	public static IRI base_ont_iri;
 	public static OWLAnnotationProperty version_info, title_prop, contributor_prop, date_prop, skos_exact_match, skos_altlabel,  
 	state_prop, evidence_prop, provided_by_prop, x_prop, y_prop, rdfs_label, rdfs_comment, rdfs_seealso, source_prop, 
@@ -1382,8 +1385,10 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 			//create ?reaction2 obo:RO_0002333 ?input
 			OWLNamedIndividual r1 = this.makeAnnotatedIndividual(ir.reaction1_uri);
 			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ir.reaction2_uri);
+			String entity_type_id = ir.entity_type_uri.substring(ir.entity_type_uri.lastIndexOf('/') + 1);
 			//Check if rxns are already connected via common input/output instance
-			if (!ir.input_instance_uri.equals(ir.output_instance_uri)) {
+			if (!ir.input_instance_uri.equals(ir.output_instance_uri) &&
+					!GoCAM.small_mol_do_not_join_ids.contains(entity_type_id)) {
 				OWLObjectProperty o = df.getOWLObjectProperty(IRI.create(ir.prop_uri));
 				String r1_label = "'"+this.getaLabel(r1)+"'";
 				String r2_label = "'"+this.getaLabel(r2)+"'";
