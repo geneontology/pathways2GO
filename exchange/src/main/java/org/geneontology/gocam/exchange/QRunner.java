@@ -616,12 +616,13 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 			Resource pathway = qs.getResource("pathway");
 			Resource r1output = qs.getResource("r1output");
 			Resource r2input = qs.getResource("reaction2input");
+			Resource r1output_type = qs.getResource("r1output_type");
 			//reaction1  provides_input_for reaction 2
 			String pathway_uri = "";
 			if(pathway!=null) {
 				pathway_uri = pathway.getURI();
 			}
-			ir.add(new InferredInputRegulator(reaction1.getURI(), GoCAM.provides_direct_input_for.getIRI().toString(), reaction2.getURI(), pathway_uri, "", "", r1output.getURI(), r2input.getURI()));
+			ir.add(new InferredInputRegulator(reaction1.getURI(), GoCAM.provides_direct_input_for.getIRI().toString(), reaction2.getURI(), pathway_uri, "", r1output_type.getURI(), r1output.getURI(), r2input.getURI()));
 		}
 		qe.close();
 		return ir;
