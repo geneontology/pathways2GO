@@ -1113,11 +1113,13 @@ final long counterValue = instanceCounter.getAndIncrement();
 	
 					addLiteralAnnotations2Individual(reaction.getIRI(), rdfs_comment, explain);
 					//record what moved where so the classifier can see it properly
-					IRI start_loc_i = makeGoCamifiedIRI(null, "start_loc_"+transport_reaction.input_loc_class_uri.replace("http://model.geneontology.org/", "")+"_"+reaction.getIRI().toString().replace("http://model.geneontology.org/", ""));
+					String input_loc_class_uri = transport_reaction.input_loc_class_uri.replace("http://model.geneontology.org/", "").replace("http://purl.obolibrary.org/obo/", "");
+					IRI start_loc_i = makeGoCamifiedIRI(null, "start_loc_"+input_loc_class_uri+"_"+reaction.getIRI().toString().replace("http://model.geneontology.org/", ""));
 					OWLNamedIndividual start_loc = makeAnnotatedIndividual(start_loc_i);
 					OWLClass start_loc_type = df.getOWLClass(IRI.create(transport_reaction.input_loc_class_uri));
-					addTypeAssertion(start_loc, start_loc_type);		
-					IRI end_loc_i = makeGoCamifiedIRI(null, "end_loc_"+transport_reaction.output_loc_class_uri.toString().replace("http://model.geneontology.org/", "")+"_"+reaction.getIRI().toString().replace("http://model.geneontology.org/", ""));
+					addTypeAssertion(start_loc, start_loc_type);
+					String output_loc_class_uri = transport_reaction.output_loc_class_uri.toString().replace("http://model.geneontology.org/", "").replace("http://purl.obolibrary.org/obo/", "");
+					IRI end_loc_i = makeGoCamifiedIRI(null, "end_loc_"+output_loc_class_uri+"_"+reaction.getIRI().toString().replace("http://model.geneontology.org/", ""));
 					OWLNamedIndividual end_loc = makeAnnotatedIndividual(end_loc_i);
 					OWLClass end_loc_type = df.getOWLClass(IRI.create(transport_reaction.output_loc_class_uri));
 					addTypeAssertion(end_loc, end_loc_type);				
