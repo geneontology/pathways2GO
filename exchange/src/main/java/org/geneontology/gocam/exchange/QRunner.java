@@ -938,6 +938,29 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		
 	}
 	
+	/**
+	 * Just gets all objects in triples of ?s rdf:type ?object
+	 * @return
+	 */
+	public Set<String> getAllTypes() {
+		Set<String> activities = new HashSet<String>();
+		String query = null;
+		try {		
+			query = IOUtils.toString(QRunner.class.getResourceAsStream("get_all_types.rq"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Could not load SPARQL update from jar \n"+e);
+		}
+		QueryExecution qe = QueryExecutionFactory.create(query, jena);
+		ResultSet results = qe.execSelect();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			Resource reaction = qs.getResource("reaction"); 
+			activities.add(reaction.getURI());
+		}
+		qe.close();
+		return activities; 
+	}
+	
 	public Set<String> findEnabledMolecularEvents() {
 		Set<String> reactions = new HashSet<String>();
 		String query = null;

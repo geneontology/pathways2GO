@@ -137,7 +137,8 @@ public class BioPaxtoGO {
 	GoMappingReport report; //Captures details of mappings from input biopax pathways to output go-cams as well as information about the results of OWL reasoning on these models.   
 	Model biopax_model; //The BioPAX model that is being converted.  
 	boolean check_consistency = true; //set to true to execute an OWL consistency check each time a pathway is processed.  If inconsistent, it generates a report and halts the program
-	boolean ignore_diseases = true; //If true, skips any pathway that has the word 'disease' in its name or any of its parent pathway's name 
+	boolean ignore_diseases = true; //If true, skips any pathway that has the word 'disease' in its name or any of its parent pathway's name
+	boolean skip_writing_pathways_w_no_activities = true; //If true, skips any pathway that does not have any activities (mol event or MFs). Still processes desendant pathways.
 	boolean drop_drug_reactions = true; //If true, removes reactions that involve drugs (as determined by the presence of an IUPHAR id on the physical entity). 
 	boolean add_lego_import = false; //If true, an OWL import statement bring in go-lego.owl is added to each generated model.  
 	boolean save_inferences = false;  //If true, adds inferences to blazegraph journal
@@ -579,6 +580,19 @@ public class BioPaxtoGO {
 			go_cam = layout.layout(wm_with_tbox, go_cam);	
 			//add them into the rdf 
 			go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
+		}
+		
+		// If neither root MF nor molecular_event present in this list, then skip writing.
+		// Just get all types, check if any are mol_event or in golego.molecular_functions. 
+		Set<String> activities = go_cam.qrunner.getAllTypes();
+		if(skip_writing_pathways_w_no_activities && !activities.contains("http://purl.obolibrary.org/obo/go/extensions/reacto.owl#molecular_event")) {
+			// Then see if we have MF types
+			activities.retainAll(golego.molecular_functions);  // Should truncate activities if no MFs
+			if(activities.size() == 0) {
+				// No MFs in this model so no need to write it out
+				System.out.println("No activities in model "+reactome_id+" so skipping writing to TTL.");
+				return;
+			}
 		}
 
 		System.out.println("writing....");
