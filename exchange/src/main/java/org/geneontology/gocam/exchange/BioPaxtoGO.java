@@ -148,7 +148,7 @@ public class BioPaxtoGO {
 	//leaving all false, limits the reactions captured in each pathway to those shown in a e.g. Reactome view of the pathway
 	boolean causal_recurse = false;  //if true this will follow BioPAX nextStep links to gather content from other pathways
 	boolean add_pathway_parents = false; //if true will add all pathways that contain each reaction.  (Reactions may be present in multiple pathways.)
-	boolean add_neighboring_events_from_other_pathways = true; //if true will pull in nextStep connections from other pathways.  Note that this is not recursive, will only go one level out.
+	boolean add_neighboring_events_from_other_pathways = false; //if true will pull in nextStep connections from other pathways.  Note that this is not recursive, will only go one level out.
 	boolean add_upstream_controller_events_from_other_pathways = false; //if true will add reactions from other pathways if one of their participants is a controller (catalyst or regulator) of a reaction in the current pathway.  
 	boolean add_subpathway_bridges = true; //this is groundwork for an approach that generates go-cams that reference members of other go-cams, here referencing other pathways.  
 	String default_namespace_prefix = "Reactome"; //this is used to generate curi structured references - e.g. Reactome:HSA-007
