@@ -85,6 +85,7 @@ public class Biopax2GOCmdLine {
 		options.addOption("tp", true, "Exact name of a specific pathway to test - e.g. \"Signaling by MP\".  Other pathways in the biopax input file will be ignored. Default is that all pathways are processed");
 		options.addOption("c", true, "Catalog file for tbox");
 		options.addOption("nosplit", false, "If present, do not split the input biopax file into its constituent pathways where one pathway becomes one go-cam model.  Make one big model.");
+		options.addOption("no_neighbors", false, "If present, will NOT pull in nextStep connections from other pathways.");
 		options.addOption("sssom", true, "An sssom formatted mapping file (optional). Will be used to add guessed classes if none are present in the biopax");
 		options.addOption("include_drug_rxns", false, "If present, drug reactions will not be included in the produced model");
 
@@ -180,6 +181,11 @@ public class Biopax2GOCmdLine {
 				bp2g.add_neighboring_events_from_other_pathways = true;
 			}else {
 				bp2g.split_by_pathway = true;
+			}
+			//no_neighbors
+			if(cmd.hasOption("no_neighbors")) {
+				// drop_drug_reactions is true by default
+				bp2g.add_neighboring_events_from_other_pathways = false;
 			}
 			if(cmd.hasOption("include_drug_rxns")) {
 				// drop_drug_reactions is true by default
