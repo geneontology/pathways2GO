@@ -1449,6 +1449,20 @@ public class BioPaxtoGO {
 					}
 					//check if there are active sites annotated on the controller.
 					Set<String> active_site_stable_ids = getActiveSites(controller);
+					for(Controller controller_entity : controller_entities) {
+						if (controller_entity instanceof Complex) {
+							boolean has_protein = false;
+							for(PhysicalEntity complex_component : ((Complex) controller_entity).getComponent()) {
+								if (complex_component instanceof Protein) {
+									has_protein = true;
+								}
+							}
+							if (has_protein && active_site_stable_ids.isEmpty()) {
+								String complex_entity_id = getEntityReferenceId(controller_entity);
+								System.out.println("COMPLEX_HAS_PROTEIN_NO_ACTIVE_UNIT\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName());
+							}
+						}
+					}
 					ControlType ctype = controller.getControlType();	
 					boolean is_catalysis = false;
 					if(controller.getModelInterface().equals(Catalysis.class)) {
