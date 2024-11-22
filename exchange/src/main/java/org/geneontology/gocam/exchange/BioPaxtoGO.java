@@ -1449,17 +1449,19 @@ public class BioPaxtoGO {
 					}
 					//check if there are active sites annotated on the controller.
 					Set<String> active_site_stable_ids = getActiveSites(controller);
-					for(Controller controller_entity : controller_entities) {
-						if (controller_entity instanceof Complex) {
-							boolean has_protein = false;
-							for(PhysicalEntity complex_component : ((Complex) controller_entity).getComponent()) {
-								if (complex_component instanceof Protein) {
-									has_protein = true;
+					if (controller instanceof Catalysis) {
+						for(Controller controller_entity : controller_entities) {
+							if (controller_entity instanceof Complex) {
+								boolean has_protein = false;
+								for(PhysicalEntity complex_component : ((Complex) controller_entity).getComponent()) {
+									if (complex_component instanceof Protein) {
+										has_protein = true;
+									}
 								}
-							}
-							if (has_protein && active_site_stable_ids.isEmpty()) {
-								String complex_entity_id = getEntityReferenceId(controller_entity);
-								System.out.println("COMPLEX_HAS_PROTEIN_NO_ACTIVE_UNIT\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName());
+								if (has_protein && active_site_stable_ids.isEmpty()) {
+									String complex_entity_id = getEntityReferenceId(controller_entity);
+									System.out.println("COMPLEX_HAS_PROTEIN_NO_ACTIVE_UNIT\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName());
+								}
 							}
 						}
 					}
@@ -1793,6 +1795,29 @@ public class BioPaxtoGO {
 				BioPAXElement bp_entity = biopax_model.getByID(full_id);
 				String stable_id = getEntityReferenceId((Entity) bp_entity);
 				active_site_ids.add(stable_id);
+			}
+		}
+		// If it's still empty, try more crazy stuff
+		if (active_site_ids.isEmpty()) {
+			Set<Controller> controller_entities = controlled_by_complex.getController();
+			for (Controller controller_entity : controller_entities) {
+				Set<PhysicalEntity> non_small_mol_components = new HashSet<PhysicalEntity>();
+				if (controller_entity instanceof Complex) {
+					for(PhysicalEntity complex_component : ((Complex) controller_entity).getComponent()) {
+						if (complex_component instanceof SmallMolecule) {
+							// Don't consider small molecules in finding active sites in complexes
+							continue;
+						}
+						non_small_mol_components.add(complex_component);
+					}
+				}
+				if (non_small_mol_components.size() == 1) {
+					PhysicalEntity single_component = non_small_mol_components.iterator().next();
+					if (single_component instanceof Protein) {
+						String stable_id = getEntityReferenceId(single_component);
+						active_site_ids.add(stable_id);
+					}
+				}
 			}
 		}
 		return active_site_ids;
