@@ -1854,11 +1854,12 @@ public class BioPaxtoGO {
 				//active_site_ids.add(local_protein_id);
 				//full id in biopax model
 				String full_id = biopax_model.getXmlBase()+local_protein_id.substring(1);
-				BioPAXElement bp_entity = biopax_model.getByID(full_id);
-				String stable_id = getEntityReferenceId((Entity) bp_entity);
+				BioPAXElement protein_entity = biopax_model.getByID(full_id);
+				String stable_id = getEntityReferenceId((Entity) protein_entity);
 				active_site_ids.add(stable_id);
 			}
 		}
+		return active_site_ids;
 	}
 	
 	private Set<String> getActiveSites(Control controlled_by_complex) {
