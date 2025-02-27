@@ -1782,6 +1782,24 @@ public class BioPaxtoGO {
 		}
 		return matches;
 	}
+	
+	private Set<String> getComplexActiveSiteRecursive(Entity bp_entity) {
+		Set<String> active_site_ids = new HashSet<String>();
+		for(String comment : bp_entity.getComment()) {
+			if(comment.startsWith("activeUnit:")) {
+				String[] c = comment.split(" ");
+				String local_protein_id = c[1];
+				//looks like #Protein3
+				//active_site_ids.add(local_protein_id);
+				//full id in biopax model
+				String full_id = biopax_model.getXmlBase()+local_protein_id.substring(1);
+				BioPAXElement bp_entity = biopax_model.getByID(full_id);
+				String stable_id = getEntityReferenceId((Entity) bp_entity);
+				active_site_ids.add(stable_id);
+			}
+		}
+	}
+	
 	private Set<String> getActiveSites(Control controlled_by_complex) {
 		Set<String> active_site_ids = new HashSet<String>();
 		for(String comment : controlled_by_complex.getComment()) {
