@@ -1448,7 +1448,7 @@ public class BioPaxtoGO {
 						continue;
 					}
 					//check if there are active sites annotated on the controller.
-					Set<String> active_site_stable_ids = getActiveSites(controller);
+					Set<PhysicalEntity> active_sites = getActiveSites(controller);
 					if (controller instanceof Catalysis) {
 						for(Controller controller_entity : controller_entities) {
 							if (controller_entity instanceof Complex) {
@@ -1458,7 +1458,7 @@ public class BioPaxtoGO {
 										has_protein = true;
 									}
 								}
-								if (has_protein && active_site_stable_ids.isEmpty()) {
+								if (has_protein && active_sites.isEmpty()) {
 									String complex_entity_id = getEntityReferenceId(controller_entity);
 									System.out.println("COMPLEX_HAS_PROTEIN_NO_ACTIVE_UNIT\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName());
 								}
@@ -1564,20 +1564,22 @@ public class BioPaxtoGO {
 						//check if there is an activeUnit annotation (reactome only)
 						//active site 
 						Set<OWLNamedIndividual> active_units = null;
-						if(active_site_stable_ids.size()>0) {	
+						if(active_sites.size()>0) {	
 							active_units = new HashSet<OWLNamedIndividual>();
 							//create the active unit nodes. 
-							for(String active_site_stable_id : active_site_stable_ids) {
+							for(PhysicalEntity active_site_entity : active_sites) {
 								//get the class for the entity
 								//if it is a physical entity, then we should already have created a class to describe it based on the unique id.  
 								//TODO this needs some generalizing, but focusing on getting Reactome done right now.
+								String active_site_stable_id = getEntityReferenceId(active_site_entity);
 								IRI entity_class_iri = IRI.create(GoCAM.reacto_base_iri+active_site_stable_id);
 								OWLClass entity_class = go_cam.df.getOWLClass(entity_class_iri); 
 								//make a new individual - hmm.. check for conflict
-								String active_id = getEntityReferenceId(controller)+"_"+active_site_stable_id;
+								String active_id = entity_id+"_"+active_site_stable_id;
 								IRI active_iri = GoCAM.makeGoCamifiedIRI(null, active_id);
-								OWLNamedIndividual active_i = go_cam.makeAnnotatedIndividual(active_iri);
-								go_cam.addTypeAssertion(active_i,  entity_class);
+								defineReactionEntity(go_cam, active_site_entity, active_iri, true, model_id, root_pathway_iri);
+								OWLNamedIndividual active_i = go_cam.df.getOWLNamedIndividual(active_iri);
+//								go_cam.addTypeAssertion(active_i,  entity_class);
 								go_cam.addComment(active_i, "Active unit in "+controller_entity_id);
 								//per discussion in pathways2GO/issues/91 removing the connection to the complex
 								go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.has_part, active_i, dbids,  GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
@@ -1783,25 +1785,30 @@ public class BioPaxtoGO {
 		return matches;
 	}
 	
-	private Set<String> getComplexActiveSiteRecursive(Entity bp_entity) {
-		Set<String> active_site_ids = new HashSet<String>();
-		for(String comment : bp_entity.getComment()) {
-			if(comment.startsWith("activeUnit:")) {
-				String[] c = comment.split(" ");
-				String local_protein_id = c[1];
-				//looks like #Protein3
-				//active_site_ids.add(local_protein_id);
-				//full id in biopax model
-				String full_id = biopax_model.getXmlBase()+local_protein_id.substring(1);
-				BioPAXElement bp_entity = biopax_model.getByID(full_id);
-				String stable_id = getEntityReferenceId((Entity) bp_entity);
-				active_site_ids.add(stable_id);
+	private Set<PhysicalEntity> getComplexActiveSiteRecursive(Complex controlled_by_complex) {
+		Set<PhysicalEntity> active_sites = new HashSet<PhysicalEntity>();
+		Set<PhysicalEntity> non_small_mol_components = new HashSet<PhysicalEntity>();
+		for(PhysicalEntity complex_component : (controlled_by_complex).getComponent()) {
+			if (complex_component instanceof SmallMolecule) {
+				// Don't consider small molecules in finding active sites in complexes
+				continue;
+			}
+			non_small_mol_components.add(complex_component);
+		}
+		if (non_small_mol_components.size() == 1) {
+			PhysicalEntity single_component = non_small_mol_components.iterator().next();
+			if (single_component instanceof Protein) {
+				String stable_id = getEntityReferenceId(single_component);
+				active_sites.add(single_component);
+			} else if (single_component instanceof Complex) {
+				return getComplexActiveSiteRecursive((Complex) single_component);
 			}
 		}
+		return active_sites;
 	}
 	
-	private Set<String> getActiveSites(Control controlled_by_complex) {
-		Set<String> active_site_ids = new HashSet<String>();
+	private Set<PhysicalEntity> getActiveSites(Control controlled_by_complex) {
+		Set<PhysicalEntity> active_sites = new HashSet<PhysicalEntity>();
 		for(String comment : controlled_by_complex.getComment()) {
 			if(comment.startsWith("activeUnit:")) {
 				String[] c = comment.split(" ");
@@ -1812,11 +1819,11 @@ public class BioPaxtoGO {
 				String full_id = biopax_model.getXmlBase()+local_protein_id.substring(1);
 				BioPAXElement bp_entity = biopax_model.getByID(full_id);
 				String stable_id = getEntityReferenceId((Entity) bp_entity);
-				active_site_ids.add(stable_id);
+				active_sites.add((PhysicalEntity) bp_entity);
 			}
 		}
 		// If it's still empty, try more crazy stuff
-		if (active_site_ids.isEmpty()) {
+		if (active_sites.isEmpty()) {
 			Set<Controller> controller_entities = controlled_by_complex.getController();
 			for (Controller controller_entity : controller_entities) {
 				Set<PhysicalEntity> non_small_mol_components = new HashSet<PhysicalEntity>();
@@ -1833,12 +1840,17 @@ public class BioPaxtoGO {
 					PhysicalEntity single_component = non_small_mol_components.iterator().next();
 					if (single_component instanceof Protein) {
 						String stable_id = getEntityReferenceId(single_component);
-						active_site_ids.add(stable_id);
+						active_sites.add(single_component);
+					} else if (single_component instanceof Complex) {
+						Set<PhysicalEntity> more_active_sites = getComplexActiveSiteRecursive((Complex) single_component);
+						if (!more_active_sites.isEmpty()) {
+							active_sites.add(more_active_sites.iterator().next());
+						}
 					}
 				}
 			}
 		}
-		return active_site_ids;
+		return active_sites;
 
 	}
 
