@@ -1197,7 +1197,8 @@ BP has_part R
 				"WHERE {\n" + 
 				"  GRAPH "+pathway+"  {  \n" + 
 				"    	"+reaction_node+" rdf:type "+reaction_go_type +" . \n" + 
-				"    	"+reaction_node+" rdfs:comment ?comment "+
+				"    	"+reaction_node+" rdfs:comment ?comment . \n"+
+				"    	filter( regex(?comment, \"This type assertion was computed with\" ))"+
 				"    }\n" + 
 				"  } \n";
 		TupleQueryResult result = null;
