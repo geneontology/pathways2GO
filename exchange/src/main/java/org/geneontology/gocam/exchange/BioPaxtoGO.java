@@ -1066,6 +1066,7 @@ public class BioPaxtoGO {
 		//add entity to ontology, whatever it is
 		OWLNamedIndividual e = go_cam.makeAnnotatedIndividual(this_iri);
 		go_cam.addSkosNote(e, entity.getModelInterface().getCanonicalName());
+		go_cam.addComment(e, "Original Reactome ID: "+entity_id);
 		//add xrefs
 		for(Xref xref : entity.getXref()) {
 			if(xref.getModelInterface().equals(UnificationXref.class)) {
