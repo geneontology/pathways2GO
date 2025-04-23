@@ -1452,15 +1452,17 @@ public class BioPaxtoGO {
 					if (controller instanceof Catalysis) {
 						for(Controller controller_entity : controller_entities) {
 							if (controller_entity instanceof Complex) {
-								boolean has_protein = false;
-								for(PhysicalEntity complex_component : ((Complex) controller_entity).getComponent()) {
-									if (complex_component instanceof Protein) {
-										has_protein = true;
-									}
-								}
+								boolean has_protein = complexHasProtein((Complex) controller_entity);
 								if (has_protein && active_sites.isEmpty()) {
 									String complex_entity_id = getEntityReferenceId(controller_entity);
 									System.out.println("COMPLEX_HAS_PROTEIN_NO_ACTIVE_UNIT\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName());
+									// If it's still empty, try more crazy stuff
+									for(PhysicalEntity active_site : getComplexActiveSiteRecursive((Complex) controller_entity)) {
+										// Report out if active unit protein was extracted via "single-protein reduction"
+										String active_site_id = getEntityReferenceId(active_site);
+										System.out.println("COMPLEX_REDUCED_TO_SINGLE_PROTEIN\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName()+"\t"+active_site_id+"\t"+active_site.getDisplayName());
+										active_sites.add(active_site);
+									}
 								}
 							}
 						}
@@ -1785,6 +1787,17 @@ public class BioPaxtoGO {
 		return matches;
 	}
 	
+	private boolean complexHasProtein(Complex controlled_by_complex) {
+		for(PhysicalEntity complex_component : (controlled_by_complex).getComponent()) {
+			if (complex_component instanceof Protein) {
+				return true;
+			} else if (complex_component instanceof Complex) {
+				return complexHasProtein((Complex) complex_component);
+			}
+		}
+		return false;
+	}
+	
 	private Set<PhysicalEntity> getComplexActiveSiteRecursive(Complex controlled_by_complex) {
 		Set<PhysicalEntity> active_sites = new HashSet<PhysicalEntity>();
 		Set<PhysicalEntity> non_small_mol_components = new HashSet<PhysicalEntity>();
@@ -1822,36 +1835,7 @@ public class BioPaxtoGO {
 				active_sites.add((PhysicalEntity) bp_entity);
 			}
 		}
-		// If it's still empty, try more crazy stuff
-		if (active_sites.isEmpty()) {
-			Set<Controller> controller_entities = controlled_by_complex.getController();
-			for (Controller controller_entity : controller_entities) {
-				Set<PhysicalEntity> non_small_mol_components = new HashSet<PhysicalEntity>();
-				if (controller_entity instanceof Complex) {
-					for(PhysicalEntity complex_component : ((Complex) controller_entity).getComponent()) {
-						if (complex_component instanceof SmallMolecule) {
-							// Don't consider small molecules in finding active sites in complexes
-							continue;
-						}
-						non_small_mol_components.add(complex_component);
-					}
-				}
-				if (non_small_mol_components.size() == 1) {
-					PhysicalEntity single_component = non_small_mol_components.iterator().next();
-					if (single_component instanceof Protein) {
-						String stable_id = getEntityReferenceId(single_component);
-						active_sites.add(single_component);
-					} else if (single_component instanceof Complex) {
-						Set<PhysicalEntity> more_active_sites = getComplexActiveSiteRecursive((Complex) single_component);
-						if (!more_active_sites.isEmpty()) {
-							active_sites.add(more_active_sites.iterator().next());
-						}
-					}
-				}
-			}
-		}
 		return active_sites;
-
 	}
 
 	class ComplexFunction {
