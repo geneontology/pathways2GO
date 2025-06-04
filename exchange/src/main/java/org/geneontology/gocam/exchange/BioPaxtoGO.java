@@ -1811,7 +1811,6 @@ public class BioPaxtoGO {
 		if (non_small_mol_components.size() == 1) {
 			PhysicalEntity single_component = non_small_mol_components.iterator().next();
 			if (single_component instanceof Protein) {
-				String stable_id = getEntityReferenceId(single_component);
 				active_sites.add(single_component);
 			} else if (single_component instanceof Complex) {
 				return getComplexActiveSiteRecursive((Complex) single_component);
@@ -1831,7 +1830,13 @@ public class BioPaxtoGO {
 				//full id in biopax model
 				String full_id = biopax_model.getXmlBase()+local_protein_id.substring(1);
 				BioPAXElement bp_entity = biopax_model.getByID(full_id);
-				String stable_id = getEntityReferenceId((Entity) bp_entity);
+				if (bp_entity instanceof Complex) {
+					Set<PhysicalEntity> extracted_proteins = getComplexActiveSiteRecursive((Complex) bp_entity);
+					if (!extracted_proteins.isEmpty()) {
+						// Should only be one
+						bp_entity = extracted_proteins.iterator().next();
+					}
+				}
 				active_sites.add((PhysicalEntity) bp_entity);
 			}
 		}
