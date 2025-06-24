@@ -350,6 +350,7 @@ public class BioPaxtoGO {
 			references = bp_entity.getXref();
 		}
 		else if((entityStrategy.equals(EntityStrategy.YeastCyc) && bp_entity instanceof SimplePhysicalEntity)
+				|| bp_entity instanceof Protein
 				|| bp_entity instanceof SmallMolecule) {
 			SimplePhysicalEntity entity = (SimplePhysicalEntity) bp_entity;
 			EntityReference entity_ref = entity.getEntityReference();
@@ -1065,6 +1066,7 @@ public class BioPaxtoGO {
 		//add entity to ontology, whatever it is
 		OWLNamedIndividual e = go_cam.makeAnnotatedIndividual(this_iri);
 		go_cam.addSkosNote(e, entity.getModelInterface().getCanonicalName());
+		go_cam.addComment(e, "Original Reactome ID: "+entity_id);
 		//add xrefs
 		for(Xref xref : entity.getXref()) {
 			if(xref.getModelInterface().equals(UnificationXref.class)) {
@@ -1396,7 +1398,7 @@ public class BioPaxtoGO {
 							output_id = UUID.randomUUID().toString();
 						}
 						String output_location = null;
-						if (GoCAM.small_mol_do_not_join_ids.contains(entity_ref_id) || output.getCellularLocation() == null) {
+						if (GoCAM.small_mol_do_not_join_ids.contains(entity_ref_id) || output.getCellularLocation() == null || !(output instanceof SmallMolecule)) {
 							// Gotta make these locations specific to rxn ID for do_not_join classes
 							output_location = entity_id;
 						} else {
@@ -1573,8 +1575,14 @@ public class BioPaxtoGO {
 								//get the class for the entity
 								//if it is a physical entity, then we should already have created a class to describe it based on the unique id.  
 								//TODO this needs some generalizing, but focusing on getting Reactome done right now.
-								String active_site_stable_id = getEntityReferenceId(active_site_entity);
-								IRI entity_class_iri = IRI.create(GoCAM.reacto_base_iri+active_site_stable_id);
+  						  String active_site_stable_id = getEntityReferenceId(active_site_entity);
+								IRI entity_class_iri;
+								if(active_site_stable_id.startsWith("UniProt_")) {
+									String uniprot_id = active_site_stable_id.split("_", 2)[1];
+									entity_class_iri = IRI.create(GoCAM.uniprot_iri+uniprot_id);
+								} else {
+									entity_class_iri = IRI.create(GoCAM.reacto_base_iri+active_site_stable_id);
+								}
 								OWLClass entity_class = go_cam.df.getOWLClass(entity_class_iri); 
 								//make a new individual - hmm.. check for conflict
 								String active_id = entity_id+"_"+active_site_stable_id;
@@ -1743,9 +1751,16 @@ public class BioPaxtoGO {
 				return entity_class_iri;
 			}
 			if(entityStrategy.equals(EntityStrategy.REACTO)) {
-				//if it is a physical entity, then we should already have created a class to describe it based on the unique id.  
+				//If entity_id comes through here prefixed with "UniProt_" then we should use the UniProt base IRI.
+				//Otherwise, if it is a physical entity, then we should already have created a class to describe it based on the unique id.  
 				//this will exist in the REACTO ontology
-				IRI entity_class_iri = IRI.create(GoCAM.reacto_base_iri+entity_id);
+				IRI entity_class_iri = null;
+				if(entity_id.startsWith("UniProt_")) {
+					String uniprot_id = entity_id.split("_", 2)[1];
+					entity_class_iri = IRI.create(GoCAM.uniprot_iri+uniprot_id);
+				} else {
+					entity_class_iri = IRI.create(GoCAM.reacto_base_iri+entity_id);
+				}
 				return entity_class_iri;
 			}else if(entityStrategy.equals(EntityStrategy.YeastCyc)) {
 				String neo_iri = accession_neo.get(entity_id);
