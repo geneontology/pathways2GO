@@ -747,6 +747,17 @@ public class BioPaxtoGO {
 		return reaction;
 	}
 	
+	private boolean processesAreInSamePathway(Process proc_a, Process proc_b) {
+		Set<Pathway> event_pathways = proc_a.getPathwayComponentOf();
+		Set<Pathway> prev_event_pathways = proc_b.getPathwayComponentOf();
+		event_pathways.retainAll(prev_event_pathways);
+		if(event_pathways.size()>0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	private OWLNamedIndividual definePathwayEntity(GoCAM go_cam, Pathway pathway, String model_id, boolean expand_subpathways, boolean add_components) throws IOException {
 		IRI pathway_iri = GoCAM.makeGoCamifiedIRI(model_id, model_id);
 		System.out.println("defining pathway "+getBioPaxName(pathway)+" "+expand_subpathways+" "+add_components+" "+model_id);
@@ -1370,7 +1381,8 @@ public class BioPaxtoGO {
 								} else {
 									previous_outputs = reaction.getRight();
 								}
-								if(previous_outputs.contains(input)) { // We can reuse this previous rxn's output instance
+								// Don't reuse if reactions aren't in same pathway or if we will add_neighboring_events_from_other_pathways
+								if(previous_outputs.contains(input) && (add_neighboring_events_from_other_pathways || processesAreInSamePathway((Process) entity, reaction))) { // We can reuse this previous rxn's output instance
 									i_iri = GoCAM.makeGoCamifiedIRI(null, input_id+"_"+input_location);
 									input_entity = go_cam.df.getOWLNamedIndividual(i_iri);
 								}
