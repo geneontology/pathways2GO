@@ -116,6 +116,7 @@ public class GoCAM {
 	public static final IRI obo_iri = IRI.create("http://purl.obolibrary.org/obo/");
 	public static final IRI reacto_base_iri = IRI.create("http://purl.obolibrary.org/obo/go/extensions/reacto.owl#REACTO_");
 	public static final IRI uniprot_iri = IRI.create("http://identifiers.org/uniprot/");
+	public static final IRI sgd_iri = IRI.create("http://identifiers.org/sgd/");
 	public static final Set<String> small_mol_do_not_join_ids = new HashSet<>(Arrays.asList("CHEBI_15378",  // hydron 
 																							"CHEBI_15377"));// water
 	public static IRI base_ont_iri;
