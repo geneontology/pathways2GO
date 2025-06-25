@@ -350,6 +350,7 @@ public class BioPaxtoGO {
 			references = bp_entity.getXref();
 		}
 		else if((entityStrategy.equals(EntityStrategy.YeastCyc) && bp_entity instanceof SimplePhysicalEntity)
+				|| bp_entity instanceof Protein
 				|| bp_entity instanceof SmallMolecule) {
 			SimplePhysicalEntity entity = (SimplePhysicalEntity) bp_entity;
 			EntityReference entity_ref = entity.getEntityReference();
@@ -746,6 +747,17 @@ public class BioPaxtoGO {
 		return reaction;
 	}
 	
+	private boolean processesAreInSamePathway(Process proc_a, Process proc_b) {
+		Set<Pathway> event_pathways = proc_a.getPathwayComponentOf();
+		Set<Pathway> prev_event_pathways = proc_b.getPathwayComponentOf();
+		event_pathways.retainAll(prev_event_pathways);
+		if(event_pathways.size()>0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	private OWLNamedIndividual definePathwayEntity(GoCAM go_cam, Pathway pathway, String model_id, boolean expand_subpathways, boolean add_components) throws IOException {
 		IRI pathway_iri = GoCAM.makeGoCamifiedIRI(model_id, model_id);
 		System.out.println("defining pathway "+getBioPaxName(pathway)+" "+expand_subpathways+" "+add_components+" "+model_id);
@@ -1079,6 +1091,7 @@ public class BioPaxtoGO {
 		//add entity to ontology, whatever it is
 		OWLNamedIndividual e = go_cam.makeAnnotatedIndividual(this_iri);
 		go_cam.addSkosNote(e, entity.getModelInterface().getCanonicalName());
+		go_cam.addComment(e, "Original Reactome ID: "+entity_id);
 		//add xrefs
 		for(Xref xref : entity.getXref()) {
 			if(xref.getModelInterface().equals(UnificationXref.class)) {
@@ -1413,7 +1426,8 @@ public class BioPaxtoGO {
 								} else {
 									previous_outputs = reaction.getRight();
 								}
-								if(previous_outputs.contains(input)) { // We can reuse this previous rxn's output instance
+								// Don't reuse if reactions aren't in same pathway or if we will add_neighboring_events_from_other_pathways
+								if(previous_outputs.contains(input) && (add_neighboring_events_from_other_pathways || processesAreInSamePathway((Process) entity, reaction))) { // We can reuse this previous rxn's output instance
 									i_iri = GoCAM.makeGoCamifiedIRI(null, input_id+"_"+input_location);
 									input_entity = go_cam.df.getOWLNamedIndividual(i_iri);
 								}
@@ -1443,7 +1457,7 @@ public class BioPaxtoGO {
 							output_id = UUID.randomUUID().toString();
 						}
 						String output_location = null;
-						if (GoCAM.small_mol_do_not_join_ids.contains(entity_ref_id) || output.getCellularLocation() == null) {
+						if (GoCAM.small_mol_do_not_join_ids.contains(entity_ref_id) || output.getCellularLocation() == null || !(output instanceof SmallMolecule)) {
 							// Gotta make these locations specific to rxn ID for do_not_join classes
 							output_location = entity_id;
 						} else {
@@ -1497,7 +1511,25 @@ public class BioPaxtoGO {
 						continue;
 					}
 					//check if there are active sites annotated on the controller.
-					Set<String> active_site_stable_ids = getActiveSites(controller);
+					Set<PhysicalEntity> active_sites = getActiveSites(controller);
+					if (controller instanceof Catalysis) {
+						for(Controller controller_entity : controller_entities) {
+							if (controller_entity instanceof Complex) {
+								boolean has_protein = complexHasProtein((Complex) controller_entity);
+								if (has_protein && active_sites.isEmpty()) {
+									String complex_entity_id = getEntityReferenceId(controller_entity);
+									System.out.println("COMPLEX_HAS_PROTEIN_NO_ACTIVE_UNIT\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName());
+									// If it's still empty, try more crazy stuff
+									for(PhysicalEntity active_site : getComplexActiveSiteRecursive((Complex) controller_entity)) {
+										// Report out if active unit protein was extracted via "single-protein reduction"
+										String active_site_id = getEntityReferenceId(active_site);
+										System.out.println("COMPLEX_REDUCED_TO_SINGLE_PROTEIN\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName()+"\t"+active_site_id+"\t"+active_site.getDisplayName());
+										active_sites.add(active_site);
+									}
+								}
+							}
+						}
+					}
 					ControlType ctype = controller.getControlType();	
 					boolean is_catalysis = false;
 					if(controller.getModelInterface().equals(Catalysis.class)) {
@@ -1597,17 +1629,24 @@ public class BioPaxtoGO {
 						//check if there is an activeUnit annotation (reactome only)
 						//active site 
 						Set<OWLNamedIndividual> active_units = null;
-						if(active_site_stable_ids.size()>0) {	
+						if(active_sites.size()>0) {	
 							active_units = new HashSet<OWLNamedIndividual>();
 							//create the active unit nodes. 
-							for(String active_site_stable_id : active_site_stable_ids) {
+							for(PhysicalEntity active_site_entity : active_sites) {
 								//get the class for the entity
 								//if it is a physical entity, then we should already have created a class to describe it based on the unique id.  
 								//TODO this needs some generalizing, but focusing on getting Reactome done right now.
-								IRI entity_class_iri = IRI.create(GoCAM.reacto_base_iri+active_site_stable_id);
+								String active_site_stable_id = getEntityReferenceId(active_site_entity);
+								IRI entity_class_iri;
+								if(active_site_stable_id.startsWith("UniProt_")) {
+									String uniprot_id = active_site_stable_id.split("_", 2)[1];
+									entity_class_iri = IRI.create(GoCAM.uniprot_iri+uniprot_id);
+								} else {
+									entity_class_iri = IRI.create(GoCAM.reacto_base_iri+active_site_stable_id);
+								}
 								OWLClass entity_class = go_cam.df.getOWLClass(entity_class_iri); 
 								//make a new individual - hmm.. check for conflict
-								String active_id = getEntityReferenceId(controller)+"_"+active_site_stable_id;
+								String active_id = entity_id+"_"+active_site_stable_id;
 								IRI active_iri = GoCAM.makeGoCamifiedIRI(null, active_id);
 								defineReactionEntity(go_cam, active_site_entity, active_iri, true, model_id, root_pathway_iri, reaction_id);
 								OWLNamedIndividual active_i = go_cam.df.getOWLNamedIndividual(active_iri);
@@ -1773,9 +1812,16 @@ public class BioPaxtoGO {
 				return entity_class_iri;
 			}
 			if(entityStrategy.equals(EntityStrategy.REACTO)) {
-				//if it is a physical entity, then we should already have created a class to describe it based on the unique id.  
+				//If entity_id comes through here prefixed with "UniProt_" then we should use the UniProt base IRI.
+				//Otherwise, if it is a physical entity, then we should already have created a class to describe it based on the unique id.  
 				//this will exist in the REACTO ontology
-				IRI entity_class_iri = IRI.create(GoCAM.reacto_base_iri+entity_id);
+				IRI entity_class_iri = null;
+				if(entity_id.startsWith("UniProt_")) {
+					String uniprot_id = entity_id.split("_", 2)[1];
+					entity_class_iri = IRI.create(GoCAM.uniprot_iri+uniprot_id);
+				} else {
+					entity_class_iri = IRI.create(GoCAM.reacto_base_iri+entity_id);
+				}
 				return entity_class_iri;
 			}else if(entityStrategy.equals(EntityStrategy.YeastCyc)) {
 				String neo_iri = accession_neo.get(entity_id);
@@ -1861,12 +1907,17 @@ public class BioPaxtoGO {
 				//full id in biopax model
 				String full_id = biopax_model.getXmlBase()+local_protein_id.substring(1);
 				BioPAXElement bp_entity = biopax_model.getByID(full_id);
-				String stable_id = getEntityReferenceId((Entity) bp_entity);
-				active_site_ids.add(stable_id);
+				if (bp_entity instanceof Complex) {
+					Set<PhysicalEntity> extracted_proteins = getComplexActiveSiteRecursive((Complex) bp_entity);
+					if (!extracted_proteins.isEmpty()) {
+						// Should only be one
+						bp_entity = extracted_proteins.iterator().next();
+					}
+				}
+				active_sites.add((PhysicalEntity) bp_entity);
 			}
 		}
-		return active_site_ids;
-
+		return active_sites;
 	}
 
 	class ComplexFunction {
