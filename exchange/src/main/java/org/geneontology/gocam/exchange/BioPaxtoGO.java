@@ -1467,8 +1467,15 @@ public class BioPaxtoGO {
 						for(Controller controller_entity : controller_entities) {
 							if (controller_entity instanceof Complex) {
 								boolean has_protein = complexHasProtein((Complex) controller_entity);
-								if (has_protein && active_sites.isEmpty()) {
-									String complex_entity_id = getEntityReferenceId(controller_entity);
+								String complex_entity_id = getEntityReferenceId(controller_entity);
+								if (active_sites.size() > 0) {
+									for (PhysicalEntity active_site : active_sites) {
+										String active_site_id = getEntityReferenceId(active_site);
+										System.out.println("COMPLEX_ACTIVE_UNIT_IS_SPECIFIED\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName()+"\t"+active_site_id+"\t"+active_site.getDisplayName());
+									}
+									continue;
+								}
+								else if (has_protein && active_sites.isEmpty()) {
 									System.out.println("COMPLEX_HAS_PROTEIN_NO_ACTIVE_UNIT\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName());
 									// If it's still empty, try more crazy stuff
 									for(PhysicalEntity active_site : getComplexActiveSiteRecursive((Complex) controller_entity)) {
@@ -1477,6 +1484,10 @@ public class BioPaxtoGO {
 										System.out.println("COMPLEX_REDUCED_TO_SINGLE_PROTEIN\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName()+"\t"+active_site_id+"\t"+active_site.getDisplayName());
 										active_sites.add(active_site);
 									}
+								}
+								if (active_sites.isEmpty()) {
+									// Still can't extract active unit for complex so report
+									System.out.println("COMPLEX_CANT_BE_REDUCED_TO_PROTEIN\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName());
 								}
 							}
 						}
