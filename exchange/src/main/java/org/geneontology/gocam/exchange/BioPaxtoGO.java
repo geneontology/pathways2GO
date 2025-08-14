@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.biopax.paxtools.io.BioPAXIOHandler;
@@ -1464,11 +1465,11 @@ public class BioPaxtoGO {
 								else if (has_protein && active_sites.isEmpty()) {
 									System.out.println("COMPLEX_HAS_PROTEIN_NO_ACTIVE_UNIT\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName());
 									// If it's still empty, try more crazy stuff
-									for(PhysicalEntity active_site : getComplexActiveSiteRecursive((Complex) controller_entity)) {
+									for(PhysicalEntity active_unit_result : getComplexActiveUnitRecursive((Complex) controller_entity).getActiveUnits()) {
 										// Report out if active unit protein was extracted via "single-protein reduction"
-										String active_site_id = getEntityReferenceId(active_site);
-										System.out.println("COMPLEX_REDUCED_TO_SINGLE_PROTEIN\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName()+"\t"+active_site_id+"\t"+active_site.getDisplayName());
-										active_sites.add(active_site);
+										String active_site_id = getEntityReferenceId(active_unit_result);
+										System.out.println("COMPLEX_REDUCED_TO_SINGLE_PROTEIN\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName()+"\t"+active_site_id+"\t"+active_unit_result.getDisplayName());
+										active_sites.add(active_unit_result);
 									}
 								}
 								if (active_sites.isEmpty()) {
@@ -1808,26 +1809,113 @@ public class BioPaxtoGO {
 		}
 		return false;
 	}
-	
-	private Set<PhysicalEntity> getComplexActiveSiteRecursive(Complex controlled_by_complex) {
-		Set<PhysicalEntity> active_sites = new HashSet<PhysicalEntity>();
-		Set<PhysicalEntity> non_small_mol_components = new HashSet<PhysicalEntity>();
-		for(PhysicalEntity complex_component : (controlled_by_complex).getComponent()) {
-			if (complex_component instanceof SmallMolecule) {
-				// Don't consider small molecules in finding active sites in complexes
-				continue;
-			}
-			non_small_mol_components.add(complex_component);
-		}
-		if (non_small_mol_components.size() == 1) {
-			PhysicalEntity single_component = non_small_mol_components.iterator().next();
-			if (single_component instanceof Protein) {
-				active_sites.add(single_component);
-			} else if (single_component instanceof Complex) {
-				return getComplexActiveSiteRecursive((Complex) single_component);
-			}
-		}
-		return active_sites;
+
+	// Custom result class to hold both proteins and their UniProt groupings
+	public static class ComplexActiveUnitResult {
+	    private final Set<PhysicalEntity> activeUnits;
+	    private final Map<String, Set<PhysicalEntity>> uniprotGroups;
+	    
+	    public ComplexActiveUnitResult(Set<PhysicalEntity> activeUnits, Map<String, Set<PhysicalEntity>> uniprotGroups) {
+	        this.activeUnits = activeUnits;
+	        this.uniprotGroups = uniprotGroups;
+	    }
+	    
+	    public Set<PhysicalEntity> getActiveUnits() { return activeUnits; }
+	    public Map<String, Set<PhysicalEntity>> getUniprotGroups() { return uniprotGroups; }
+	    
+	    // Helper method to check if all proteins share the same UniProt ID
+	    public boolean hasSharedUniprotId() {
+	        return uniprotGroups.size() == 1 && !uniprotGroups.isEmpty();
+	    }
+	    
+	    // Get the shared UniProt ID if there is one
+	    public String getSharedUniprotId() {
+	        return hasSharedUniprotId() ? uniprotGroups.keySet().iterator().next() : null;
+	    }
+	}
+
+	private ComplexActiveUnitResult getComplexActiveUnitRecursive(Complex controlled_by_complex) {
+	    Set<PhysicalEntity> active_units = new HashSet<PhysicalEntity>();
+	    Set<PhysicalEntity> non_small_mol_components = new HashSet<PhysicalEntity>();
+	    
+	    for(PhysicalEntity complex_component : (controlled_by_complex).getComponent()) {
+	        if (complex_component instanceof SmallMolecule) {
+	            // Don't consider small molecules in finding active sites in complexes
+	            continue;
+	        }
+	        non_small_mol_components.add(complex_component);
+	    }
+	    
+	    if (non_small_mol_components.size() == 1) {
+	        PhysicalEntity single_component = non_small_mol_components.iterator().next();
+	        if (single_component instanceof Protein) {
+	        	active_units.add(single_component);
+	        } else if (single_component instanceof Complex) {
+	            return getComplexActiveUnitRecursive((Complex) single_component);
+	        }
+	    } else if (non_small_mol_components.size() > 1) {
+	        // Check if all components are Proteins with the same UniProt ID
+	        Set<Protein> proteins = new HashSet<>();
+	        boolean allProteins = true;
+	        
+	        for (PhysicalEntity component : non_small_mol_components) {
+	            if (component instanceof Protein) {
+	                proteins.add((Protein) component);
+	            } else {
+	                allProteins = false;
+	                break;
+	            }
+	        }
+	        
+	        if (allProteins && proteins.size() > 1) {
+	            // Group proteins by UniProt ID
+	            Map<String, Set<PhysicalEntity>> uniprotGroups = groupProteinsByUniprotId(proteins);
+	            
+	            // If all proteins share the same UniProt ID, include them as active units
+	            if (uniprotGroups.size() == 1) {
+	            	active_units.addAll(proteins);
+	            }
+	            
+	            return new ComplexActiveUnitResult(active_units, uniprotGroups);
+	        }
+	    }
+	    
+	    // For the original single protein case, still create grouping info
+	    Map<String, Set<PhysicalEntity>> uniprotGroups = new HashMap<>();
+	    if (!active_units.isEmpty()) {
+	        uniprotGroups = groupProteinsByUniprotId(active_units.stream()
+	            .filter(entity -> entity instanceof Protein)
+	            .map(entity -> (Protein) entity)
+	            .collect(Collectors.toSet()));
+	    }
+	    
+	    return new ComplexActiveUnitResult(active_units, uniprotGroups);
+	}
+
+	// Helper method to group proteins by their UniProt ID
+	private Map<String, Set<PhysicalEntity>> groupProteinsByUniprotId(Set<Protein> proteins) {
+	    Map<String, Set<PhysicalEntity>> groups = new HashMap<>();
+	    
+	    for (Protein protein : proteins) {
+	        String uniprotId = extractUniprotId(protein);
+	        if (uniprotId != null) {
+	            groups.computeIfAbsent(uniprotId, k -> new HashSet<>()).add(protein);
+	        }
+	    }
+	    
+	    return groups;
+	}
+
+	// Helper method to extract UniProt ID from a Protein entity
+	private String extractUniprotId(Protein protein) {
+	    if (protein.getEntityReference() != null) {
+	        for (Xref xref : protein.getEntityReference().getXref()) {
+	            if ("UniProt".equals(xref.getDb()) || "uniprot".equals(xref.getDb())) {
+	                return xref.getId();
+	            }
+	        }
+	    }
+	    return null;
 	}
 	
 	private Set<PhysicalEntity> getActiveSites(Control controlled_by_complex) {
@@ -1842,10 +1930,10 @@ public class BioPaxtoGO {
 				String full_id = biopax_model.getXmlBase()+local_protein_id.substring(1);
 				BioPAXElement bp_entity = biopax_model.getByID(full_id);
 				if (bp_entity instanceof Complex) {
-					Set<PhysicalEntity> extracted_proteins = getComplexActiveSiteRecursive((Complex) bp_entity);
-					if (!extracted_proteins.isEmpty()) {
+					ComplexActiveUnitResult extracted_proteins = getComplexActiveUnitRecursive((Complex) bp_entity);
+					if (!extracted_proteins.getActiveUnits().isEmpty()) {
 						// Should only be one
-						bp_entity = extracted_proteins.iterator().next();
+						bp_entity = extracted_proteins.getActiveUnits().iterator().next();
 					}
 				}
 				active_sites.add((PhysicalEntity) bp_entity);
