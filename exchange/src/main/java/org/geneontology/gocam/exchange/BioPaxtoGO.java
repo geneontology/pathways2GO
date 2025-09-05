@@ -749,10 +749,11 @@ public class BioPaxtoGO {
 	}
 	
 	private boolean processesAreInSamePathway(Process proc_a, Process proc_b) {
-		Set<Pathway> event_pathways = proc_a.getPathwayComponentOf();
+		Set<Pathway> common_pathways = new HashSet<Pathway>();
+		common_pathways.addAll(proc_a.getPathwayComponentOf());
 		Set<Pathway> prev_event_pathways = proc_b.getPathwayComponentOf();
-		event_pathways.retainAll(prev_event_pathways);
-		if(event_pathways.size()>0) {
+		common_pathways.retainAll(prev_event_pathways);
+		if(common_pathways.size()>0) {
 			return true;
 		} else {
 			return false;
