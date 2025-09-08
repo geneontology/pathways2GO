@@ -971,8 +971,8 @@ final long counterValue = instanceCounter.getAndIncrement();
 
 		RuleResults r = new RuleResults();
 		//NOTE that the order these are run matters.
-		logger.debug("running transport process inference");
-		r = inferTransportProcess(model_id, r, tbox_qrunner);	//must be run before occurs_in and before deleteLocations	 
+//		logger.debug("running transport process inference");
+//		r = inferTransportProcess(model_id, r, tbox_qrunner);	//must be run before occurs_in and before deleteLocations	 
 		logger.debug("infering molecular function if enablers present");
 		r = inferMolecularFunctionFromEnablers(model_id, r, tbox_qrunner);
 		logger.debug("inferring occurs in from entity locations");
