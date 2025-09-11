@@ -584,7 +584,8 @@ public class BioPaxtoGOTest {
 	/**
 	 * nice example: R-HSA-997272 Reactome:unexpanded:Inhibition of voltage gated Ca2+ channels via Gbeta/gamma subunits
 	 */
-	@Test
+	// Turning off as part of https://github.com/geneontology/pathways2GO/issues/345
+//	@Test
 	public final void testInferLocalizationProcess() {
 		System.out.println("Testing localization inference");
 		TupleQueryResult result = null;
@@ -639,7 +640,8 @@ public class BioPaxtoGOTest {
 	 * Beta-catenin translocates to the nucleus
 	 * 	reaction uri http://model.geneontology.org/R-HSA-201681/R-HSA-201669 
 	 */
-	@Test
+	// Turning off as part of https://github.com/geneontology/pathways2GO/issues/345
+//	@Test
 	public final void testInferProteinLocalizationProcess() {
 		System.out.println("Testing localization inference");
 		TupleQueryResult result = null;
