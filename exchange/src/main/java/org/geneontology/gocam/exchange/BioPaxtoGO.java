@@ -1833,6 +1833,14 @@ public class BioPaxtoGO {
 				if(entity_id.startsWith("UniProt_")) {
 					String uniprot_id = entity_id.split("_", 2)[1];
 					entity_class_iri = IRI.create(GoCAM.uniprot_iri+uniprot_id);
+				} else if (entity instanceof Complex){
+					if (!((Complex) entity).getComponent().isEmpty()) {
+						entity_class_iri = IRI.create("http://purl.obolibrary.org/obo/GO_0032991");  // protein-containing complex 
+					} else if (!((Complex) entity).getMemberPhysicalEntity().isEmpty()) {
+						entity_class_iri = IRI.create("http://purl.obolibrary.org/obo/CHEBI_33695");  // information biomacromolecule
+					} else {
+						
+					}
 				} else {
 					entity_class_iri = IRI.create(GoCAM.reacto_base_iri+entity_id);
 				}
@@ -1883,6 +1891,13 @@ public class BioPaxtoGO {
 				return true;
 			} else if (complex_component instanceof Complex) {
 				return complexHasProtein((Complex) complex_component);
+			}
+		}
+		for(PhysicalEntity complex_member : (controlled_by_complex).getMemberPhysicalEntity()) {
+			if (complex_member instanceof Protein) {
+				return true;
+			} else if (complex_member instanceof Complex) {
+				return complexHasProtein((Complex) complex_member);
 			}
 		}
 		return false;

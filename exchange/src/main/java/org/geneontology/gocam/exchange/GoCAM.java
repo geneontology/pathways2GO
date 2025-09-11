@@ -127,7 +127,7 @@ public class GoCAM {
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in,
 	directly_positively_regulated_by, directly_negatively_regulated_by, involved_in_regulation_of, involved_in_negative_regulation_of, involved_in_positive_regulation_of,
 	directly_negatively_regulates, directly_positively_regulates, has_role, causally_upstream_of, causally_upstream_of_negative_effect, causally_upstream_of_positive_effect,
-	negatively_regulates, positively_regulates, 
+	negatively_regulates, positively_regulates, has_substitutable_entity,
 	has_target_end_location, has_target_start_location, interacts_with, has_participant, functionally_related_to,
 	contributes_to, only_in_taxon, transports_or_maintains_localization_of, has_primary_input,
 	has_small_molecule_inhibitor, has_small_molecule_activator;
@@ -336,6 +336,8 @@ public class GoCAM {
 		has_part = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000051"));
 		//has_component - use when you want to specify an exact cardinality - e.g. 5 and only 5 fingers.
 		has_component = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002180"));
+		//has_substitutable_entity
+		has_substitutable_entity = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0019003"));
 		//http://purl.obolibrary.org/obo/RO_0002160
 		only_in_taxon = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002160"));
 		//has input 
