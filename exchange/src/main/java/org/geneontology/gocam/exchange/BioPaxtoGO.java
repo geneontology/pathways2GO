@@ -1068,6 +1068,18 @@ public class BioPaxtoGO {
 		return new_id_curie;
 	}
 	
+	private boolean setIsSmallMoleculesOnly(Set<PhysicalEntity> set_members) {
+		boolean isSmallMolOnly = false;
+		for(PhysicalEntity member : set_members) {
+			if (member instanceof SmallMolecule) {
+				isSmallMolOnly = true;
+			} else {
+				return false;
+			}
+		}
+		return isSmallMolOnly;
+	}
+
 	/**
 	 * Given a BioPax entity and an ontology, add a GO_CAM structured OWLIndividual representing the entity into the ontology
 	 * 	//Done: Complex, Protein, SmallMolecule, Dna, Processes 
@@ -1144,6 +1156,10 @@ public class BioPaxtoGO {
 					// Dig out component protein IDs
 					Set<PhysicalEntity> components = ((Complex) entity).getComponent();
 					for(PhysicalEntity c : components) {
+						if (c instanceof SmallMolecule) {
+							// Skip small mols
+							continue;
+						}
 						String component_id = getEntityReferenceId(c);
 						System.out.println("Complex component ID: "+component_id);
 						IRI component_class_iri = getPhysicalEntityIRI(c);
@@ -1162,7 +1178,14 @@ public class BioPaxtoGO {
 					entity_class_iri = IRI.create("http://purl.obolibrary.org/obo/CHEBI_33695");  // information biomacromolecule
 					
 					Set<PhysicalEntity> members = ((PhysicalEntity) entity).getMemberPhysicalEntity();
+//					if (setIsSmallMoleculesOnly(members)) {
+//						System.out.println("SET_IS_SMALL_MOLECULES_ONLY\t"+entity_id+"\t"+model_id+"\t"+reaction_id);
+//					}
 					for(PhysicalEntity m : members) {
+						if (m instanceof SmallMolecule) {
+							// Skip small mols
+							continue;
+						}
 						String member_id = getEntityReferenceId(m);
 						System.out.println("Complex component ID: "+member_id);
 						if (m instanceof Complex) {
@@ -1448,6 +1471,10 @@ public class BioPaxtoGO {
 							input_entity = go_cam.df.getOWLNamedIndividual(i_iri);
 							// Track top-level root class to separate common subcomponents from similar structures
 							String component_top_level_id = input_id+"_"+reaction_id;
+							if (!((PhysicalEntity) input).getMemberPhysicalEntity().isEmpty() && setIsSmallMoleculesOnly(((PhysicalEntity) input).getMemberPhysicalEntity())) {
+//								System.out.println("SET_IS_SMALL_MOLECULES_ONLY\t"+input_id+"\t"+model_id+"\t"+reaction_id);
+								System.out.println("SET_IS_SMALL_MOLECULES_ONLY\t"+model_id+"\t"+go_cam.name+"\t"+reaction_id+"\t"+entity_name+"\t"+input_id+"\t"+input.getDisplayName());
+							}
 							defineReactionEntity(go_cam, input, i_iri, true, model_id, root_pathway_iri, component_top_level_id, false);
 						}
 						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_input, input_entity,dbids, GoCAM.eco_imported_auto,  default_namespace_prefix, go_cam.getDefaultAnnotations(), model_id);
@@ -1481,6 +1508,10 @@ public class BioPaxtoGO {
 						OWLNamedIndividual output_entity = go_cam.df.getOWLNamedIndividual(o_iri);
 						// Track top-level root class to separate common subcomponents from similar structures 
 						String component_top_level_id = output_id+"_"+reaction_id;
+						if (!((PhysicalEntity) output).getMemberPhysicalEntity().isEmpty() && setIsSmallMoleculesOnly(((PhysicalEntity) output).getMemberPhysicalEntity())) {
+							System.out.println("SET_IS_SMALL_MOLECULES_ONLY\t"+model_id+"\t"+go_cam.name+"\t"+reaction_id+"\t"+entity_name+"\t"+output_id+"\t"+output.getDisplayName());
+//							System.out.println("SET_IS_SMALL_MOLECULES_ONLY\t"+output_id+"\t"+model_id+"\t"+reaction_id);
+						}
 						defineReactionEntity(go_cam, output, o_iri, true, model_id, root_pathway_iri, component_top_level_id, false);
 						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_output, output_entity, dbids, GoCAM.eco_imported_auto,  default_namespace_prefix, go_cam.getDefaultAnnotations(), model_id);
 					}}
