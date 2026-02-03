@@ -1091,7 +1091,7 @@ public class BioPaxtoGO {
 	 * @return
 	 * @throws IOException 
 	 */
-	private void defineReactionEntity(GoCAM go_cam, Entity entity, IRI this_iri, boolean follow_controllers, String model_id, String root_pathway_iri, String reaction_id, boolean explode_sets_complexes) throws IOException {				
+	private void defineReactionEntity(GoCAM go_cam, Entity entity, IRI this_iri, boolean follow_controllers, String model_id, String root_pathway_iri, String reaction_id, boolean explode_sets_complexes) throws IOException {
 		String entity_id = getEntityReferenceId(entity);
 		if(this_iri==null) {
 			if(entity_id!=null) {
@@ -1517,7 +1517,7 @@ public class BioPaxtoGO {
 					}}
 			}
 
-			if(entity instanceof Process) {				
+			if(entity instanceof Process) {
 				Set<String> go_mf = report.bp2go_mf.get(entity);
 				if(go_mf==null) {
 					go_mf = new HashSet<String>();
@@ -1533,9 +1533,11 @@ public class BioPaxtoGO {
 				//keep track of where the reaction we are talking about controlling is coming from
 				Set<Pathway> current_pathways = ((Interaction) entity).getPathwayComponentOf();
 
-				//find controllers 
+				//find controllers
 				Set<Control> controllers = ((Process) entity).getControlledOf();
+				System.out.println("DEBUG_CONTROLLERS\t"+entity_id+"\tcontrollers_found="+controllers.size());
 				for(Control controller : controllers) {
+					System.out.println("DEBUG_CONTROLLER_LOOP\t"+entity_id+"\tcontroller="+getEntityReferenceId(controller)+"\ttype="+controller.getModelInterface().getSimpleName());
 					Set<Controller> controller_entities = controller.getController();
 					boolean skip_drug_controller = false;
 					for(Controller controller_entity : controller_entities) {
@@ -1549,8 +1551,10 @@ public class BioPaxtoGO {
 						}
 					}
 					if(skip_drug_controller) {
+						System.out.println("DEBUG_SKIP_DRUG\t"+entity_id+"\tskipping controller due to drug");
 						continue;
 					}
+					System.out.println("DEBUG_CONTROLLER_PASSED_DRUG_CHECK\t"+entity_id+"\tcontroller="+getEntityReferenceId(controller));
 					//check if there are active sites annotated on the controller.
 					Set<PhysicalEntity> active_sites = getActiveSites(controller);
 					if (controller instanceof Catalysis) {
@@ -1582,13 +1586,15 @@ public class BioPaxtoGO {
 							}
 						}
 					}
-					ControlType ctype = controller.getControlType();	
+					ControlType ctype = controller.getControlType();
 					boolean is_catalysis = false;
 					if(controller.getModelInterface().equals(Catalysis.class)) {
 						is_catalysis = true;
 						control_type.add("Catalysis");
+						System.out.println("DEBUG_IS_CATALYSIS\t"+entity_id+"\tcontroller="+getEntityReferenceId(controller)+"\tis_catalysis=true");
 					}else {
 						control_type.add("Non-catalytic-"+ctype.toString());
+						System.out.println("DEBUG_NON_CATALYSIS\t"+entity_id+"\tcontroller="+getEntityReferenceId(controller)+"\tctype="+ctype);
 					}
 					//controller 'entities' from biopax may map onto functions from go_cam
 					//check for reactome mappings
@@ -1654,8 +1660,10 @@ public class BioPaxtoGO {
 							}
 						}
 						if (drop_drug_reactions && drug_process_ids.contains(entity_id)) {
+							System.out.println("DEBUG_SKIP_DRUG_REACTION\t"+entity_id+"\tskipping due to drop_drug_reactions");
 							continue;
 						}
+						System.out.println("DEBUG_PROCESSING_CONTROLLER_ENTITY\t"+entity_id+"\tcontroller_entity="+getEntityReferenceId(controller_entity));
 						//this is the non-recursive part.. (and we usually aren't recursing anyway)
 						IRI iri = null;
 						String controller_entity_id = getEntityReferenceId(controller_entity);
@@ -1717,44 +1725,53 @@ public class BioPaxtoGO {
 						//	go_cam.deleteOwlEntityAndAllReferencesToIt(controller_e);
 						//}
 						//if catalysis then always enabled by
+						System.out.println("DEBUG_RELATION_DECISION\t"+entity_id+"\tcontroller_entity="+controller_entity_id+"\tis_catalysis="+is_catalysis+"\tctype="+ctype);
 						if(is_catalysis) {
 							//active unit known
 							if(active_units!=null) {
 								for(OWLNamedIndividual active_unit :active_units) {
-									go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, active_unit, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);	
+									System.out.println("DEBUG_ADDING_ENABLED_BY_ACTIVE_UNIT\t"+entity_id+"\tactive_unit="+active_unit.getIRI());
+									go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, active_unit, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 									//make the complex itself a contributor
 									//taking this out per https://github.com/geneontology/pathways2GO/issues/72
-									//go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.contributes_to, e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);	
+									//go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.contributes_to, e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 								}
 							}else {
-								go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, controller_e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);	
+								System.out.println("DEBUG_ADDING_ENABLED_BY\t"+entity_id+"\tcontroller_e="+controller_e.getIRI());
+								go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, controller_e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 							}
 						}else {
-							//otherwise look at text 
+							//otherwise look at text
 							//define how the molecular function (process) relates to the reaction (process)
 							if(ctype.toString().startsWith("INHIBITION")){
 								if(active_units!=null) {
 									for(OWLNamedIndividual active_unit :active_units) {
-										go_cam.addRefBackedObjectPropertyAssertion(active_unit, GoCAM.involved_in_negative_regulation_of, e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);	
+										System.out.println("DEBUG_ADDING_INVOLVED_IN_NEG_REG_ACTIVE_UNIT\t"+entity_id+"\tactive_unit="+active_unit.getIRI());
+										go_cam.addRefBackedObjectPropertyAssertion(active_unit, GoCAM.involved_in_negative_regulation_of, e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 									}
 								}else {
-									go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.involved_in_negative_regulation_of, e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);	
+									System.out.println("DEBUG_ADDING_INVOLVED_IN_NEG_REG\t"+entity_id+"\tcontroller_e="+controller_e.getIRI());
+									go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.involved_in_negative_regulation_of, e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 								}
 							}else if(ctype.toString().startsWith("ACTIVATION")){
 								if(active_units!=null) {
 									for(OWLNamedIndividual active_unit :active_units) {
+										System.out.println("DEBUG_ADDING_INVOLVED_IN_POS_REG_ACTIVE_UNIT\t"+entity_id+"\tactive_unit="+active_unit.getIRI());
 										go_cam.addRefBackedObjectPropertyAssertion(active_unit, GoCAM.involved_in_positive_regulation_of, e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 									}
 								}else {
+									System.out.println("DEBUG_ADDING_INVOLVED_IN_POS_REG\t"+entity_id+"\tcontroller_e="+controller_e.getIRI());
 									go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.involved_in_positive_regulation_of, e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 								}
 							}else {
 								//default to regulates
 								if(active_units!=null) {
 									for(OWLNamedIndividual active_unit :active_units) {
+										System.out.println("DEBUG_ADDING_INVOLVED_IN_REG_ACTIVE_UNIT\t"+entity_id+"\tactive_unit="+active_unit.getIRI());
 										go_cam.addRefBackedObjectPropertyAssertion(active_unit, GoCAM.involved_in_regulation_of,  e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 									}
 								}else {
+									System.out.println("DEBUG_ADDING_INVOLVED_IN_REG\t"+entity_id+"\tcontroller_e="+controller_e.getIRI());
 									go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.involved_in_regulation_of,  e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 								}
 							}
