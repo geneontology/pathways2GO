@@ -1148,6 +1148,7 @@ public class BioPaxtoGO {
 			IRI entity_class_iri = getPhysicalEntityIRI(entity);
 			
 			// Only traverse and expand complexes and sets when they are controllers/enablers
+			boolean explode_sets = false;  // Disabled: sets should use their REACTO class, not be exploded
 			if (explode_sets_complexes) {
 				if(entity instanceof Complex && !(((Complex) entity).getComponent().isEmpty())) {
 					// Definitely is a complex, so update entity_class to PCC
@@ -1172,7 +1173,7 @@ public class BioPaxtoGO {
 		//					go_cam.addTypeAssertion(component_e,  component_class);
 						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_part, component_e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 					}
-				} else if (!((PhysicalEntity) entity).getMemberPhysicalEntity().isEmpty()) {
+				} else if (explode_sets && !((PhysicalEntity) entity).getMemberPhysicalEntity().isEmpty()) {
 					// Could be Complex, Protein, maybe others with memberPhysicalEntity
 					// Definitely is a set, so update entity_class to information biomacromolecule
 					entity_class_iri = IRI.create("http://purl.obolibrary.org/obo/CHEBI_33695");  // information biomacromolecule
