@@ -844,7 +844,7 @@ public class BioPaxtoGO {
 						|| process instanceof MolecularInteraction 
 						|| process instanceof Interaction){					
 					go_cam.addRefBackedObjectPropertyAssertion(child, GoCAM.part_of, pathway_e, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
-					defineReactionEntity(go_cam, process, process_iri, false, model_id, pathway_iri.toString());	
+					defineReactionEntity(go_cam, process, process_iri, false, model_id, pathway_iri.toString(), null, false);	
 					//attach child pathways
 				}
 				else if(process.getModelInterface().equals(Pathway.class)){
@@ -915,7 +915,7 @@ public class BioPaxtoGO {
 												go_cam.addComment(e1, "reaction from external pathway "+external_pathway_id);
 												break;
 											}
-											defineReactionEntity(go_cam, prevEvent, prevEvent_iri, false, external_pathway_id, pathway_iri.toString());													
+											defineReactionEntity(go_cam, prevEvent, prevEvent_iri, false, external_pathway_id, pathway_iri.toString(), null, false);													
 										}else {
 											prevEvent_iri = GoCAM.makeGoCamifiedIRI(null, prev_event_id);
 											e1 = go_cam.df.getOWLNamedIndividual(prevEvent_iri);
@@ -1053,6 +1053,32 @@ public class BioPaxtoGO {
 		}
 		return id;
 	}
+	
+	private String iriToCurie(IRI class_iri) {
+		String new_id_curie;
+		//TODO: Handle with standard CURIE utility
+		if (class_iri.toString().startsWith(GoCAM.uniprot_iri.toString())) {
+			new_id_curie = class_iri.toString().replace(GoCAM.uniprot_iri.toString(), "UniProtKB:");
+		} else if (class_iri.toString().startsWith(GoCAM.sgd_iri.toString())) {
+			new_id_curie = class_iri.toString().replace(GoCAM.sgd_iri.toString(), "SGD:");
+		} else {
+			// Likely REACTO
+			new_id_curie = class_iri.toString().replace(GoCAM.reacto_base_iri.toString(), "REACTO:");
+		}
+		return new_id_curie;
+	}
+	
+	private boolean setIsSmallMoleculesOnly(Set<PhysicalEntity> set_members) {
+		boolean isSmallMolOnly = false;
+		for(PhysicalEntity member : set_members) {
+			if (member instanceof SmallMolecule) {
+				isSmallMolOnly = true;
+			} else {
+				return false;
+			}
+		}
+		return isSmallMolOnly;
+	}
 
 	/**
 	 * Given a BioPax entity and an ontology, add a GO_CAM structured OWLIndividual representing the entity into the ontology
@@ -1065,7 +1091,7 @@ public class BioPaxtoGO {
 	 * @return
 	 * @throws IOException 
 	 */
-	private void defineReactionEntity(GoCAM go_cam, Entity entity, IRI this_iri, boolean follow_controllers, String model_id, String root_pathway_iri) throws IOException {				
+	private void defineReactionEntity(GoCAM go_cam, Entity entity, IRI this_iri, boolean follow_controllers, String model_id, String root_pathway_iri, String reaction_id, boolean explode_sets_complexes) throws IOException {
 		String entity_id = getEntityReferenceId(entity);
 		if(this_iri==null) {
 			if(entity_id!=null) {
@@ -1093,6 +1119,7 @@ public class BioPaxtoGO {
 		Set<OWLClass> typesFromDirectEntityECs = new HashSet<OWLClass>();  // Contains types derived from eCNumber annotations to entity in BioPAX 
 		Set<OWLClass> typesFromDirectEntityExactECs = new HashSet<OWLClass>();  // Contains types derived from exact eCNumber annotations to entity in BioPAX
 		if (entity instanceof BiochemicalReaction) {
+			reaction_id = entity_id;
 			for(OWLClass type :getTypesFromECs((BiochemicalReaction)entity, go_cam)) {
 				// Track which ECs (type) came from the BioPAX file
 				typesFromDirectEntityECs.add(type);
@@ -1119,25 +1146,75 @@ public class BioPaxtoGO {
 		}
 		if(entity instanceof PhysicalEntity) {
 			IRI entity_class_iri = getPhysicalEntityIRI(entity);
-			OWLClass entity_class = go_cam.df.getOWLClass(entity_class_iri); 
-			go_cam.addTypeAssertion(e,  entity_class);
 			
-			if(entityStrategy.equals(EntityStrategy.YeastCyc) && entity_class.toString().equals("<http://purl.obolibrary.org/obo/GO_0032991>")) {
-				// Dig out component protein IDs
-				Set<PhysicalEntity> components = ((Complex) entity).getComponent();
-				for(PhysicalEntity c : components) {
-					String component_id = getEntityReferenceId(c);
-					System.out.println("Complex component ID: "+component_id);
-					IRI sgd_class_iri = getPhysicalEntityIRI(c);
-					String sgd_id = sgd_class_iri.toString().replace("http://identifiers.org/sgd/", "SGD:");
-					IRI iri = GoCAM.makeGoCamifiedIRI(null, (sgd_id+"_"+entity_id+"_component").replace(":", "_"));
-					OWLNamedIndividual component_e = go_cam.makeAnnotatedIndividual(iri);
-					OWLClass sgd_class = go_cam.df.getOWLClass(sgd_class_iri); 
-					go_cam.addTypeAssertion(component_e,  sgd_class);
-					go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_part, component_e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+			// Only traverse and expand complexes and sets when they are controllers/enablers
+			boolean explode_sets = false;  // Disabled: sets should use their REACTO class, not be exploded
+			if (explode_sets_complexes) {
+				if(entity instanceof Complex && !(((Complex) entity).getComponent().isEmpty())) {
+					// Definitely is a complex, so update entity_class to PCC
+					entity_class_iri = IRI.create("http://purl.obolibrary.org/obo/GO_0032991");  // protein-containing complex
+					
+					// Dig out component protein IDs
+					Set<PhysicalEntity> components = ((Complex) entity).getComponent();
+					for(PhysicalEntity c : components) {
+						if (c instanceof SmallMolecule) {
+							// Skip small mols
+							continue;
+						}
+						String component_id = getEntityReferenceId(c);
+						System.out.println("Complex component ID: "+component_id);
+						IRI component_class_iri = getPhysicalEntityIRI(c);
+						String component_id_curie = iriToCurie(component_class_iri);
+						String parent_component_id = entity_id;
+						IRI iri = GoCAM.makeGoCamifiedIRI(null, (component_id_curie+"_"+parent_component_id+"_"+reaction_id+"_component").replace(":", "_"));
+						OWLNamedIndividual component_e = go_cam.makeAnnotatedIndividual(iri);
+		//					OWLClass component_class = go_cam.df.getOWLClass(component_class_iri);
+						defineReactionEntity(go_cam, c, iri, true, model_id, root_pathway_iri, reaction_id, explode_sets_complexes);
+		//					go_cam.addTypeAssertion(component_e,  component_class);
+						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_part, component_e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+					}
+				} else if (explode_sets && !((PhysicalEntity) entity).getMemberPhysicalEntity().isEmpty()) {
+					// Could be Complex, Protein, maybe others with memberPhysicalEntity
+					// Definitely is a set, so update entity_class to information biomacromolecule
+					entity_class_iri = IRI.create("http://purl.obolibrary.org/obo/CHEBI_33695");  // information biomacromolecule
+					
+					Set<PhysicalEntity> members = ((PhysicalEntity) entity).getMemberPhysicalEntity();
+//					if (setIsSmallMoleculesOnly(members)) {
+//						System.out.println("SET_IS_SMALL_MOLECULES_ONLY\t"+entity_id+"\t"+model_id+"\t"+reaction_id);
+//					}
+					for(PhysicalEntity m : members) {
+						if (m instanceof SmallMolecule) {
+							// Skip small mols
+							continue;
+						}
+						String member_id = getEntityReferenceId(m);
+						System.out.println("Complex component ID: "+member_id);
+						if (m instanceof Complex) {
+							// Try reducing to single-protein
+							Set<PhysicalEntity> reduced_proteins = getComplexActiveUnitRecursive((Complex) m).getActiveUnits();
+							if (reduced_proteins.isEmpty()) {
+								// Can't do this then. Skip and report out.
+								System.out.println("SET_HAS_COMPLEX_MEMBER_CANT_BE_REDUCED\t"+entity_id+"\t"+member_id);
+								continue;
+							}
+							// It's been reduced to single protein. Keep going and report out.
+							PhysicalEntity reduced_protein = reduced_proteins.iterator().next();  // Should only be one
+							System.out.println("SET_HAS_REDUCED_COMPLEX_MEMBER\t"+entity_id+"\t"+member_id+"\t"+reduced_protein);
+							m = reduced_protein;
+						}
+						IRI member_class_iri = getPhysicalEntityIRI(m);
+						String member_id_curie = iriToCurie(member_class_iri);
+						String parent_component_id = entity_id;
+						IRI iri = GoCAM.makeGoCamifiedIRI(null, (member_id_curie+"_"+parent_component_id+"_"+reaction_id+"_component").replace(":", "_"));
+						OWLNamedIndividual member_e = go_cam.makeAnnotatedIndividual(iri);
+						defineReactionEntity(go_cam, m, iri, true, model_id, root_pathway_iri, reaction_id, explode_sets_complexes);
+						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_substitutable_entity, member_e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+					}
 				}
 			}
-
+			OWLClass entity_class = go_cam.df.getOWLClass(entity_class_iri); 
+			go_cam.addTypeAssertion(e, entity_class);
+			
 			Xref drug_id_xref = PhysicalEntityOntologyBuilder.getDrugReferenceId(entity);
 			if(drug_id_xref!=null) {
 				Set<Interaction> entity_processes = entity.getParticipantOf();
@@ -1219,7 +1296,7 @@ public class BioPaxtoGO {
 									//are connected yet in different pathways
 									//if its been defined, ought to at least have a label
 									if(go_cam.getaLabel(e2).equals("")){
-										defineReactionEntity(go_cam, nextEvent, e2_iri, true, model_id, root_pathway_iri);		
+										defineReactionEntity(go_cam, nextEvent, e2_iri, true, model_id, root_pathway_iri, reaction_id, false);		
 									}
 								}
 							}
@@ -1241,7 +1318,7 @@ public class BioPaxtoGO {
 										OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(event_iri);
 										go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.causally_upstream_of, e2, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 										if(go_cam.getaLabel(e1).equals("")){
-											defineReactionEntity(go_cam, prevEvent, prevEvent_iri, true, model_id, root_pathway_iri);		
+											defineReactionEntity(go_cam, prevEvent, prevEvent_iri, true, model_id, root_pathway_iri, reaction_id, false);		
 										}
 									}
 								}
@@ -1261,13 +1338,13 @@ public class BioPaxtoGO {
 					if(interactor instanceof PhysicalEntity) {
 						IRI i_iri = GoCAM.makeGoCamifiedIRI(null, getEntityReferenceId(entity)+"_interactor_"+getEntityReferenceId(interactor));
 						OWLNamedIndividual i_entity = go_cam.df.getOWLNamedIndividual(i_iri);
-						defineReactionEntity(go_cam, interactor, i_iri, true, model_id, root_pathway_iri);		
+						defineReactionEntity(go_cam, interactor, i_iri, true, model_id, root_pathway_iri, reaction_id, false);		
 						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_participant, i_entity, dbids, GoCAM.eco_imported_auto,  default_namespace_prefix,go_cam.getDefaultAnnotations(), model_id);
 						physical_participants.add(i_entity);
 					}else {
 						String interactor_id = getEntityReferenceId(interactor);
 						OWLNamedIndividual part_mf = go_cam.df.getOWLNamedIndividual(GoCAM.makeGoCamifiedIRI(null, interactor_id));
-						defineReactionEntity(go_cam, interactor, part_mf.getIRI(), true, model_id, root_pathway_iri);
+						defineReactionEntity(go_cam, interactor, part_mf.getIRI(), true, model_id, root_pathway_iri, reaction_id, false);
 						go_cam.addRefBackedObjectPropertyAssertion(part_mf, GoCAM.part_of, e, dbids, GoCAM.eco_imported_auto,  default_namespace_prefix, go_cam.getDefaultAnnotations(), model_id);
 						process_participants.add(part_mf);
 					}					
@@ -1300,7 +1377,7 @@ public class BioPaxtoGO {
 					String output_id = getEntityReferenceId(output);
 					IRI o_iri = GoCAM.makeGoCamifiedIRI(null, output_id+"_"+entity_id);
 					OWLNamedIndividual output_entity = go_cam.df.getOWLNamedIndividual(o_iri);
-					defineReactionEntity(go_cam, output, o_iri, true, model_id, root_pathway_iri);
+					defineReactionEntity(go_cam, output, o_iri, true, model_id, root_pathway_iri, reaction_id, false);
 					go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_output, output_entity, dbids, GoCAM.eco_imported_auto,  default_namespace_prefix, go_cam.getDefaultAnnotations(), model_id);
 				}
 				//not used ?
@@ -1393,7 +1470,13 @@ public class BioPaxtoGO {
 						if(i_iri==null){
 							i_iri = GoCAM.makeGoCamifiedIRI(null, input_id+"_"+input_location);
 							input_entity = go_cam.df.getOWLNamedIndividual(i_iri);
-							defineReactionEntity(go_cam, input, i_iri, true, model_id, root_pathway_iri);
+							// Track top-level root class to separate common subcomponents from similar structures
+							String component_top_level_id = input_id+"_"+reaction_id;
+							if (!((PhysicalEntity) input).getMemberPhysicalEntity().isEmpty() && setIsSmallMoleculesOnly(((PhysicalEntity) input).getMemberPhysicalEntity())) {
+//								System.out.println("SET_IS_SMALL_MOLECULES_ONLY\t"+input_id+"\t"+model_id+"\t"+reaction_id);
+								System.out.println("SET_IS_SMALL_MOLECULES_ONLY\t"+model_id+"\t"+go_cam.name+"\t"+reaction_id+"\t"+entity_name+"\t"+input_id+"\t"+input.getDisplayName());
+							}
+							defineReactionEntity(go_cam, input, i_iri, true, model_id, root_pathway_iri, component_top_level_id, false);
 						}
 						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_input, input_entity,dbids, GoCAM.eco_imported_auto,  default_namespace_prefix, go_cam.getDefaultAnnotations(), model_id);
 					}}
@@ -1424,12 +1507,18 @@ public class BioPaxtoGO {
 						}
 						o_iri = GoCAM.makeGoCamifiedIRI(null, output_id+"_"+output_location);
 						OWLNamedIndividual output_entity = go_cam.df.getOWLNamedIndividual(o_iri);
-						defineReactionEntity(go_cam, output, o_iri, true, model_id, root_pathway_iri);
+						// Track top-level root class to separate common subcomponents from similar structures 
+						String component_top_level_id = output_id+"_"+reaction_id;
+						if (!((PhysicalEntity) output).getMemberPhysicalEntity().isEmpty() && setIsSmallMoleculesOnly(((PhysicalEntity) output).getMemberPhysicalEntity())) {
+							System.out.println("SET_IS_SMALL_MOLECULES_ONLY\t"+model_id+"\t"+go_cam.name+"\t"+reaction_id+"\t"+entity_name+"\t"+output_id+"\t"+output.getDisplayName());
+//							System.out.println("SET_IS_SMALL_MOLECULES_ONLY\t"+output_id+"\t"+model_id+"\t"+reaction_id);
+						}
+						defineReactionEntity(go_cam, output, o_iri, true, model_id, root_pathway_iri, component_top_level_id, false);
 						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_output, output_entity, dbids, GoCAM.eco_imported_auto,  default_namespace_prefix, go_cam.getDefaultAnnotations(), model_id);
 					}}
 			}
 
-			if(entity instanceof Process) {				
+			if(entity instanceof Process) {
 				Set<String> go_mf = report.bp2go_mf.get(entity);
 				if(go_mf==null) {
 					go_mf = new HashSet<String>();
@@ -1445,9 +1534,11 @@ public class BioPaxtoGO {
 				//keep track of where the reaction we are talking about controlling is coming from
 				Set<Pathway> current_pathways = ((Interaction) entity).getPathwayComponentOf();
 
-				//find controllers 
+				//find controllers
 				Set<Control> controllers = ((Process) entity).getControlledOf();
+				System.out.println("DEBUG_CONTROLLERS\t"+entity_id+"\tcontrollers_found="+controllers.size());
 				for(Control controller : controllers) {
+					System.out.println("DEBUG_CONTROLLER_LOOP\t"+entity_id+"\tcontroller="+getEntityReferenceId(controller)+"\ttype="+controller.getModelInterface().getSimpleName());
 					Set<Controller> controller_entities = controller.getController();
 					boolean skip_drug_controller = false;
 					for(Controller controller_entity : controller_entities) {
@@ -1461,8 +1552,10 @@ public class BioPaxtoGO {
 						}
 					}
 					if(skip_drug_controller) {
+						System.out.println("DEBUG_SKIP_DRUG\t"+entity_id+"\tskipping controller due to drug");
 						continue;
 					}
+					System.out.println("DEBUG_CONTROLLER_PASSED_DRUG_CHECK\t"+entity_id+"\tcontroller="+getEntityReferenceId(controller));
 					//check if there are active sites annotated on the controller.
 					Set<PhysicalEntity> active_sites = getActiveSites(controller);
 					if (controller instanceof Catalysis) {
@@ -1494,13 +1587,15 @@ public class BioPaxtoGO {
 							}
 						}
 					}
-					ControlType ctype = controller.getControlType();	
+					ControlType ctype = controller.getControlType();
 					boolean is_catalysis = false;
 					if(controller.getModelInterface().equals(Catalysis.class)) {
 						is_catalysis = true;
 						control_type.add("Catalysis");
+						System.out.println("DEBUG_IS_CATALYSIS\t"+entity_id+"\tcontroller="+getEntityReferenceId(controller)+"\tis_catalysis=true");
 					}else {
 						control_type.add("Non-catalytic-"+ctype.toString());
+						System.out.println("DEBUG_NON_CATALYSIS\t"+entity_id+"\tcontroller="+getEntityReferenceId(controller)+"\tctype="+ctype);
 					}
 					//controller 'entities' from biopax may map onto functions from go_cam
 					//check for reactome mappings
@@ -1560,19 +1655,20 @@ public class BioPaxtoGO {
 									//limit to reactions as mostly we are interested in upstream processes
 									//that generate the inputs that control the current reaction
 									if(event instanceof BiochemicalReaction && follow_controllers) {
-										defineReactionEntity(go_cam, event, event_iri, false, model_id, root_pathway_iri);
+										defineReactionEntity(go_cam, event, event_iri, false, model_id, root_pathway_iri, reaction_id, false);
 									}
 								}
 							}
 						}
 						if (drop_drug_reactions && drug_process_ids.contains(entity_id)) {
+							System.out.println("DEBUG_SKIP_DRUG_REACTION\t"+entity_id+"\tskipping due to drop_drug_reactions");
 							continue;
 						}
+						System.out.println("DEBUG_PROCESSING_CONTROLLER_ENTITY\t"+entity_id+"\tcontroller_entity="+getEntityReferenceId(controller_entity));
 						//this is the non-recursive part.. (and we usually aren't recursing anyway)
 						IRI iri = null;
 						String controller_entity_id = getEntityReferenceId(controller_entity);
 						iri = GoCAM.makeGoCamifiedIRI(null, controller_entity_id+"_"+entity_id+"_controller");
-						defineReactionEntity(go_cam, controller_entity, iri, true, model_id, root_pathway_iri);
 						//the protein or complex
 						OWLNamedIndividual controller_e = go_cam.df.getOWLNamedIndividual(iri);
 						if (entityStrategy.equals(EntityStrategy.YeastCyc)) {
@@ -1600,7 +1696,7 @@ public class BioPaxtoGO {
 								//get the class for the entity
 								//if it is a physical entity, then we should already have created a class to describe it based on the unique id.  
 								//TODO this needs some generalizing, but focusing on getting Reactome done right now.
-  						  String active_site_stable_id = getEntityReferenceId(active_site_entity);
+								String active_site_stable_id = getEntityReferenceId(active_site_entity);
 								IRI entity_class_iri;
 								if(active_site_stable_id.startsWith("UniProt_")) {
 									String uniprot_id = active_site_stable_id.split("_", 2)[1];
@@ -1612,7 +1708,7 @@ public class BioPaxtoGO {
 								//make a new individual - hmm.. check for conflict
 								String active_id = entity_id+"_"+active_site_stable_id;
 								IRI active_iri = GoCAM.makeGoCamifiedIRI(null, active_id);
-								defineReactionEntity(go_cam, active_site_entity, active_iri, true, model_id, root_pathway_iri);
+								defineReactionEntity(go_cam, active_site_entity, active_iri, true, model_id, root_pathway_iri, reaction_id, true);
 								OWLNamedIndividual active_i = go_cam.df.getOWLNamedIndividual(active_iri);
 //								go_cam.addTypeAssertion(active_i,  entity_class);
 								go_cam.addComment(active_i, "Active unit in "+controller_entity_id);
@@ -1620,6 +1716,8 @@ public class BioPaxtoGO {
 								go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.has_part, active_i, dbids,  GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 								active_units.add(active_i);
 							}
+						} else {
+							defineReactionEntity(go_cam, controller_entity, iri, true, model_id, root_pathway_iri, reaction_id, true);
 						}
 						//define relationship between controller entity and reaction
 
@@ -1628,44 +1726,53 @@ public class BioPaxtoGO {
 						//	go_cam.deleteOwlEntityAndAllReferencesToIt(controller_e);
 						//}
 						//if catalysis then always enabled by
+						System.out.println("DEBUG_RELATION_DECISION\t"+entity_id+"\tcontroller_entity="+controller_entity_id+"\tis_catalysis="+is_catalysis+"\tctype="+ctype);
 						if(is_catalysis) {
 							//active unit known
 							if(active_units!=null) {
 								for(OWLNamedIndividual active_unit :active_units) {
-									go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, active_unit, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);	
+									System.out.println("DEBUG_ADDING_ENABLED_BY_ACTIVE_UNIT\t"+entity_id+"\tactive_unit="+active_unit.getIRI());
+									go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, active_unit, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 									//make the complex itself a contributor
 									//taking this out per https://github.com/geneontology/pathways2GO/issues/72
-									//go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.contributes_to, e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);	
+									//go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.contributes_to, e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 								}
 							}else {
-								go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, controller_e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);	
+								System.out.println("DEBUG_ADDING_ENABLED_BY\t"+entity_id+"\tcontroller_e="+controller_e.getIRI());
+								go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, controller_e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 							}
 						}else {
-							//otherwise look at text 
+							//otherwise look at text
 							//define how the molecular function (process) relates to the reaction (process)
 							if(ctype.toString().startsWith("INHIBITION")){
 								if(active_units!=null) {
 									for(OWLNamedIndividual active_unit :active_units) {
-										go_cam.addRefBackedObjectPropertyAssertion(active_unit, GoCAM.involved_in_negative_regulation_of, e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);	
+										System.out.println("DEBUG_ADDING_INVOLVED_IN_NEG_REG_ACTIVE_UNIT\t"+entity_id+"\tactive_unit="+active_unit.getIRI());
+										go_cam.addRefBackedObjectPropertyAssertion(active_unit, GoCAM.involved_in_negative_regulation_of, e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 									}
 								}else {
-									go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.involved_in_negative_regulation_of, e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);	
+									System.out.println("DEBUG_ADDING_INVOLVED_IN_NEG_REG\t"+entity_id+"\tcontroller_e="+controller_e.getIRI());
+									go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.involved_in_negative_regulation_of, e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 								}
 							}else if(ctype.toString().startsWith("ACTIVATION")){
 								if(active_units!=null) {
 									for(OWLNamedIndividual active_unit :active_units) {
+										System.out.println("DEBUG_ADDING_INVOLVED_IN_POS_REG_ACTIVE_UNIT\t"+entity_id+"\tactive_unit="+active_unit.getIRI());
 										go_cam.addRefBackedObjectPropertyAssertion(active_unit, GoCAM.involved_in_positive_regulation_of, e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 									}
 								}else {
+									System.out.println("DEBUG_ADDING_INVOLVED_IN_POS_REG\t"+entity_id+"\tcontroller_e="+controller_e.getIRI());
 									go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.involved_in_positive_regulation_of, e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 								}
 							}else {
 								//default to regulates
 								if(active_units!=null) {
 									for(OWLNamedIndividual active_unit :active_units) {
+										System.out.println("DEBUG_ADDING_INVOLVED_IN_REG_ACTIVE_UNIT\t"+entity_id+"\tactive_unit="+active_unit.getIRI());
 										go_cam.addRefBackedObjectPropertyAssertion(active_unit, GoCAM.involved_in_regulation_of,  e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 									}
 								}else {
+									System.out.println("DEBUG_ADDING_INVOLVED_IN_REG\t"+entity_id+"\tcontroller_e="+controller_e.getIRI());
 									go_cam.addRefBackedObjectPropertyAssertion(controller_e, GoCAM.involved_in_regulation_of,  e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 								}
 							}
@@ -1833,6 +1940,13 @@ public class BioPaxtoGO {
 				return true;
 			} else if (complex_component instanceof Complex) {
 				return complexHasProtein((Complex) complex_component);
+			}
+		}
+		for(PhysicalEntity complex_member : (controlled_by_complex).getMemberPhysicalEntity()) {
+			if (complex_member instanceof Protein) {
+				return true;
+			} else if (complex_member instanceof Complex) {
+				return complexHasProtein((Complex) complex_member);
 			}
 		}
 		return false;

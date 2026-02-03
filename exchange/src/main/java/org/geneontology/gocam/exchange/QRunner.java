@@ -61,6 +61,8 @@ public class QRunner {
 	public OWLReasoner tbox_class_reasoner;
 	public WorkingMemory wm;
 	public Map<String, OWLOntology> ontology_map;
+	// Pre-built index: maps part class -> set of complex classes that have that part
+	private Map<OWLClass, Set<OWLClass>> partToComplexIndex;
 	
 	public static QRunner MakeQRunner(Map<String, OWLOntology> name_ont, OWLOntology abox, OWLReasoner reasoner, boolean add_inferences, boolean add_property_definitions, boolean add_class_definitions) throws OWLOntologyCreationException {		
 		QRunner q = new QRunner(name_ont.values(), abox, reasoner, add_inferences, add_property_definitions, add_class_definitions);
@@ -83,6 +85,8 @@ public class QRunner {
 		System.out.println("test 2 "+tbox_class_reasoner.getSuperClasses(test2, false));
 		OWLClass test3 = aman.getOWLDataFactory().getOWLClass(IRI.create("http://purl.obolibrary.org/obo/GO_0032991"));
 		System.out.println("test 3 "+tbox_class_reasoner.getSuperClasses(test3, false));
+		// Build the part->complex index for efficient lookups
+		buildPartToComplexIndex(tbox);
 	}
 	
 	/**
@@ -97,6 +101,8 @@ public class QRunner {
 			}else {
 				System.out.println("Reasoner provided - ");
 				tbox_class_reasoner = reasoner;
+				// Build the part->complex index from the reasoner's root ontology
+				buildPartToComplexIndex(reasoner.getRootOntology());
 			}
 			System.out.println("Setting up Arachne reasoner for Qrunner, extracting rules from tbox");
 			if(abox!=null) {
@@ -927,7 +933,174 @@ select ?reaction2 obo:RO_0002333 ?input   # for update
 		}
 		return tbox_class_reasoner.getSuperClasses(thing, direct).getFlattened();
 	}
-	
+
+	public Set<OWLClass> getSubClasses(OWLClass thing, boolean direct) {
+		if(tbox_class_reasoner==null) {
+			return null;
+		}
+		return tbox_class_reasoner.getSubClasses(thing, direct).getFlattened();
+	}
+
+	/**
+	 * Build a reverse index mapping part classes to complex classes that contain them.
+	 * This includes transitive relationships - if ProteinX is part of ComplexA, and ComplexA
+	 * is part of ComplexB, then ProteinX maps to both ComplexA and ComplexB.
+	 * This is done once at initialization for efficient lookups.
+	 */
+	private void buildPartToComplexIndex(OWLOntology tbox) {
+		partToComplexIndex = new HashMap<>();
+		// Check for both has_part (BFO_0000051) and has_component (RO_0002180)
+		Set<IRI> partPropertyIRIs = new HashSet<>();
+		partPropertyIRIs.add(IRI.create("http://purl.obolibrary.org/obo/BFO_0000051")); // has_part
+		partPropertyIRIs.add(IRI.create("http://purl.obolibrary.org/obo/RO_0002180")); // has_component
+		int complexCount = 0;
+
+		// Step 1: Build direct part->complex mappings
+		// Only process REACTO and UniProt classes
+		String reactoPrefix = "http://purl.obolibrary.org/obo/go/extensions/reacto.owl#REACTO_";
+		String uniprotPrefix = "http://identifiers.org/uniprot/";
+
+		for (OWLClass cls : tbox.getClassesInSignature()) {
+			String clsIri = cls.getIRI().toString();
+			// Skip classes that are not REACTO or UniProt
+			if (!clsIri.startsWith(reactoPrefix) && !clsIri.startsWith(uniprotPrefix)) {
+				continue;
+			}
+
+			Set<OWLClass> parts = new HashSet<>();
+
+			// Check equivalent class axioms
+			for (org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom eqAxiom : tbox.getEquivalentClassesAxioms(cls)) {
+				for (org.semanticweb.owlapi.model.OWLClassExpression expr : eqAxiom.getClassExpressions()) {
+					collectHasPartFillers(expr, partPropertyIRIs, parts, reactoPrefix, uniprotPrefix);
+				}
+			}
+			// Check subclass axioms
+			for (org.semanticweb.owlapi.model.OWLSubClassOfAxiom subAxiom : tbox.getSubClassAxiomsForSubClass(cls)) {
+				org.semanticweb.owlapi.model.OWLClassExpression superExpr = subAxiom.getSuperClass();
+				collectHasPartFillers(superExpr, partPropertyIRIs, parts, reactoPrefix, uniprotPrefix);
+			}
+
+			// Add this class to the index for each of its direct parts
+			if (!parts.isEmpty()) {
+				complexCount++;
+				for (OWLClass partClass : parts) {
+					partToComplexIndex.computeIfAbsent(partClass, k -> new HashSet<>()).add(cls);
+				}
+			}
+		}
+		System.out.println("Built direct part->complex index: " + partToComplexIndex.size() + " part classes mapped to " + complexCount + " complex classes");
+
+		// Step 2: Compute transitive closure
+		// If part P is in complex C, and complex C is a part of complex D, then P should also map to D
+		boolean changed = true;
+		int iterations = 0;
+		while (changed) {
+			changed = false;
+			iterations++;
+			for (Map.Entry<OWLClass, Set<OWLClass>> entry : partToComplexIndex.entrySet()) {
+				Set<OWLClass> complexes = entry.getValue();
+				Set<OWLClass> additionalComplexes = new HashSet<>();
+
+				// For each complex that contains this part, check if that complex is itself a part of other complexes
+				for (OWLClass complex : complexes) {
+					Set<OWLClass> parentComplexes = partToComplexIndex.get(complex);
+					if (parentComplexes != null) {
+						for (OWLClass parentComplex : parentComplexes) {
+							if (!complexes.contains(parentComplex)) {
+								additionalComplexes.add(parentComplex);
+							}
+						}
+					}
+				}
+
+				if (!additionalComplexes.isEmpty()) {
+					complexes.addAll(additionalComplexes);
+					changed = true;
+				}
+			}
+		}
+
+		// Count total mappings after transitive closure
+		int totalMappings = partToComplexIndex.values().stream().mapToInt(Set::size).sum();
+		System.out.println("After transitive closure (" + iterations + " iterations): " + totalMappings + " total part->complex mappings");
+	}
+
+	/**
+	 * Collect all classes that appear as fillers in 'has_part/has_component' expressions.
+	 * Only includes classes with REACTO or UniProt prefixes.
+	 * Handles OWLObjectSomeValuesFrom, OWLObjectExactCardinality, OWLObjectMinCardinality,
+	 * OWLObjectIntersectionOf, and OWLObjectUnionOf expressions.
+	 */
+	private void collectHasPartFillers(org.semanticweb.owlapi.model.OWLClassExpression expr,
+			Set<IRI> partPropertyIRIs, Set<OWLClass> parts,
+			String reactoPrefix, String uniprotPrefix) {
+		if (expr instanceof org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom) {
+			org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom someExpr = (org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom) expr;
+			org.semanticweb.owlapi.model.OWLObjectPropertyExpression prop = someExpr.getProperty();
+			if (!prop.isAnonymous() && partPropertyIRIs.contains(prop.asOWLObjectProperty().getIRI())) {
+				org.semanticweb.owlapi.model.OWLClassExpression filler = someExpr.getFiller();
+				if (!filler.isAnonymous()) {
+					OWLClass fillerClass = filler.asOWLClass();
+					String fillerIri = fillerClass.getIRI().toString();
+					if (fillerIri.startsWith(reactoPrefix) || fillerIri.startsWith(uniprotPrefix)) {
+						parts.add(fillerClass);
+					}
+				}
+			}
+		} else if (expr instanceof org.semanticweb.owlapi.model.OWLObjectExactCardinality) {
+			org.semanticweb.owlapi.model.OWLObjectExactCardinality exactExpr = (org.semanticweb.owlapi.model.OWLObjectExactCardinality) expr;
+			org.semanticweb.owlapi.model.OWLObjectPropertyExpression prop = exactExpr.getProperty();
+			if (!prop.isAnonymous() && partPropertyIRIs.contains(prop.asOWLObjectProperty().getIRI())) {
+				org.semanticweb.owlapi.model.OWLClassExpression filler = exactExpr.getFiller();
+				if (!filler.isAnonymous()) {
+					OWLClass fillerClass = filler.asOWLClass();
+					String fillerIri = fillerClass.getIRI().toString();
+					if (fillerIri.startsWith(reactoPrefix) || fillerIri.startsWith(uniprotPrefix)) {
+						parts.add(fillerClass);
+					}
+				}
+			}
+		} else if (expr instanceof org.semanticweb.owlapi.model.OWLObjectMinCardinality) {
+			org.semanticweb.owlapi.model.OWLObjectMinCardinality minExpr = (org.semanticweb.owlapi.model.OWLObjectMinCardinality) expr;
+			org.semanticweb.owlapi.model.OWLObjectPropertyExpression prop = minExpr.getProperty();
+			if (!prop.isAnonymous() && partPropertyIRIs.contains(prop.asOWLObjectProperty().getIRI())) {
+				org.semanticweb.owlapi.model.OWLClassExpression filler = minExpr.getFiller();
+				if (!filler.isAnonymous()) {
+					OWLClass fillerClass = filler.asOWLClass();
+					String fillerIri = fillerClass.getIRI().toString();
+					if (fillerIri.startsWith(reactoPrefix) || fillerIri.startsWith(uniprotPrefix)) {
+						parts.add(fillerClass);
+					}
+				}
+			}
+		} else if (expr instanceof org.semanticweb.owlapi.model.OWLObjectIntersectionOf) {
+			org.semanticweb.owlapi.model.OWLObjectIntersectionOf intersection = (org.semanticweb.owlapi.model.OWLObjectIntersectionOf) expr;
+			for (org.semanticweb.owlapi.model.OWLClassExpression operand : intersection.getOperands()) {
+				collectHasPartFillers(operand, partPropertyIRIs, parts, reactoPrefix, uniprotPrefix);
+			}
+		} else if (expr instanceof org.semanticweb.owlapi.model.OWLObjectUnionOf) {
+			org.semanticweb.owlapi.model.OWLObjectUnionOf union = (org.semanticweb.owlapi.model.OWLObjectUnionOf) expr;
+			for (org.semanticweb.owlapi.model.OWLClassExpression operand : union.getOperands()) {
+				collectHasPartFillers(operand, partPropertyIRIs, parts, reactoPrefix, uniprotPrefix);
+			}
+		}
+	}
+
+	/**
+	 * Find all complex classes in the TBox that have the given partClass as a part.
+	 * Uses pre-built index for O(1) lookup.
+	 * @param partClass the class to search for as a part
+	 * @return set of complex classes that have partClass as a part, or empty set if none
+	 */
+	public Set<OWLClass> getComplexClassesWithPart(OWLClass partClass) {
+		if (partToComplexIndex == null) {
+			return new HashSet<>();
+		}
+		Set<OWLClass> result = partToComplexIndex.get(partClass);
+		return result != null ? result : new HashSet<>();
+	}
+
 	public class BindingInput {
 		String input_individual;
 		String input_type;

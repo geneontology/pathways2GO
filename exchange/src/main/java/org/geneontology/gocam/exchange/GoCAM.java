@@ -69,6 +69,7 @@ import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAnnotationSubject;
 import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.ClassExpressionType;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
@@ -116,6 +117,7 @@ public class GoCAM {
 	public static final IRI obo_iri = IRI.create("http://purl.obolibrary.org/obo/");
 	public static final IRI reacto_base_iri = IRI.create("http://purl.obolibrary.org/obo/go/extensions/reacto.owl#REACTO_");
 	public static final IRI uniprot_iri = IRI.create("http://identifiers.org/uniprot/");
+	public static final IRI sgd_iri = IRI.create("http://identifiers.org/sgd/");
 	public static final Set<String> small_mol_do_not_join_ids = new HashSet<>(Arrays.asList("CHEBI_15378",  // hydron 
 																							"CHEBI_15377"));// water
 	public static IRI base_ont_iri;
@@ -126,7 +128,7 @@ public class GoCAM {
 	provides_direct_input_for, directly_inhibits, directly_activates, occurs_in, enabled_by, enables, regulated_by, located_in,
 	directly_positively_regulated_by, directly_negatively_regulated_by, involved_in_regulation_of, involved_in_negative_regulation_of, involved_in_positive_regulation_of,
 	directly_negatively_regulates, directly_positively_regulates, has_role, causally_upstream_of, causally_upstream_of_negative_effect, causally_upstream_of_positive_effect,
-	negatively_regulates, positively_regulates, 
+	negatively_regulates, positively_regulates, has_substitutable_entity,
 	has_target_end_location, has_target_start_location, interacts_with, has_participant, functionally_related_to,
 	contributes_to, only_in_taxon, transports_or_maintains_localization_of, has_primary_input,
 	has_small_molecule_inhibitor, has_small_molecule_activator;
@@ -335,6 +337,8 @@ public class GoCAM {
 		has_part = df.getOWLObjectProperty(IRI.create(obo_iri + "BFO_0000051"));
 		//has_component - use when you want to specify an exact cardinality - e.g. 5 and only 5 fingers.
 		has_component = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002180"));
+		//has_substitutable_entity
+		has_substitutable_entity = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0019003"));
 		//http://purl.obolibrary.org/obo/RO_0002160
 		only_in_taxon = df.getOWLObjectProperty(IRI.create(obo_iri + "RO_0002160"));
 		//has input 
@@ -980,7 +984,7 @@ final long counterValue = instanceCounter.getAndIncrement();
 		logger.debug("inferring regulates from output regulates");
 		r = inferRegulatesViaOutputRegulates(model_id, r); //must be run before convertEntityRegulatorsToBindingFunctions		
 		logger.debug("inferring regulates from output enables");
-		r = inferRegulatesViaOutputEnables(model_id, r);
+		r = inferRegulatesViaOutputEnables(model_id, r, tbox_qrunner);
 		logger.debug("inferring provides input for");
 		r = inferProvidesInput(model_id, r);
 		logger.debug("inferring small molecule regulators");
@@ -1334,39 +1338,170 @@ For reactions with multiple entity locations and no enabler, do not assign any o
 		return r;
 	}
 
-	private RuleResults inferRegulatesViaOutputEnables(String model_id, RuleResults r) {
+	private RuleResults inferRegulatesViaOutputEnables(String model_id, RuleResults r, QRunner tbox_qrunner) {
 		/**
 		 * Regulator rule 3.
-		 * reaction1 causally upstream of reaction2 
+		 * reaction1 causally upstream of reaction2
 		 * reaction1 has an output that is the enabler of reaction 2
+		 *
+		 * Two cases:
+		 * Case 1 (proteins): reaction2 enabled_by entity of type T, reaction1 has_output entity of type T
+		 * Case 2 (complexes): reaction2 enabled_by entity that is part of complex of type T (in TBox),
+		 *                     reaction1 has_output complex of type T
 		 */
 		String regulator_rule_3 = "Entity Regulation Rule 3";
 		Integer regulator_count_3 = r.checkInitCount(regulator_rule_3, r);
 		Set<String> regulator_pathways_3 = r.checkInitPathways(regulator_rule_3, r);
 
-		Set<InferredRegulator> ir3_pos = qrunner.getInferredRegulatorsQ3();
-		regulator_count_3+=ir3_pos.size();
-		for(InferredRegulator ir : ir3_pos) {
-			regulator_pathways_3.add(ir.pathway_uri);
-			//create ?reaction2 obo:RO_0002333 ?input
-			OWLNamedIndividual r1 = this.makeAnnotatedIndividual(ir.reaction1_uri);
-			OWLNamedIndividual r2 = this.makeAnnotatedIndividual(ir.reaction2_uri);
-			OWLObjectProperty o = df.getOWLObjectProperty(IRI.create(ir.prop_uri));
-			String r1_label = "'"+this.getaLabel(r1)+"'";
-			String r2_label = "'"+this.getaLabel(r2)+"'";
-			String o_label = "'"+this.getaLabel(o)+"'";
-			Set<OWLAnnotation> annos = getDefaultAnnotations();
-			String explain = "Entity Regulation Rule 3. The relation "+r1_label+" "+o_label+" "+r2_label+" was inferred because:\n "+
-					"reaction1 has an output that is the enabler of reaction 2.";
-			annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
-			this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
-			applyAnnotatedTripleRemover(r1.getIRI(), causally_upstream_of.getIRI(), r2.getIRI());
-		}	
+		// Build indexes for efficient lookup
+		// Map from entity type IRI -> Set of reactions that output entities of that type
+		Map<IRI, Set<OWLNamedIndividual>> typeToOutputReactions = new HashMap<>();
+		// Map from entity type IRI -> Set of reactions enabled by entities of that type (Case 1: proteins)
+		Map<IRI, Set<OWLNamedIndividual>> typeToEnabledReactions = new HashMap<>();
+		// Map from complex type IRI -> Set of reactions enabled by active units within complexes of that type (Case 2)
+		Map<IRI, Set<OWLNamedIndividual>> complexTypeToEnabledReactions = new HashMap<>();
+		// Map from reaction -> pathway (for same-pathway constraint)
+		Map<OWLNamedIndividual, OWLNamedIndividual> reactionToPathway = new HashMap<>();
+		// Track causally_upstream_of relationships
+		Set<List<OWLNamedIndividual>> causalPairs = new HashSet<>();
+
+		// Single pass through all object property assertions to build indexes
+		for (OWLObjectPropertyAssertionAxiom axiom : go_cam_ont.getAxioms(AxiomType.OBJECT_PROPERTY_ASSERTION)) {
+			OWLObjectPropertyExpression prop = axiom.getProperty();
+			OWLIndividual subject = axiom.getSubject();
+			OWLIndividual object = axiom.getObject();
+
+			if (!subject.isNamed() || !object.isNamed()) continue;
+
+			OWLNamedIndividual subj = subject.asOWLNamedIndividual();
+			OWLNamedIndividual obj = object.asOWLNamedIndividual();
+
+			// Track reaction -> pathway via part_of
+			if (prop.equals(part_of)) {
+				reactionToPathway.put(subj, obj);
+			}
+
+			// Track causally_upstream_of relationships
+			if (prop.equals(causally_upstream_of)) {
+				if (!subj.equals(obj)) {
+					causalPairs.add(Arrays.asList(subj, obj));
+				}
+			}
+
+			// Track outputs: reaction has_output entity (for both protein and complex cases)
+			if (prop.equals(has_output)) {
+				Collection<OWLClassExpression> types = EntitySearcher.getTypes(obj, go_cam_ont);
+				for (OWLClassExpression type : types) {
+					// Filter out non-class expressions and owl:NamedIndividual (as in SPARQL query)
+					if (type.getClassExpressionType().equals(ClassExpressionType.OWL_CLASS)) {
+						OWLClass typeClass = type.asOWLClass();
+						// Skip owl:NamedIndividual (equivalent to FILTER in SPARQL)
+						if (!typeClass.isOWLThing() && !typeClass.toStringID().equals("http://www.w3.org/2002/07/owl#NamedIndividual")) {
+							typeToOutputReactions.computeIfAbsent(typeClass.getIRI(), k -> new HashSet<>()).add(subj);
+						}
+					}
+				}
+			}
+
+			// Track enablers: reaction enabled_by entity
+			if (prop.equals(enabled_by)) {
+				// Case 1: Direct enabler (proteins) - match on enabler's type
+				Collection<OWLClassExpression> enablerTypes = EntitySearcher.getTypes(obj, go_cam_ont);
+				for (OWLClassExpression type : enablerTypes) {
+					if (type.getClassExpressionType().equals(ClassExpressionType.OWL_CLASS)) {
+						OWLClass typeClass = type.asOWLClass();
+						if (!typeClass.isOWLThing() && !typeClass.toStringID().equals("http://www.w3.org/2002/07/owl#NamedIndividual")) {
+							typeToEnabledReactions.computeIfAbsent(typeClass.getIRI(), k -> new HashSet<>()).add(subj);
+
+							// Case 2: Query TBox to find complex classes that have this enabler type as part
+							// The chain is: enabler has type UniProt_class -> REACTO_protein subClassOf UniProt_class
+							// -> REACTO_complex has_part some REACTO_protein
+							// Step 2a: Find REACTO protein subclasses of this enabler's type (e.g. UniProt class)
+							Set<OWLClass> subclassesOfEnablerType = tbox_qrunner.getSubClasses(typeClass, false);
+							Set<OWLClass> classesToCheck = new HashSet<>();
+							classesToCheck.add(typeClass); // Also check the type itself
+							if (subclassesOfEnablerType != null) {
+								classesToCheck.addAll(subclassesOfEnablerType);
+							}
+							// Step 2b: For each subclass, find complex classes that have it as part
+							for (OWLClass proteinClass : classesToCheck) {
+								Set<OWLClass> complexClassesContainingProtein = tbox_qrunner.getComplexClassesWithPart(proteinClass);
+								if (complexClassesContainingProtein != null) {
+									for (OWLClass complexClass : complexClassesContainingProtein) {
+										complexTypeToEnabledReactions.computeIfAbsent(complexClass.getIRI(), k -> new HashSet<>()).add(subj);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// Now find matches for each causally_upstream_of pair
+		for (List<OWLNamedIndividual> pair : causalPairs) {
+			OWLNamedIndividual r1 = pair.get(0);
+			OWLNamedIndividual r2 = pair.get(1);
+
+			// Check same pathway constraint
+			OWLNamedIndividual pathway1 = reactionToPathway.get(r1);
+			OWLNamedIndividual pathway2 = reactionToPathway.get(r2);
+			if (pathway1 == null || pathway2 == null || !pathway1.equals(pathway2)) continue;
+
+			// Check if r1's output type matches r2's enabler type
+			boolean matched = false;
+
+			// Collect all types that r1 outputs
+			Set<IRI> r1OutputTypes = new HashSet<>();
+			for (Map.Entry<IRI, Set<OWLNamedIndividual>> entry : typeToOutputReactions.entrySet()) {
+				if (entry.getValue().contains(r1)) {
+					r1OutputTypes.add(entry.getKey());
+				}
+			}
+
+			// Check Case 1: protein/direct enabler type match
+			for (IRI outputType : r1OutputTypes) {
+				Set<OWLNamedIndividual> enabledByThisType = typeToEnabledReactions.get(outputType);
+				if (enabledByThisType != null && enabledByThisType.contains(r2)) {
+					matched = true;
+					break;
+				}
+			}
+
+			// Check Case 2: complex type match (output complex matches complex containing enabler)
+			if (!matched) {
+				for (IRI outputType : r1OutputTypes) {
+					Set<OWLNamedIndividual> enabledByComplexOfThisType = complexTypeToEnabledReactions.get(outputType);
+					if (enabledByComplexOfThisType != null && enabledByComplexOfThisType.contains(r2)) {
+						matched = true;
+						break;
+					}
+				}
+			}
+
+			if (matched) {
+				regulator_count_3++;
+				regulator_pathways_3.add(pathway1.getIRI().toString());
+
+				OWLObjectProperty o = directly_positively_regulates;
+				String r1_label = "'" + this.getaLabel(r1) + "'";
+				String r2_label = "'" + this.getaLabel(r2) + "'";
+				String o_label = "'" + this.getaLabel(o) + "'";
+				Set<OWLAnnotation> annos = getDefaultAnnotations();
+				String explain = "Entity Regulation Rule 3. The relation " + r1_label + " " + o_label + " " + r2_label + " was inferred because:\n " +
+						"reaction1 has an output that is the enabler of reaction 2.";
+				annos.add(df.getOWLAnnotation(rdfs_comment, df.getOWLLiteral(explain)));
+				this.addRefBackedObjectPropertyAssertion(r1, o, r2, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
+				applyAnnotatedTripleRemover(r1.getIRI(), causally_upstream_of.getIRI(), r2.getIRI());
+                applyAnnotatedTripleRemover(r1.getIRI(), provides_direct_input_for.getIRI(), r2.getIRI());
+			}
+		}
+
 		r.rule_hitcount.put(regulator_rule_3, regulator_count_3);
 		r.rule_pathways.put(regulator_rule_3, regulator_pathways_3);
 		//don't re-initialize the query model yet.  If we remove the causally upstream of relation, the next rule can't fire
-		//and it is possible for a reaction to both catalyze and provide input for a another reaction.  
-		//qrunner = new QRunner(go_cam_ont); 
+		//and it is possible for a reaction to both catalyze and provide input for a another reaction.
+		//qrunner = new QRunner(go_cam_ont);
 		return r;
 	}
 
@@ -1855,6 +1990,13 @@ BP has_part R
 				}
 			}
 			if(drop) {
+				// Debug logging for controller entities
+				if(node.getIRI().toString().contains("controller")) {
+					System.out.println("DEBUG_REMOVING_CONTROLLER\t"+node.getIRI()+"\tref_axioms_count="+ref_axioms.size());
+					for(OWLAxiom a : ref_axioms) {
+						System.out.println("DEBUG_CONTROLLER_AXIOM\t"+a.getAxiomType()+"\t"+a);
+					}
+				}
 				deleteOwlEntityAndAllReferencesToIt(node);
 				n_removed++;
 			}
