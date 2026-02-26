@@ -26,7 +26,7 @@ Python 3.7+ with no external dependencies (stdlib only).
 ## Usage
 
 ```bash
-python3 readable_shex_report.py \
+python3 scripts/readable_shex_report.py \
   --explanations reactome_gen_20260204/reports/explanations.txt \
   --labels go-lego-labels.tsv \
   --output-dir reactome_gen_20260204/reports/
