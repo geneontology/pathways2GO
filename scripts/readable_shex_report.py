@@ -6,7 +6,6 @@ import csv
 import os
 import re
 from collections import Counter, defaultdict
-from dataclasses import dataclass, field
 
 
 # --- Constants ---
@@ -32,25 +31,28 @@ SHAPE_DESCRIPTIONS = {
 
 # --- Data structures ---
 
-@dataclass
-class Violation:
-    model_title: str
-    model_iri: str
-    node: str
-    node_types: list
-    property: str
-    intended_shapes: list
-    obj: str
-    object_types: list
-    object_shapes: list
-    # Resolved fields
-    node_type_labels: list = field(default_factory=list)
-    property_label: str = ""
-    object_type_labels: list = field(default_factory=list)
-    intended_shape_labels: list = field(default_factory=list)
-    object_shape_labels: list = field(default_factory=list)
-    category: str = ""
-    explanation: str = ""
+class Violation(object):
+    """Holds one parsed ShEx violation with resolved labels and category."""
+
+    def __init__(self, model_title, model_iri, node, node_types, property,
+                 intended_shapes, obj, object_types, object_shapes):
+        self.model_title = model_title
+        self.model_iri = model_iri
+        self.node = node
+        self.node_types = node_types
+        self.property = property
+        self.intended_shapes = intended_shapes
+        self.obj = obj
+        self.object_types = object_types
+        self.object_shapes = object_shapes
+        # Resolved fields (populated after construction)
+        self.node_type_labels = []
+        self.property_label = ""
+        self.object_type_labels = []
+        self.intended_shape_labels = []
+        self.object_shape_labels = []
+        self.category = ""
+        self.explanation = ""
 
 
 # --- Parsing helpers ---
