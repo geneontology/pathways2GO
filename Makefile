@@ -12,8 +12,8 @@
 #   make all PATHWAYS2GO_PATH=/my/path MINERVA_PATH=/my/minerva
 
 # --- Configuration ---
-PATHWAYS2GO_PATH ?= /home/debert/pathways2GO
-MINERVA_PATH     ?= /home/debert/minerva
+PATHWAYS2GO_PATH ?= $(shell pwd)
+MINERVA_PATH     ?= $(shell pwd)/../minerva
 TODAYS_DATE      := $(shell date +"%Y%m%d")
 TARGET_PATH      := $(PATHWAYS2GO_PATH)/reactome_gen_$(TODAYS_DATE)
 BIOPAX_PATH      := $(TARGET_PATH)/biopax
@@ -23,7 +23,7 @@ EXCHANGE_DIR     := $(PATHWAYS2GO_PATH)/exchange
 BIOPAX2GO_JAR    := $(EXCHANGE_DIR)/bin/biopax2go.jar
 JAVA_HEAP        ?= 24G
 MINERVA_CLI_MEMORY ?= 12G
-BG_RUNNER_PATH   ?= /home/debert/blazegraph-runner-1.6
+BG_RUNNER_PATH   ?= $(shell pwd)/../blazegraph-runner-1.6
 BG_PARALLELISM   ?= 8
 
 # --- Top-level targets ---
@@ -111,7 +111,7 @@ $(TARGET_PATH)/reacto_labels.tsv: $(TARGET_PATH)/reacto.ttl
 reacto: $(TARGET_PATH)/reacto_labels.tsv
 
 # --- ShEx validation via Minerva CLI ---
-$(REPORTS_PATH)/explanations.txt: $(REACTO_OUT)/blazegraph.jnl
+$(REPORTS_PATH)/explanations.txt:
 	cd $(MINERVA_PATH) && ./build-cli.sh
 	cd $(MINERVA_PATH) && MINERVA_CLI_MEMORY=$(MINERVA_CLI_MEMORY) \
 		minerva-cli/bin/minerva-cli.sh \
@@ -130,7 +130,7 @@ validate: $(REPORTS_PATH)/explanations.txt
 
 REACTO_MODELS_JNL := $(REACTO_OUT)/reacto-models-bg.jnl
 
-$(REACTO_MODELS_JNL): $(REACTO_OUT)/blazegraph.jnl $(TARGET_PATH)/go-lego-reacto.owl
+$(REACTO_MODELS_JNL): $(TARGET_PATH)/go-lego-reacto.owl
 	cp $(REACTO_OUT)/blazegraph.jnl $(REACTO_MODELS_JNL)
 	$(BG_RUNNER_PATH)/bin/blazegraph-runner load \
 		--journal=$(REACTO_MODELS_JNL) \
