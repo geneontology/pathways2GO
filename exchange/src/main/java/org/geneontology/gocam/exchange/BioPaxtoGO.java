@@ -434,6 +434,7 @@ public class BioPaxtoGO {
 		}
 		if (id!=null) {
 			id = id.replace(" ", "_");
+            id = id.replace("_Isoform", "");  // correct bad xref prefixes, e.g., "UniProt_Isoform_P16220-1"
 		}
 		return id;
 	}
