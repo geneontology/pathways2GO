@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -1017,7 +1016,6 @@ public class PhysicalEntityOntologyBuilder {
 	public static Xref getDrugReferenceId(Entity bp_entity) {
 		String id = null;
 		Xref drug_ref = null;
-		Set<String> drugDbs = new HashSet<>(Arrays.asList("IUPHAR", "Guide to Pharmacology"));
 		try {
 			EntityReference r = null;
 			if(bp_entity.getModelInterface().equals(Protein.class)) {
@@ -1052,7 +1050,7 @@ public class PhysicalEntityOntologyBuilder {
 			if(r!=null) {
 				Set<Xref> erefs = r.getXref();
 				for(Xref eref : erefs) {
-					if(drugDbs.contains(eref.getDb())) {
+					if(isDrugDatabase(eref.getDb())) {
 						id = eref.getId();
 						drug_ref = eref;
 					}
@@ -1065,6 +1063,13 @@ public class PhysicalEntityOntologyBuilder {
 		//			System.out.println("found drug id "+id+" "+bp_BioPaxtoGO.getBioPaxName(entity));
 		//		}
 		return drug_ref;
+	}
+
+	private static boolean isDrugDatabase(String db) {
+		if(db == null) {
+			return false;
+		}
+		return db.equals("IUPHAR") || db.startsWith("Guide to Pharmacology");
 	}
 
 	public void countPhysical(Model biopax_model) throws IOException {

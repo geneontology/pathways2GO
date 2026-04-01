@@ -1,0 +1,106 @@
+BASE   <http://purl.obolibrary.org/obo/go/shapes/>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+#metadata
+PREFIX bl: <https://w3id.org/biolink/vocab/>
+PREFIX contributor: <http://purl.org/dc/elements/1.1/contributor>
+PREFIX provided_by: <http://purl.org/pav/providedBy>
+PREFIX date: <http://purl.org/dc/elements/1.1/date>
+PREFIX xref: <http://www.geneontology.org/formats/oboInOwl#hasDbXref>
+PREFIX exact_match: <http://www.w3.org/2004/02/skos/core#exactMatch>
+PREFIX source: <http://purl.org/dc/elements/1.1/source>
+PREFIX evidence: <http://geneontology.org/lego/evidence>
+PREFIX with: <http://geneontology.org/lego/evidence-with>
+#semantic: classes
+PREFIX GoInformationBiomacromolecule: <http://purl.obolibrary.org/obo/CHEBI_33695>
+PREFIX GoProtein: <http://purl.obolibrary.org/obo/CHEBI_36080>
+PREFIX GoProteinContainingComplex: <http://purl.obolibrary.org/obo/GO_0032991>
+PREFIX GoCellularComponent: <http://purl.obolibrary.org/obo/GO_0005575>
+PREFIX GoBiologicalProcess: <http://purl.obolibrary.org/obo/GO_0008150>
+PREFIX GoAnatomicalStructureDevelopment: <http://purl.obolibrary.org/obo/GO_0048856>
+PREFIX GoAnatomicalStructureFormationInvolvedInMorphogenesis: <http://purl.obolibrary.org/obo/GO_0048646>
+PREFIX GoAnatomicalStructureMorphogenesis: <http://purl.obolibrary.org/obo/GO_0009653>
+PREFIX GoCellDifferentiation: <http://purl.obolibrary.org/obo/GO_0030154>
+PREFIX GoCellFateCommitment: <http://purl.obolibrary.org/obo/GO_0045165>
+PREFIX GoCellFateDetermination: <http://purl.obolibrary.org/obo/GO_0001709>
+PREFIX GoCellFateSpecification: <http://purl.obolibrary.org/obo/GO_0001708>
+PREFIX GoCellularComponentAssembly: <http://purl.obolibrary.org/obo/GO_0022607>
+PREFIX GoCellularComponentDisassembly: <http://purl.obolibrary.org/obo/GO_0022411>
+PREFIX GoCellularComponentOrganization: <http://purl.obolibrary.org/obo/GO_0016043>
+PREFIX GoDevelopmentalMaturation: <http://purl.obolibrary.org/obo/GO_0021700>
+PREFIX GoGrowth: <http://purl.obolibrary.org/obo/GO_0040007>
+PREFIX GoLocomotion: <http://purl.obolibrary.org/obo/GO_0040011>
+PREFIX GoMovementOfCellOrSubcellularComponent: <http://purl.obolibrary.org/obo/GO_0006928>
+PREFIX GoProteinContainingComplexRemodeling: <http://purl.obolibrary.org/obo/GO_0034367>
+PREFIX GoPatternSpecificationProcess: <http://purl.obolibrary.org/obo/GO_0007389>
+PREFIX GoMolecularFunction: <http://purl.obolibrary.org/obo/GO_0003674>
+PREFIX GoChemicalEntity: <http://purl.obolibrary.org/obo/CHEBI_24431>
+PREFIX GoEvidence: <http://purl.obolibrary.org/obo/ECO_0000000>
+PREFIX GoAnatomicalEntity: <http://purl.obolibrary.org/obo/CARO_0000000>
+PREFIX GoNativeCell: <http://purl.obolibrary.org/obo/CL_0000003>
+PREFIX GoOrganism: <http://purl.obolibrary.org/obo/NCBITaxon_1>
+PREFIX GoBiologicalPhase: <http://purl.obolibrary.org/obo/GO_0044848>
+PREFIX GoLifeCycleStage: <http://purl.obolibrary.org/obo/UBERON_0000105>
+PREFIX GoPlantStructureDevelopmentStage: <http://purl.obolibrary.org/obo/PO_0009012>
+#semantic: relations
+PREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>
+PREFIX has_part: <http://purl.obolibrary.org/obo/BFO_0000051>
+PREFIX occurs_in: <http://purl.obolibrary.org/obo/BFO_0000066>
+PREFIX adjacent_to: <http://purl.obolibrary.org/obo/RO_0002220>
+PREFIX overlaps: <http://purl.obolibrary.org/obo/RO_0002131>
+PREFIX enabled_by: <http://purl.obolibrary.org/obo/RO_0002333>
+PREFIX has_input: <http://purl.obolibrary.org/obo/RO_0002233>
+PREFIX has_output: <http://purl.obolibrary.org/obo/RO_0002234>
+PREFIX has_target_end_location: <http://purl.obolibrary.org/obo/RO_0002339>
+PREFIX has_target_start_location: <http://purl.obolibrary.org/obo/RO_0002338>
+PREFIX transports_or_maintains_localization_of: <http://purl.obolibrary.org/obo/RO_0002313>
+PREFIX directly_provides_input_for: <http://purl.obolibrary.org/obo/RO_0002413>
+PREFIX directly_positively_regulates: <http://purl.obolibrary.org/obo/RO_0002629>
+PREFIX located_in: <http://purl.obolibrary.org/obo/RO_0001025>
+PREFIX happens_during: <http://purl.obolibrary.org/obo/RO_0002092>
+PREFIX regulates: <http://purl.obolibrary.org/obo/RO_0002211>
+PREFIX negatively_regulates: <http://purl.obolibrary.org/obo/RO_0002212>
+PREFIX positively_regulates: <http://purl.obolibrary.org/obo/RO_0002213>
+PREFIX directly_regulates: <http://purl.obolibrary.org/obo/RO_0002578>
+PREFIX directly_negatively_regulates: <http://purl.obolibrary.org/obo/RO_0002630>
+PREFIX directly_activates: <http://purl.obolibrary.org/obo/RO_0002406>
+PREFIX causally_upstream_of_or_within: <http://purl.obolibrary.org/obo/RO_0002418>
+PREFIX causally_upstream_of_or_within_negative_effect: <http://purl.obolibrary.org/obo/RO_0004046>
+PREFIX causally_upstream_of_or_within_positive_effect: <http://purl.obolibrary.org/obo/RO_0004047>
+PREFIX causally_upstream_of: <http://purl.obolibrary.org/obo/RO_0002411>
+PREFIX causally_upstream_of_negative_effect: <http://purl.obolibrary.org/obo/RO_0002305>
+PREFIX causally_upstream_of_positive_effect: <http://purl.obolibrary.org/obo/RO_0002304>
+PREFIX results_in_development_of: <http://purl.obolibrary.org/obo/RO_0002296>
+PREFIX results_in_formation_of: <http://purl.obolibrary.org/obo/RO_0002297>
+PREFIX results_in_morphogenesis_of: <http://purl.obolibrary.org/obo/RO_0002298>
+PREFIX results_in_acquisition_of_features_of: <http://purl.obolibrary.org/obo/RO_0002315>
+PREFIX results_in_commitment_to: <http://purl.obolibrary.org/obo/RO_0002348>
+PREFIX results_in_determination_of: <http://purl.obolibrary.org/obo/RO_0002349>
+PREFIX results_in_specification_of: <http://purl.obolibrary.org/obo/RO_0002356>
+PREFIX results_in_assembly_of: <http://purl.obolibrary.org/obo/RO_0002588>
+PREFIX results_in_disassembly_of: <http://purl.obolibrary.org/obo/RO_0002590>
+PREFIX results_in_organization_of: <http://purl.obolibrary.org/obo/RO_0002592>
+PREFIX results_in_maturation_of: <http://purl.obolibrary.org/obo/RO_0002299>
+PREFIX results_in_growth_of: <http://purl.obolibrary.org/obo/RO_0002343>
+PREFIX results_in_movement_of: <http://purl.obolibrary.org/obo/RO_0002565>
+PREFIX results_in_remodeling_of: <http://purl.obolibrary.org/obo/RO_0002591>
+# get protein binding reactions
+PREFIX GoProteinBinding: <http://purl.obolibrary.org/obo/GO_0005515>
+PREFIX GoBinding: <http://purl.obolibrary.org/obo/GO_0005488>
+PREFIX GoComplexBinding: <http://purl.obolibrary.org/obo/GO_0044877>
+PREFIX MF: <http://purl.obolibrary.org/obo/GO_0003674>
+
+select distinct ?reaction ?type
+where {
+    ?reaction rdf:type ?type .
+    #?type rdfs:subClassOf* MF: .
+    #FILTER(?type = <http://purl.obolibrary.org/obo/go/extensions/reacto.owl#molecular_event> || ?type = ?mf_type) .
+    #FILTER(?type = ?mf_type)
+}
+
+
+
+

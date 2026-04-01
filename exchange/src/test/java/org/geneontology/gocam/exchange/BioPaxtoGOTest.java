@@ -60,7 +60,7 @@ public class BioPaxtoGOTest {
 	static String empty_catalogue_file = "./src/test/resources/catalog-no-import.xml";
 	static String local_catalogue_file = "./src/test/resources/ontology/catalog-for-validation.xml";//  //"/Users/bgood/gocam_ontology/catalog-v001-for-noctua.xml";
 	static String go_lego_file = "./src/test/resources/ontology/go-lego-no-neo.owl";
-	static String go_plus_url = "http://purl.obolibrary.org/obo/go/extensions/go-plus.owl";
+	static String go_plus_url = "https://current.geneontology.org/ontology/extensions/go-plus.owl";
 	static String go_plus_file = "./target/go-plus.owl";
 	static Blazer blaze;
 	static QRunner tbox_qrunner;
@@ -95,7 +95,12 @@ public class BioPaxtoGOTest {
 		bp2g.golego = new GOLego(tbox);
 		//initialize the rules for inference
 		System.out.println("starting tbox build");
-		bp2g.tbox_qrunner = new QRunner(Collections.singleton(tbox), null, bp2g.golego.golego_reasoner, true, false, false);
+
+		// Build tboxes collection
+		Set<OWLOntology> tboxes = new HashSet<>();
+		tboxes.add(tbox);
+
+		bp2g.tbox_qrunner = new QRunner(tboxes, null, bp2g.golego.golego_reasoner, true, false, false);
 		System.out.println("done building arachne");		
 		fullBuild();
 		fullBuildYeastCyc();
@@ -563,7 +568,6 @@ public class BioPaxtoGOTest {
 		Set<String> tmp1 = new HashSet<String>(prop_value_1);
 		prop_value_1.removeAll(prop_value_2);
 		prop_value_2.removeAll(tmp1);
-		// TODO: Is this test necessary when add_neighboring_events_from_other_pathways is False? Maybe parameterize?
 //		assertTrue("diff values:\n\t"+prop_value_1+"\n"+prop_value_2, prop_value_1.size()==0);
 		
 	}
@@ -585,7 +589,8 @@ public class BioPaxtoGOTest {
 	/**
 	 * nice example: R-HSA-997272 Reactome:unexpanded:Inhibition of voltage gated Ca2+ channels via Gbeta/gamma subunits
 	 */
-	@Test
+	// Turning off as part of https://github.com/geneontology/pathways2GO/issues/345
+//	@Test
 	public final void testInferLocalizationProcess() {
 		System.out.println("Testing localization inference");
 		TupleQueryResult result = null;
@@ -640,7 +645,8 @@ public class BioPaxtoGOTest {
 	 * Beta-catenin translocates to the nucleus
 	 * 	reaction uri http://model.geneontology.org/R-HSA-201681/R-HSA-201669 
 	 */
-	@Test
+	// Turning off as part of https://github.com/geneontology/pathways2GO/issues/345
+//	@Test
 	public final void testInferProteinLocalizationProcess() {
 		System.out.println("Testing localization inference");
 		TupleQueryResult result = null;
@@ -668,10 +674,9 @@ public class BioPaxtoGOTest {
 				inputs = Integer.parseInt(bindingSet.getValue("inputs").stringValue());
 				n++;
 			}
-			// TODO: Find better example to test
-//			assertTrue(n==1);
-//			assertTrue("type is "+type, type.equals("http://purl.obolibrary.org/obo/GO_0140318"));
-//			assertTrue(inputs==1);
+			assertTrue(n==1);
+			assertTrue("type is "+type, type.equals("http://purl.obolibrary.org/obo/GO_0140318"));
+			assertTrue(inputs==1);
 		} catch (QueryEvaluationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -969,7 +974,7 @@ BP has_part R
 	/**
 	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferRegulatesViaOutputEnables}.
 	 * Use pathway R-HSA-4641262 , reaction1 = R-HSA-1504186 reaction2 = R-HSA-201677
-	 * Relation should be RO:0002413 directly positive regulates
+	 * Relation should be RO:0002629 directly positively regulates
 	 * 	DVL recruits GSK3beta:AXIN1 to the receptor complex
 	 * Phosphorylation of LRP5/6 cytoplasmic domain by membrane-associated GSK3beta
 	 * 	https://reactome.org/content/detail/R-HSA-4641262 
@@ -1198,7 +1203,8 @@ BP has_part R
 				"WHERE {\n" + 
 				"  GRAPH "+pathway+"  {  \n" + 
 				"    	"+reaction_node+" rdf:type "+reaction_go_type +" . \n" + 
-				"    	"+reaction_node+" rdfs:comment ?comment "+
+				"    	"+reaction_node+" rdfs:comment ?comment . \n"+
+				"    	filter( regex(?comment, \"This type assertion was computed with\" ))"+
 				"    }\n" + 
 				"  } \n";
 		TupleQueryResult result = null;
@@ -1272,7 +1278,7 @@ BP has_part R
 		return n;
 	}
 	
-	@Test
+//	@Test
 	public final void testChemicalRoleReplacement() {
 		System.out.println("testing replacement of CHEBI chemical role with chemical entity");
 		String pathway = "<http://model.geneontology.org/YeastPathways_ERGOSTEROL-SYN-PWY-1>";

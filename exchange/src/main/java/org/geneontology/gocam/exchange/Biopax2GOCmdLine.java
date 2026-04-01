@@ -28,16 +28,16 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 
 /**
- * Convert biopax pathways into GO-CAMs from the command line.  
- * Example parameters: 
+ * Convert biopax pathways into GO-CAMs from the command line.
+ * Example parameters:
 -b ./June2020_Homo_sapiens.owl
 -o ./reactome/
--bg ./blazegraph.jnl 
--tag unexpanded 
--dc https://orcid.org/0000-0002-7334-7852 
--dp https://reactome.org 
+-bg ./blazegraph.jnl
+-tag unexpanded
+-dc https://orcid.org/0000-0002-7334-7852
+-dp https://reactome.org
 -lego ./go-lego-reacto.owl
--e REACTO 
+-e REACTO
 -sssom ./target/classes/YeastCyc/obomatch-go-yeastpathway.sssom.tsv.txt
  * @author bgood
  *
@@ -205,10 +205,15 @@ public class Biopax2GOCmdLine {
 			if(taxa.size()==0) {
 				taxa.add("http://purl.obolibrary.org/obo/NCBITaxon_9606");
 			}
-			//initialize the rules for inference		
+			//initialize the rules for inference
 			OWLOntology tbox = ontman.loadOntologyFromOntologyDocument(new File(bp2g.go_lego_file));
 			bp2g.golego = new GOLego(tbox);
-			QRunner tbox_qrunner = new QRunner(Collections.singleton(tbox), null, bp2g.golego.golego_reasoner, true, false, false);
+
+			// Build tboxes collection
+			Set<OWLOntology> tboxes = new HashSet<>();
+			tboxes.add(tbox);
+
+			QRunner tbox_qrunner = new QRunner(tboxes, null, bp2g.golego.golego_reasoner, true, false, false);
 			bp2g.tbox_qrunner = tbox_qrunner;
 			
 			File dir = new File(input_biopax);
