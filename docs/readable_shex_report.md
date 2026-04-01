@@ -21,7 +21,7 @@ This takes a few minutes on the ~1 GB `go-lego.owl` and produces ~290k label map
 
 ### Python
 
-Python 3.7+ with no external dependencies (stdlib only).
+Python 3.6+ with no external dependencies (stdlib only).
 
 ## Usage
 
@@ -163,6 +163,6 @@ From the markdown report:
 
 ### Data structures
 
-- `Violation` dataclass -- raw parsed fields + resolved labels + category + explanation
+- `Violation` class -- raw parsed fields + resolved labels + category + explanation
 - Groups are plain dicts with `model_iri`, `model_title`, `model_id`, `violations`
 - Summary stats are a dict with `total`, `models_affected`, `by_category`, `by_property`, `top_models`
