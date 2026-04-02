@@ -111,7 +111,7 @@ $(TARGET_PATH)/reacto_labels.tsv: $(TARGET_PATH)/reacto.ttl
 reacto: $(TARGET_PATH)/reacto_labels.tsv
 
 # --- ShEx validation via Minerva CLI ---
-$(REPORTS_PATH)/explanations.txt:
+$(REPORTS_PATH)/explanations.txt: $(REPORTS_PATH)/biopax2go.log
 	cd $(MINERVA_PATH) && ./build-cli.sh
 	cd $(MINERVA_PATH) && MINERVA_CLI_MEMORY=$(MINERVA_CLI_MEMORY) \
 		minerva-cli/bin/minerva-cli.sh \
