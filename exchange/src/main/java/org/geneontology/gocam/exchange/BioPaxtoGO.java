@@ -839,13 +839,16 @@ public class BioPaxtoGO {
 				}
 				OWLNamedIndividual child = go_cam.df.getOWLNamedIndividual(process_iri);
 				//attach reactions that make up the pathway
-				if(process instanceof Conversion 
+				if(process instanceof Conversion
 						|| process instanceof TemplateReaction
-						|| process instanceof GeneticInteraction 
-						|| process instanceof MolecularInteraction 
-						|| process instanceof Interaction){					
-					go_cam.addRefBackedObjectPropertyAssertion(child, GoCAM.part_of, pathway_e, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
-					defineReactionEntity(go_cam, process, process_iri, false, model_id, pathway_iri.toString(), null, false);	
+						|| process instanceof GeneticInteraction
+						|| process instanceof MolecularInteraction
+						|| process instanceof Interaction){
+					defineReactionEntity(go_cam, process, process_iri, false, model_id, pathway_iri.toString(), null, false);
+					// Only add part_of link if the reaction was actually defined (not skipped by early GO term gate)
+					if(go_cam.go_cam_ont.containsEntityInSignature(process_iri)) {
+						go_cam.addRefBackedObjectPropertyAssertion(child, GoCAM.part_of, pathway_e, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+					}	
 					//attach child pathways
 				}
 				else if(process.getModelInterface().equals(Pathway.class)){
@@ -910,19 +913,25 @@ public class BioPaxtoGO {
 										if(add_reaction.equals("external_pathway")) {
 											String external_pathway_id = null;
 											for(Pathway external : prevEvent.getPathwayComponentOf()) {
-												external_pathway_id = getEntityReferenceId(external); 
+												external_pathway_id = getEntityReferenceId(external);
 												prevEvent_iri = GoCAM.makeGoCamifiedIRI(null, prev_event_id);
-												e1 = go_cam.df.getOWLNamedIndividual(prevEvent_iri);
-												go_cam.addComment(e1, "reaction from external pathway "+external_pathway_id);
 												break;
 											}
-											defineReactionEntity(go_cam, prevEvent, prevEvent_iri, false, external_pathway_id, pathway_iri.toString(), null, false);													
+											defineReactionEntity(go_cam, prevEvent, prevEvent_iri, false, external_pathway_id, pathway_iri.toString(), null, false);
+											if(prevEvent_iri != null && go_cam.go_cam_ont.containsEntityInSignature(prevEvent_iri)) {
+												e1 = go_cam.df.getOWLNamedIndividual(prevEvent_iri);
+												go_cam.addComment(e1, "reaction from external pathway "+external_pathway_id);
+											}
 										}else {
 											prevEvent_iri = GoCAM.makeGoCamifiedIRI(null, prev_event_id);
 											e1 = go_cam.df.getOWLNamedIndividual(prevEvent_iri);
+										}
+										// Only add causal link if both reactions were actually defined (not skipped by early GO term gate)
+										if(prevEvent_iri != null && go_cam.go_cam_ont.containsEntityInSignature(prevEvent_iri) &&
+												go_cam.go_cam_ont.containsEntityInSignature(event_iri)) {
+											OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(event_iri);
+											go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.causally_upstream_of, e2, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 										}										
-										OWLNamedIndividual e2 = go_cam.df.getOWLNamedIndividual(event_iri);
-										go_cam.addRefBackedObjectPropertyAssertion(e1, GoCAM.causally_upstream_of, e2, Collections.singleton(model_id), GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);										
 									}
 								}
 							} 
@@ -1101,6 +1110,21 @@ public class BioPaxtoGO {
 				this_iri = GoCAM.makeARandomIri(model_id);
 			}
 		}
+		// --- Early GO term resolution: skip Interaction entities with no GO term ---
+		// Must run BEFORE creating the OWL individual to avoid orphaned individuals.
+		if (entity instanceof Interaction) {
+			ReactionGoTermResult goTermResult = resolveGoTermForReaction(entity, go_cam);
+			if (goTermResult.hasNoGoTerm()) {
+				System.out.println("SKIPPING_NO_GO_TERM\t" + entity_id + "\t" + getBioPaxName(entity));
+				if (entity instanceof Process) {
+					report.bp2go_mf.put((Process) entity, new HashSet<String>());
+					report.bp2go_bp.put((Process) entity, goTermResult.getGoBpIds());
+					report.bp2go_controller.put((Process) entity, goTermResult.getControlTypes());
+				}
+				return;
+			}
+		}
+
 		Set<String> dbids = new HashSet<String>();
 		dbids.add(model_id);
 		//add entity to ontology, whatever it is
@@ -1117,7 +1141,7 @@ public class BioPaxtoGO {
 				}
 			}
 		}
-		Set<OWLClass> typesFromDirectEntityECs = new HashSet<OWLClass>();  // Contains types derived from eCNumber annotations to entity in BioPAX 
+		Set<OWLClass> typesFromDirectEntityECs = new HashSet<OWLClass>();  // Contains types derived from eCNumber annotations to entity in BioPAX
 		Set<OWLClass> typesFromDirectEntityExactECs = new HashSet<OWLClass>();  // Contains types derived from exact eCNumber annotations to entity in BioPAX
 		if (entity instanceof BiochemicalReaction) {
 			reaction_id = entity_id;
@@ -1270,7 +1294,7 @@ public class BioPaxtoGO {
 		//Interaction subsumes Conversion, GeneticInteraction, MolecularInteraction, TemplateReaction
 		//Conversion subsumes BiochemicalReaction, TransportWithBiochemicalReaction, ComplexAssembly, Degradation, GeneticInteraction, MolecularInteraction, TemplateReaction
 		//though the great majority are BiochemicalReaction
-		else if (entity instanceof Interaction){  		
+		else if (entity instanceof Interaction){
 			//build up causal relations between reactions from steps in the pathway
 			if(causal_recurse) {
 				Set<PathwayStep> steps = ((Interaction) entity).getStepProcessOf();
@@ -1674,7 +1698,7 @@ public class BioPaxtoGO {
 						OWLNamedIndividual controller_e = go_cam.df.getOWLNamedIndividual(iri);
 						if (entityStrategy.equals(EntityStrategy.YeastCyc)) {
 							// Check if BiochemicalRxn hasn't already been blessed with a type
-							Collection<OWLClassExpression> types = EntitySearcher.getTypes(e, go_cam.go_cam_ont);				
+							Collection<OWLClassExpression> types = EntitySearcher.getTypes(e, go_cam.go_cam_ont);
 							if(types.isEmpty() && go_mf.size() != 1 && controller_entity instanceof Protein) {
 								// No type for rxn yet and go_mf isn't suitable for use (there may only be one)
 								Set<OWLClass> more_go_mfs = getTypesFromECsFromGPs(controller_entity, go_cam);
@@ -1977,6 +2001,54 @@ public class BioPaxtoGO {
 	    }
 	}
 
+	/**
+	 * Holds the result of GO term resolution for a reaction, computed before
+	 * any OWL assertions are made. If mfTypes is empty and no fallback
+	 * produced a type, the reaction should be skipped.
+	 */
+	public static class ReactionGoTermResult {
+	    private final Set<OWLClass> mfTypes;
+	    private final Set<String> goMfIds;
+	    private final Set<String> goBpIds;
+	    private final Set<OWLClass> typesFromDirectEntityECs;
+	    private final Set<OWLClass> typesFromDirectEntityExactECs;
+	    private final Set<String> controlTypes;
+	    private final boolean hasFallbackBpMapping;
+
+	    public ReactionGoTermResult(
+	            Set<OWLClass> mfTypes,
+	            Set<String> goMfIds,
+	            Set<String> goBpIds,
+	            Set<OWLClass> typesFromDirectEntityECs,
+	            Set<OWLClass> typesFromDirectEntityExactECs,
+	            Set<String> controlTypes,
+	            boolean hasFallbackBpMapping) {
+	        this.mfTypes = mfTypes;
+	        this.goMfIds = goMfIds;
+	        this.goBpIds = goBpIds;
+	        this.typesFromDirectEntityECs = typesFromDirectEntityECs;
+	        this.typesFromDirectEntityExactECs = typesFromDirectEntityExactECs;
+	        this.controlTypes = controlTypes;
+	        this.hasFallbackBpMapping = hasFallbackBpMapping;
+	    }
+
+	    public Set<OWLClass> getMfTypes() { return mfTypes; }
+	    public Set<String> getGoMfIds() { return goMfIds; }
+	    public Set<String> getGoBpIds() { return goBpIds; }
+	    public Set<OWLClass> getTypesFromDirectEntityECs() { return typesFromDirectEntityECs; }
+	    public Set<OWLClass> getTypesFromDirectEntityExactECs() { return typesFromDirectEntityExactECs; }
+	    public Set<String> getControlTypes() { return controlTypes; }
+
+	    /**
+	     * Returns true if no GO term was found from any source.
+	     * This means: no MF types from controller xrefs, no EC-derived types,
+	     * no SSSOM match, and no stored BP mapping fallback.
+	     */
+	    public boolean hasNoGoTerm() {
+	        return mfTypes.isEmpty() && !hasFallbackBpMapping;
+	    }
+	}
+
 	private ComplexActiveUnitResult getComplexActiveUnitRecursive(Complex controlled_by_complex) {
 	    Set<PhysicalEntity> active_units = new HashSet<PhysicalEntity>();
 	    Set<PhysicalEntity> non_small_mol_components = new HashSet<PhysicalEntity>();
@@ -2158,6 +2230,147 @@ public class BioPaxtoGO {
 		//			binder.dissociation = true;
 		//		}
 		return binder;
+	}
+
+	/**
+	 * Resolves GO term type(s) for a reaction without making any OWL assertions.
+	 * Mirrors the lookup logic in defineReactionEntity() but is read-only.
+	 *
+	 * Sources tried in order:
+	 * 1. Controller xrefs (Catalysis/Control GO annotations) — primary for Reactome
+	 * 2. YeastCyc controller protein EC lookups
+	 * 3. Exact EC numbers on BiochemicalReaction (YeastCyc path)
+	 * 4. All EC numbers on BiochemicalReaction (non-YeastCyc fallback)
+	 * 5. SSSOM mapping
+	 * 6. Stored BP mappings from report.bp2go_bp
+	 */
+	ReactionGoTermResult resolveGoTermForReaction(Entity entity, GoCAM go_cam) {
+		Set<OWLClass> mfTypes = new HashSet<OWLClass>();
+		Set<String> goMfIds = new HashSet<String>();
+		Set<String> goBpIds = new HashSet<String>();
+		Set<String> controlTypes = new HashSet<String>();
+		Set<OWLClass> typesFromDirectEntityECs = new HashSet<OWLClass>();
+		Set<OWLClass> typesFromDirectEntityExactECs = new HashSet<OWLClass>();
+
+		// --- Source 1: EC numbers on the reaction itself ---
+		if (entity instanceof BiochemicalReaction) {
+			for (OWLClass type : getTypesFromECs((BiochemicalReaction) entity, go_cam)) {
+				typesFromDirectEntityECs.add(type);
+			}
+			for (OWLClass type : getTypesFromExactECs((BiochemicalReaction) entity, go_cam)) {
+				if (golego.molecular_functions.contains(type.getIRI().toString())) {
+					typesFromDirectEntityExactECs.add(type);
+				}
+			}
+			// YeastCyc: if a single exact EC type, use it
+			if (entityStrategy.equals(EntityStrategy.YeastCyc) && typesFromDirectEntityExactECs.size() == 1) {
+				mfTypes.add(typesFromDirectEntityExactECs.iterator().next());
+			}
+		}
+
+		// --- Source 2: Controller xrefs (GO MF annotations on Catalysis/Control) ---
+		if (entity instanceof Process) {
+			Set<Control> controllers = ((Process) entity).getControlledOf();
+			for (Control controller : controllers) {
+				// Drug controller check — same as defineReactionEntity lines 1544-1558
+				Set<Controller> controller_entities = controller.getController();
+				boolean skip_drug_controller = false;
+				for (Controller controller_entity : controller_entities) {
+					Xref drug_id_xref = PhysicalEntityOntologyBuilder.getDrugReferenceId(controller_entity);
+					if (drug_id_xref != null) {
+						skip_drug_controller = true;
+						break;
+					}
+				}
+				if (skip_drug_controller) {
+					continue;
+				}
+
+				// Track control type
+				if (controller.getModelInterface().equals(Catalysis.class)) {
+					controlTypes.add("Catalysis");
+				} else {
+					ControlType ctype = controller.getControlType();
+					if (ctype != null) {
+						controlTypes.add("Non-catalytic-" + ctype.toString());
+					}
+				}
+
+				// Extract GO terms from controller xrefs — mirrors lines 1604-1614
+				Set<Xref> xrefs = controller.getXref();
+				for (String goid : Helper.extractGoTermsFromXrefs(xrefs)) {
+					String uri = GoCAM.obo_iri + goid;
+					OWLClass xref_go_func = golego.getOboClass(uri, true);
+					mfTypes.add(xref_go_func);
+					goMfIds.add(goid);
+				}
+
+				// YeastCyc: EC lookup from controller protein — mirrors lines 1675-1686
+				if (entityStrategy.equals(EntityStrategy.YeastCyc) && mfTypes.isEmpty() && goMfIds.size() != 1) {
+					for (Controller controller_entity : controller_entities) {
+						if (controller_entity instanceof Protein) {
+							Set<OWLClass> more_go_mfs = getTypesFromECsFromGPs(controller_entity, go_cam);
+							if (!more_go_mfs.isEmpty()) {
+								OWLClass xtra_mf = more_go_mfs.iterator().next();
+								mfTypes.add(xtra_mf);
+								goMfIds.add(xtra_mf.getIRI().getRemainder().toString());
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// --- Source 3: Reaction direct BP xrefs ---
+		for (Xref xref : entity.getXref()) {
+			if (xref.getModelInterface().equals(RelationshipXref.class)) {
+				RelationshipXref ref = (RelationshipXref) xref;
+				String db = ref.getDb().toLowerCase();
+				if (db.contains("gene ontology")) {
+					String goid = ref.getId().replaceAll(":", "_");
+					goBpIds.add(goid);
+				}
+			}
+		}
+
+		// --- Source 4: Fallback chain (only if no MF types found yet) ---
+		boolean hasFallbackBpMapping = false;
+		if (mfTypes.isEmpty()) {
+			// 4a. EC-derived types for non-YeastCyc
+			if (entity instanceof BiochemicalReaction && !entityStrategy.equals(EntityStrategy.YeastCyc)) {
+				mfTypes.addAll(typesFromDirectEntityECs);
+			}
+
+			// 4b. SSSOM mapping
+			if (mfTypes.isEmpty() && sssom != null) {
+				String subject_id = sssom.contractUri(entity.getUri());
+				subject_id = subject_id.replace("BiochemicalReaction", "#BiochemicalReaction");
+				SSSOM.Mapping mapping = sssom.getBestMatch(subject_id, 0.5);
+				if (mapping != null) {
+					String class_iri = sssom.expandId(mapping.object_id);
+					OWLClass mapped_class = go_cam.df.getOWLClass(IRI.create(class_iri));
+					mfTypes.add(mapped_class);
+				}
+			}
+
+			// 4c. Reaction's own BP xrefs (collected in Source 3 above) as type fallback.
+			// The original code stores BP xrefs in report.bp2go_bp then reads them
+			// back in the fallback; since the resolver runs before that store, we use
+			// the goBpIds we already collected directly.
+			if (mfTypes.isEmpty() && !goBpIds.isEmpty()) {
+				hasFallbackBpMapping = true;
+				for (String go_id : goBpIds) {
+					String uri = GoCAM.obo_iri + go_id;
+					OWLClass xref_go_func = golego.getOboClass(uri, true);
+					mfTypes.add(xref_go_func);
+				}
+			}
+		}
+
+		return new ReactionGoTermResult(
+			mfTypes, goMfIds, goBpIds,
+			typesFromDirectEntityECs, typesFromDirectEntityExactECs,
+			controlTypes, hasFallbackBpMapping);
 	}
 
 	Set<OWLClass> getTypesFromECs(BiochemicalReaction reaction, GoCAM go_cam){
