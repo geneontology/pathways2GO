@@ -787,9 +787,8 @@ public class BioPaxtoGOTest {
 	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferRegulatesViaOutputRegulates()}.
 	 * Test that if reaction1 has_output M and reaction2 is regulated by M 
 	 * then reaction1 provides direct input for a binding reaction that regulates reaction2
-	 * Use pathway R-HSA-1810476 RIP-mediated NFkB activation via ZBP1
+	 * Use pathway R-HSA-1445148, reaction1 = R-HSA-1449597, reaction2 = R-HSA-2316352
 	 */
-	@Ignore("Skipped: R-HSA-1810457 (binding reaction) has no catalysis controller with GO xrefs and is now skipped by early gate in defineReactionEntity()")
 	@Test
 	public final void testInferRegulatesViaOutputRegulates() {
 		System.out.println("Testing infer regulates via output regulates");
@@ -797,10 +796,10 @@ public class BioPaxtoGOTest {
 		try {
 			result = blaze.runSparqlQuery(
 				"prefix obo: <http://purl.obolibrary.org/obo/> "
-				+ "select ?prop " + 
-				"where { " + 
-				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-168910> } ." + 
-				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-1810457> } . " + 
+				+ "select ?prop " +
+				"where { " +
+				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-2316352> } ." +
+				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-1449597> } . " +
 				"  ?reaction1 <http://purl.obolibrary.org/obo/RO_0002413> ?binding_reaction . "
 				+ "?binding_reaction ?prop ?reaction2 . "+
 				"}"); 
@@ -976,16 +975,9 @@ BP has_part R
 
 	/**
 	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferRegulatesViaOutputEnables}.
-	 * Use pathway R-HSA-4641262 , reaction1 = R-HSA-1504186 reaction2 = R-HSA-201677
+	 * Use pathway R-HSA-110362, reaction1 = R-HSA-5649883, reaction2 = R-HSA-5651723
 	 * Relation should be RO:0002629 directly positively regulates
-	 * 	DVL recruits GSK3beta:AXIN1 to the receptor complex
-	 * Phosphorylation of LRP5/6 cytoplasmic domain by membrane-associated GSK3beta
-	 * 	https://reactome.org/content/detail/R-HSA-4641262 
-	 * Compare to http://noctua-dev.berkeleybop.org/editor/graph/gomodel:R-HSA-4641262
-	 * 
-	 * Also an active site detection test
 	 */
-	@Ignore("Skipped: R-HSA-1504186 has no controller with GO xrefs and is now skipped by early gate in defineReactionEntity()")
 	@Test
 	public final void testInferRegulatesViaOutputEnables() {
 		System.out.println("Testing regulates via output enables");
@@ -993,14 +985,13 @@ BP has_part R
 		try {
 			result = blaze.runSparqlQuery(
 				"prefix obo: <http://purl.obolibrary.org/obo/> "
-				+ "select ?pathway " + 
-				"where { " + 
-				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-1504186> } . "+ 
-				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-201677> } . "+
+				+ "select ?pathway " +
+				"where { " +
+				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-5649883> } . "+
+				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-5651723> } . "+
 				" ?reaction1 obo:RO_0002629 ?reaction2 . "
 				+ "?reaction2 obo:RO_0002333 ?active_part . "
 				+ "?reaction1 obo:BFO_0000050 ?pathway "+
-				
 				"}");
 			int n = 0; String pathway = null;
 			while (result.hasNext()) {
@@ -1009,7 +1000,7 @@ BP has_part R
 				n++;
 			}
 			assertTrue(n==1);
-			assertTrue("got "+pathway, pathway.equals("http://model.geneontology.org/R-HSA-4641262/R-HSA-4641262"));
+			assertTrue("got "+pathway, pathway.equals("http://model.geneontology.org/R-HSA-110362/R-HSA-110362"));
 		} catch (QueryEvaluationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1072,7 +1063,53 @@ BP has_part R
 	    }
 	    System.out.println("Done testing regulates via output enables");
 	}
-	
+
+	/**
+	 * Test that causal paths bridge over skipped reactions.
+	 * In pathway R-HSA-4641262, the step graph has:
+	 *   Step9 (R-HSA-3601585) -> Step14 (R-HSA-201685, skipped) -> Step10 (R-HSA-1504186, skipped) -> Step11 (R-HSA-201677)
+	 * With bridging, R-HSA-3601585 should have a causal relation to R-HSA-201677.
+	 * The initial causally_upstream_of (RO_0002411) is upgraded by SPARQL inference rules
+	 * to directly_positively_regulates (RO_0002629) via "Entity Regulation Rule 3".
+	 */
+	@Test
+	public final void testCausalPathBridging() {
+		System.out.println("Testing causal path bridging over skipped reactions");
+		TupleQueryResult result = null;
+		try {
+			// Query for any causal relation (the original causally_upstream_of may be
+			// upgraded to a more specific relation by SPARQL inference rules)
+			result = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> "
+				+ "select ?prop ?target "
+				+ "where { "
+				+ "VALUES ?source { <http://model.geneontology.org/R-HSA-3601585> } . "
+				+ "VALUES ?prop { obo:RO_0002411 obo:RO_0002413 obo:RO_0002629 } . "
+				+ "?source ?prop ?target . "
+				+ "}");
+			Set<String> targets = new HashSet<String>();
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				String target = bindingSet.getValue("target").stringValue();
+				String prop = bindingSet.getValue("prop").stringValue();
+				System.out.println("Bridge target: "+target+" via "+prop);
+				targets.add(target);
+			}
+			assertTrue("expected at least 1 bridge target, got "+targets.size(), targets.size()>=1);
+			assertTrue("expected bridge to R-HSA-201677, targets: "+targets,
+				targets.contains("http://model.geneontology.org/R-HSA-201677"));
+		} catch (QueryEvaluationException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				e.printStackTrace();
+			}
+		}
+		System.out.println("Done testing causal path bridging");
+	}
+
 	@Ignore("Skipped: R-HSA-70667 (spontaneous reaction) has 0 controllers and is now skipped by early gate in defineReactionEntity()")
 	@Test
 	public final void testSharedIntermediateInputs() {

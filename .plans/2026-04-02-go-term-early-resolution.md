@@ -6,7 +6,7 @@
 
 **Tech Stack:** Java 11, OWL API 4.5.6, paxtools-core 5.1.0, Maven, JUnit 4
 
-**Status: IMPLEMENTED** — 16/20 tests pass, 4 skipped (intended behavior change)
+**Status: IMPLEMENTED** — 19/21 tests pass, 2 skipped (intended behavior change)
 
 ---
 
@@ -39,23 +39,27 @@
 
 ---
 
-## Remaining Test Failures (4 tests, `@Ignore`d)
+## Remaining Test Failures (2 tests, `@Ignore`d)
 
 These tests fail because reactions with no resolvable GO term are now skipped — the intended behavior change. Each is annotated with `@Ignore` and an explanation.
 
 | Test | Pathway | Skipped Reaction | Why No GO Term |
 |------|---------|-----------------|----------------|
-| `testInferRegulatesViaOutputRegulates` | R-HSA-1810476 | R-HSA-1810457 | Binding reaction, no catalysis controller with GO xrefs |
-| `testInferRegulatesViaOutputEnables` | R-HSA-4641262 | R-HSA-1504186 | No controller with GO xrefs |
 | `testOccursInFromEntityLocations` | R-HSA-201451 | R-HSA-201422 | No GO MF from controllers |
 | `testSharedIntermediateInputs` | R-HSA-70688 | R-HSA-70667 | Spontaneous reaction (0 controllers) |
 
-These tests cover scenarios where a reaction without a GO MF term still participated in the model (via `molecular_event` fallback). Now that such reactions are skipped:
-- Causal inference chains are broken where a skipped reaction was an intermediate
-- Location (occurs_in) inferences don't fire for skipped reactions
-- Shared intermediate inputs/outputs between a skipped and non-skipped reaction aren't connected
+These tests query properties of the skipped reaction itself (location, inputs/outputs) — not causal connectivity. Bridging does not help because the skipped reaction individual is absent from the model entirely.
 
-**Future work:** These tests should be revisited when the pipeline's handling of controller-less reactions (binding, transport, spontaneous) is refined. Options include assigning specific GO terms for these reaction types or creating dedicated handling paths.
+**Previously `@Ignore`d, now restored with new example pathways:**
+
+| Test | Old Pathway | New Pathway | New Reactions |
+|------|-------------|-------------|---------------|
+| `testInferRegulatesViaOutputRegulates` | R-HSA-1810476 | R-HSA-1445148 | R-HSA-1449597 → R-HSA-2316352 |
+| `testInferRegulatesViaOutputEnables` | R-HSA-4641262 | R-HSA-110362 | R-HSA-5649883 → R-HSA-5651723 |
+
+These tests were restored by finding new example pathways where the relevant reactions have controllers with GO xrefs.
+
+**Future work:** The 2 remaining tests should be revisited when the pipeline's handling of controller-less reactions (binding, transport, spontaneous) is refined. Options include assigning specific GO terms for these reaction types or creating dedicated handling paths.
 
 ---
 
@@ -71,6 +75,26 @@ Reactions skipped by the early gate were leaking back into the model as orphaned
 
 ---
 
+## Causal path bridging over skipped intermediates (2026-04-08)
+
+When skipped reactions sit between two defined reactions in the pathway step DAG, the causal chain was broken. For example, in pathway R-HSA-4641262:
+
+```
+Step9 (R-HSA-3601585, defined) → Step14 (R-HSA-201685, skipped) → Step10 (R-HSA-1504186, skipped) → Step11 (R-HSA-201677, defined)
+```
+
+**Fix:** Added `findNearestDefinedProcesses()` helper method that walks the `PathwayStep` DAG (forward or backward) to find the nearest defined reactions, skipping over steps whose reactions were all dropped. The pathway-level causal linking loop now resolves undefined endpoints through this helper before creating `causally_upstream_of` assertions. A `Set<String>` deduplicates links when multiple DAG paths converge.
+
+**Result:** R-HSA-3601585 now bridges to R-HSA-201677 (2-hop bridge). The initial `causally_upstream_of` is then upgraded to `directly_positively_regulates` (RO_0002629) by SPARQL inference "Entity Regulation Rule 3".
+
+**New test:** `testCausalPathBridging` — verifies the bridge link exists by querying for any causal relation (RO_0002411, RO_0002413, or RO_0002629) from R-HSA-3601585 to R-HSA-201677.
+
+**Restored tests with new example pathways:** `testInferRegulatesViaOutputRegulates` now uses pathway R-HSA-1445148 (rxns R-HSA-1449597 → R-HSA-2316352). `testInferRegulatesViaOutputEnables` now uses pathway R-HSA-110362 (rxns R-HSA-5649883 → R-HSA-5651723). Both pass with reactions that have controllers with GO xrefs. The remaining 2 `@Ignore`d tests (`testOccursInFromEntityLocations`, `testSharedIntermediateInputs`) query properties of the skipped reaction itself and cannot be resolved by bridging or re-example.
+
+**Spec:** `.specs/2026-04-08-causal-path-bridging.md`
+
+---
+
 ## Lessons Learned
 
 1. **Gate placement matters.** The initial gate was inside the `Interaction` branch — after the OWL individual was already created (`makeAnnotatedIndividual`). Orphaned individuals (with annotations but no type) persisted in the model and broke tests like `testDrugReactionDeletion`. Moving the gate before individual creation fixed this.
@@ -82,3 +106,5 @@ Reactions skipped by the early gate were leaking back into the model as orphaned
 4. **Resolver's `report.bp2go_bp` check was a timing bug.** Source 4c checked `report.bp2go_bp.get(entity)` but this map isn't populated until later in the same invocation. Using the locally-collected `goBpIds` (from Source 3) fixed the false-negative.
 
 5. **Causal links re-introduce skipped reactions.** The `containsEntityInSignature` guard on `part_of` (lesson 2) was necessary but not sufficient — the separate pathway step linking loop also creates `causally_upstream_of` assertions that implicitly add individuals to the model. All assertion sites that reference reaction IRIs need the same guard.
+
+6. **SPARQL inference rules transform causal relations.** The `causally_upstream_of` (RO_0002411) created by bridging is upgraded to more specific relations (e.g., `directly_positively_regulates` RO_0002629) by `applySparqlRules`. Tests must query for the transformed relation, not the original.
