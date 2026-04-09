@@ -1955,8 +1955,7 @@ public class BioPaxtoGO {
 								}
 								String precedingRxnId = getEntityReferenceId(reaction);
 								IRI preRxnIri = GoCAM.makeGoCamifiedIRI(null, precedingRxnId);
-//								OWLNamedIndividual preRxnInd = go_cam.df.getOWLNamedIndividual(preRxnIri);
-								OWLNamedIndividual preRxnInd = go_cam.makeAnnotatedIndividual(preRxnIri);
+								OWLNamedIndividual preRxnInd = go_cam.df.getOWLNamedIndividual(preRxnIri);
 								Collection<OWLClassExpression> precedingRxnTypes = EntitySearcher.getTypes(preRxnInd, go_cam.go_cam_ont);
 								for(OWLClassExpression rxnType : precedingRxnTypes) {
 									int x = 1;  // placeholder TODO to check if rxnType has any part_of->go_id closure
