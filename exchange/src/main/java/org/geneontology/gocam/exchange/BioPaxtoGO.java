@@ -1840,7 +1840,6 @@ public class BioPaxtoGO {
 						}
 					}
 				}
-				Collection<OWLClassExpression> types = EntitySearcher.getTypes(e, go_cam.go_cam_ont);
 				//If a reaction is xreffed directly to the GO it is mapping to a biological process
 				//this indicates the reaction is a part_of that process
 				for(Xref xref : entity.getXref()) {
@@ -1852,29 +1851,26 @@ public class BioPaxtoGO {
 						if(db.contains("gene ontology")) {
 							String goid = ref.getId().replaceAll(":", "_");
 							go_bp.add(goid);
-							// Below is the regular way of converting rxn GO BP terms. Only do this if proper activity type
-							if(!types.isEmpty()) {
-								String uri = GoCAM.obo_iri + goid;
-								OWLClass xref_go_func = golego.getOboClass(uri, true);
-								if(golego.isDeprecated(uri)) {
-									report.deprecated_classes.add(getBioPaxName(entity)+"\t"+uri+"\tBP");
-								}
-								//the go class can not be a type for the reaction instance as we want to classify reactions as functions
-								//and MF disjoint from BP
-								//so make a new individual, hook it to that class, link to it via part of 
-								OWLNamedIndividual bp_i = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(model_id, entity_id+"_"+goid+"_individual"));
-								go_cam.addLiteralAnnotations2Individual(bp_i.getIRI(), GoCAM.rdfs_comment, "Asserted direct link between reaction and biological process, independent of current pathway");
-								go_cam.addTypeAssertion(bp_i, xref_go_func);
-								go_cam.addRefBackedObjectPropertyAssertion(e,GoCAM.part_of, bp_i, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
-								//use the same name and id as the entity in question as, from Reactome perspective, its about the same thing and otherwise we have no name..
-								go_cam.addLabel(bp_i, "reaction:"+entity_name+": is xrefed to this process");
-								if(entity_id!=null) {
-									go_cam.addDatabaseXref(bp_i, entity_id);
-								}
-								//Per https://github.com/geneontology/pathways2GO/issues/66
-								//remove the default part_of pathway relationship when one of these is added. 
-								go_cam.applyAnnotatedTripleRemover(e.getIRI(), GoCAM.part_of.getIRI(), IRI.create(root_pathway_iri));
+							String uri = GoCAM.obo_iri + goid;
+							OWLClass xref_go_func = golego.getOboClass(uri, true);
+							if(golego.isDeprecated(uri)) {
+								report.deprecated_classes.add(getBioPaxName(entity)+"\t"+uri+"\tBP");
 							}
+							//the go class can not be a type for the reaction instance as we want to classify reactions as functions
+							//and MF disjoint from BP
+							//so make a new individual, hook it to that class, link to it via part of
+							OWLNamedIndividual bp_i = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(model_id, entity_id+"_"+goid+"_individual"));
+							go_cam.addLiteralAnnotations2Individual(bp_i.getIRI(), GoCAM.rdfs_comment, "Asserted direct link between reaction and biological process, independent of current pathway");
+							go_cam.addTypeAssertion(bp_i, xref_go_func);
+							go_cam.addRefBackedObjectPropertyAssertion(e,GoCAM.part_of, bp_i, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+							//use the same name and id as the entity in question as, from Reactome perspective, its about the same thing and otherwise we have no name..
+							go_cam.addLabel(bp_i, "reaction:"+entity_name+": is xrefed to this process");
+							if(entity_id!=null) {
+								go_cam.addDatabaseXref(bp_i, entity_id);
+							}
+							//Per https://github.com/geneontology/pathways2GO/issues/66
+							//remove the default part_of pathway relationship when one of these is added.
+							go_cam.applyAnnotatedTripleRemover(e.getIRI(), GoCAM.part_of.getIRI(), IRI.create(root_pathway_iri));
 						}
 					}
 				}	
@@ -1883,9 +1879,9 @@ public class BioPaxtoGO {
 				report.bp2go_bp.put((Process)entity, go_bp);
 				report.bp2go_controller.put((Process)entity, control_type);
 
-				//want to stay in go tbox as much as possible - even if defaulting to root nodes.  
+				//want to stay in go tbox as much as possible - even if defaulting to root nodes.
 				//if no process or function annotations, add annotation to root
-//				Collection<OWLClassExpression> types = EntitySearcher.getTypes(e, go_cam.go_cam_ont);			
+				Collection<OWLClassExpression> types = EntitySearcher.getTypes(e, go_cam.go_cam_ont);
 				if(types.isEmpty()) { //go_mf.isEmpty()&&go_bp.isEmpty()
 					//try mapping via xrefs
 					boolean mapped = false;
@@ -1922,50 +1918,8 @@ public class BioPaxtoGO {
 							}
 						}
 					}
-					Set<String> mappedgo = report.bp2go_bp.get((Process)entity);
-					if(mappedgo!=null) {
-						for(String go_id : mappedgo) {
-							String uri = GoCAM.obo_iri + go_id;
-							OWLClass xref_go_func = golego.getOboClass(uri, true);
-							if(golego.isDeprecated(uri)) {
-								report.deprecated_classes.add(getBioPaxName(entity)+"\t"+uri+"\tBP");
-							}
-							//the go class can not be a type for the reaction instance as we want to classify reactions as functions
-							//and MF disjoint from BP
-							//so make a new individual, hook it to that class, link to it via part of 
-//							OWLNamedIndividual bp_i = go_cam.makeAnnotatedIndividual(GoCAM.makeGoCamifiedIRI(model_id, entity_id+"_"+go_id+"_individual"));
-//							go_cam.addLiteralAnnotations2Individual(bp_i.getIRI(), GoCAM.rdfs_comment, "Asserted direct link between reaction and biological process, independent of current pathway");
-							go_cam.addTypeAssertion(e, xref_go_func);
-//							go_cam.addRefBackedObjectPropertyAssertion(e,GoCAM.part_of, bp_i, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
-							//use the same name and id as the entity in question as, from Reactome perspective, its about the same thing and otherwise we have no name..
-//							go_cam.addLabel(e, "reaction:"+entity_name+": is xrefed to this process");
-//							if(entity_id!=null) {
-//								go_cam.addDatabaseXref(bp_i, entity_id);
-//							}
-							//Per https://github.com/geneontology/pathways2GO/issues/66
-							//remove the default part_of pathway relationship when one of these is added. 
-							go_cam.applyAnnotatedTripleRemover(e.getIRI(), GoCAM.part_of.getIRI(), IRI.create(root_pathway_iri));
-							// TODO: Check if preceding rxn's term is part_of go_id
-							PathwayStep pathway_step = ((Conversion) entity).getStepProcessOf().iterator().next();
-							Set<PathwayStep> previous_steps = pathway_step.getNextStepOf();
-							for(PathwayStep previous_step : previous_steps) {
-								BiochemicalReaction reaction = getBiochemicalReaction(previous_step);
-								if (reaction == null) {
-									continue;
-								}
-								String precedingRxnId = getEntityReferenceId(reaction);
-								IRI preRxnIri = GoCAM.makeGoCamifiedIRI(null, precedingRxnId);
-								OWLNamedIndividual preRxnInd = go_cam.df.getOWLNamedIndividual(preRxnIri);
-								Collection<OWLClassExpression> precedingRxnTypes = EntitySearcher.getTypes(preRxnInd, go_cam.go_cam_ont);
-								for(OWLClassExpression rxnType : precedingRxnTypes) {
-									int x = 1;  // placeholder TODO to check if rxnType has any part_of->go_id closure
-								}
-							}
-							mapped = true;
-						}
-					}
 					if(!mapped) {
-						go_cam.addTypeAssertion(e, GoCAM.molecular_event);	
+						go_cam.addTypeAssertion(e, GoCAM.molecular_event);
 					}
 				}
 				//The GO-CAM OWL for the reaction and all of its parts should now be assembled.  
@@ -2085,8 +2039,8 @@ public class BioPaxtoGO {
 
 	/**
 	 * Holds the result of GO term resolution for a reaction, computed before
-	 * any OWL assertions are made. If mfTypes is empty and no fallback
-	 * produced a type, the reaction should be skipped.
+	 * any OWL assertions are made. If mfTypes is empty, the reaction should
+	 * be skipped.
 	 */
 	public static class ReactionGoTermResult {
 	    private final Set<OWLClass> mfTypes;
@@ -2095,7 +2049,6 @@ public class BioPaxtoGO {
 	    private final Set<OWLClass> typesFromDirectEntityECs;
 	    private final Set<OWLClass> typesFromDirectEntityExactECs;
 	    private final Set<String> controlTypes;
-	    private final boolean hasFallbackBpMapping;
 
 	    public ReactionGoTermResult(
 	            Set<OWLClass> mfTypes,
@@ -2103,15 +2056,13 @@ public class BioPaxtoGO {
 	            Set<String> goBpIds,
 	            Set<OWLClass> typesFromDirectEntityECs,
 	            Set<OWLClass> typesFromDirectEntityExactECs,
-	            Set<String> controlTypes,
-	            boolean hasFallbackBpMapping) {
+	            Set<String> controlTypes) {
 	        this.mfTypes = mfTypes;
 	        this.goMfIds = goMfIds;
 	        this.goBpIds = goBpIds;
 	        this.typesFromDirectEntityECs = typesFromDirectEntityECs;
 	        this.typesFromDirectEntityExactECs = typesFromDirectEntityExactECs;
 	        this.controlTypes = controlTypes;
-	        this.hasFallbackBpMapping = hasFallbackBpMapping;
 	    }
 
 	    public Set<OWLClass> getMfTypes() { return mfTypes; }
@@ -2124,10 +2075,10 @@ public class BioPaxtoGO {
 	    /**
 	     * Returns true if no GO term was found from any source.
 	     * This means: no MF types from controller xrefs, no EC-derived types,
-	     * no SSSOM match, and no stored BP mapping fallback.
+	     * and no SSSOM match.
 	     */
 	    public boolean hasNoGoTerm() {
-	        return mfTypes.isEmpty() && !hasFallbackBpMapping;
+	        return mfTypes.isEmpty();
 	    }
 	}
 
@@ -2324,7 +2275,6 @@ public class BioPaxtoGO {
 	 * 3. Exact EC numbers on BiochemicalReaction (YeastCyc path)
 	 * 4. All EC numbers on BiochemicalReaction (non-YeastCyc fallback)
 	 * 5. SSSOM mapping
-	 * 6. Stored BP mappings from report.bp2go_bp
 	 */
 	ReactionGoTermResult resolveGoTermForReaction(Entity entity, GoCAM go_cam) {
 		Set<OWLClass> mfTypes = new HashSet<OWLClass>();
@@ -2416,7 +2366,6 @@ public class BioPaxtoGO {
 		}
 
 		// --- Source 4: Fallback chain (only if no MF types found yet) ---
-		boolean hasFallbackBpMapping = false;
 		if (mfTypes.isEmpty()) {
 			// 4a. EC-derived types for non-YeastCyc
 			if (entity instanceof BiochemicalReaction && !entityStrategy.equals(EntityStrategy.YeastCyc)) {
@@ -2434,25 +2383,12 @@ public class BioPaxtoGO {
 					mfTypes.add(mapped_class);
 				}
 			}
-
-			// 4c. Reaction's own BP xrefs (collected in Source 3 above) as type fallback.
-			// The original code stores BP xrefs in report.bp2go_bp then reads them
-			// back in the fallback; since the resolver runs before that store, we use
-			// the goBpIds we already collected directly.
-			if (mfTypes.isEmpty() && !goBpIds.isEmpty()) {
-				hasFallbackBpMapping = true;
-				for (String go_id : goBpIds) {
-					String uri = GoCAM.obo_iri + go_id;
-					OWLClass xref_go_func = golego.getOboClass(uri, true);
-					mfTypes.add(xref_go_func);
-				}
-			}
 		}
 
 		return new ReactionGoTermResult(
 			mfTypes, goMfIds, goBpIds,
 			typesFromDirectEntityECs, typesFromDirectEntityExactECs,
-			controlTypes, hasFallbackBpMapping);
+			controlTypes);
 	}
 
 	/**

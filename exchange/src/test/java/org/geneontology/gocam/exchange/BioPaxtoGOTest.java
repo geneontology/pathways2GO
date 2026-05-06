@@ -1110,6 +1110,52 @@ BP has_part R
 		System.out.println("Done testing causal path bridging");
 	}
 
+	/**
+	 * Test that a reaction whose only GO annotation is a curated GO BP xref
+	 * (no MF from controllers, no EC, no SSSOM) is skipped by the early gate
+	 * in defineReactionEntity() — just like any other no-MF molecular event.
+	 *
+	 * Reverts the special-case behavior introduced by PR #387 (issue #318).
+	 *
+	 * Target: R-HSA-201669 "Beta-catenin translocates to the nucleus" in pathway
+	 * R-HSA-201681 (TCF dependent signaling in response to WNT). Its sole GO
+	 * annotation is RelationshipXref to GO:0060828 (regulation of canonical
+	 * Wnt signaling pathway). It has zero controllers.
+	 */
+	@Test
+	public final void testBpOnlyReactionSkipped() {
+		System.out.println("Testing that BP-only reactions are skipped by early gate");
+		String pathway = "<http://model.geneontology.org/R-HSA-201681>";
+		String reaction_delete = "<http://model.geneontology.org/R-HSA-201669>";
+		String all_reaction_q =
+				"SELECT distinct ?reaction_prop ?reaction_value \n" +
+				"WHERE {\n" +
+				"  GRAPH pathway_id {  \n" +
+				"    	reaction_id ?reaction_prop ?reaction_value . \n" +
+				"    }\n" +
+				"  } \n";
+		TupleQueryResult result = null;
+		int n = 0;
+		try {
+			String q = all_reaction_q.replace("pathway_id", pathway);
+			q = q.replace("reaction_id", reaction_delete);
+			result = blaze.runSparqlQuery(q);
+			while (result.hasNext()) {
+				result.next();
+				n++;
+			}
+		} catch (QueryEvaluationException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (result != null) result.close();
+			} catch (QueryEvaluationException e) {
+				e.printStackTrace();
+			}
+		}
+		assertTrue("BP-only reaction "+reaction_delete+" should have been skipped (got "+n+" triples)", n == 0);
+	}
+
 	@Ignore("Skipped: R-HSA-70667 (spontaneous reaction) has 0 controllers and is now skipped by early gate in defineReactionEntity()")
 	@Test
 	public final void testSharedIntermediateInputs() {
