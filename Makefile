@@ -30,7 +30,7 @@ BG_PARALLELISM   ?= 8
 .PHONY: all download build convert extract-reports reacto validate \
 	readable-shex-report reason manuscript clean
 
-all: download build convert extract-reports reacto validate
+all: download build convert extract-reports reacto validate readable-shex-report
 
 # --- Download BioPAX and ontology ---
 $(TARGET_PATH)/biopax.zip:
