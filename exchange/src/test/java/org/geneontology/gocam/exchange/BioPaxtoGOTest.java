@@ -423,7 +423,9 @@ public class BioPaxtoGOTest {
 		assertTrue("reaction "+reaction_present+" not present", n>0);
 		pathway = "<http://model.geneontology.org/R-HSA-112311>";
 		reaction_delete = "<http://model.geneontology.org/R-HSA-9634834>";
-		reaction_present = "<http://model.geneontology.org/R-HSA-372519>";
+		// R-HSA-372519 (AChE/BuChE) is catalyzed by an EntitySet and is split into one activity per member;
+		// confirm the non-drug reaction survived drug removal by checking one of its split clones.
+		reaction_present = "<http://model.geneontology.org/R-HSA-372519_enabled_by_UniProt_P22303_R-HSA-372519_controller>";
 		n = 0;
 		result = null;
 		try {
@@ -756,7 +758,7 @@ public class BioPaxtoGOTest {
 				"prefix obo: <http://purl.obolibrary.org/obo/> "
 				+ "select ?locationclass " + 
 				"where { " + 
-				"VALUES ?reaction { <http://model.geneontology.org/R-HSA-201425> }" + 
+				"  filter(strstarts(str(?reaction), \"http://model.geneontology.org/R-HSA-201425\"))" + 
 				"  ?reaction obo:BFO_0000066 ?location . "
 				+ "?location rdf:type ?locationclass " + 
 				"  filter(?locationclass != owl:NamedIndividual)" + 
@@ -767,7 +769,9 @@ public class BioPaxtoGOTest {
 				location = bindingSet.getValue("locationclass").stringValue();
 				n++;
 			}
-			assertTrue(n==1);
+			// R-HSA-201425 is catalyzed by an EntitySet (UBE2D family) and is split into one activity per
+			// member; occurs_in is inferred on each clone from its enabler location (all in nucleoplasm).
+			assertTrue("expected occurs_in inferred on at least one split clone, got "+n, n>=1);
 			assertTrue(location, location.equals("http://purl.obolibrary.org/obo/GO_0005654"));
 		} catch (QueryEvaluationException e) {
 			// TODO Auto-generated catch block
@@ -1062,6 +1066,54 @@ BP has_part R
 	        }
 	    }
 	    System.out.println("Done testing regulates via output enables");
+	}
+
+	/**
+	 * Pathway R-HSA-1482922: reaction R-HSA-1482825 is catalyzed by EntitySet PLA2(11)
+	 * (4 proteins + PLA2G4A:Ca2+ complex). It must become 5 activities, each enabled_by a
+	 * distinct protein, with nothing left on the original reaction node. Sibling reaction
+	 * R-HSA-1482868 (EntitySet PLA2(12): PLA2G4C + PLA2G2A:Ca2+) must become 2 activities.
+	 */
+	@Test
+	public final void testSetEnabledReactionSplit() {
+		System.out.println("Testing set-enabled reaction split");
+		try {
+			TupleQueryResult orig = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> select ?e where { "
+				+ "<http://model.geneontology.org/R-HSA-1482825> obo:RO_0002333 ?e }");
+			int origN = 0;
+			while(orig.hasNext()) { orig.next(); origN++; }
+			orig.close();
+			assertTrue("original set reaction should be split away, enablers on it = " + origN, origN == 0);
+
+			TupleQueryResult res = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> select ?reaction ?enabler where { "
+				+ "?reaction obo:RO_0002333 ?enabler . "
+				+ "FILTER(STRSTARTS(STR(?reaction), \"http://model.geneontology.org/R-HSA-1482825_enabled_by\")) }");
+			Set<String> reactions = new HashSet<String>();
+			Set<String> enablers = new HashSet<String>();
+			while(res.hasNext()) {
+				BindingSet b = res.next();
+				reactions.add(b.getValue("reaction").stringValue());
+				enablers.add(b.getValue("enabler").stringValue());
+			}
+			res.close();
+			assertTrue("expected 5 split activities, got " + reactions.size(), reactions.size() == 5);
+			assertTrue("expected 5 distinct enablers, got " + enablers.size(), enablers.size() == 5);
+
+			TupleQueryResult sib = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> select ?reaction where { "
+				+ "?reaction obo:RO_0002333 ?enabler . "
+				+ "FILTER(STRSTARTS(STR(?reaction), \"http://model.geneontology.org/R-HSA-1482868_enabled_by\")) }");
+			Set<String> sibs = new HashSet<String>();
+			while(sib.hasNext()) { sibs.add(sib.next().getValue("reaction").stringValue()); }
+			sib.close();
+			assertTrue("expected 2 split activities for sibling, got " + sibs.size(), sibs.size() == 2);
+		} catch (QueryEvaluationException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		System.out.println("Done testing set-enabled reaction split");
 	}
 
 	/**

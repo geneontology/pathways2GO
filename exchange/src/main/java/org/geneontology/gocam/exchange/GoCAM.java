@@ -158,6 +158,8 @@ public class GoCAM {
 	Blazer blazegraphdb;
 	//for convenience
 	String name;
+	//reactions catalyzed by an EntitySet, to be split into one activity per member in splitSetEnabledReactions()
+	Set<IRI> set_enabled_reaction_iris = new HashSet<IRI>();
 	String default_namespace_prefix;
 	String contributor_link_comment;
 
@@ -1843,6 +1845,82 @@ BP has_part R
 			} 
 		}
 		return clone;
+	}
+
+	/*
+	 * Clone an individual so the clone points at the SAME neighbor individuals
+	 * (does not duplicate neighbors, unlike cloneIndividual). Copies class
+	 * assertions and node annotations. Each cloned edge gets fresh evidence via
+	 * cloneAnnotations so deleting the source later cannot dangle a clone's evidence.
+	 * Edges whose property is in exclude_props are skipped.
+	 */
+	OWLNamedIndividual cloneIndividualSharingNeighbors(OWLNamedIndividual source, IRI new_iri, Set<OWLObjectProperty> exclude_props, String model_id) {
+		OWLNamedIndividual clone = makeUnannotatedIndividual(new_iri);
+		for(OWLClassExpression type : EntitySearcher.getTypes(source, go_cam_ont)) {
+			addTypeAssertion(clone, type);
+		}
+		for(OWLAnnotationAssertionAxiom ax : EntitySearcher.getAnnotationAssertionAxioms(source, go_cam_ont)) {
+			OWLAnnotationAssertionAxiom a_ax = df.getOWLAnnotationAssertionAxiom((OWLAnnotationSubject) clone.getIRI(), ax.getAnnotation());
+			ontman.applyChange(new AddAxiom(go_cam_ont, a_ax));
+		}
+		for(OWLAxiom ax : EntitySearcher.getReferencingAxioms(source, go_cam_ont)) {
+			if(!ax.isOfType(AxiomType.OBJECT_PROPERTY_ASSERTION)) {
+				continue;
+			}
+			OWLObjectPropertyAssertionAxiom op = (OWLObjectPropertyAssertionAxiom) ax;
+			if(exclude_props != null && exclude_props.contains(op.getProperty().asOWLObjectProperty())) {
+				continue;
+			}
+			Set<OWLAnnotation> edge_annos = cloneAnnotations(op.getAnnotations(), model_id, new_iri);
+			OWLObjectPropertyAssertionAxiom add = null;
+			if(source.equals(op.getSubject())) {
+				add = df.getOWLObjectPropertyAssertionAxiom(op.getProperty(), clone, op.getObject(), edge_annos);
+			} else if(source.equals(op.getObject())) {
+				add = df.getOWLObjectPropertyAssertionAxiom(op.getProperty(), op.getSubject(), clone, edge_annos);
+			}
+			if(add != null) {
+				ontman.applyChange(new AddAxiom(go_cam_ont, add));
+			}
+		}
+		return clone;
+	}
+
+	/*
+	 * For each reaction recorded as catalyzed by an EntitySet, replace it with one
+	 * clone per enabler (sharing the same neighbor individuals), each enabled_by a
+	 * single member, then delete the original. Must run before applySparqlRules so
+	 * provides_input_for / regulation rules fan out across the clones.
+	 */
+	void splitSetEnabledReactions(String model_id) {
+		for(IRI reaction_iri : new HashSet<IRI>(set_enabled_reaction_iris)) {
+			OWLNamedIndividual reaction = df.getOWLNamedIndividual(reaction_iri);
+			Collection<OWLIndividual> enablers = EntitySearcher.getObjectPropertyValues(reaction, enabled_by, go_cam_ont);
+			if(enablers.size() < 2) {
+				continue;
+			}
+			String reaction_id = reaction_iri.toString().replace("http://model.geneontology.org/", "");
+			for(OWLIndividual enabler_ind : new HashSet<OWLIndividual>(enablers)) {
+				OWLNamedIndividual enabler = enabler_ind.asOWLNamedIndividual();
+				String member_id = enabler.getIRI().toString().replace("http://model.geneontology.org/", "");
+				IRI clone_iri = makeGoCamifiedIRI(null, reaction_id + "_enabled_by_" + member_id);
+				OWLNamedIndividual clone = cloneIndividualSharingNeighbors(reaction, clone_iri, Collections.singleton(enabled_by), model_id);
+				Set<OWLAnnotation> enabler_annos = getObjectPropertyEdgeAnnotations(reaction, enabled_by, enabler);
+				OWLObjectPropertyAssertionAxiom eb = df.getOWLObjectPropertyAssertionAxiom(
+						enabled_by, clone, enabler, cloneAnnotations(enabler_annos, model_id, clone_iri));
+				ontman.applyChange(new AddAxiom(go_cam_ont, eb));
+				addComment(clone, "split from set-enabled reaction " + reaction_id);
+			}
+			deleteOwlEntityAndAllReferencesToIt(reaction, false);
+		}
+	}
+
+	private Set<OWLAnnotation> getObjectPropertyEdgeAnnotations(OWLNamedIndividual subject, OWLObjectProperty prop, OWLNamedIndividual object) {
+		for(OWLObjectPropertyAssertionAxiom ax : go_cam_ont.getObjectPropertyAssertionAxioms(subject)) {
+			if(ax.getProperty().equals(prop) && ax.getObject().equals(object)) {
+				return ax.getAnnotations();
+			}
+		}
+		return new HashSet<OWLAnnotation>();
 	}
 
 	/*

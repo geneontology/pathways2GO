@@ -160,7 +160,7 @@ public class BioPaxtoGO {
 	Map<String, String> pathwayIdToGoMappings = new HashMap<String, String>();
 	Map<String, String> yeastcy2ChebiMappings = new HashMap<String, String>();
 	public BioPaxtoGO(){
-		strategy = ImportStrategy.NoctuaCuration; 
+		strategy = ImportStrategy.NoctuaCuration;
 		report = new GoMappingReport();
 	}
 
@@ -547,8 +547,10 @@ public class BioPaxtoGO {
 	 * @throws IOException
 	 */
 	private void wrapAndWrite(String outfilename, GoCAM go_cam, boolean save_inferences, boolean save2blazegraph, String pathwayname, boolean expand_subpathways, String reactome_id) throws OWLOntologyCreationException, OWLOntologyStorageException, RepositoryException, RDFParseException, RDFHandlerException, IOException {		
+		//split reactions catalyzed by an EntitySet into one activity per member, before the SPARQL rules run
+		go_cam.splitSetEnabledReactions(reactome_id);
 		//set up a sparqlable kb in sync with ontology
-		go_cam.qrunner = new QRunner(go_cam.go_cam_ont); 
+		go_cam.qrunner = new QRunner(go_cam.go_cam_ont);
 		//filter out reactions involving drugs
 		if(drop_drug_reactions&&drug_process_ids!=null&&drug_process_ids.size()>0) {
 			go_cam.removeDrugReactions(reactome_id, drug_process_ids); 
@@ -1126,16 +1128,87 @@ public class BioPaxtoGO {
 		return isSmallMolOnly;
 	}
 
+	/*
+	 * True when a catalysis controller is a Reactome EntitySet we should explode:
+	 * a bare PhysicalEntity (not a Complex) with members that are not all small molecules.
+	 */
+	boolean isExplodableEntitySet(Controller controller_entity) {
+		if(!(controller_entity instanceof PhysicalEntity)) {
+			return false;
+		}
+		if(controller_entity instanceof Complex) {
+			return false;
+		}
+		PhysicalEntity pe = (PhysicalEntity) controller_entity;
+		Set<PhysicalEntity> members = pe.getMemberPhysicalEntity();
+		if(members == null || members.isEmpty()) {
+			return false;
+		}
+		if(setIsSmallMoleculesOnly(members)) {
+			return false;
+		}
+		return true;
+	}
+
+	/*
+	 * Resolve an EntitySet's members to leaf enablers:
+	 *  - small molecule members are dropped
+	 *  - a complex that reduces to exactly one protein -> that protein
+	 *  - a complex that cannot reduce (>=2 proteins, or none) -> the complex itself
+	 *  - a nested set -> recurse
+	 * De-duplicated by Reactome id.
+	 */
+	List<PhysicalEntity> resolveSetCatalystMembers(PhysicalEntity set) {
+		List<PhysicalEntity> resolved = new ArrayList<PhysicalEntity>();
+		Set<String> seen = new HashSet<String>();
+		Set<String> visiting = new HashSet<String>();
+		resolveSetCatalystMembers(set, resolved, seen, visiting);
+		return resolved;
+	}
+
+	private void resolveSetCatalystMembers(PhysicalEntity set, List<PhysicalEntity> resolved, Set<String> seen, Set<String> visiting) {
+		String set_id = getEntityReferenceId(set);
+		//flat "seen" set (not a DFS stack): re-entering the same nested set from any path is treated as a cycle
+		if(set_id != null && !visiting.add(set_id)) {
+			return;
+		}
+		for(PhysicalEntity m : set.getMemberPhysicalEntity()) {
+			if(m instanceof SmallMolecule) {
+				continue;
+			}
+			if(m instanceof Complex) {
+				Set<PhysicalEntity> units = getComplexActiveUnitRecursive((Complex) m).getActiveUnits();
+				PhysicalEntity enabler = (units.size() == 1) ? units.iterator().next() : m;
+				addResolvedMember(enabler, resolved, seen);
+			} else if(!m.getMemberPhysicalEntity().isEmpty()) {
+				resolveSetCatalystMembers(m, resolved, seen, visiting);
+			} else {
+				addResolvedMember(m, resolved, seen);
+			}
+		}
+	}
+
+	private void addResolvedMember(PhysicalEntity enabler, List<PhysicalEntity> resolved, Set<String> seen) {
+		String key = getEntityReferenceId(enabler);
+		if(key == null) {
+			//fall back to the always-unique BioPAX URI so members lacking a Reactome id still dedup
+			key = enabler.getUri();
+		}
+		if(seen.add(key)) {
+			resolved.add(enabler);
+		}
+	}
+
 	/**
 	 * Given a BioPax entity and an ontology, add a GO_CAM structured OWLIndividual representing the entity into the ontology
-	 * 	//Done: Complex, Protein, SmallMolecule, Dna, Processes 
+	 * 	//Done: Complex, Protein, SmallMolecule, Dna, Processes
 		//TODO DnaRegion, RnaRegion
 	 * @param ontman
 	 * @param go_cam_ont
 	 * @param df
 	 * @param entity
 	 * @return
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private void defineReactionEntity(GoCAM go_cam, Entity entity, IRI this_iri, boolean follow_controllers, String model_id, String root_pathway_iri, String reaction_id, boolean explode_sets_complexes) throws IOException {
 		String entity_id = getEntityReferenceId(entity);
@@ -1726,6 +1799,23 @@ public class BioPaxtoGO {
 							continue;
 						}
 						System.out.println("DEBUG_PROCESSING_CONTROLLER_ENTITY\t"+entity_id+"\tcontroller_entity="+getEntityReferenceId(controller_entity));
+						//Reactome EntitySet catalyst: explode into one activity per member (split happens later in splitSetEnabledReactions)
+						if(is_catalysis && isExplodableEntitySet(controller_entity)) {
+							PhysicalEntity set_controller = (PhysicalEntity) controller_entity;
+							List<PhysicalEntity> resolved_members = resolveSetCatalystMembers(set_controller);
+							StringBuilder member_ids = new StringBuilder();
+							for(PhysicalEntity member : resolved_members) {
+								String member_id = getEntityReferenceId(member);
+								IRI member_iri = GoCAM.makeGoCamifiedIRI(null, member_id+"_"+entity_id+"_controller");
+								OWLNamedIndividual member_e = go_cam.df.getOWLNamedIndividual(member_iri);
+								defineReactionEntity(go_cam, member, member_iri, true, model_id, root_pathway_iri, reaction_id, true);
+								go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, member_e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+								member_ids.append(member_id).append(",");
+							}
+							go_cam.set_enabled_reaction_iris.add(e.getIRI());
+							System.out.println("SET_ENABLED_REACTION_SPLIT\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+resolved_members.size()+"\t"+member_ids.toString());
+							continue;
+						}
 						//this is the non-recursive part.. (and we usually aren't recursing anyway)
 						IRI iri = null;
 						String controller_entity_id = getEntityReferenceId(controller_entity);
