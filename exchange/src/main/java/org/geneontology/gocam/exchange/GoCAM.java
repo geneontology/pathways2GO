@@ -1737,15 +1737,41 @@ BP has_part R
 						deleted_regulator_line += "\t"+reaction_uri.toString();
 						deleted_regulator_line += "\t"+model_id;
 						System.out.println("DELETING_NON_SMALL_MOL_REGULATOR\t"+deleted_regulator_line);
-						deleteOwlEntityAndAllReferencesToIt(regulator);
+						//A Complex/Set regulator was exploded into has_part/has_substitutable_entity
+						//component individuals in the first layer.  Delete those too, else they are
+						//left as orphan individuals once the regulator itself is removed.
+						deleteRegulatorAndComponents(regulator);
 					}
 				}
 			}
 		}
 		r.rule_hitcount.put(entity_regulator_rule, entity_regulator_count);
 		r.rule_pathways.put(entity_regulator_rule, entity_regulator_pathways);
-		qrunner = new QRunner(go_cam_ont); 
+		qrunner = new QRunner(go_cam_ont);
 		return r;
+	}
+
+	/**
+	 * Delete a dropped non-small-molecule regulator (e.g. a Complex or Set) together with
+	 * the component/member individuals that were exploded out of it in the first-layer
+	 * conversion (linked via has_part / has_substitutable_entity).  A plain delete of just
+	 * the regulator removes those edges but leaves the components as orphan individuals.
+	 * Recurses so nested complexes (a component that is itself a complex) are cleaned up too.
+	 */
+	private void deleteRegulatorAndComponents(OWLNamedIndividual regulator) {
+		//Collect exploded children before mutating the ontology.
+		Set<OWLNamedIndividual> children = new HashSet<OWLNamedIndividual>();
+		for(OWLObjectProperty part_prop : new OWLObjectProperty[] {GoCAM.has_part, GoCAM.has_substitutable_entity}) {
+			for(OWLIndividual child : EntitySearcher.getObjectPropertyValues(regulator, part_prop, go_cam_ont)) {
+				if(child.isNamed()) {
+					children.add(child.asOWLNamedIndividual());
+				}
+			}
+		}
+		for(OWLNamedIndividual child : children) {
+			deleteRegulatorAndComponents(child);
+		}
+		deleteOwlEntityAndAllReferencesToIt(regulator);
 	}
 
 	private void deleteComplexesWithActiveUnits() {

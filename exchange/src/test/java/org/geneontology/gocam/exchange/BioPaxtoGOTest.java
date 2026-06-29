@@ -1231,6 +1231,50 @@ BP has_part R
 	}
 
 	/**
+	 * Regression test: when a Complex (or Set) is a regulator of a reaction it is
+	 * dropped by the is-small-molecule-regulator gate (inferSmallMoleculeRegulators).
+	 * The complex was exploded into has_part component individuals in the first layer,
+	 * so dropping it must also delete those components - otherwise they are left as
+	 * bare orphan individuals.
+	 *
+	 * In "Heme biosynthesis" (R-HSA-189451): Complex R-HSA-190145 ("8xALAD:Pb2+:Zn2+")
+	 * INHIBITION-regulates reaction R-HSA-189439. Its ALAD protein component
+	 * (UniProtKB_P13716_R-HSA-190145_R-HSA-189439_component) was left orphaned.
+	 */
+	@Test
+	public final void testComplexRegulatorLeavesNoOrphanComponents() {
+		System.out.println("Testing that dropping a Complex/Set regulator leaves no orphan component individuals");
+		String graph = "<http://model.geneontology.org/R-HSA-189451>";
+
+		// Precondition: the regulated reaction is present (guards against a wrong
+		// graph IRI making the assertions below pass vacuously).
+		int reactionTriples = countSolutions(
+			"select ?p ?o where { GRAPH " + graph + " { "
+			+ "<http://model.geneontology.org/R-HSA-189439> ?p ?o . } }");
+		assertTrue("precondition: R-HSA-189439 should be present in " + graph
+			+ " (got " + reactionTriples + " triples)", reactionTriples > 0);
+
+		// Specific: the ALAD component of the dropped complex regulator must be gone.
+		int orphanTriples = countSolutions(
+			"select ?p ?o where { GRAPH " + graph + " { "
+			+ "<http://model.geneontology.org/UniProtKB_P13716_R-HSA-190145_R-HSA-189439_component> ?p ?o . } }");
+		assertEquals("dropped complex regulator's ALAD component must be deleted, not orphaned",
+			0, orphanTriples);
+
+		// Invariant: no exploded *_component individual is left without an incoming
+		// has_part (BFO_0000051) or has_substitutable_entity (RO_0019003) edge.
+		int orphanComponents = countSolutions(
+			"prefix obo: <http://purl.obolibrary.org/obo/> "
+			+ "prefix owl: <http://www.w3.org/2002/07/owl#> "
+			+ "select ?comp where { GRAPH " + graph + " { "
+			+ "?comp a ?t . FILTER(?t != owl:NamedIndividual) . "
+			+ "FILTER(STRENDS(STR(?comp), \"_component\")) . "
+			+ "FILTER NOT EXISTS { ?x obo:BFO_0000051 ?comp . } . "
+			+ "FILTER NOT EXISTS { ?y obo:RO_0019003 ?comp . } } }");
+		assertEquals("no exploded *_component individual may be left orphaned", 0, orphanComponents);
+	}
+
+	/**
 	 * Test that a reaction whose only GO annotation is a curated GO BP xref
 	 * (no MF from controllers, no EC, no SSSOM) is skipped by the early gate
 	 * in defineReactionEntity() — just like any other no-MF molecular event.
