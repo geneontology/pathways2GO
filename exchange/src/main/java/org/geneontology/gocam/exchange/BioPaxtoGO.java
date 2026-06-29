@@ -1587,6 +1587,14 @@ public class BioPaxtoGO {
 								if (reaction == null) {
 									continue;
 								}
+								// Don't reuse the output of a reaction that the early GO-term gate will
+								// drop (#324): such a reaction never reaches defineReactionEntity, so its
+								// output individual is never typed. Skipping it here leaves i_iri == null,
+								// so the fresh path below calls defineReactionEntity and types the molecule.
+								// Fixes untyped small-molecule inputs (e.g. R-ALL-189489_cytosol).
+								if (resolveGoTermForReaction(reaction, go_cam).hasNoGoTerm()) {
+									continue;
+								}
 								ConversionDirectionType prev_step_direction = getDirection(reaction);
 								Set<PhysicalEntity> previous_outputs = null;
 								if(prev_step_direction.equals(ConversionDirectionType.RIGHT_TO_LEFT)) {

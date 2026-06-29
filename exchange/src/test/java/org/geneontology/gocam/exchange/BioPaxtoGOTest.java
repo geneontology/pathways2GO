@@ -1162,6 +1162,74 @@ BP has_part R
 		System.out.println("Done testing causal path bridging");
 	}
 
+	/** Runs a SELECT query against the test Blazegraph journal and returns the number of solution rows. */
+	private int countSolutions(String sparql) {
+		org.openrdf.query.TupleQueryResult result = null;
+		int n = 0;
+		try {
+			result = blaze.runSparqlQuery(sparql);
+			while (result.hasNext()) {
+				result.next();
+				n++;
+			}
+		} catch (org.openrdf.query.QueryEvaluationException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (result != null) result.close();
+			} catch (org.openrdf.query.QueryEvaluationException e) {
+				e.printStackTrace();
+			}
+		}
+		return n;
+	}
+
+	/**
+	 * Regression test: a small-molecule input that is reused from an upstream
+	 * reaction's output must still be typed, even when that upstream reaction is
+	 * dropped by the early no-GO-term gate (#324).
+	 *
+	 * In "Heme biosynthesis" (R-HSA-189451): dALA-in-cytosol (R-ALL-189489_cytosol)
+	 * is the output of the uncatalyzed transport R-HSA-189456 (skipped: no EC, no
+	 * controller MF, no SSSOM) and the input of the catalyzed condensation
+	 * R-HSA-189439. Before the fix the shared individual is left as a bare
+	 * owl:NamedIndividual with no CHEBI class.
+	 */
+	@Test
+	public final void testReusedSmallMoleculeInputIsTyped() {
+		System.out.println("Testing that a small-molecule input reused from a skipped molecular event is typed");
+		String graph = "<http://model.geneontology.org/R-HSA-189451>";
+
+		// Precondition: the consuming reaction is present (guards against a wrong
+		// graph IRI making the assertions below pass vacuously).
+		int reactionTriples = countSolutions(
+			"select ?p ?o where { GRAPH " + graph + " { "
+			+ "<http://model.geneontology.org/R-HSA-189439> ?p ?o . } }");
+		assertTrue("precondition: R-HSA-189439 should be present in " + graph
+			+ " (got " + reactionTriples + " triples)", reactionTriples > 0);
+
+		// Specific: dALA-in-cytosol must carry its CHEBI class.
+		int dalaTyped = countSolutions(
+			"prefix obo: <http://purl.obolibrary.org/obo/> "
+			+ "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+			+ "select ?type where { GRAPH " + graph + " { "
+			+ "<http://model.geneontology.org/R-ALL-189489_cytosol> rdf:type ?type . "
+			+ "filter(?type = obo:CHEBI_356416) } }");
+		assertTrue("R-ALL-189489_cytosol should be typed obo:CHEBI_356416 (got " + dalaTyped + ")",
+			dalaTyped > 0);
+
+		// Invariant: no has_input/has_output participant is left with only owl:NamedIndividual.
+		int untypedParticipants = countSolutions(
+			"prefix obo: <http://purl.obolibrary.org/obo/> "
+			+ "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+			+ "prefix owl: <http://www.w3.org/2002/07/owl#> "
+			+ "select ?participant where { GRAPH " + graph + " { "
+			+ "?reaction ?io ?participant . "
+			+ "VALUES ?io { obo:RO_0002233 obo:RO_0002234 } . "
+			+ "FILTER NOT EXISTS { ?participant rdf:type ?t . FILTER(?t != owl:NamedIndividual) } } }");
+		assertEquals("every has_input/has_output participant must have a class type", 0, untypedParticipants);
+	}
+
 	/**
 	 * Test that a reaction whose only GO annotation is a curated GO BP xref
 	 * (no MF from controllers, no EC, no SSSOM) is skipped by the early gate
