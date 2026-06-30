@@ -1119,7 +1119,7 @@ public class BioPaxtoGO {
 	private boolean setIsSmallMoleculesOnly(Set<PhysicalEntity> set_members) {
 		boolean isSmallMolOnly = false;
 		for(PhysicalEntity member : set_members) {
-			if (member instanceof SmallMolecule) {
+			if (isSmallMoleculeEquivalent(member)) {
 				isSmallMolOnly = true;
 			} else {
 				return false;
@@ -1173,7 +1173,7 @@ public class BioPaxtoGO {
 			return;
 		}
 		for(PhysicalEntity m : set.getMemberPhysicalEntity()) {
-			if(m instanceof SmallMolecule) {
+			if(isSmallMoleculeEquivalent(m)) {
 				continue;
 			}
 			if(m instanceof Complex) {
@@ -2180,13 +2180,45 @@ public class BioPaxtoGO {
 	    }
 	}
 
+	/**
+	 * True when an entity should be treated as a small molecule for the purpose of
+	 * finding the catalytic protein in a Complex or EntitySet. Reactome models some
+	 * chemical cofactors as a bare bp:PhysicalEntity carrying only a ChEBI xref instead
+	 * of a bp:SmallMolecule (e.g. the iron-sulfur cluster 2Fe-2S, R-ALL-164296). Those
+	 * leaf cofactors must be stripped just like SmallMolecule components, otherwise a
+	 * complex like 2x(FECH:2Fe-2S cluster) cannot reduce to its single enzyme protein.
+	 */
+	private boolean isSmallMoleculeEquivalent(PhysicalEntity entity) {
+		if (entity instanceof SmallMolecule) {
+			return true;
+		}
+		// Only a bare, leaf bp:PhysicalEntity qualifies - not a Protein/Complex/Dna/Rna,
+		// and not a nested EntitySet (which has member physical entities and must recurse).
+		if (!entity.getModelInterface().equals(PhysicalEntity.class)) {
+			return false;
+		}
+		if (!entity.getMemberPhysicalEntity().isEmpty()) {
+			return false;
+		}
+		return hasChebiXref(entity);
+	}
+
+	private boolean hasChebiXref(PhysicalEntity entity) {
+		for (Xref xref : entity.getXref()) {
+			if (xref.getDb() != null && xref.getDb().equalsIgnoreCase("ChEBI")) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private ComplexActiveUnitResult getComplexActiveUnitRecursive(Complex controlled_by_complex) {
 	    Set<PhysicalEntity> active_units = new HashSet<PhysicalEntity>();
 	    Set<PhysicalEntity> non_small_mol_components = new HashSet<PhysicalEntity>();
-	    
+
 	    for(PhysicalEntity complex_component : (controlled_by_complex).getComponent()) {
-	        if (complex_component instanceof SmallMolecule) {
-	            // Don't consider small molecules in finding active sites in complexes
+	        if (isSmallMoleculeEquivalent(complex_component)) {
+	            // Don't consider small molecules (or bare ChEBI cofactors) in finding active sites in complexes
 	            continue;
 	        }
 	        non_small_mol_components.add(complex_component);

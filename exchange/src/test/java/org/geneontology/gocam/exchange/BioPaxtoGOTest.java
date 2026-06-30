@@ -1275,6 +1275,50 @@ BP has_part R
 	}
 
 	/**
+	 * Regression test for the FECH cofactor case. Complex R-HSA-189402
+	 * ("2x(FECH:2Fe-2S cluster)") catalyzes reaction R-HSA-189465 ("FECH binds Fe2+
+	 * to PRIN9 to form heme") via Catalysis10 (ACTIVATION, no activeUnit annotation).
+	 * The complex's only non-protein component, 2Fe-2S (R-ALL-164296), is modeled as a
+	 * bare bp:PhysicalEntity carrying a ChEBI xref rather than a bp:SmallMolecule, so it
+	 * was not stripped and the complex failed to reduce to its single protein FECH
+	 * (UniProt P22830). After the fix the reaction must be enabled_by FECH, not the complex.
+	 */
+	@Test
+	public final void testComplexCofactorReducedToSingleProtein() {
+		System.out.println("Testing that a complex with a bare-PhysicalEntity ChEBI cofactor reduces to its single protein");
+		String graph = "<http://model.geneontology.org/R-HSA-189451>";
+
+		// Precondition: the catalyzed reaction is present (guards against a wrong graph
+		// IRI making the assertions below pass vacuously).
+		int reactionTriples = countSolutions(
+			"select ?p ?o where { GRAPH " + graph + " { "
+			+ "<http://model.geneontology.org/R-HSA-189465> ?p ?o . } }");
+		assertTrue("precondition: R-HSA-189465 should be present in " + graph
+			+ " (got " + reactionTriples + " triples)", reactionTriples > 0);
+
+		// Specific: the reaction must be enabled_by the FECH protein (UniProt P22830).
+		int fechEnabler = countSolutions(
+			"prefix obo: <http://purl.obolibrary.org/obo/> "
+			+ "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+			+ "select ?enabler where { GRAPH " + graph + " { "
+			+ "<http://model.geneontology.org/R-HSA-189465> obo:RO_0002333 ?enabler . "
+			+ "?enabler rdf:type <http://identifiers.org/uniprot/P22830> . } }");
+		assertTrue("R-HSA-189465 should be enabled_by FECH (UniProt P22830) (got " + fechEnabler + ")",
+			fechEnabler > 0);
+
+		// Regression: the reaction must NOT be enabled_by the unreduced complex
+		// (REACTO class for R-HSA-189402).
+		int complexEnabler = countSolutions(
+			"prefix obo: <http://purl.obolibrary.org/obo/> "
+			+ "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+			+ "select ?enabler where { GRAPH " + graph + " { "
+			+ "<http://model.geneontology.org/R-HSA-189465> obo:RO_0002333 ?enabler . "
+			+ "?enabler rdf:type <http://purl.obolibrary.org/obo/go/extensions/reacto.owl#REACTO_R-HSA-189402> . } }");
+		assertEquals("R-HSA-189465 must not be enabled_by the unreduced complex R-HSA-189402",
+			0, complexEnabler);
+	}
+
+	/**
 	 * Test that a reaction whose only GO annotation is a curated GO BP xref
 	 * (no MF from controllers, no EC, no SSSOM) is skipped by the early gate
 	 * in defineReactionEntity() — just like any other no-MF molecular event.
