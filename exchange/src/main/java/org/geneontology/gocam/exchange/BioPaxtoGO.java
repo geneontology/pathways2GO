@@ -1287,14 +1287,15 @@ public class BioPaxtoGO {
 				if(entity instanceof Complex && !(((Complex) entity).getComponent().isEmpty())) {
 					// Definitely is a complex, so update entity_class to PCC
 					entity_class_iri = IRI.create("http://purl.obolibrary.org/obo/GO_0032991");  // protein-containing complex
-					
-					// Dig out component protein IDs
-					Set<PhysicalEntity> components = ((Complex) entity).getComponent();
-					for(PhysicalEntity c : components) {
-						if (c instanceof SmallMolecule) {
-							// Skip small mols
-							continue;
-						}
+
+					// Flatten the whole complex hierarchy to its distinct UniProt protein subunits
+					// (+ any EntitySet subunits), stripping cofactors and dropping intermediate
+					// sub-complex individuals. has_part edges point directly from this PCC to the leaves.
+					FlattenedComplex flat = collectFlattenedComplexLeaves((Complex) entity);
+					Set<PhysicalEntity> leaves = new HashSet<PhysicalEntity>();
+					leaves.addAll(flat.proteinsByKey.values());
+					leaves.addAll(flat.setLeaves);
+					for(PhysicalEntity c : leaves) {
 						String component_id = getEntityReferenceId(c);
 						System.out.println("Complex component ID: "+component_id);
 						IRI component_class_iri = getPhysicalEntityIRI(c);
@@ -1302,9 +1303,7 @@ public class BioPaxtoGO {
 						String parent_component_id = entity_id;
 						IRI iri = GoCAM.makeGoCamifiedIRI(null, (component_id_curie+"_"+parent_component_id+"_"+reaction_id+"_component").replace(":", "_"));
 						OWLNamedIndividual component_e = go_cam.makeAnnotatedIndividual(iri);
-		//					OWLClass component_class = go_cam.df.getOWLClass(component_class_iri);
 						defineReactionEntity(go_cam, c, iri, true, model_id, root_pathway_iri, reaction_id, explode_sets_complexes);
-		//					go_cam.addTypeAssertion(component_e,  component_class);
 						go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.has_part, component_e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
 					}
 				} else if (explode_sets && !((PhysicalEntity) entity).getMemberPhysicalEntity().isEmpty()) {
@@ -1700,10 +1699,10 @@ public class BioPaxtoGO {
 					System.out.println("DEBUG_CONTROLLER_PASSED_DRUG_CHECK\t"+entity_id+"\tcontroller="+getEntityReferenceId(controller));
 					//check if there are active sites annotated on the controller.
 					Set<PhysicalEntity> active_sites = getActiveSites(controller);
+					Set<PhysicalEntity> drop_controller_entities = new HashSet<PhysicalEntity>();
 					if (controller instanceof Catalysis) {
 						for(Controller controller_entity : controller_entities) {
 							if (controller_entity instanceof Complex) {
-								boolean has_protein = complexHasProtein((Complex) controller_entity);
 								String complex_entity_id = getEntityReferenceId(controller_entity);
 								if (active_sites.size() > 0) {
 									for (PhysicalEntity active_site : active_sites) {
@@ -1712,19 +1711,21 @@ public class BioPaxtoGO {
 									}
 									continue;
 								}
-								else if (has_protein && active_sites.isEmpty()) {
-									System.out.println("COMPLEX_HAS_PROTEIN_NO_ACTIVE_UNIT\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName());
-									// If it's still empty, try more crazy stuff
-									for(PhysicalEntity active_unit_result : getComplexActiveUnitRecursive((Complex) controller_entity).getActiveUnits()) {
-										// Report out if active unit protein was extracted via "single-protein reduction"
-										String active_site_id = getEntityReferenceId(active_unit_result);
-										System.out.println("COMPLEX_REDUCED_TO_SINGLE_PROTEIN\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName()+"\t"+active_site_id+"\t"+active_unit_result.getDisplayName());
-										active_sites.add(active_unit_result);
-									}
-								}
-								if (active_sites.isEmpty()) {
-									// Still can't extract active unit for complex so report
-									System.out.println("COMPLEX_CANT_BE_REDUCED_TO_PROTEIN\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName());
+								// No annotated active site: decide the enabler by flattening the complex
+								// hierarchy to its distinct UniProt protein subunits (+ EntitySet subunits).
+								FlattenedComplex flat = collectFlattenedComplexLeaves((Complex) controller_entity);
+								if (flat.isEmpty()) {
+									// No usable protein anywhere -> drop the enabler entirely.
+									drop_controller_entities.add((PhysicalEntity) controller_entity);
+									System.out.println("COMPLEX_FLATTEN_NO_PROTEIN\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName());
+								} else if (flat.proteinsByKey.size() == 1 && flat.setLeaves.isEmpty()) {
+									// Exactly one distinct protein -> enable_by it directly (no PCC).
+									PhysicalEntity single = flat.proteinsByKey.values().iterator().next();
+									active_sites.add(single);
+									System.out.println("COMPLEX_FLATTENED_TO_SINGLE_PROTEIN\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName()+"\t"+getEntityReferenceId(single));
+								} else {
+									// Two or more distinct subunits -> flat PCC (active_sites left empty).
+									System.out.println("COMPLEX_FLATTENED_TO_PCC\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName()+"\t"+flat.totalLeaves());
 								}
 							}
 						}
@@ -1824,6 +1825,10 @@ public class BioPaxtoGO {
 							System.out.println("SET_ENABLED_REACTION_SPLIT\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+resolved_members.size()+"\t"+member_ids.toString());
 							continue;
 						}
+						if (drop_controller_entities.contains(controller_entity)) {
+							System.out.println("DROP_FLATTENED_ENABLER_NO_PROTEIN\t"+entity_id+"\tcontroller_entity="+getEntityReferenceId(controller_entity));
+							continue;
+						}
 						//this is the non-recursive part.. (and we usually aren't recursing anyway)
 						IRI iri = null;
 						String controller_entity_id = getEntityReferenceId(controller_entity);
@@ -1881,6 +1886,10 @@ public class BioPaxtoGO {
 						//define relationship between controller entity and reaction
 
 						//per discussion in pathways2GO/issues/91 removing the connection to the and the complex individual
+						//NOTE: the residual complex controller node is already removed downstream by
+						//GoCAM.deleteComplexesWithActiveUnits() (called unconditionally from applySparqlRules);
+						//its query deletes any complex that has_part an active unit that enables/inputs a
+						//reaction, which is exactly this node. So no in-layer deletion is needed here.
 						//if(active_units!=null) {
 						//	go_cam.deleteOwlEntityAndAllReferencesToIt(controller_e);
 						//}
@@ -2093,6 +2102,61 @@ public class BioPaxtoGO {
 		return matches;
 	}
 	
+	/**
+	 * Result of flattening a Complex enabler to the distinct protein subunits and EntitySet
+	 * subunits found anywhere in its component hierarchy. Pure data holder, no OWL.
+	 */
+	private static class FlattenedComplex {
+		// keyed by UniProt accession when present, else the protein's BioPAX URI
+		final Map<String, Protein> proteinsByKey = new HashMap<String, Protein>();
+		final Set<PhysicalEntity> setLeaves = new HashSet<PhysicalEntity>();
+		int totalLeaves() { return proteinsByKey.size() + setLeaves.size(); }
+		boolean isEmpty() { return totalLeaves() == 0; }
+	}
+
+	/**
+	 * Walk a Complex's component hierarchy and collect the leaves that should become has_part
+	 * of a flattened protein-containing-complex enabler: distinct UniProt proteins (deduped by
+	 * accession) plus EntitySet subunits (kept by their REACTO class, not descended into).
+	 * SmallMoleculeEquivalent cofactors are stripped; DNA, RNA and non-ChEBI bare
+	 * PhysicalEntities are skipped. Proteins without a UniProt ID are deduplicated by RDF ID
+	 * (supports YeastCyc SGD proteins). Creates no OWL individuals.
+	 */
+	private FlattenedComplex collectFlattenedComplexLeaves(Complex top) {
+		FlattenedComplex result = new FlattenedComplex();
+		collectFlattenedComplexLeaves(top, result, new HashSet<Complex>());
+		return result;
+	}
+
+	private void collectFlattenedComplexLeaves(Complex complex, FlattenedComplex result, Set<Complex> visited) {
+		if (!visited.add(complex)) {
+			return; // guard against cyclic complex references
+		}
+		for (PhysicalEntity c : complex.getComponent()) {
+			if (isSmallMoleculeEquivalent(c)) {
+				continue;
+			}
+			if (!c.getMemberPhysicalEntity().isEmpty()) {
+				// EntitySet subunit: keep as a single has_part by its REACTO class; do not descend.
+				// Assumes EntitySets are modeled with memberPhysicalEntity and NOT getComponent()
+				// (true for the REACTO corpus). A bp:Complex carrying both members and components
+				// would be treated as a set leaf here rather than flattened.
+				result.setLeaves.add(c);
+			} else if (c instanceof Complex) {
+				collectFlattenedComplexLeaves((Complex) c, result, visited);
+			} else if (c instanceof Protein) {
+				String uniprot = extractUniprotId((Protein) c);
+				// Use UniProt ID as dedup key when available; fall back to RDF ID for
+				// non-UniProt strategies (e.g. YeastCyc SGD proteins).
+				String key = (uniprot != null) ? uniprot : c.getUri();
+				if (key != null) {
+					result.proteinsByKey.put(key, (Protein) c);
+				}
+			}
+			// else: Dna, Rna, non-ChEBI bare PhysicalEntity -> skip
+		}
+	}
+
 	private boolean complexHasProtein(Complex controlled_by_complex) {
 		for(PhysicalEntity complex_component : (controlled_by_complex).getComponent()) {
 			if (complex_component instanceof Protein) {

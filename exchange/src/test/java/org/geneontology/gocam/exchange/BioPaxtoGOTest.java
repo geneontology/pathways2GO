@@ -1319,6 +1319,101 @@ BP has_part R
 	}
 
 	/**
+	 * The SDH complex (R-HSA-70990) catalyzes R-HSA-70994 with no activeUnit annotation and
+	 * has multiple distinct protein subunits, so it must emit as ONE protein-containing
+	 * complex (GO:0032991) whose has_part edges point directly to the 4 distinct UniProt
+	 * subunits (SDHA P31040, SDHB P21912, SDHC Q99643, SDHD O14521). The iron-sulfur
+	 * cofactors (2Fe-2S R-ALL-164296 etc.) must be stripped and no intermediate sub-complex
+	 * individual (R-HSA-70987) may appear.
+	 */
+	@Test
+	public final void testComplexEnablerFlattenedToPCC() {
+		System.out.println("Testing that a multi-subunit complex enabler flattens to one PCC of distinct UniProt proteins");
+		String graph = "<http://model.geneontology.org/R-HSA-71403>";
+		String rxn = "<http://model.geneontology.org/R-HSA-70994>";
+		String obo = "prefix obo: <http://purl.obolibrary.org/obo/> "
+			+ "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> ";
+
+		// Precondition: the catalyzed reaction is present (guards against a wrong graph IRI).
+		int rxnTriples = countSolutions("select ?p ?o where { GRAPH " + graph + " { " + rxn + " ?p ?o . } }");
+		assertTrue("precondition: R-HSA-70994 present in " + graph + " (got " + rxnTriples + ")", rxnTriples > 0);
+
+		// Enabler is exactly one protein-containing complex (GO:0032991).
+		int pccEnabler = countSolutions(obo + "select ?pcc where { GRAPH " + graph + " { "
+			+ rxn + " obo:RO_0002333 ?pcc . ?pcc rdf:type obo:GO_0032991 . } }");
+		assertEquals("R-HSA-70994 must be enabled_by exactly one GO:0032991 PCC (got " + pccEnabler + ")", 1, pccEnabler);
+
+		// The PCC has_part SDHB (UniProt P21912).
+		int sdhb = countSolutions(obo + "select ?sub where { GRAPH " + graph + " { "
+			+ rxn + " obo:RO_0002333 ?pcc . ?pcc rdf:type obo:GO_0032991 . "
+			+ "?pcc obo:BFO_0000051 ?sub . ?sub rdf:type <http://identifiers.org/uniprot/P21912> . } }");
+		assertTrue("PCC must have_part SDHB P21912 (got " + sdhb + ")", sdhb > 0);
+
+		// Exactly 4 distinct UniProt subunits as has_part.
+		int distinctSubunits = countSolutions(obo + "select distinct ?up where { GRAPH " + graph + " { "
+			+ rxn + " obo:RO_0002333 ?pcc . ?pcc rdf:type obo:GO_0032991 . "
+			+ "?pcc obo:BFO_0000051 ?sub . ?sub rdf:type ?up . "
+			+ "FILTER(STRSTARTS(STR(?up), \"http://identifiers.org/uniprot/\")) } }");
+		assertEquals("PCC must have_part the 4 distinct SDH UniProt subunits", 4, distinctSubunits);
+
+		// Cofactor 2Fe-2S (REACTO_R-ALL-164296) must NOT be a has_part of the enabler.
+		int cofactor = countSolutions(obo + "select ?sub where { GRAPH " + graph + " { "
+			+ rxn + " obo:RO_0002333 ?pcc . ?pcc rdf:type obo:GO_0032991 . "
+			+ "?pcc obo:BFO_0000051 ?sub . "
+			+ "?sub rdf:type <http://purl.obolibrary.org/obo/go/extensions/reacto.owl#REACTO_R-ALL-164296> . } }");
+		assertEquals("2Fe-2S cofactor must be stripped from the enabler", 0, cofactor);
+
+		// No intermediate sub-complex: no has_part is itself typed as Complex19 (R-HSA-70987),
+		// and there is no nested has_part-of-has_part under the enabler.
+		int subComplex = countSolutions(obo + "select ?sub where { GRAPH " + graph + " { "
+			+ rxn + " obo:RO_0002333 ?pcc . ?pcc rdf:type obo:GO_0032991 . "
+			+ "?pcc obo:BFO_0000051 ?sub . "
+			+ "?sub rdf:type <http://purl.obolibrary.org/obo/go/extensions/reacto.owl#REACTO_R-HSA-70987> . } }");
+		assertEquals("no intermediate sub-complex (R-HSA-70987) may be a has_part of the enabler", 0, subComplex);
+		int nested = countSolutions(obo + "select ?y where { GRAPH " + graph + " { "
+			+ rxn + " obo:RO_0002333 ?pcc . ?pcc rdf:type obo:GO_0032991 . "
+			+ "?pcc obo:BFO_0000051 ?x . ?x obo:BFO_0000051 ?y . } }");
+		assertEquals("the flattened enabler must have no nested has_part-of-has_part", 0, nested);
+	}
+
+	/**
+	 * When a Catalysis complex enabler flattens to exactly one distinct UniProt protein
+	 * (FECH P22830 in complex R-HSA-189402 catalyzing R-HSA-189465), the reaction must be
+	 * enabled_by that single protein with NO protein-containing-complex emitted, and the
+	 * residual complex controller individual must be deleted (no stray node).
+	 */
+	@Test
+	public final void testComplexEnablerSingleProteinNoResidualNode() {
+		System.out.println("Testing single-protein flatten leaves exactly one enabler and no residual complex node");
+		String graph = "<http://model.geneontology.org/R-HSA-189451>";
+		String rxn = "<http://model.geneontology.org/R-HSA-189465>";
+		String obo = "prefix obo: <http://purl.obolibrary.org/obo/> "
+			+ "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> ";
+
+		// Precondition.
+		int rxnTriples = countSolutions("select ?p ?o where { GRAPH " + graph + " { " + rxn + " ?p ?o . } }");
+		assertTrue("precondition: R-HSA-189465 present (got " + rxnTriples + ")", rxnTriples > 0);
+
+		// Exactly one enabled_by edge, and it is FECH (P22830).
+		int enablers = countSolutions(obo + "select ?en where { GRAPH " + graph + " { "
+			+ rxn + " obo:RO_0002333 ?en . } }");
+		assertEquals("R-HSA-189465 must have exactly one enabled_by edge", 1, enablers);
+		int fech = countSolutions(obo + "select ?en where { GRAPH " + graph + " { "
+			+ rxn + " obo:RO_0002333 ?en . ?en rdf:type <http://identifiers.org/uniprot/P22830> . } }");
+		assertTrue("R-HSA-189465 must be enabled_by FECH P22830 (got " + fech + ")", fech > 0);
+
+		// No residual complex node: once the enabler resolves to the single FECH protein, the
+		// vestigial complex individual (which had_part the active unit) must be deleted, so nothing
+		// has_part the enabler. IRI-independent: binds the actual enabler via enabled_by.
+		// NOTE: this is an end-state guard, not an isolator of the flatten logic — the existing
+		// GoCAM.deleteComplexesWithActiveUnits() also guarantees this deletion, so it cannot be
+		// driven red by toggling the flatten/enabler-decision code alone.
+		int residualParts = countSolutions(obo + "select ?x where { GRAPH " + graph + " { "
+			+ rxn + " obo:RO_0002333 ?en . ?x obo:BFO_0000051 ?en . } }");
+		assertEquals("no residual complex node may have_part the enabler (complex node must be deleted)", 0, residualParts);
+	}
+
+	/**
 	 * Test that a reaction whose only GO annotation is a curated GO BP xref
 	 * (no MF from controllers, no EC, no SSSOM) is skipped by the early gate
 	 * in defineReactionEntity() — just like any other no-MF molecular event.
