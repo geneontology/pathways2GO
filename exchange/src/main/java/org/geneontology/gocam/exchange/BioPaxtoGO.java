@@ -1275,6 +1275,17 @@ public class BioPaxtoGO {
 		//check for annotations
 		//	Set<String> pubids = getPubmedIds(entity);		
 		String entity_name = getBioPaxName(entity);
+		if(entity instanceof Protein) {
+			// A protein individual resolves to a UniProt ProteinReference; prefer its
+			// canonical gene symbol from the ProteinReference name embedding the UniProt id
+			// (e.g. "PTGS2") so the label is deterministic, rather than an arbitrary
+			// modified-form displayName (e.g. "Ac-PTGS2") that depends on complex-component
+			// iteration order.
+			String canonical = getProteinLabelFromReference((Protein) entity);
+			if(canonical != null) {
+				entity_name = canonical;
+			}
+		}
 		if(entity_name!=null) {
 			go_cam.addLabel(e, entity_name);
 		}
@@ -2349,7 +2360,7 @@ public class BioPaxtoGO {
 	}
 
 	// Helper method to extract UniProt ID from a Protein entity
-	private String extractUniprotId(Protein protein) {
+	private static String extractUniprotId(Protein protein) {
 	    if (protein.getEntityReference() != null) {
 	        for (Xref xref : protein.getEntityReference().getXref()) {
 	            if ("UniProt".equals(xref.getDb()) || "uniprot".equals(xref.getDb())) {
@@ -2359,7 +2370,32 @@ public class BioPaxtoGO {
 	    }
 	    return null;
 	}
-	
+
+	/**
+	 * Canonical protein label for a UniProt-backed Protein, taken from the
+	 * ProteinReference name that embeds the UniProt id (e.g. "UniProt:P35354 PTGS2"
+	 * -> "PTGS2"). All proteins sharing one ProteinReference yield the same label, so
+	 * the label is deterministic regardless of which component is emitted. Returns null
+	 * when there is no UniProt id or no embedding name, in which case callers fall
+	 * back to the displayName.
+	 */
+	static String getProteinLabelFromReference(Protein protein) {
+		String uniprot = extractUniprotId(protein);
+		if (uniprot == null || protein.getEntityReference() == null) {
+			return null;
+		}
+		for (String name : protein.getEntityReference().getName()) {
+			int idx = name.indexOf(uniprot);
+			if (idx >= 0) {
+				String tail = name.substring(idx + uniprot.length()).trim();
+				if (!tail.isEmpty()) {
+					return tail;
+				}
+			}
+		}
+		return null;
+	}
+
 	private Set<PhysicalEntity> getActiveSites(Control controlled_by_complex) {
 		Set<PhysicalEntity> active_sites = new HashSet<PhysicalEntity>();
 		for(String comment : controlled_by_complex.getComment()) {

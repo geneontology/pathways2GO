@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -362,7 +363,58 @@ public class BioPaxtoGOTest {
 
 	}	
 
-	// R-HSA-9674015 	
+	// R-HSA-2314687 (PTGS2 dimer) reduces to a single UniProt:P35354 protein.
+	// That individual is typed as the canonical UniProt class, so its label must be
+	// the canonical "PTGS2" (from the ProteinReference), not an arbitrary modified-form
+	// displayName like "Ac-PTGS2", and there must be exactly one label.
+	@Test
+	public final void testProteinLabelCollisionCollapse() {
+		System.out.println("test canonical UniProt protein label from ProteinReference");
+		String model_graph = "<http://model.geneontology.org/R-HSA-9018679>";
+		String q =
+				"SELECT ?ind ?lbl \n" +
+				"WHERE { \n" +
+				"  GRAPH graph_id { \n" +
+				"    ?ind a <http://identifiers.org/uniprot/P35354> . \n" +
+				"    ?ind <http://www.w3.org/2000/01/rdf-schema#label> ?lbl . \n" +
+				"  } \n" +
+				"} \n";
+		Map<String, Set<String>> labels_by_ind = new HashMap<String, Set<String>>();
+		TupleQueryResult result = null;
+		try {
+			result = blaze.runSparqlQuery(q.replace("graph_id", model_graph));
+			while (result.hasNext()) {
+				BindingSet bs = result.next();
+				String ind = bs.getValue("ind").stringValue();
+				String lbl = bs.getValue("lbl").stringValue();
+				if (!labels_by_ind.containsKey(ind)) {
+					labels_by_ind.put(ind, new HashSet<String>());
+				}
+				labels_by_ind.get(ind).add(lbl);
+			}
+		} catch (QueryEvaluationException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (result != null) {
+					result.close();
+				}
+			} catch (QueryEvaluationException e) {
+				e.printStackTrace();
+			}
+		}
+		assertTrue("expected a UniProt:P35354 individual in R-HSA-9018679",
+				labels_by_ind.size() > 0);
+		for (Map.Entry<String, Set<String>> en : labels_by_ind.entrySet()) {
+			assertEquals("individual " + en.getKey()
+					+ " must have exactly one rdfs:label", 1, en.getValue().size());
+			assertEquals("individual " + en.getKey()
+					+ " must be labeled canonically from the ProteinReference",
+					"PTGS2", en.getValue().iterator().next());
+		}
+	}
+
+	// R-HSA-9674015
 	@Test
 	public final void testDrugReactionDeletion() {
 		System.out.println("removal of drug reactions");
