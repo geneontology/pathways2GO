@@ -1691,6 +1691,58 @@ BP has_part R
 		assertTrue("no typed nodes? "+pathway, n>1);
 	}
 	
+	// Regression for untyped small-molecule inputs from cross-pathway reuse.
+	// Oxaloacetate (R-ALL-113587) is a has_input of the GOT2 transamination
+	// (R-HSA-70613) in "Glutamate and glutamine metabolism" (R-HSA-8964539).
+	// Its only producers (MDH2, PC) live in the Malate-aspartate shuttle, a
+	// different pathway that is not emitted into this model. The old
+	// small-molecule input-reuse shortcut grabbed a bare reference to that
+	// producer's output, leaving the input typed only as owl:NamedIndividual.
+	// Every small-molecule input must carry its CHEBI class instead.
+	@Test
+	public final void testSmallMoleculeInputTypedNotBareViaCrossPathwayReuse() {
+		System.out.println("Testing small-molecule input is typed (not bare via cross-pathway reuse)");
+		String q =
+				"prefix obo: <http://purl.obolibrary.org/obo/> \n" +
+				"prefix owl: <http://www.w3.org/2002/07/owl#> \n" +
+				"SELECT ?input ?type \n" +
+				"WHERE { \n" +
+				"  GRAPH <http://model.geneontology.org/R-HSA-8964539> { \n" +
+				"    <http://model.geneontology.org/R-HSA-70613> obo:RO_0002233 ?input . \n" +
+				"    ?input a ?type . \n" +
+				"    FILTER(STRSTARTS(STR(?input), \"http://model.geneontology.org/R-ALL-113587\")) \n" +
+				"    FILTER(?type != owl:NamedIndividual) \n" +
+				"  } \n" +
+				"}";
+		TupleQueryResult result = null;
+		int n = 0;
+		boolean hasChebi = false;
+		String seenTypes = "";
+		try {
+			result = blaze.runSparqlQuery(q);
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				String type = bindingSet.getValue("type").stringValue();
+				seenTypes += type + " ";
+				if (type.startsWith("http://purl.obolibrary.org/obo/CHEBI_")) {
+					hasChebi = true;
+				}
+				n++;
+			}
+		} catch (QueryEvaluationException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				e.printStackTrace();
+			}
+		}
+		assertTrue("oxaloacetate input (R-ALL-113587) of R-HSA-70613 is untyped (only owl:NamedIndividual); types found: [" + seenTypes + "]", n > 0);
+		assertTrue("oxaloacetate input (R-ALL-113587) of R-HSA-70613 lacks a CHEBI class type; types found: [" + seenTypes + "]", hasChebi);
+		System.out.println("Done testing small-molecule input typing");
+	}
+
 	@Test
 	public final void testSSSOMbp() {
 		System.out.println("testing sssom BP mapping additions");

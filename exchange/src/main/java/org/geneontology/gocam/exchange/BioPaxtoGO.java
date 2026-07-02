@@ -1554,11 +1554,8 @@ public class BioPaxtoGO {
 				}
 
 				ConversionDirectionType direction = getDirection(entity);
-				PathwayStep pathway_step = ((Conversion) entity).getStepProcessOf().iterator().next();
-				
 				Set<PhysicalEntity> inputs = null;
 				Set<PhysicalEntity> outputs = null;
-				Set<PathwayStep> previous_steps = pathway_step.getNextStepOf();
 
 				if(direction==null||direction.equals(ConversionDirectionType.LEFT_TO_RIGHT)||direction.equals(ConversionDirectionType.REVERSIBLE)) {
 					inputs = ((Conversion) entity).getLeft();
@@ -1603,35 +1600,16 @@ public class BioPaxtoGO {
 							}
 							input_location = String.join("_", in_location_terms);
 						}
-						if(!GoCAM.small_mol_do_not_join_ids.contains(entity_ref_id) && input instanceof SmallMolecule){
-							// Try to reuse previous rxn's output instance
-							for(PathwayStep previous_step : previous_steps) {
-								BiochemicalReaction reaction = getBiochemicalReaction(previous_step);
-								if (reaction == null) {
-									continue;
-								}
-								// Don't reuse the output of a reaction that the early GO-term gate will
-								// drop (#324): such a reaction never reaches defineReactionEntity, so its
-								// output individual is never typed. Skipping it here leaves i_iri == null,
-								// so the fresh path below calls defineReactionEntity and types the molecule.
-								// Fixes untyped small-molecule inputs (e.g. R-ALL-189489_cytosol).
-								if (resolveGoTermForReaction(reaction, go_cam).hasNoGoTerm()) {
-									continue;
-								}
-								ConversionDirectionType prev_step_direction = getDirection(reaction);
-								Set<PhysicalEntity> previous_outputs = null;
-								if(prev_step_direction.equals(ConversionDirectionType.RIGHT_TO_LEFT)) {
-									previous_outputs = reaction.getLeft();
-								} else {
-									previous_outputs = reaction.getRight();
-								}
-								// Don't reuse if reactions aren't in same pathway or if we will add_neighboring_events_from_other_pathways
-								if(previous_outputs.contains(input) && (add_neighboring_events_from_other_pathways || processesAreInSamePathway((Process) entity, reaction))) { // We can reuse this previous rxn's output instance
-									i_iri = GoCAM.makeGoCamifiedIRI(null, input_id+"_"+input_location);
-									input_entity = go_cam.df.getOWLNamedIndividual(i_iri);
-								}
-							}
-						}
+						// Every small-molecule (and other) input is defined via defineReactionEntity
+						// in the block below so it always carries its class. We deliberately do NOT
+						// reuse a previous reaction's output individual by bare reference: that
+						// producer may be a cross-pathway preceding event (e.g. an OA producer in the
+						// malate-aspartate shuttle) that is never emitted into the pathway model being
+						// built, which left the input typed only as owl:NamedIndividual. Node-sharing
+						// still holds because the IRI (input_id + "_" + input_location) is deterministic
+						// and matches an emitted producer's output IRI, and OWL type/annotation axioms
+						// are idempotent. (i_iri is therefore always null here; the guard is retained
+						// defensively.)
 						if(i_iri==null){
 							i_iri = GoCAM.makeGoCamifiedIRI(null, input_id+"_"+input_location);
 							input_entity = go_cam.df.getOWLNamedIndividual(i_iri);
@@ -2638,7 +2616,8 @@ public class BioPaxtoGO {
 		return null;
 	}
 
-	private Set<PhysicalEntity> getActiveSites(Control controlled_by_complex) {
+	// package-private for unit testing (see SetEnabledReactionSplitTest)
+	Set<PhysicalEntity> getActiveSites(Control controlled_by_complex) {
 		Set<PhysicalEntity> active_sites = new HashSet<PhysicalEntity>();
 		for(String comment : controlled_by_complex.getComment()) {
 			if(comment.startsWith("activeUnit:")) {
@@ -2655,6 +2634,14 @@ public class BioPaxtoGO {
 						// Should only be one
 						bp_entity = extracted_proteins.getActiveUnits().iterator().next();
 					}
+				}
+				// A plain-text "activeUnit:" comment can reference an id that does not resolve
+				// in this model (absent entity, or a mismatched xml:base). Skip it rather than
+				// adding a null (or non-PhysicalEntity) active site, which would NPE downstream
+				// in defineReactionEntity via getEntityReferenceId(null).
+				if (!(bp_entity instanceof PhysicalEntity)) {
+					System.out.println("UNRESOLVED_ACTIVE_UNIT\t"+full_id+"\t"+local_protein_id);
+					continue;
 				}
 				active_sites.add((PhysicalEntity) bp_entity);
 			}

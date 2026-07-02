@@ -98,6 +98,28 @@ public class SetEnabledReactionSplitTest {
         assertTrue("got " + names, names.containsAll(java.util.Arrays.asList("PLA2G4D", "PLA2G4F", "PLA2G16", "PLBD1", "cPLA2")));
     }
 
+    // An "activeUnit:" comment whose referenced protein id does not resolve (e.g. it
+    // was never included in the model) must not contribute a null active site. A null
+    // entry later NPEs in defineReactionEntity via getEntityReferenceId(null), aborting
+    // the whole conversion. getActiveSites must skip unresolvable references instead.
+    @Test
+    public void testGetActiveSitesSkipsUnresolvableActiveUnit() throws Exception {
+        BioPaxtoGO bp = new BioPaxtoGO();
+        bp.entityStrategy = BioPaxtoGO.EntityStrategy.REACTO;
+        org.biopax.paxtools.model.Model model =
+                org.biopax.paxtools.model.BioPAXLevel.L3.getDefaultFactory().createModel();
+        model.setXmlBase("http://example.org/test#");
+        org.biopax.paxtools.model.level3.Catalysis cat = model.addNew(
+                org.biopax.paxtools.model.level3.Catalysis.class, "http://example.org/test#Catalysis1");
+        cat.addComment("activeUnit: #Protein_DoesNotExist");
+        bp.biopax_model = model;
+
+        java.util.Set<org.biopax.paxtools.model.level3.PhysicalEntity> sites = bp.getActiveSites(cat);
+
+        assertFalse("unresolvable activeUnit must not add a null active site", sites.contains(null));
+        assertTrue("unresolvable activeUnit should yield no active sites, got " + sites, sites.isEmpty());
+    }
+
     @Test
     public void testCountFlattenedComplexCombinations() throws Exception {
         BioPaxtoGO bp = new BioPaxtoGO();
