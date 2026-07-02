@@ -1139,10 +1139,17 @@ public class BioPaxtoGO {
 		if(!(controller_entity instanceof PhysicalEntity)) {
 			return false;
 		}
-		if(controller_entity instanceof Complex) {
+		return isExplodablePhysicalEntitySet((PhysicalEntity) controller_entity);
+	}
+
+	/*
+	 * True when a PhysicalEntity is a Reactome EntitySet we should explode:
+	 * a bare PhysicalEntity (not a Complex) with members that are not all small molecules.
+	 */
+	boolean isExplodablePhysicalEntitySet(PhysicalEntity pe) {
+		if(pe instanceof Complex) {
 			return false;
 		}
-		PhysicalEntity pe = (PhysicalEntity) controller_entity;
 		Set<PhysicalEntity> members = pe.getMemberPhysicalEntity();
 		if(members == null || members.isEmpty()) {
 			return false;
@@ -1938,6 +1945,29 @@ public class BioPaxtoGO {
 							active_units = new HashSet<OWLNamedIndividual>();
 							//create the active unit nodes. 
 							for(PhysicalEntity active_site_entity : active_sites) {
+								//If the annotated active unit is itself an explodable EntitySet, explode it into one
+								//enabler per member and mark the reaction for the Phase-2 diamond split
+								//(splitSetEnabledReactions), instead of emitting a single REACTO-classed active-unit
+								//node. Mirrors the bare-set catalyst branch above. Catalysis only: regulator active
+								//units keep current behavior (handled by the regulator pipeline).
+								if(is_catalysis && isExplodablePhysicalEntitySet(active_site_entity)) {
+									List<PhysicalEntity> resolved_members = resolveSetCatalystMembers(active_site_entity);
+									if(!resolved_members.isEmpty()) {
+										StringBuilder au_member_ids = new StringBuilder();
+										for(PhysicalEntity member : resolved_members) {
+											String member_id = getEntityReferenceId(member);
+											IRI member_iri = GoCAM.makeGoCamifiedIRI(null, member_id+"_"+entity_id+"_controller");
+											OWLNamedIndividual member_e = go_cam.df.getOWLNamedIndividual(member_iri);
+											defineReactionEntity(go_cam, member, member_iri, true, model_id, root_pathway_iri, reaction_id, true);
+											go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, member_e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+											au_member_ids.append(member_id).append(",");
+										}
+										go_cam.set_enabled_reaction_iris.add(e.getIRI());
+										System.out.println("ACTIVE_UNIT_SET_EXPANDED\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+getEntityReferenceId(active_site_entity)+"\t"+resolved_members.size()+"\t"+au_member_ids.toString());
+										continue;
+									}
+									//no resolvable members: fall through to the normal REACTO active-unit node
+								}
 								//get the class for the entity
 								//if it is a physical entity, then we should already have created a class to describe it based on the unique id.  
 								//TODO this needs some generalizing, but focusing on getting Reactome done right now.

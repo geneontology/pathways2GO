@@ -1031,12 +1031,12 @@ BP has_part R
 
 	/**
 	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferRegulatesViaOutputEnables}.
-	 * Use pathway R-HSA-110362, reaction1 = R-HSA-5649883, reaction2 = R-HSA-5651723
-	 * Relation should be RO:0002629 directly positively regulates.
-	 * Note: reaction2's enabler is a REACTO-typed protein-set active unit ("PARP1,PARP2",
-	 * REACTO_R-HSA-5649876) that the eliminate-REACTO-IDs feature (deleteReactoTypedIndividuals) removes,
-	 * so this test verifies the inferred RO:0002629 regulation (and reaction1's pathway) without requiring
-	 * reaction2 to retain an enabled_by edge.
+	 * Pathway R-HSA-110362. Rule 3 ("reaction1 has an output that is the enabler of reaction2") fires
+	 * across the diamond split: the PARP autoPARylation reaction R-HSA-5651723 -- now split into per-member
+	 * diamonds enabled_by PARP1 (UniProt P09874) / PARP2 (UniProt Q9UGN5), because its annotated activeUnit
+	 * resolves to an EntitySet -- directly_positively_regulates (RO:0002629) the downstream reaction
+	 * R-HSA-5651782. We verify a diamond regulates R-HSA-5651782, is enabled_by a UniProt protein (not a
+	 * REACTO node), and is in the pathway.
 	 */
 	@Test
 	public final void testInferRegulatesViaOutputEnables() {
@@ -1045,12 +1045,15 @@ BP has_part R
 		try {
 			result = blaze.runSparqlQuery(
 				"prefix obo: <http://purl.obolibrary.org/obo/> "
-				+ "select ?pathway " +
+				+ "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+				+ "select ?reaction1 ?pathway " +
 				"where { " +
-				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-5649883> } . "+
-				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-5651723> } . "+
-				" ?reaction1 obo:RO_0002629 ?reaction2 . "
-				+ "?reaction1 obo:BFO_0000050 ?pathway "+
+				" ?reaction1 obo:RO_0002629 <http://model.geneontology.org/R-HSA-5651782> . "
+				+ "?reaction1 obo:RO_0002333 ?enabler . "
+				+ "?enabler rdf:type ?enabler_type . "
+				+ "?reaction1 obo:BFO_0000050 ?pathway . "
+				+ "FILTER(STRSTARTS(STR(?reaction1), \"http://model.geneontology.org/R-HSA-5651723_enabled_by_\")) "
+				+ "FILTER(STRSTARTS(STR(?enabler_type), \"http://identifiers.org/uniprot/\")) " +
 				"}");
 			int n = 0; String pathway = null;
 			while (result.hasNext()) {
@@ -1058,7 +1061,7 @@ BP has_part R
 				pathway = bindingSet.getValue("pathway").stringValue();
 				n++;
 			}
-			assertTrue(n==1);
+			assertTrue("expected a R-HSA-5651723 diamond (enabled_by a UniProt protein) to RO:0002629-regulate R-HSA-5651782 via Rule 3, got " + n, n >= 1);
 			assertTrue("got "+pathway, pathway.equals("http://model.geneontology.org/R-HSA-110362/R-HSA-110362"));
 		} catch (QueryEvaluationException e) {
 			// TODO Auto-generated catch block
@@ -1322,6 +1325,60 @@ BP has_part R
 			"select ?c where { GRAPH " + graph + " { "
 			+ "?c ?p ?o . FILTER(STRSTARTS(STR(?c), \"" + reactoPrefix + "\")) } }");
 		assertEquals("no REACTO_ IRI may appear as a subject in the model", 0, reactoSubject);
+	}
+
+	/**
+	 * When a Catalysis's annotated activeUnit resolves to an EntitySet of proteins, the reaction must be
+	 * split into one diamond per member (each enabled_by the member's UniProt class), NOT emitted as a
+	 * single REACTO-classed active-unit node.
+	 *
+	 * R-HSA-110362: reaction R-HSA-5651723 ("PARP1,PARP2 ... autoPARylate", MF GO:0003950) has
+	 * activeUnit #Complex2, whose active unit is R-HSA-5649876 "PARP1,PARP2" (an EntitySet of PARP1
+	 * (UniProt P09874) and PARP2 (UniProt Q9UGN5)). Expected: two GO:0003950 diamond activities
+	 * (R-HSA-5651723_enabled_by_*), one enabled_by P09874 and one enabled_by Q9UGN5; no REACTO_R-HSA-5649876
+	 * node; and the original bare R-HSA-5651723 activity is gone (replaced by the diamonds).
+	 */
+	@Test
+	public final void testActiveUnitSetExpandedToDiamonds() {
+		System.out.println("Testing active-unit EntitySet expanded into reaction diamonds");
+		String graph = "<http://model.geneontology.org/R-HSA-110362>";
+		String obo = "prefix obo: <http://purl.obolibrary.org/obo/> "
+			+ "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> ";
+		String diamondPrefix = "http://model.geneontology.org/R-HSA-5651723_enabled_by_";
+
+		// two diamond activities split from R-HSA-5651723, each typed with the reaction MF GO:0003950
+		int diamonds = countSolutions(obo
+			+ "select ?d where { GRAPH " + graph + " { "
+			+ "?d rdf:type obo:GO_0003950 . "
+			+ "FILTER(STRSTARTS(STR(?d), \"" + diamondPrefix + "\")) } }");
+		assertTrue("expected >=2 R-HSA-5651723 diamond activities, got " + diamonds, diamonds >= 2);
+
+		// the original bare reaction node is gone (replaced by the diamonds)
+		int original = countSolutions(obo
+			+ "select ?t where { GRAPH " + graph + " { "
+			+ "<http://model.geneontology.org/R-HSA-5651723> rdf:type ?t . filter(?t = obo:GO_0003950) } }");
+		assertEquals("original bare R-HSA-5651723 activity must be replaced by diamonds", 0, original);
+
+		// each diamond is enabled_by a UniProt-typed protein (PARP1 P09874, PARP2 Q9UGN5), not a REACTO node
+		int parp1 = countSolutions(obo
+			+ "select ?d where { GRAPH " + graph + " { "
+			+ "?d rdf:type obo:GO_0003950 . ?d obo:RO_0002333 ?enabler . "
+			+ "?enabler rdf:type <http://identifiers.org/uniprot/P09874> . "
+			+ "FILTER(STRSTARTS(STR(?d), \"" + diamondPrefix + "\")) } }");
+		assertTrue("a R-HSA-5651723 diamond must be enabled_by PARP1 (uniprot P09874), got " + parp1, parp1 >= 1);
+		int parp2 = countSolutions(obo
+			+ "select ?d where { GRAPH " + graph + " { "
+			+ "?d rdf:type obo:GO_0003950 . ?d obo:RO_0002333 ?enabler . "
+			+ "?enabler rdf:type <http://identifiers.org/uniprot/Q9UGN5> . "
+			+ "FILTER(STRSTARTS(STR(?d), \"" + diamondPrefix + "\")) } }");
+		assertTrue("a R-HSA-5651723 diamond must be enabled_by PARP2 (uniprot Q9UGN5), got " + parp2, parp2 >= 1);
+
+		// the PARP1,PARP2 set must not be emitted as its REACTO union node
+		int reacto = countSolutions(
+			"prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+			+ "select ?x where { GRAPH " + graph + " { "
+			+ "?x rdf:type <http://purl.obolibrary.org/obo/go/extensions/reacto.owl#REACTO_R-HSA-5649876> } }");
+		assertEquals("PARP1,PARP2 must not be emitted as a REACTO set node", 0, reacto);
 	}
 
 	/**
