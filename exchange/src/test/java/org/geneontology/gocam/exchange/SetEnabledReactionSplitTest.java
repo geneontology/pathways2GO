@@ -97,4 +97,55 @@ public class SetEnabledReactionSplitTest {
         // 4 direct proteins + the protein reduced from the PLA2G4A:Ca2+ complex (its displayName is "cPLA2")
         assertTrue("got " + names, names.containsAll(java.util.Arrays.asList("PLA2G4D", "PLA2G4F", "PLA2G16", "PLBD1", "cPLA2")));
     }
+
+    @Test
+    public void testCountFlattenedComplexCombinations() throws Exception {
+        BioPaxtoGO bp = new BioPaxtoGO();
+        bp.entityStrategy = BioPaxtoGO.EntityStrategy.REACTO;
+        org.biopax.paxtools.io.BioPAXIOHandler handler = new org.biopax.paxtools.io.SimpleIOHandler();
+        org.biopax.paxtools.model.Model model = handler.convertFromOWL(
+                new java.io.FileInputStream("./src/test/resources/biopax/R-HSA-204005_level3.owl"));
+        bp.biopax_model = model;
+
+        org.biopax.paxtools.model.level3.Complex pp6 = null;      // combos = 2
+        org.biopax.paxtools.model.level3.Complex big = null;      // combos > cap
+        for (org.biopax.paxtools.model.level3.Complex c : model.getObjects(org.biopax.paxtools.model.level3.Complex.class)) {
+            if ("PP6".equals(c.getDisplayName())) pp6 = c;
+            if ("R-HSA-5694334".equals(bp.getEntityReferenceId(c))) big = c;
+        }
+        assertNotNull("PP6 complex not found", pp6);
+        assertNotNull("big complex R-HSA-5694334 not found", big);
+
+        assertEquals(2L, bp.countFlattenedComplexCombinations(pp6));
+        assertTrue("over-cap complex must short-circuit to > cap",
+                bp.countFlattenedComplexCombinations(big) > BioPaxtoGO.SET_COMBINATION_CAP);
+    }
+
+    @Test
+    public void testEnumerateFlattenedProteinSets() throws Exception {
+        BioPaxtoGO bp = new BioPaxtoGO();
+        bp.entityStrategy = BioPaxtoGO.EntityStrategy.REACTO;
+        org.biopax.paxtools.io.BioPAXIOHandler handler = new org.biopax.paxtools.io.SimpleIOHandler();
+        org.biopax.paxtools.model.Model model = handler.convertFromOWL(
+                new java.io.FileInputStream("./src/test/resources/biopax/R-HSA-204005_level3.owl"));
+        bp.biopax_model = model;
+
+        org.biopax.paxtools.model.level3.Complex pp6 = null;
+        for (org.biopax.paxtools.model.level3.Complex c : model.getObjects(org.biopax.paxtools.model.level3.Complex.class)) {
+            if ("PP6".equals(c.getDisplayName())) { pp6 = c; break; }
+        }
+        assertNotNull(pp6);
+
+        java.util.List<java.util.Map<String, org.biopax.paxtools.model.level3.Protein>> combos =
+                bp.enumerateFlattenedProteinSets(pp6);
+        assertEquals("PP6 should enumerate 2 combinations", 2, combos.size());
+
+        java.util.Set<java.util.Set<String>> keySets = new java.util.HashSet<java.util.Set<String>>();
+        for (java.util.Map<String, org.biopax.paxtools.model.level3.Protein> m : combos) {
+            keySets.add(new java.util.TreeSet<String>(m.keySet()));
+        }
+        // each combination = the two fixed subunits + one set member
+        assertTrue(keySets.contains(new java.util.TreeSet<String>(java.util.Arrays.asList("O00743", "O15084", "Q9UPN7"))));
+        assertTrue(keySets.contains(new java.util.TreeSet<String>(java.util.Arrays.asList("O00743", "O15084", "Q5H9R7"))));
+    }
 }

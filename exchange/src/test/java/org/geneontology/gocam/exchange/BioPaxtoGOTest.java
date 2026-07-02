@@ -1832,6 +1832,84 @@ BP has_part R
 		assertTrue("Incorrect or complete lack of has_input and has_output given stepDirection for "+reaction_node, n==1);
 	}
 	
+	/**
+	 * Pathway R-HSA-204005: reaction R-HSA-6814833 is catalyzed by complex RAB1:GTP:TBC1D20
+	 * (R-HSA-6814832) = TBC1D20 + [RAB1:GTP -> GTP(stripped) + RAB1 set {RAB1B|RAB1A}], combos=2,
+	 * NO activeUnit. It must become 2 activities, each enabled_by a GO:0032991 PCC has_part exactly
+	 * two proteins: TBC1D20 (Q96BZ9) + one of {RAB1B Q9H0U4, RAB1A P62820}. GTP is stripped.
+	 * Negative guard: R-HSA-5694421 (PP6) HAS an activeUnit, so it must NOT be split.
+	 */
+	@Test
+	public final void testSetInComplexReactionExpanded() {
+		System.out.println("Testing set-in-complex reaction expansion");
+		try {
+			// original un-split reaction node must be gone (it was replaced by the diamond clones)
+			TupleQueryResult orig = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> select ?e where { "
+				+ "<http://model.geneontology.org/R-HSA-6814833> obo:RO_0002333 ?e }");
+			int origN = 0;
+			while (orig.hasNext()) { orig.next(); origN++; }
+			orig.close();
+			assertTrue("original reaction should be split away, enablers on it = " + origN, origN == 0);
+
+			// exactly 2 split activities, each enabled_by a protein-containing complex (GO:0032991)
+			TupleQueryResult res = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> select ?reaction ?pcc where { "
+				+ "?reaction obo:RO_0002333 ?pcc . ?pcc a obo:GO_0032991 . "
+				+ "FILTER(STRSTARTS(STR(?reaction), \"http://model.geneontology.org/R-HSA-6814833_enabled_by\")) }");
+			Set<String> reactions = new HashSet<String>();
+			Set<String> pccs = new HashSet<String>();
+			while (res.hasNext()) {
+				BindingSet b = res.next();
+				reactions.add(b.getValue("reaction").stringValue());
+				pccs.add(b.getValue("pcc").stringValue());
+			}
+			res.close();
+			assertTrue("expected 2 split activities, got " + reactions.size(), reactions.size() == 2);
+			assertTrue("expected 2 distinct PCC enablers, got " + pccs.size(), pccs.size() == 2);
+
+			// both PCCs share TBC1D20 (Q96BZ9) as a has_part protein type.
+			// UniProt class IRIs use GoCAM.uniprot_iri = http://identifiers.org/uniprot/ (full-IRI form,
+			// matching existing tests, e.g. BioPaxtoGOTest.java:1401 <http://identifiers.org/uniprot/P21912>).
+			TupleQueryResult shared = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> select ?pcc where { "
+				+ "?reaction obo:RO_0002333 ?pcc . ?pcc a obo:GO_0032991 . "
+				+ "?pcc obo:BFO_0000051 ?fixed . ?fixed a <http://identifiers.org/uniprot/Q96BZ9> . "
+				+ "FILTER(STRSTARTS(STR(?reaction), \"http://model.geneontology.org/R-HSA-6814833_enabled_by\")) }");
+			Set<String> sharedPccs = new HashSet<String>();
+			while (shared.hasNext()) { sharedPccs.add(shared.next().getValue("pcc").stringValue()); }
+			shared.close();
+			assertTrue("both PCCs must has_part TBC1D20, got " + sharedPccs.size(), sharedPccs.size() == 2);
+
+			// the variable subunit: one PCC has RAB1B (Q9H0U4), the other RAB1A (P62820)
+			for (String acc : new String[] { "Q9H0U4", "P62820" }) {
+				TupleQueryResult v = blaze.runSparqlQuery(
+					"prefix obo: <http://purl.obolibrary.org/obo/> select ?pcc where { "
+					+ "?reaction obo:RO_0002333 ?pcc . ?pcc a obo:GO_0032991 . "
+					+ "?pcc obo:BFO_0000051 ?var . ?var a <http://identifiers.org/uniprot/" + acc + "> . "
+					+ "FILTER(STRSTARTS(STR(?reaction), \"http://model.geneontology.org/R-HSA-6814833_enabled_by\")) }");
+				int n = 0;
+				while (v.hasNext()) { v.next(); n++; }
+				v.close();
+				assertTrue("exactly one PCC must has_part " + acc + ", got " + n, n == 1);
+			}
+
+			// negative guard: PP6 (R-HSA-5694421) HAS an activeUnit annotation, so it is NOT expanded/split
+			TupleQueryResult pp6 = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> select ?reaction where { "
+				+ "?reaction obo:RO_0002333 ?e . "
+				+ "FILTER(STRSTARTS(STR(?reaction), \"http://model.geneontology.org/R-HSA-5694421_enabled_by\")) }");
+			int pp6N = 0;
+			while (pp6.hasNext()) { pp6.next(); pp6N++; }
+			pp6.close();
+			assertTrue("PP6 has an activeUnit and must NOT be split, split clones = " + pp6N, pp6N == 0);
+		} catch (QueryEvaluationException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		System.out.println("Done testing set-in-complex reaction expansion");
+	}
+
 	@Test
 	public final void testReactomeChebiMoleculeIds() {
 		System.out.println("testing ChEBI ID extraction for Reactome small molecules");
@@ -1854,5 +1932,54 @@ BP has_part R
 				"  } \n";
 		int n = runQueryAndGetCount(q);
 		assertTrue("Missing "+reaction_node+" has_input "+input_type+" statement", n==1);
+	}
+
+	/**
+	 * Cap guard: reaction R-HSA-5694527 (controller complex combos=192 > SET_COMBINATION_CAP, no activeUnit)
+	 * must NOT be split, and no individual may be typed with the dropped set's REACTO class (R-HSA-5694244).
+	 */
+	@Test
+	public final void testOverCapComplexDropsReactoSetNode() {
+		System.out.println("Testing over-cap complex drops REACTO set node");
+		try {
+			// not split: no R-HSA-5694527_enabled_by_* clones exist
+			TupleQueryResult split = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> select ?reaction where { "
+				+ "?reaction obo:RO_0002333 ?e . "
+				+ "FILTER(STRSTARTS(STR(?reaction), \"http://model.geneontology.org/R-HSA-5694527_enabled_by\")) }");
+			int splitN = 0;
+			while (split.hasNext()) { split.next(); splitN++; }
+			split.close();
+			assertTrue("over-cap reaction must not be split, clones = " + splitN, splitN == 0);
+
+			// the original reaction node survives (was not replaced) and still has its single flattened enabler
+			TupleQueryResult present = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> select ?e where { "
+				+ "<http://model.geneontology.org/R-HSA-5694527> obo:RO_0002333 ?e }");
+			int presentN = 0;
+			while (present.hasNext()) { present.next(); presentN++; }
+			present.close();
+			assertTrue("original over-cap reaction should keep exactly one flattened enabler, got " + presentN, presentN == 1);
+
+			// the dropped set node is gone from the ENABLER: the over-cap reaction's flattened PCC enabler
+			// has no has_part typed with the set's REACTO class. IMPORTANT: the query is SCOPED to the
+			// enabler (via enabled_by/has_part). The same set may still legitimately appear as a reaction
+			// input/output participant, which is OUT OF SCOPE (spec §8) and KEEPS its REACTO class — so an
+			// unscoped "no instance anywhere" assertion would be wrong. Full-IRI form (hyphenated localname
+			// cannot be a CURIE), matching existing tests e.g. BioPaxtoGOTest.java:1423 <...#REACTO_R-HSA-70987>.
+			TupleQueryResult reacto = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> select ?x where { "
+				+ "<http://model.geneontology.org/R-HSA-5694527> obo:RO_0002333 ?pcc . "
+				+ "?pcc obo:BFO_0000051 ?x . "
+				+ "?x a <http://purl.obolibrary.org/obo/go/extensions/reacto.owl#REACTO_R-HSA-5694244> }");
+			int reactoN = 0;
+			while (reacto.hasNext()) { reacto.next(); reactoN++; }
+			reacto.close();
+			assertTrue("dropped set REACTO node must not be a has_part of the enabler, got " + reactoN, reactoN == 0);
+		} catch (QueryEvaluationException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		System.out.println("Done testing over-cap complex drops REACTO set node");
 	}
 }

@@ -153,7 +153,10 @@ public class BioPaxtoGO {
 	boolean add_upstream_controller_events_from_other_pathways = false; //if true will add reactions from other pathways if one of their participants is a controller (catalyst or regulator) of a reaction in the current pathway.  
 	boolean add_subpathway_bridges = true; //this is groundwork for an approach that generates go-cams that reference members of other go-cams, here referencing other pathways.  
 	String default_namespace_prefix = "Reactome"; //this is used to generate curi structured references - e.g. Reactome:HSA-007
-	Set<String> drug_process_ids = new HashSet<String>(); 
+	//Max flattened-complex combinations to expand a set-containing Catalysis controller complex into diamonds.
+	//Above this, the reaction falls back to a single flattened PCC (REACTO set node dropped) and is not split.
+	static final int SET_COMBINATION_CAP = 10;
+	Set<String> drug_process_ids = new HashSet<String>();
 	Map<String, String> accession_neo = new HashMap<String, String>(); //in case we need to store mappings to neo IRIs, use this
 	Map<String, String> monomerToSgdMappings = new HashMap<String, String>();
 	Map<String, String> yeastcyc2EC = new HashMap<String, String>(); //used to store mappings from YeastCyc ID to EC number in SGDIDs_to_ExPASy-ECs.txt
@@ -1303,9 +1306,12 @@ public class BioPaxtoGO {
 					// (+ any EntitySet subunits), stripping cofactors and dropping intermediate
 					// sub-complex individuals. has_part edges point directly from this PCC to the leaves.
 					FlattenedComplex flat = collectFlattenedComplexLeaves((Complex) entity);
-					Set<PhysicalEntity> leaves = new HashSet<PhysicalEntity>();
-					leaves.addAll(flat.proteinsByKey.values());
-					leaves.addAll(flat.setLeaves);
+					for (PhysicalEntity setLeaf : flat.setLeaves) {
+						//over-cap fallback (or a set nested in a whole-complex leaf): the set's REACTO
+						//union-class node is dropped, not emitted. Log it for traceability.
+						System.out.println("DROPPED_REACTO_SET_NODE\t" + model_id + "\t" + go_cam.name + "\t" + reaction_id + "\t" + entity_id + "\t" + getEntityReferenceId(setLeaf) + "\t" + iriToCurie(getPhysicalEntityIRI(setLeaf)) + "\t" + setLeaf.getDisplayName());
+					}
+					Set<PhysicalEntity> leaves = new HashSet<PhysicalEntity>(flat.proteinsByKey.values());
 					for(PhysicalEntity c : leaves) {
 						String component_id = getEntityReferenceId(c);
 						System.out.println("Complex component ID: "+component_id);
@@ -1356,7 +1362,7 @@ public class BioPaxtoGO {
 					}
 				}
 			}
-			OWLClass entity_class = go_cam.df.getOWLClass(entity_class_iri); 
+			OWLClass entity_class = go_cam.df.getOWLClass(entity_class_iri);
 			go_cam.addTypeAssertion(e, entity_class);
 			
 			Xref drug_id_xref = PhysicalEntityOntologyBuilder.getDrugReferenceId(entity);
@@ -1722,20 +1728,24 @@ public class BioPaxtoGO {
 									}
 									continue;
 								}
-								// No annotated active site: decide the enabler by flattening the complex
-								// hierarchy to its distinct UniProt protein subunits (+ EntitySet subunits).
+								// combos in [2, cap] are expanded into diamonds in Loop 2; skip the flatten decision.
+								long combos = countFlattenedComplexCombinations((Complex) controller_entity);
+								if (combos >= 2 && combos <= SET_COMBINATION_CAP) {
+									System.out.println("COMPLEX_SET_WILL_EXPAND\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName()+"\t"+combos);
+									continue;
+								}
+								// combos == 1 (no set) or over cap: flatten to protein subunits only.
+								// The set's REACTO union node is not emitted (dropped + logged in the explosion branch).
 								FlattenedComplex flat = collectFlattenedComplexLeaves((Complex) controller_entity);
-								if (flat.isEmpty()) {
-									// No usable protein anywhere -> drop the enabler entirely.
+								if (flat.proteinsByKey.isEmpty()) {
+									// no concrete protein subunit (set-only / cofactor-only) -> drop the enabler
 									drop_controller_entities.add((PhysicalEntity) controller_entity);
 									System.out.println("COMPLEX_FLATTEN_NO_PROTEIN\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName());
-								} else if (flat.proteinsByKey.size() == 1 && flat.setLeaves.isEmpty()) {
-									// Exactly one distinct protein -> enable_by it directly (no PCC).
+								} else if (flat.proteinsByKey.size() == 1) {
 									PhysicalEntity single = flat.proteinsByKey.values().iterator().next();
 									active_sites.add(single);
 									System.out.println("COMPLEX_FLATTENED_TO_SINGLE_PROTEIN\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName()+"\t"+getEntityReferenceId(single));
 								} else {
-									// Two or more distinct subunits -> flat PCC (active_sites left empty).
 									System.out.println("COMPLEX_FLATTENED_TO_PCC\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+entity_name+"\t"+complex_entity_id+"\t"+controller_entity.getDisplayName()+"\t"+flat.totalLeaves());
 								}
 							}
@@ -1835,6 +1845,66 @@ public class BioPaxtoGO {
 							go_cam.set_enabled_reaction_iris.add(e.getIRI());
 							System.out.println("SET_ENABLED_REACTION_SPLIT\t"+model_id+"\t"+go_cam.name+"\t"+entity_id+"\t"+resolved_members.size()+"\t"+member_ids.toString());
 							continue;
+						}
+						//Catalysis controller Complex containing EntitySet component(s): expand into one
+						//flattened-complex enabler per combination of set members (capped), split later in
+						//splitSetEnabledReactions. An annotated active site (active_sites non-empty) wins.
+						//Only fires when the top-level Complex is not itself an EntitySet-of-complexes
+						//(memberPhysicalEntity non-empty), which is handled by the existing drop/PCC path.
+						if (is_catalysis && active_sites.isEmpty() && controller_entity instanceof Complex
+								&& ((Complex) controller_entity).getMemberPhysicalEntity().isEmpty()) {
+							long combos = countFlattenedComplexCombinations((Complex) controller_entity);
+							if (combos >= 2 && combos <= SET_COMBINATION_CAP) {
+								Set<String> seen_combos = new HashSet<String>();
+								int distinct = 0;
+								String top_curie = iriToCurie(getPhysicalEntityIRI(controller_entity));
+								for (Map<String, Protein> ps : enumerateFlattenedProteinSets((Complex) controller_entity)) {
+									if (ps.isEmpty()) {
+										continue;
+									}
+									List<String> sorted_keys = new ArrayList<String>(ps.keySet());
+									Collections.sort(sorted_keys);
+									String combo_key = String.join("_", sorted_keys);
+									if (!seen_combos.add(combo_key)) {
+										continue; // dedup combinations that yield the same protein set
+									}
+									distinct++;
+									if (ps.size() == 1) {
+										// single distinct protein -> enable_by it directly (no PCC)
+										Protein only = ps.values().iterator().next();
+										String only_id = getEntityReferenceId(only);
+										IRI enabler_iri = GoCAM.makeGoCamifiedIRI(null, only_id + "_" + entity_id + "_controller");
+										OWLNamedIndividual enabler_e = go_cam.df.getOWLNamedIndividual(enabler_iri);
+										defineReactionEntity(go_cam, only, enabler_iri, true, model_id, root_pathway_iri, reaction_id, false);
+										go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, enabler_e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+									} else {
+										// >=2 distinct proteins -> one flattened protein-containing complex enabler
+										String combo_token = comboKeyToken(combo_key);
+										IRI pcc_iri = GoCAM.makeGoCamifiedIRI(null, (top_curie + "_" + combo_token + "_" + entity_id + "_controller").replace(":", "_"));
+										OWLNamedIndividual pcc_e = go_cam.makeAnnotatedIndividual(pcc_iri);
+										go_cam.addTypeAssertion(pcc_e, go_cam.df.getOWLClass(IRI.create("http://purl.obolibrary.org/obo/GO_0032991")));
+										if (controller_entity.getDisplayName() != null) {
+											go_cam.addLabel(pcc_e, controller_entity.getDisplayName());
+										}
+										String pcc_local = pcc_iri.toString().replace("http://model.geneontology.org/", "");
+										for (Protein prot : ps.values()) {
+											IRI comp_iri = GoCAM.makeGoCamifiedIRI(null, (iriToCurie(getPhysicalEntityIRI(prot)) + "_" + pcc_local + "_component").replace(":", "_"));
+											OWLNamedIndividual comp_e = go_cam.makeAnnotatedIndividual(comp_iri);
+											defineReactionEntity(go_cam, prot, comp_iri, true, model_id, root_pathway_iri, reaction_id, false);
+											go_cam.addRefBackedObjectPropertyAssertion(pcc_e, GoCAM.has_part, comp_e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+										}
+										go_cam.addRefBackedObjectPropertyAssertion(e, GoCAM.enabled_by, pcc_e, dbids, GoCAM.eco_imported_auto, default_namespace_prefix, null, model_id);
+									}
+								}
+								if (distinct >= 1) {
+									go_cam.set_enabled_reaction_iris.add(e.getIRI());
+									System.out.println("SET_IN_COMPLEX_REACTION_EXPANDED\t" + model_id + "\t" + go_cam.name + "\t" + entity_id + "\t" + getEntityReferenceId(controller_entity) + "\t" + combos + "\t" + distinct);
+									continue;
+								}
+								// distinct == 0 means the complex yielded no protein combinations (e.g. pure
+								// EntitySet-of-complexes with no UniProt leaves): fall through to normal path.
+								System.out.println("SET_IN_COMPLEX_NO_PROTEINS\t" + model_id + "\t" + go_cam.name + "\t" + entity_id + "\t" + getEntityReferenceId(controller_entity) + "\t" + combos);
+							}
 						}
 						if (drop_controller_entities.contains(controller_entity)) {
 							System.out.println("DROP_FLATTENED_ENABLER_NO_PROTEIN\t"+entity_id+"\tcontroller_entity="+getEntityReferenceId(controller_entity));
@@ -2166,6 +2236,148 @@ public class BioPaxtoGO {
 			}
 			// else: Dna, Rna, non-ChEBI bare PhysicalEntity -> skip
 		}
+	}
+
+	/*
+	 * Count the flattened enabler combinations a Complex produces when each internal EntitySet
+	 * is expanded (one member per set): combos(Complex)=product over components, combos(Set)=sum
+	 * over members, leaf=1. SmallMoleculeEquivalent leaves are stripped. Cycle-guarded (DFS stack).
+	 * Short-circuits: once the running count passes SET_COMBINATION_CAP it returns SET_COMBINATION_CAP+1
+	 * (avoids overflow / deep work on huge complexes). Pure BioPAX; creates no OWL.
+	 */
+	long countFlattenedComplexCombinations(Complex top) {
+		return countCombos(top, new HashSet<String>());
+	}
+
+	private long countCombos(PhysicalEntity node, Set<String> visiting) {
+		if (isSmallMoleculeEquivalent(node)) {
+			return 1;
+		}
+		String id = node.getUri();
+		if (!visiting.add(id)) {
+			return 1; // cycle guard
+		}
+		try {
+			Set<PhysicalEntity> members = node.getMemberPhysicalEntity();
+			if (members != null && !members.isEmpty()) {
+				// EntitySet: pick one member -> sum over non-stripped members
+				long sum = 0;
+				for (PhysicalEntity m : members) {
+					if (isSmallMoleculeEquivalent(m)) {
+						continue;
+					}
+					sum += countCombos(m, visiting);
+					if (sum > SET_COMBINATION_CAP) {
+						return SET_COMBINATION_CAP + 1;
+					}
+				}
+				return (sum == 0) ? 1 : sum;
+			}
+			if (node instanceof Complex) {
+				long prod = 1;
+				for (PhysicalEntity c : ((Complex) node).getComponent()) {
+					if (isSmallMoleculeEquivalent(c)) {
+						continue;
+					}
+					prod *= countCombos(c, visiting);
+					if (prod > SET_COMBINATION_CAP) {
+						return SET_COMBINATION_CAP + 1;
+					}
+				}
+				return prod;
+			}
+			return 1; // Protein / other leaf
+		} finally {
+			visiting.remove(id);
+		}
+	}
+
+	/*
+	 * Enumerate the flattened enabler protein-sets a Complex produces when each internal EntitySet
+	 * is expanded (one member per set), matching countFlattenedComplexCombinations. Each combination
+	 * is a Map keyed by UniProt id (else BioPAX URI). Complex -> cartesian product across components;
+	 * Set -> concatenation across members; Protein -> singleton; SmallMoleculeEquivalent / DNA / RNA /
+	 * bare non-ChEBI PE -> empty. Cycle-guarded. Combinations are NOT deduped here. Only call when
+	 * countFlattenedComplexCombinations(top) <= SET_COMBINATION_CAP.
+	 */
+	List<Map<String, Protein>> enumerateFlattenedProteinSets(Complex top) {
+		return enumProteinSets(top, new HashSet<String>());
+	}
+
+	private List<Map<String, Protein>> enumProteinSets(PhysicalEntity node, Set<String> visiting) {
+		List<Map<String, Protein>> result = new ArrayList<Map<String, Protein>>();
+		if (isSmallMoleculeEquivalent(node)) {
+			result.add(new HashMap<String, Protein>());
+			return result;
+		}
+		String id = node.getUri();
+		if (!visiting.add(id)) {
+			result.add(new HashMap<String, Protein>()); // cycle guard
+			return result;
+		}
+		try {
+			Set<PhysicalEntity> members = node.getMemberPhysicalEntity();
+			if (members != null && !members.isEmpty()) {
+				// EntitySet: OR over members (each member choice is a separate combination)
+				for (PhysicalEntity m : members) {
+					if (isSmallMoleculeEquivalent(m)) {
+						continue;
+					}
+					result.addAll(enumProteinSets(m, visiting));
+				}
+				if (result.isEmpty()) {
+					result.add(new HashMap<String, Protein>());
+				}
+				return result;
+			}
+			if (node instanceof Complex) {
+				// Cartesian product across components (union the protein maps)
+				result.add(new HashMap<String, Protein>());
+				for (PhysicalEntity c : ((Complex) node).getComponent()) {
+					if (isSmallMoleculeEquivalent(c)) {
+						continue;
+					}
+					List<Map<String, Protein>> child = enumProteinSets(c, visiting);
+					List<Map<String, Protein>> merged = new ArrayList<Map<String, Protein>>();
+					for (Map<String, Protein> base : result) {
+						for (Map<String, Protein> add : child) {
+							Map<String, Protein> combo = new HashMap<String, Protein>(base);
+							combo.putAll(add);
+							merged.add(combo);
+						}
+					}
+					result = merged;
+				}
+				return result;
+			}
+			if (node instanceof Protein) {
+				String key = extractUniprotId((Protein) node);
+				if (key == null) {
+					key = node.getUri();
+				}
+				Map<String, Protein> m = new HashMap<String, Protein>();
+				m.put(key, (Protein) node);
+				result.add(m);
+				return result;
+			}
+			// Dna / Rna / bare non-ChEBI PhysicalEntity -> contributes nothing
+			result.add(new HashMap<String, Protein>());
+			return result;
+		} finally {
+			visiting.remove(id);
+		}
+	}
+
+	/*
+	 * Deterministic IRI-safe token for a combination's sorted key list. Sanitizes to
+	 * [A-Za-z0-9_]; hashes when long so the enabler IRI stays bounded.
+	 */
+	private static String comboKeyToken(String combo_key) {
+		String token = combo_key.replaceAll("[^A-Za-z0-9]", "_");
+		if (token.length() <= 60) {
+			return token;
+		}
+		return "combo" + Integer.toHexString(combo_key.hashCode());
 	}
 
 	private boolean complexHasProtein(Complex controlled_by_complex) {
