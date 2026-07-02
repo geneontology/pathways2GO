@@ -993,8 +993,10 @@ final long counterValue = instanceCounter.getAndIncrement();
 		r = inferSmallMoleculeRegulators(model_id, r, tbox_qrunner);
 		logger.debug("deleting complexes with active units");
 		deleteComplexesWithActiveUnits();
-		logger.debug("deleting disallowed relations like that between a non-gene product molecular and the reaction it regulates");		
+		logger.debug("deleting disallowed relations like that between a non-gene product molecular and the reaction it regulates");
 		deleteDisallowedRelations();
+		logger.debug("deleting individuals still typed with a REACTO class");
+		deleteReactoTypedIndividuals(model_id);
 		logger.debug("clean up any stray individuals");
 		cleanOutUnconnectedNodes();
 		return r;
@@ -1806,8 +1808,55 @@ BP has_part R
 				applyAnnotatedTripleRemover(s.getIRI(), p.asOWLObjectProperty().getIRI(), o.getIRI());
 			}
 		}			
-		qrunner = new QRunner(go_cam_ont); 
+		qrunner = new QRunner(go_cam_ont);
 		System.out.println("Eliminated 'located in' assertions");
+	}
+
+	/**
+	 * Delete every individual still typed with a REACTO physical-entity class
+	 * (http://purl.obolibrary.org/obo/go/extensions/reacto.owl#REACTO_...), then remove the
+	 * now-dangling REACTO class declarations, so no REACTO IRI survives in the emitted model.
+	 *
+	 * Resolvable entities (small molecules -> CHEBI, UniProt-backed proteins -> UniProt, flattened
+	 * complex enablers -> GO_0032991) were already typed with a non-REACTO class upstream, so anything
+	 * still typed REACTO_ is by definition unresolved and is dropped here. Reactions are typed with GO
+	 * MF classes or molecular_event (never REACTO_), so they are never targets; deleting a REACTO
+	 * participant only drops that participant and its edges (delete_related_nodes=false). molecular_event
+	 * (localname does not start with "REACTO_") is deliberately not matched.
+	 */
+	private void deleteReactoTypedIndividuals(String model_id) {
+		String reactoPrefix = GoCAM.reacto_base_iri.toString();
+		//1. collect all individuals typed with a REACTO_ class (collect first, then delete, so we do
+		//not mutate the ontology while iterating its axioms); remember each one's REACTO class for logging
+		Map<OWLNamedIndividual, IRI> toDelete = new HashMap<OWLNamedIndividual, IRI>();
+		for(OWLClassAssertionAxiom ax : go_cam_ont.getAxioms(AxiomType.CLASS_ASSERTION)) {
+			OWLClassExpression type = ax.getClassExpression();
+			if(type.isAnonymous()) {
+				continue;
+			}
+			if(type.asOWLClass().getIRI().toString().startsWith(reactoPrefix) && ax.getIndividual().isNamed()) {
+				toDelete.put(ax.getIndividual().asOWLNamedIndividual(), type.asOWLClass().getIRI());
+			}
+		}
+		//2. delete each individual and every axiom referencing it (edges + evidence-annotated axioms).
+		//Log one line per deleted individual (tab-separated, matching the DROPPED_REACTO_SET_NODE style)
+		//so downstream tooling can audit exactly what was removed. Read the label before deleting it.
+		for(Map.Entry<OWLNamedIndividual, IRI> entry : toDelete.entrySet()) {
+			OWLNamedIndividual ind = entry.getKey();
+			String reacto_curie = entry.getValue().toString().replace(reactoPrefix, "REACTO:");
+			String label = getaLabel(ind);
+			System.out.println("DELETED_REACTO_INDIVIDUAL\t"+model_id+"\t"+name+"\t"+ind.getIRI()+"\t"+reacto_curie+"\t"+label);
+			deleteOwlEntityAndAllReferencesToIt(ind);
+		}
+		//3. sweep the leftover REACTO_ class declarations so no REACTO IRI remains anywhere
+		for(OWLClass c : new HashSet<OWLClass>(go_cam_ont.getClassesInSignature())) {
+			if(c.getIRI().toString().startsWith(reactoPrefix)) {
+				deleteOwlEntityAndAllReferencesToIt(c);
+			}
+		}
+		//4. resync the sparqlable model with the mutated ontology (matches deleteDisallowedRelations)
+		qrunner = new QRunner(go_cam_ont);
+		System.out.println("Deleted "+toDelete.size()+" REACTO-typed individuals");
 	}
 
 

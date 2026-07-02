@@ -1032,7 +1032,11 @@ BP has_part R
 	/**
 	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferRegulatesViaOutputEnables}.
 	 * Use pathway R-HSA-110362, reaction1 = R-HSA-5649883, reaction2 = R-HSA-5651723
-	 * Relation should be RO:0002629 directly positively regulates
+	 * Relation should be RO:0002629 directly positively regulates.
+	 * Note: reaction2's enabler is a REACTO-typed protein-set active unit ("PARP1,PARP2",
+	 * REACTO_R-HSA-5649876) that the eliminate-REACTO-IDs feature (deleteReactoTypedIndividuals) removes,
+	 * so this test verifies the inferred RO:0002629 regulation (and reaction1's pathway) without requiring
+	 * reaction2 to retain an enabled_by edge.
 	 */
 	@Test
 	public final void testInferRegulatesViaOutputEnables() {
@@ -1046,7 +1050,6 @@ BP has_part R
 				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-5649883> } . "+
 				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-5651723> } . "+
 				" ?reaction1 obo:RO_0002629 ?reaction2 . "
-				+ "?reaction2 obo:RO_0002333 ?active_part . "
 				+ "?reaction1 obo:BFO_0000050 ?pathway "+
 				"}");
 			int n = 0; String pathway = null;
@@ -1280,6 +1283,45 @@ BP has_part R
 			+ "VALUES ?io { obo:RO_0002233 obo:RO_0002234 } . "
 			+ "FILTER NOT EXISTS { ?participant rdf:type ?t . FILTER(?t != owl:NamedIndividual) } } }");
 		assertEquals("every has_input/has_output participant must have a class type", 0, untypedParticipants);
+	}
+
+	/**
+	 * Eliminate REACTO IDs: the emitted model must contain NO REACTO physical-entity IRI —
+	 * neither as an rdf:type object nor as a subject (class declaration) — while reactions and
+	 * their GO molecular functions survive.
+	 *
+	 * In "Heme biosynthesis" (R-HSA-189451) the pipeline currently emits several REACTO_ complex/
+	 * entity individuals (e.g. REACTO_R-HSA-189400 "8x(ALAD:Zn2+)"), so before the fix this test
+	 * fails on the "no individual may be typed with a REACTO_ class" assertion.
+	 */
+	@Test
+	public final void testNoReactoIdsInEmittedModel() {
+		System.out.println("Testing that no REACTO IDs remain in the emitted model");
+		String graph = "<http://model.geneontology.org/R-HSA-189451>";
+		String reactoPrefix = "http://purl.obolibrary.org/obo/go/extensions/reacto.owl#REACTO_";
+
+		// Survival precondition: a known catalyzed reaction still carries its GO molecular function.
+		// Guards against a vacuous pass (wrong graph) and against over-deletion of reactions.
+		int reactionPresent = countSolutions(
+			"prefix obo: <http://purl.obolibrary.org/obo/> "
+			+ "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+			+ "select ?r where { GRAPH " + graph + " { "
+			+ "<http://model.geneontology.org/R-HSA-189439> rdf:type obo:GO_0004655 } }");
+		assertTrue("precondition: reaction R-HSA-189439 must survive typed obo:GO_0004655 (got "
+			+ reactionPresent + ")", reactionPresent > 0);
+
+		// (1) No individual may be typed with a REACTO_ class.
+		int reactoTyped = countSolutions(
+			"prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+			+ "select ?s where { GRAPH " + graph + " { "
+			+ "?s rdf:type ?c . FILTER(STRSTARTS(STR(?c), \"" + reactoPrefix + "\")) } }");
+		assertEquals("no individual may be typed with a REACTO_ class", 0, reactoTyped);
+
+		// (2) No REACTO_ IRI may appear as a subject either (dangling class declarations swept).
+		int reactoSubject = countSolutions(
+			"select ?c where { GRAPH " + graph + " { "
+			+ "?c ?p ?o . FILTER(STRSTARTS(STR(?c), \"" + reactoPrefix + "\")) } }");
+		assertEquals("no REACTO_ IRI may appear as a subject in the model", 0, reactoSubject);
 	}
 
 	/**
@@ -1962,11 +2004,12 @@ BP has_part R
 			assertTrue("original over-cap reaction should keep exactly one flattened enabler, got " + presentN, presentN == 1);
 
 			// the dropped set node is gone from the ENABLER: the over-cap reaction's flattened PCC enabler
-			// has no has_part typed with the set's REACTO class. IMPORTANT: the query is SCOPED to the
-			// enabler (via enabled_by/has_part). The same set may still legitimately appear as a reaction
-			// input/output participant, which is OUT OF SCOPE (spec §8) and KEEPS its REACTO class — so an
-			// unscoped "no instance anywhere" assertion would be wrong. Full-IRI form (hyphenated localname
-			// cannot be a CURIE), matching existing tests e.g. BioPaxtoGOTest.java:1423 <...#REACTO_R-HSA-70987>.
+			// has no has_part typed with the set's REACTO class. This assertion is SCOPED to the enabler
+			// (via enabled_by/has_part) and expects 0. Note: as of the "eliminate REACTO IDs" feature,
+			// REACTO-typed participants are deleted from the whole model (deleteReactoTypedIndividuals),
+			// so this set no longer survives as an input/output participant either. Full-IRI form
+			// (hyphenated localname cannot be a CURIE), matching existing tests e.g.
+			// BioPaxtoGOTest.java:1423 <...#REACTO_R-HSA-70987>.
 			TupleQueryResult reacto = blaze.runSparqlQuery(
 				"prefix obo: <http://purl.obolibrary.org/obo/> select ?x where { "
 				+ "<http://model.geneontology.org/R-HSA-5694527> obo:RO_0002333 ?pcc . "
