@@ -2583,7 +2583,13 @@ public class BioPaxtoGO {
 	private static String extractUniprotId(Protein protein) {
 	    if (protein.getEntityReference() != null) {
 	        for (Xref xref : protein.getEntityReference().getXref()) {
-	            if ("UniProt".equals(xref.getDb()) || "uniprot".equals(xref.getDb())) {
+	            // Accept "UniProt"/"uniprot" and the isoform form "UniProt Isoform": isoform
+	            // proteins carry their accession (e.g. P14618-1) on a "UniProt Isoform" xref.
+	            // Without this, isoforms return no canonical label and fall back to their raw
+	            // displayName, so two proteins sharing one isoform ProteinReference (e.g. PKM-1
+	            // and PolyUb-PKM-1) collapse onto one individual carrying both displayNames.
+	            String db = xref.getDb();
+	            if (db != null && db.toLowerCase().startsWith("uniprot")) {
 	                return xref.getId();
 	            }
 	        }

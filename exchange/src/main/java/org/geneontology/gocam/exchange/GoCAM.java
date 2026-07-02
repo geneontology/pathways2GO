@@ -1668,6 +1668,52 @@ R enabled_by E2
 BP has_part R
 	 * @return 
 	 */
+	/**
+	 * True iff a regulator's inferred rdf:type closure denotes a genuine small molecule:
+	 * a CHEBI chemical entity (CHEBI:24431) that is neither a protein (CHEBI:36080) nor a
+	 * nucleic acid (CHEBI:33696). Only such entities may become has_small_molecule_*
+	 * regulators; proteins and complexes must not.
+	 *
+	 * The bare "chemical entity" (CHEBI:24431) test is far too broad: the production
+	 * go-lego-reacto tbox declares every UniProt protein class SubClassOf CHEBI:36080
+	 * (protein) -> CHEBI:33695 -> ... -> CHEBI:24431, so a protein regulator's closure
+	 * contains CHEBI:24431 and would otherwise be mis-emitted as a small-molecule regulator.
+	 * Excluding CHEBI:36080 keeps genuine small molecules (never proteins) while rejecting
+	 * proteins. Complexes (GO:0032991) are not under CHEBI:24431 and already fail the test.
+	 */
+	static boolean isSmallMoleculeRegulatorType(Set<OWLClass> entity_types) {
+		OWLDataFactory df = OWLManager.getOWLDataFactory();
+		String obo = "http://purl.obolibrary.org/obo/";
+		OWLClass chemical_entity = df.getOWLClass(IRI.create(obo + "CHEBI_24431"));
+		OWLClass protein = df.getOWLClass(IRI.create(obo + "CHEBI_36080"));
+		OWLClass nucleic_acid = df.getOWLClass(IRI.create(obo + "CHEBI_33696"));
+		return entity_types.contains(chemical_entity)
+				&& !entity_types.contains(protein)
+				&& !entity_types.contains(nucleic_acid);
+	}
+
+	/**
+	 * True iff `ind` participates as an enabler/substrate (object of enabled_by RO_0002333
+	 * or has_input RO_0002233), not only as a regulator. A modified protein form that shares
+	 * a UniProt reference with an enabler collapses onto the same GO-CAM individual, so a
+	 * dropped non-small-molecule regulation edge must not delete an individual that is also
+	 * enabling/inputting a reaction (that would destroy the enabler diamond).
+	 */
+	static boolean isEnablerOrInput(OWLOntology ont, OWLNamedIndividual ind) {
+		String obo = "http://purl.obolibrary.org/obo/";
+		IRI enabled_by_iri = IRI.create(obo + "RO_0002333");
+		IRI has_input_iri = IRI.create(obo + "RO_0002233");
+		for(OWLObjectPropertyAssertionAxiom ax : ont.getAxioms(AxiomType.OBJECT_PROPERTY_ASSERTION)) {
+			if(ax.getObject().equals(ind) && !ax.getProperty().isAnonymous()) {
+				IRI p = ax.getProperty().asOWLObjectProperty().getIRI();
+				if(p.equals(enabled_by_iri) || p.equals(has_input_iri)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	private RuleResults inferSmallMoleculeRegulators(String model_id, RuleResults r, QRunner tbox_qrunner) {
 		String entity_regulator_rule = "Entity Regulator Rule";
 		Integer entity_regulator_count = r.checkInitCount(entity_regulator_rule, r);
@@ -1685,9 +1731,6 @@ BP has_part R
 		}
 
 		entity_regulator_count+=ers.size();
-		String obo_base ="http://purl.obolibrary.org/obo/";
-		OWLClass chebi_chemical = df.getOWLClass(IRI.create(obo_base+"CHEBI_24431"));
-		OWLClass chebi_nucleic_acid = df.getOWLClass(IRI.create(obo_base+"CHEBI_33696"));
 		for(String reaction_uri : reaction_regulators.keySet()) {
 			OWLNamedIndividual reaction = makeUnannotatedIndividual(reaction_uri);
 			//just do this once per reaction, most is redundant because of flat response structure
@@ -1713,8 +1756,9 @@ BP has_part R
 					Set<OWLAnnotation> annos = getDefaultAnnotations();
 					OWLNamedIndividual regulator = makeUnannotatedIndividual(er.entity_uri);
 					
-					//Only do this for chemical entities but not if nucleic acid or descendant
-					if(entity_types.contains(chebi_chemical) && !entity_types.contains(chebi_nucleic_acid)) {
+					//Only rewrite genuine small molecules to has_small_molecule_*; proteins and
+					//complexes (which the tbox also places under CHEBI:24431 via CHEBI:36080) must not.
+					if(isSmallMoleculeRegulatorType(entity_types)) {
 						OWLObjectProperty prop_for_deletion = GoCAM.involved_in_negative_regulation_of;
 						OWLObjectProperty regulator_prop = GoCAM.has_small_molecule_inhibitor;
 						String explain = "Entity Regulator Rule.  The relation was added to account for an assertion about an entity regulating the target reaction.";
@@ -1729,20 +1773,35 @@ BP has_part R
 						}
 						//Connect the regulator to reaction via has_small_molecule_... relation
 						addRefBackedObjectPropertyAssertion(reaction, regulator_prop, regulator, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
-						
-						//delete the original entity regulates process relation 
+
+						//delete the original entity regulates process relation
 						applyAnnotatedTripleRemover(regulator.getIRI(), prop_for_deletion.getIRI(), reaction.getIRI());
 					} else {
-						// Delete individuals and log these out
-						String deleted_regulator_line = entity_type_class.getIRI().toString();
-						deleted_regulator_line += "\t"+this.getaLabel(entity_type_class);
-						deleted_regulator_line += "\t"+reaction_uri.toString();
-						deleted_regulator_line += "\t"+model_id;
-						System.out.println("DELETING_NON_SMALL_MOL_REGULATOR\t"+deleted_regulator_line);
-						//A Complex/Set regulator was exploded into has_part/has_substitutable_entity
-						//component individuals in the first layer.  Delete those too, else they are
-						//left as orphan individuals once the regulator itself is removed.
-						deleteRegulatorAndComponents(regulator);
+						//Non-small-molecule regulator (protein / complex / set / nucleic acid): it must
+						//not be emitted as a has_small_molecule_* regulator.
+						OWLObjectProperty regulation_prop =
+								er.prop_uri.equals("http://purl.obolibrary.org/obo/RO_0002429")
+										? GoCAM.involved_in_positive_regulation_of
+										: GoCAM.involved_in_negative_regulation_of;
+						if(isEnablerOrInput(go_cam_ont, regulator)) {
+							//The regulator individual also enables/inputs a reaction (e.g. a modified
+							//protein form that shares a UniProt reference with an enabler collapses onto
+							//the same individual). Deleting it would destroy the enabler diamond; instead
+							//just drop the disallowed regulation edge and keep the individual.
+							System.out.println("SKIP_NON_SMALL_MOL_REGULATOR_ENABLER\t"+entity_type_class.getIRI()+"\t"+reaction_uri+"\t"+model_id);
+							applyAnnotatedTripleRemover(regulator.getIRI(), regulation_prop.getIRI(), reaction.getIRI());
+						} else {
+							// Delete individuals and log these out
+							String deleted_regulator_line = entity_type_class.getIRI().toString();
+							deleted_regulator_line += "\t"+this.getaLabel(entity_type_class);
+							deleted_regulator_line += "\t"+reaction_uri.toString();
+							deleted_regulator_line += "\t"+model_id;
+							System.out.println("DELETING_NON_SMALL_MOL_REGULATOR\t"+deleted_regulator_line);
+							//A Complex/Set regulator was exploded into has_part/has_substitutable_entity
+							//component individuals in the first layer.  Delete those too, else they are
+							//left as orphan individuals once the regulator itself is removed.
+							deleteRegulatorAndComponents(regulator);
+						}
 					}
 				}
 			}
