@@ -158,6 +158,8 @@ public class GoCAM {
 	Blazer blazegraphdb;
 	//for convenience
 	String name;
+	//reactions catalyzed by an EntitySet, to be split into one activity per member in splitSetEnabledReactions()
+	Set<IRI> set_enabled_reaction_iris = new HashSet<IRI>();
 	String default_namespace_prefix;
 	String contributor_link_comment;
 
@@ -991,8 +993,10 @@ final long counterValue = instanceCounter.getAndIncrement();
 		r = inferSmallMoleculeRegulators(model_id, r, tbox_qrunner);
 		logger.debug("deleting complexes with active units");
 		deleteComplexesWithActiveUnits();
-		logger.debug("deleting disallowed relations like that between a non-gene product molecular and the reaction it regulates");		
+		logger.debug("deleting disallowed relations like that between a non-gene product molecular and the reaction it regulates");
 		deleteDisallowedRelations();
+		logger.debug("deleting individuals still typed with a REACTO class");
+		deleteReactoTypedIndividuals(model_id);
 		logger.debug("clean up any stray individuals");
 		cleanOutUnconnectedNodes();
 		return r;
@@ -1664,6 +1668,52 @@ R enabled_by E2
 BP has_part R
 	 * @return 
 	 */
+	/**
+	 * True iff a regulator's inferred rdf:type closure denotes a genuine small molecule:
+	 * a CHEBI chemical entity (CHEBI:24431) that is neither a protein (CHEBI:36080) nor a
+	 * nucleic acid (CHEBI:33696). Only such entities may become has_small_molecule_*
+	 * regulators; proteins and complexes must not.
+	 *
+	 * The bare "chemical entity" (CHEBI:24431) test is far too broad: the production
+	 * go-lego-reacto tbox declares every UniProt protein class SubClassOf CHEBI:36080
+	 * (protein) -> CHEBI:33695 -> ... -> CHEBI:24431, so a protein regulator's closure
+	 * contains CHEBI:24431 and would otherwise be mis-emitted as a small-molecule regulator.
+	 * Excluding CHEBI:36080 keeps genuine small molecules (never proteins) while rejecting
+	 * proteins. Complexes (GO:0032991) are not under CHEBI:24431 and already fail the test.
+	 */
+	static boolean isSmallMoleculeRegulatorType(Set<OWLClass> entity_types) {
+		OWLDataFactory df = OWLManager.getOWLDataFactory();
+		String obo = "http://purl.obolibrary.org/obo/";
+		OWLClass chemical_entity = df.getOWLClass(IRI.create(obo + "CHEBI_24431"));
+		OWLClass protein = df.getOWLClass(IRI.create(obo + "CHEBI_36080"));
+		OWLClass nucleic_acid = df.getOWLClass(IRI.create(obo + "CHEBI_33696"));
+		return entity_types.contains(chemical_entity)
+				&& !entity_types.contains(protein)
+				&& !entity_types.contains(nucleic_acid);
+	}
+
+	/**
+	 * True iff `ind` participates as an enabler/substrate (object of enabled_by RO_0002333
+	 * or has_input RO_0002233), not only as a regulator. A modified protein form that shares
+	 * a UniProt reference with an enabler collapses onto the same GO-CAM individual, so a
+	 * dropped non-small-molecule regulation edge must not delete an individual that is also
+	 * enabling/inputting a reaction (that would destroy the enabler diamond).
+	 */
+	static boolean isEnablerOrInput(OWLOntology ont, OWLNamedIndividual ind) {
+		String obo = "http://purl.obolibrary.org/obo/";
+		IRI enabled_by_iri = IRI.create(obo + "RO_0002333");
+		IRI has_input_iri = IRI.create(obo + "RO_0002233");
+		for(OWLObjectPropertyAssertionAxiom ax : ont.getAxioms(AxiomType.OBJECT_PROPERTY_ASSERTION)) {
+			if(ax.getObject().equals(ind) && !ax.getProperty().isAnonymous()) {
+				IRI p = ax.getProperty().asOWLObjectProperty().getIRI();
+				if(p.equals(enabled_by_iri) || p.equals(has_input_iri)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	private RuleResults inferSmallMoleculeRegulators(String model_id, RuleResults r, QRunner tbox_qrunner) {
 		String entity_regulator_rule = "Entity Regulator Rule";
 		Integer entity_regulator_count = r.checkInitCount(entity_regulator_rule, r);
@@ -1681,9 +1731,6 @@ BP has_part R
 		}
 
 		entity_regulator_count+=ers.size();
-		String obo_base ="http://purl.obolibrary.org/obo/";
-		OWLClass chebi_chemical = df.getOWLClass(IRI.create(obo_base+"CHEBI_24431"));
-		OWLClass chebi_nucleic_acid = df.getOWLClass(IRI.create(obo_base+"CHEBI_33696"));
 		for(String reaction_uri : reaction_regulators.keySet()) {
 			OWLNamedIndividual reaction = makeUnannotatedIndividual(reaction_uri);
 			//just do this once per reaction, most is redundant because of flat response structure
@@ -1709,8 +1756,9 @@ BP has_part R
 					Set<OWLAnnotation> annos = getDefaultAnnotations();
 					OWLNamedIndividual regulator = makeUnannotatedIndividual(er.entity_uri);
 					
-					//Only do this for chemical entities but not if nucleic acid or descendant
-					if(entity_types.contains(chebi_chemical) && !entity_types.contains(chebi_nucleic_acid)) {
+					//Only rewrite genuine small molecules to has_small_molecule_*; proteins and
+					//complexes (which the tbox also places under CHEBI:24431 via CHEBI:36080) must not.
+					if(isSmallMoleculeRegulatorType(entity_types)) {
 						OWLObjectProperty prop_for_deletion = GoCAM.involved_in_negative_regulation_of;
 						OWLObjectProperty regulator_prop = GoCAM.has_small_molecule_inhibitor;
 						String explain = "Entity Regulator Rule.  The relation was added to account for an assertion about an entity regulating the target reaction.";
@@ -1725,25 +1773,66 @@ BP has_part R
 						}
 						//Connect the regulator to reaction via has_small_molecule_... relation
 						addRefBackedObjectPropertyAssertion(reaction, regulator_prop, regulator, Collections.singleton(model_id), GoCAM.eco_inferred_auto, default_namespace_prefix, annos, model_id);
-						
-						//delete the original entity regulates process relation 
+
+						//delete the original entity regulates process relation
 						applyAnnotatedTripleRemover(regulator.getIRI(), prop_for_deletion.getIRI(), reaction.getIRI());
 					} else {
-						// Delete individuals and log these out
-						String deleted_regulator_line = entity_type_class.getIRI().toString();
-						deleted_regulator_line += "\t"+this.getaLabel(entity_type_class);
-						deleted_regulator_line += "\t"+reaction_uri.toString();
-						deleted_regulator_line += "\t"+model_id;
-						System.out.println("DELETING_NON_SMALL_MOL_REGULATOR\t"+deleted_regulator_line);
-						deleteOwlEntityAndAllReferencesToIt(regulator);
+						//Non-small-molecule regulator (protein / complex / set / nucleic acid): it must
+						//not be emitted as a has_small_molecule_* regulator.
+						OWLObjectProperty regulation_prop =
+								er.prop_uri.equals("http://purl.obolibrary.org/obo/RO_0002429")
+										? GoCAM.involved_in_positive_regulation_of
+										: GoCAM.involved_in_negative_regulation_of;
+						if(isEnablerOrInput(go_cam_ont, regulator)) {
+							//The regulator individual also enables/inputs a reaction (e.g. a modified
+							//protein form that shares a UniProt reference with an enabler collapses onto
+							//the same individual). Deleting it would destroy the enabler diamond; instead
+							//just drop the disallowed regulation edge and keep the individual.
+							System.out.println("SKIP_NON_SMALL_MOL_REGULATOR_ENABLER\t"+entity_type_class.getIRI()+"\t"+reaction_uri+"\t"+model_id);
+							applyAnnotatedTripleRemover(regulator.getIRI(), regulation_prop.getIRI(), reaction.getIRI());
+						} else {
+							// Delete individuals and log these out
+							String deleted_regulator_line = entity_type_class.getIRI().toString();
+							deleted_regulator_line += "\t"+this.getaLabel(entity_type_class);
+							deleted_regulator_line += "\t"+reaction_uri.toString();
+							deleted_regulator_line += "\t"+model_id;
+							System.out.println("DELETING_NON_SMALL_MOL_REGULATOR\t"+deleted_regulator_line);
+							//A Complex/Set regulator was exploded into has_part/has_substitutable_entity
+							//component individuals in the first layer.  Delete those too, else they are
+							//left as orphan individuals once the regulator itself is removed.
+							deleteRegulatorAndComponents(regulator);
+						}
 					}
 				}
 			}
 		}
 		r.rule_hitcount.put(entity_regulator_rule, entity_regulator_count);
 		r.rule_pathways.put(entity_regulator_rule, entity_regulator_pathways);
-		qrunner = new QRunner(go_cam_ont); 
+		qrunner = new QRunner(go_cam_ont);
 		return r;
+	}
+
+	/**
+	 * Delete a dropped non-small-molecule regulator (e.g. a Complex or Set) together with
+	 * the component/member individuals that were exploded out of it in the first-layer
+	 * conversion (linked via has_part / has_substitutable_entity).  A plain delete of just
+	 * the regulator removes those edges but leaves the components as orphan individuals.
+	 * Recurses so nested complexes (a component that is itself a complex) are cleaned up too.
+	 */
+	private void deleteRegulatorAndComponents(OWLNamedIndividual regulator) {
+		//Collect exploded children before mutating the ontology.
+		Set<OWLNamedIndividual> children = new HashSet<OWLNamedIndividual>();
+		for(OWLObjectProperty part_prop : new OWLObjectProperty[] {GoCAM.has_part, GoCAM.has_substitutable_entity}) {
+			for(OWLIndividual child : EntitySearcher.getObjectPropertyValues(regulator, part_prop, go_cam_ont)) {
+				if(child.isNamed()) {
+					children.add(child.asOWLNamedIndividual());
+				}
+			}
+		}
+		for(OWLNamedIndividual child : children) {
+			deleteRegulatorAndComponents(child);
+		}
+		deleteOwlEntityAndAllReferencesToIt(regulator);
 	}
 
 	private void deleteComplexesWithActiveUnits() {
@@ -1778,8 +1867,55 @@ BP has_part R
 				applyAnnotatedTripleRemover(s.getIRI(), p.asOWLObjectProperty().getIRI(), o.getIRI());
 			}
 		}			
-		qrunner = new QRunner(go_cam_ont); 
+		qrunner = new QRunner(go_cam_ont);
 		System.out.println("Eliminated 'located in' assertions");
+	}
+
+	/**
+	 * Delete every individual still typed with a REACTO physical-entity class
+	 * (http://purl.obolibrary.org/obo/go/extensions/reacto.owl#REACTO_...), then remove the
+	 * now-dangling REACTO class declarations, so no REACTO IRI survives in the emitted model.
+	 *
+	 * Resolvable entities (small molecules -> CHEBI, UniProt-backed proteins -> UniProt, flattened
+	 * complex enablers -> GO_0032991) were already typed with a non-REACTO class upstream, so anything
+	 * still typed REACTO_ is by definition unresolved and is dropped here. Reactions are typed with GO
+	 * MF classes or molecular_event (never REACTO_), so they are never targets; deleting a REACTO
+	 * participant only drops that participant and its edges (delete_related_nodes=false). molecular_event
+	 * (localname does not start with "REACTO_") is deliberately not matched.
+	 */
+	private void deleteReactoTypedIndividuals(String model_id) {
+		String reactoPrefix = GoCAM.reacto_base_iri.toString();
+		//1. collect all individuals typed with a REACTO_ class (collect first, then delete, so we do
+		//not mutate the ontology while iterating its axioms); remember each one's REACTO class for logging
+		Map<OWLNamedIndividual, IRI> toDelete = new HashMap<OWLNamedIndividual, IRI>();
+		for(OWLClassAssertionAxiom ax : go_cam_ont.getAxioms(AxiomType.CLASS_ASSERTION)) {
+			OWLClassExpression type = ax.getClassExpression();
+			if(type.isAnonymous()) {
+				continue;
+			}
+			if(type.asOWLClass().getIRI().toString().startsWith(reactoPrefix) && ax.getIndividual().isNamed()) {
+				toDelete.put(ax.getIndividual().asOWLNamedIndividual(), type.asOWLClass().getIRI());
+			}
+		}
+		//2. delete each individual and every axiom referencing it (edges + evidence-annotated axioms).
+		//Log one line per deleted individual (tab-separated, matching the DROPPED_REACTO_SET_NODE style)
+		//so downstream tooling can audit exactly what was removed. Read the label before deleting it.
+		for(Map.Entry<OWLNamedIndividual, IRI> entry : toDelete.entrySet()) {
+			OWLNamedIndividual ind = entry.getKey();
+			String reacto_curie = entry.getValue().toString().replace(reactoPrefix, "REACTO:");
+			String label = getaLabel(ind);
+			System.out.println("DELETED_REACTO_INDIVIDUAL\t"+model_id+"\t"+name+"\t"+ind.getIRI()+"\t"+reacto_curie+"\t"+label);
+			deleteOwlEntityAndAllReferencesToIt(ind);
+		}
+		//3. sweep the leftover REACTO_ class declarations so no REACTO IRI remains anywhere
+		for(OWLClass c : new HashSet<OWLClass>(go_cam_ont.getClassesInSignature())) {
+			if(c.getIRI().toString().startsWith(reactoPrefix)) {
+				deleteOwlEntityAndAllReferencesToIt(c);
+			}
+		}
+		//4. resync the sparqlable model with the mutated ontology (matches deleteDisallowedRelations)
+		qrunner = new QRunner(go_cam_ont);
+		System.out.println("Deleted "+toDelete.size()+" REACTO-typed individuals");
 	}
 
 
@@ -1843,6 +1979,82 @@ BP has_part R
 			} 
 		}
 		return clone;
+	}
+
+	/*
+	 * Clone an individual so the clone points at the SAME neighbor individuals
+	 * (does not duplicate neighbors, unlike cloneIndividual). Copies class
+	 * assertions and node annotations. Each cloned edge gets fresh evidence via
+	 * cloneAnnotations so deleting the source later cannot dangle a clone's evidence.
+	 * Edges whose property is in exclude_props are skipped.
+	 */
+	OWLNamedIndividual cloneIndividualSharingNeighbors(OWLNamedIndividual source, IRI new_iri, Set<OWLObjectProperty> exclude_props, String model_id) {
+		OWLNamedIndividual clone = makeUnannotatedIndividual(new_iri);
+		for(OWLClassExpression type : EntitySearcher.getTypes(source, go_cam_ont)) {
+			addTypeAssertion(clone, type);
+		}
+		for(OWLAnnotationAssertionAxiom ax : EntitySearcher.getAnnotationAssertionAxioms(source, go_cam_ont)) {
+			OWLAnnotationAssertionAxiom a_ax = df.getOWLAnnotationAssertionAxiom((OWLAnnotationSubject) clone.getIRI(), ax.getAnnotation());
+			ontman.applyChange(new AddAxiom(go_cam_ont, a_ax));
+		}
+		for(OWLAxiom ax : EntitySearcher.getReferencingAxioms(source, go_cam_ont)) {
+			if(!ax.isOfType(AxiomType.OBJECT_PROPERTY_ASSERTION)) {
+				continue;
+			}
+			OWLObjectPropertyAssertionAxiom op = (OWLObjectPropertyAssertionAxiom) ax;
+			if(exclude_props != null && exclude_props.contains(op.getProperty().asOWLObjectProperty())) {
+				continue;
+			}
+			Set<OWLAnnotation> edge_annos = cloneAnnotations(op.getAnnotations(), model_id, new_iri);
+			OWLObjectPropertyAssertionAxiom add = null;
+			if(source.equals(op.getSubject())) {
+				add = df.getOWLObjectPropertyAssertionAxiom(op.getProperty(), clone, op.getObject(), edge_annos);
+			} else if(source.equals(op.getObject())) {
+				add = df.getOWLObjectPropertyAssertionAxiom(op.getProperty(), op.getSubject(), clone, edge_annos);
+			}
+			if(add != null) {
+				ontman.applyChange(new AddAxiom(go_cam_ont, add));
+			}
+		}
+		return clone;
+	}
+
+	/*
+	 * For each reaction recorded as catalyzed by an EntitySet, replace it with one
+	 * clone per enabler (sharing the same neighbor individuals), each enabled_by a
+	 * single member, then delete the original. Must run before applySparqlRules so
+	 * provides_input_for / regulation rules fan out across the clones.
+	 */
+	void splitSetEnabledReactions(String model_id) {
+		for(IRI reaction_iri : new HashSet<IRI>(set_enabled_reaction_iris)) {
+			OWLNamedIndividual reaction = df.getOWLNamedIndividual(reaction_iri);
+			Collection<OWLIndividual> enablers = EntitySearcher.getObjectPropertyValues(reaction, enabled_by, go_cam_ont);
+			if(enablers.size() < 2) {
+				continue;
+			}
+			String reaction_id = reaction_iri.toString().replace("http://model.geneontology.org/", "");
+			for(OWLIndividual enabler_ind : new HashSet<OWLIndividual>(enablers)) {
+				OWLNamedIndividual enabler = enabler_ind.asOWLNamedIndividual();
+				String member_id = enabler.getIRI().toString().replace("http://model.geneontology.org/", "");
+				IRI clone_iri = makeGoCamifiedIRI(null, reaction_id + "_enabled_by_" + member_id);
+				OWLNamedIndividual clone = cloneIndividualSharingNeighbors(reaction, clone_iri, Collections.singleton(enabled_by), model_id);
+				Set<OWLAnnotation> enabler_annos = getObjectPropertyEdgeAnnotations(reaction, enabled_by, enabler);
+				OWLObjectPropertyAssertionAxiom eb = df.getOWLObjectPropertyAssertionAxiom(
+						enabled_by, clone, enabler, cloneAnnotations(enabler_annos, model_id, clone_iri));
+				ontman.applyChange(new AddAxiom(go_cam_ont, eb));
+				addComment(clone, "split from set-enabled reaction " + reaction_id);
+			}
+			deleteOwlEntityAndAllReferencesToIt(reaction, false);
+		}
+	}
+
+	private Set<OWLAnnotation> getObjectPropertyEdgeAnnotations(OWLNamedIndividual subject, OWLObjectProperty prop, OWLNamedIndividual object) {
+		for(OWLObjectPropertyAssertionAxiom ax : go_cam_ont.getObjectPropertyAssertionAxioms(subject)) {
+			if(ax.getProperty().equals(prop) && ax.getObject().equals(object)) {
+				return ax.getAnnotations();
+			}
+		}
+		return new HashSet<OWLAnnotation>();
 	}
 
 	/*

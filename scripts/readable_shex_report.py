@@ -270,7 +270,10 @@ def group_by_model(violations):
     titles = {}
     for v in violations:
         groups[v.model_iri].append(v)
-        titles[v.model_iri] = v.model_title
+        # Fall back to the IRI for a model with no title, so sorting (below) and
+        # the rendered model headers never see a None. This makes the intended
+        # `titles.get(k, k)` fallback work even when a title is explicitly None.
+        titles[v.model_iri] = v.model_title or v.model_iri or ""
     result = []
     for iri in sorted(groups, key=lambda k: titles.get(k, k)):
         result.append({
@@ -408,6 +411,69 @@ def write_plaintext(stats, groups, path):
             f.write("\n\n")
 
 
+# --- Parsing ---
+
+def parse_violations(explanations_path, label_map):
+    """Parse the ShEx explanations TSV into a list of resolved Violations.
+
+    Returns (violations, skipped) where ``skipped`` counts nonconformant report
+    lines that carry no tabular violation data — e.g. a bare
+    "nonconformant (no explanation)" line with no tab-separated columns. These
+    stem from an upstream Minerva ShEx reporting bug and must be skipped rather
+    than rendered as bogus violations.
+    """
+    violations = []
+    skipped = 0
+    with open(explanations_path, "r", encoding="utf-8") as f:
+        reader = csv.DictReader(f, delimiter="\t")
+        for row in reader:
+            node = (row.get("node") or "").strip()
+            prop = (row.get("property") or "").strip()
+            # A real shape violation always concerns a node and a property. A
+            # line missing either has no tabular columns to report on; skip it.
+            if not node or not prop:
+                skipped += 1
+                continue
+
+            node_types = parse_bracketed_list(row.get("Node_types"))
+            object_types_raw = parse_bracketed_list(row.get("Object_types"))
+            object_types = [parse_object_type(t) for t in object_types_raw] if object_types_raw is not None else None
+
+            v = Violation(
+                model_title=row.get("model_title", ""),
+                model_iri=row.get("model_iri", ""),
+                node=node,
+                node_types=node_types,
+                property=prop,
+                intended_shapes=parse_shape_list(row.get("Intended_range_shapes")),
+                obj=row.get("object"),
+                object_types=object_types,
+                object_shapes=parse_shape_list(row.get("Object_shapes")),
+            )
+
+            # Resolve labels
+            if v.node_types:
+                v.node_type_labels = [
+                    f"{resolve_label(t, label_map)} ({t})" for t in v.node_types
+                ]
+            v.property_label = PROPERTY_LABELS.get(v.property, v.property)
+            if v.object_types:
+                v.object_type_labels = [
+                    f"{resolve_label(t, label_map)} ({t})" for t in v.object_types
+                ]
+            if v.intended_shapes:
+                v.intended_shape_labels = [resolve_shape(s) for s in v.intended_shapes]
+            if v.object_shapes:
+                v.object_shape_labels = [resolve_shape(s) for s in v.object_shapes]
+
+            # Categorize
+            v.category, v.explanation = categorize_violation(v)
+
+            violations.append(v)
+
+    return violations, skipped
+
+
 # --- Main ---
 
 def main():
@@ -435,47 +501,10 @@ def main():
 
     # Parse violations
     print(f"Parsing violations from {args.explanations}...")
-    violations = []
-    with open(args.explanations, "r", encoding="utf-8") as f:
-        reader = csv.DictReader(f, delimiter="\t")
-        for row in reader:
-            node_types = parse_bracketed_list(row.get("Node_types"))
-            object_types_raw = parse_bracketed_list(row.get("Object_types"))
-            object_types = [parse_object_type(t) for t in object_types_raw] if object_types_raw is not None else None
-
-            v = Violation(
-                model_title=row.get("model_title", ""),
-                model_iri=row.get("model_iri", ""),
-                node=row.get("node", ""),
-                node_types=node_types,
-                property=row.get("property", ""),
-                intended_shapes=parse_shape_list(row.get("Intended_range_shapes")),
-                obj=row.get("object"),
-                object_types=object_types,
-                object_shapes=parse_shape_list(row.get("Object_shapes")),
-            )
-
-            # Resolve labels
-            if v.node_types:
-                v.node_type_labels = [
-                    f"{resolve_label(t, label_map)} ({t})" for t in v.node_types
-                ]
-            v.property_label = PROPERTY_LABELS.get(v.property, v.property)
-            if v.object_types:
-                v.object_type_labels = [
-                    f"{resolve_label(t, label_map)} ({t})" for t in v.object_types
-                ]
-            if v.intended_shapes:
-                v.intended_shape_labels = [resolve_shape(s) for s in v.intended_shapes]
-            if v.object_shapes:
-                v.object_shape_labels = [resolve_shape(s) for s in v.object_shapes]
-
-            # Categorize
-            v.category, v.explanation = categorize_violation(v)
-
-            violations.append(v)
-
+    violations, skipped = parse_violations(args.explanations, label_map)
     print(f"  Parsed {len(violations)} violations")
+    if skipped:
+        print(f"  Skipped {skipped} nonconformant line(s) with no tabular data")
 
     # Group and summarize
     groups = group_by_model(violations)

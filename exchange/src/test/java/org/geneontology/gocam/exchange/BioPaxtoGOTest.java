@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -362,7 +363,58 @@ public class BioPaxtoGOTest {
 
 	}	
 
-	// R-HSA-9674015 	
+	// R-HSA-2314687 (PTGS2 dimer) reduces to a single UniProt:P35354 protein.
+	// That individual is typed as the canonical UniProt class, so its label must be
+	// the canonical "PTGS2" (from the ProteinReference), not an arbitrary modified-form
+	// displayName like "Ac-PTGS2", and there must be exactly one label.
+	@Test
+	public final void testProteinLabelCollisionCollapse() {
+		System.out.println("test canonical UniProt protein label from ProteinReference");
+		String model_graph = "<http://model.geneontology.org/R-HSA-9018679>";
+		String q =
+				"SELECT ?ind ?lbl \n" +
+				"WHERE { \n" +
+				"  GRAPH graph_id { \n" +
+				"    ?ind a <http://identifiers.org/uniprot/P35354> . \n" +
+				"    ?ind <http://www.w3.org/2000/01/rdf-schema#label> ?lbl . \n" +
+				"  } \n" +
+				"} \n";
+		Map<String, Set<String>> labels_by_ind = new HashMap<String, Set<String>>();
+		TupleQueryResult result = null;
+		try {
+			result = blaze.runSparqlQuery(q.replace("graph_id", model_graph));
+			while (result.hasNext()) {
+				BindingSet bs = result.next();
+				String ind = bs.getValue("ind").stringValue();
+				String lbl = bs.getValue("lbl").stringValue();
+				if (!labels_by_ind.containsKey(ind)) {
+					labels_by_ind.put(ind, new HashSet<String>());
+				}
+				labels_by_ind.get(ind).add(lbl);
+			}
+		} catch (QueryEvaluationException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (result != null) {
+					result.close();
+				}
+			} catch (QueryEvaluationException e) {
+				e.printStackTrace();
+			}
+		}
+		assertTrue("expected a UniProt:P35354 individual in R-HSA-9018679",
+				labels_by_ind.size() > 0);
+		for (Map.Entry<String, Set<String>> en : labels_by_ind.entrySet()) {
+			assertEquals("individual " + en.getKey()
+					+ " must have exactly one rdfs:label", 1, en.getValue().size());
+			assertEquals("individual " + en.getKey()
+					+ " must be labeled canonically from the ProteinReference",
+					"PTGS2", en.getValue().iterator().next());
+		}
+	}
+
+	// R-HSA-9674015
 	@Test
 	public final void testDrugReactionDeletion() {
 		System.out.println("removal of drug reactions");
@@ -423,7 +475,9 @@ public class BioPaxtoGOTest {
 		assertTrue("reaction "+reaction_present+" not present", n>0);
 		pathway = "<http://model.geneontology.org/R-HSA-112311>";
 		reaction_delete = "<http://model.geneontology.org/R-HSA-9634834>";
-		reaction_present = "<http://model.geneontology.org/R-HSA-372519>";
+		// R-HSA-372519 (AChE/BuChE) is catalyzed by an EntitySet and is split into one activity per member;
+		// confirm the non-drug reaction survived drug removal by checking one of its split clones.
+		reaction_present = "<http://model.geneontology.org/R-HSA-372519_enabled_by_UniProt_P22303_R-HSA-372519_controller>";
 		n = 0;
 		result = null;
 		try {
@@ -756,7 +810,7 @@ public class BioPaxtoGOTest {
 				"prefix obo: <http://purl.obolibrary.org/obo/> "
 				+ "select ?locationclass " + 
 				"where { " + 
-				"VALUES ?reaction { <http://model.geneontology.org/R-HSA-201425> }" + 
+				"  filter(strstarts(str(?reaction), \"http://model.geneontology.org/R-HSA-201425\"))" + 
 				"  ?reaction obo:BFO_0000066 ?location . "
 				+ "?location rdf:type ?locationclass " + 
 				"  filter(?locationclass != owl:NamedIndividual)" + 
@@ -767,7 +821,9 @@ public class BioPaxtoGOTest {
 				location = bindingSet.getValue("locationclass").stringValue();
 				n++;
 			}
-			assertTrue(n==1);
+			// R-HSA-201425 is catalyzed by an EntitySet (UBE2D family) and is split into one activity per
+			// member; occurs_in is inferred on each clone from its enabler location (all in nucleoplasm).
+			assertTrue("expected occurs_in inferred on at least one split clone, got "+n, n>=1);
 			assertTrue(location, location.equals("http://purl.obolibrary.org/obo/GO_0005654"));
 		} catch (QueryEvaluationException e) {
 			// TODO Auto-generated catch block
@@ -975,8 +1031,12 @@ BP has_part R
 
 	/**
 	 * Test method for {@link org.geneontology.gocam.exchange.GoCAM#inferRegulatesViaOutputEnables}.
-	 * Use pathway R-HSA-110362, reaction1 = R-HSA-5649883, reaction2 = R-HSA-5651723
-	 * Relation should be RO:0002629 directly positively regulates
+	 * Pathway R-HSA-110362. Rule 3 ("reaction1 has an output that is the enabler of reaction2") fires
+	 * across the diamond split: the PARP autoPARylation reaction R-HSA-5651723 -- now split into per-member
+	 * diamonds enabled_by PARP1 (UniProt P09874) / PARP2 (UniProt Q9UGN5), because its annotated activeUnit
+	 * resolves to an EntitySet -- directly_positively_regulates (RO:0002629) the downstream reaction
+	 * R-HSA-5651782. We verify a diamond regulates R-HSA-5651782, is enabled_by a UniProt protein (not a
+	 * REACTO node), and is in the pathway.
 	 */
 	@Test
 	public final void testInferRegulatesViaOutputEnables() {
@@ -985,13 +1045,15 @@ BP has_part R
 		try {
 			result = blaze.runSparqlQuery(
 				"prefix obo: <http://purl.obolibrary.org/obo/> "
-				+ "select ?pathway " +
+				+ "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+				+ "select ?reaction1 ?pathway " +
 				"where { " +
-				"VALUES ?reaction1 { <http://model.geneontology.org/R-HSA-5649883> } . "+
-				"VALUES ?reaction2 { <http://model.geneontology.org/R-HSA-5651723> } . "+
-				" ?reaction1 obo:RO_0002629 ?reaction2 . "
-				+ "?reaction2 obo:RO_0002333 ?active_part . "
-				+ "?reaction1 obo:BFO_0000050 ?pathway "+
+				" ?reaction1 obo:RO_0002629 <http://model.geneontology.org/R-HSA-5651782> . "
+				+ "?reaction1 obo:RO_0002333 ?enabler . "
+				+ "?enabler rdf:type ?enabler_type . "
+				+ "?reaction1 obo:BFO_0000050 ?pathway . "
+				+ "FILTER(STRSTARTS(STR(?reaction1), \"http://model.geneontology.org/R-HSA-5651723_enabled_by_\")) "
+				+ "FILTER(STRSTARTS(STR(?enabler_type), \"http://identifiers.org/uniprot/\")) " +
 				"}");
 			int n = 0; String pathway = null;
 			while (result.hasNext()) {
@@ -999,7 +1061,7 @@ BP has_part R
 				pathway = bindingSet.getValue("pathway").stringValue();
 				n++;
 			}
-			assertTrue(n==1);
+			assertTrue("expected a R-HSA-5651723 diamond (enabled_by a UniProt protein) to RO:0002629-regulate R-HSA-5651782 via Rule 3, got " + n, n >= 1);
 			assertTrue("got "+pathway, pathway.equals("http://model.geneontology.org/R-HSA-110362/R-HSA-110362"));
 		} catch (QueryEvaluationException e) {
 			// TODO Auto-generated catch block
@@ -1065,6 +1127,54 @@ BP has_part R
 	}
 
 	/**
+	 * Pathway R-HSA-1482922: reaction R-HSA-1482825 is catalyzed by EntitySet PLA2(11)
+	 * (4 proteins + PLA2G4A:Ca2+ complex). It must become 5 activities, each enabled_by a
+	 * distinct protein, with nothing left on the original reaction node. Sibling reaction
+	 * R-HSA-1482868 (EntitySet PLA2(12): PLA2G4C + PLA2G2A:Ca2+) must become 2 activities.
+	 */
+	@Test
+	public final void testSetEnabledReactionSplit() {
+		System.out.println("Testing set-enabled reaction split");
+		try {
+			TupleQueryResult orig = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> select ?e where { "
+				+ "<http://model.geneontology.org/R-HSA-1482825> obo:RO_0002333 ?e }");
+			int origN = 0;
+			while(orig.hasNext()) { orig.next(); origN++; }
+			orig.close();
+			assertTrue("original set reaction should be split away, enablers on it = " + origN, origN == 0);
+
+			TupleQueryResult res = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> select ?reaction ?enabler where { "
+				+ "?reaction obo:RO_0002333 ?enabler . "
+				+ "FILTER(STRSTARTS(STR(?reaction), \"http://model.geneontology.org/R-HSA-1482825_enabled_by\")) }");
+			Set<String> reactions = new HashSet<String>();
+			Set<String> enablers = new HashSet<String>();
+			while(res.hasNext()) {
+				BindingSet b = res.next();
+				reactions.add(b.getValue("reaction").stringValue());
+				enablers.add(b.getValue("enabler").stringValue());
+			}
+			res.close();
+			assertTrue("expected 5 split activities, got " + reactions.size(), reactions.size() == 5);
+			assertTrue("expected 5 distinct enablers, got " + enablers.size(), enablers.size() == 5);
+
+			TupleQueryResult sib = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> select ?reaction where { "
+				+ "?reaction obo:RO_0002333 ?enabler . "
+				+ "FILTER(STRSTARTS(STR(?reaction), \"http://model.geneontology.org/R-HSA-1482868_enabled_by\")) }");
+			Set<String> sibs = new HashSet<String>();
+			while(sib.hasNext()) { sibs.add(sib.next().getValue("reaction").stringValue()); }
+			sib.close();
+			assertTrue("expected 2 split activities for sibling, got " + sibs.size(), sibs.size() == 2);
+		} catch (QueryEvaluationException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		System.out.println("Done testing set-enabled reaction split");
+	}
+
+	/**
 	 * Test that causal paths bridge over skipped reactions.
 	 * In pathway R-HSA-4641262, the step graph has:
 	 *   Step9 (R-HSA-3601585) -> Step14 (R-HSA-201685, skipped) -> Step10 (R-HSA-1504186, skipped) -> Step11 (R-HSA-201677)
@@ -1108,6 +1218,350 @@ BP has_part R
 			}
 		}
 		System.out.println("Done testing causal path bridging");
+	}
+
+	/** Runs a SELECT query against the test Blazegraph journal and returns the number of solution rows. */
+	private int countSolutions(String sparql) {
+		org.openrdf.query.TupleQueryResult result = null;
+		int n = 0;
+		try {
+			result = blaze.runSparqlQuery(sparql);
+			while (result.hasNext()) {
+				result.next();
+				n++;
+			}
+		} catch (org.openrdf.query.QueryEvaluationException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (result != null) result.close();
+			} catch (org.openrdf.query.QueryEvaluationException e) {
+				e.printStackTrace();
+			}
+		}
+		return n;
+	}
+
+	/**
+	 * Regression test: a small-molecule input that is reused from an upstream
+	 * reaction's output must still be typed, even when that upstream reaction is
+	 * dropped by the early no-GO-term gate (#324).
+	 *
+	 * In "Heme biosynthesis" (R-HSA-189451): dALA-in-cytosol (R-ALL-189489_cytosol)
+	 * is the output of the uncatalyzed transport R-HSA-189456 (skipped: no EC, no
+	 * controller MF, no SSSOM) and the input of the catalyzed condensation
+	 * R-HSA-189439. Before the fix the shared individual is left as a bare
+	 * owl:NamedIndividual with no CHEBI class.
+	 */
+	@Test
+	public final void testReusedSmallMoleculeInputIsTyped() {
+		System.out.println("Testing that a small-molecule input reused from a skipped molecular event is typed");
+		String graph = "<http://model.geneontology.org/R-HSA-189451>";
+
+		// Precondition: the consuming reaction is present (guards against a wrong
+		// graph IRI making the assertions below pass vacuously).
+		int reactionTriples = countSolutions(
+			"select ?p ?o where { GRAPH " + graph + " { "
+			+ "<http://model.geneontology.org/R-HSA-189439> ?p ?o . } }");
+		assertTrue("precondition: R-HSA-189439 should be present in " + graph
+			+ " (got " + reactionTriples + " triples)", reactionTriples > 0);
+
+		// Specific: dALA-in-cytosol must carry its CHEBI class.
+		int dalaTyped = countSolutions(
+			"prefix obo: <http://purl.obolibrary.org/obo/> "
+			+ "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+			+ "select ?type where { GRAPH " + graph + " { "
+			+ "<http://model.geneontology.org/R-ALL-189489_cytosol> rdf:type ?type . "
+			+ "filter(?type = obo:CHEBI_356416) } }");
+		assertTrue("R-ALL-189489_cytosol should be typed obo:CHEBI_356416 (got " + dalaTyped + ")",
+			dalaTyped > 0);
+
+		// Invariant: no has_input/has_output participant is left with only owl:NamedIndividual.
+		int untypedParticipants = countSolutions(
+			"prefix obo: <http://purl.obolibrary.org/obo/> "
+			+ "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+			+ "prefix owl: <http://www.w3.org/2002/07/owl#> "
+			+ "select ?participant where { GRAPH " + graph + " { "
+			+ "?reaction ?io ?participant . "
+			+ "VALUES ?io { obo:RO_0002233 obo:RO_0002234 } . "
+			+ "FILTER NOT EXISTS { ?participant rdf:type ?t . FILTER(?t != owl:NamedIndividual) } } }");
+		assertEquals("every has_input/has_output participant must have a class type", 0, untypedParticipants);
+	}
+
+	/**
+	 * Eliminate REACTO IDs: the emitted model must contain NO REACTO physical-entity IRI —
+	 * neither as an rdf:type object nor as a subject (class declaration) — while reactions and
+	 * their GO molecular functions survive.
+	 *
+	 * In "Heme biosynthesis" (R-HSA-189451) the pipeline currently emits several REACTO_ complex/
+	 * entity individuals (e.g. REACTO_R-HSA-189400 "8x(ALAD:Zn2+)"), so before the fix this test
+	 * fails on the "no individual may be typed with a REACTO_ class" assertion.
+	 */
+	@Test
+	public final void testNoReactoIdsInEmittedModel() {
+		System.out.println("Testing that no REACTO IDs remain in the emitted model");
+		String graph = "<http://model.geneontology.org/R-HSA-189451>";
+		String reactoPrefix = "http://purl.obolibrary.org/obo/go/extensions/reacto.owl#REACTO_";
+
+		// Survival precondition: a known catalyzed reaction still carries its GO molecular function.
+		// Guards against a vacuous pass (wrong graph) and against over-deletion of reactions.
+		int reactionPresent = countSolutions(
+			"prefix obo: <http://purl.obolibrary.org/obo/> "
+			+ "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+			+ "select ?r where { GRAPH " + graph + " { "
+			+ "<http://model.geneontology.org/R-HSA-189439> rdf:type obo:GO_0004655 } }");
+		assertTrue("precondition: reaction R-HSA-189439 must survive typed obo:GO_0004655 (got "
+			+ reactionPresent + ")", reactionPresent > 0);
+
+		// (1) No individual may be typed with a REACTO_ class.
+		int reactoTyped = countSolutions(
+			"prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+			+ "select ?s where { GRAPH " + graph + " { "
+			+ "?s rdf:type ?c . FILTER(STRSTARTS(STR(?c), \"" + reactoPrefix + "\")) } }");
+		assertEquals("no individual may be typed with a REACTO_ class", 0, reactoTyped);
+
+		// (2) No REACTO_ IRI may appear as a subject either (dangling class declarations swept).
+		int reactoSubject = countSolutions(
+			"select ?c where { GRAPH " + graph + " { "
+			+ "?c ?p ?o . FILTER(STRSTARTS(STR(?c), \"" + reactoPrefix + "\")) } }");
+		assertEquals("no REACTO_ IRI may appear as a subject in the model", 0, reactoSubject);
+	}
+
+	/**
+	 * When a Catalysis's annotated activeUnit resolves to an EntitySet of proteins, the reaction must be
+	 * split into one diamond per member (each enabled_by the member's UniProt class), NOT emitted as a
+	 * single REACTO-classed active-unit node.
+	 *
+	 * R-HSA-110362: reaction R-HSA-5651723 ("PARP1,PARP2 ... autoPARylate", MF GO:0003950) has
+	 * activeUnit #Complex2, whose active unit is R-HSA-5649876 "PARP1,PARP2" (an EntitySet of PARP1
+	 * (UniProt P09874) and PARP2 (UniProt Q9UGN5)). Expected: two GO:0003950 diamond activities
+	 * (R-HSA-5651723_enabled_by_*), one enabled_by P09874 and one enabled_by Q9UGN5; no REACTO_R-HSA-5649876
+	 * node; and the original bare R-HSA-5651723 activity is gone (replaced by the diamonds).
+	 */
+	@Test
+	public final void testActiveUnitSetExpandedToDiamonds() {
+		System.out.println("Testing active-unit EntitySet expanded into reaction diamonds");
+		String graph = "<http://model.geneontology.org/R-HSA-110362>";
+		String obo = "prefix obo: <http://purl.obolibrary.org/obo/> "
+			+ "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> ";
+		String diamondPrefix = "http://model.geneontology.org/R-HSA-5651723_enabled_by_";
+
+		// two diamond activities split from R-HSA-5651723, each typed with the reaction MF GO:0003950
+		int diamonds = countSolutions(obo
+			+ "select ?d where { GRAPH " + graph + " { "
+			+ "?d rdf:type obo:GO_0003950 . "
+			+ "FILTER(STRSTARTS(STR(?d), \"" + diamondPrefix + "\")) } }");
+		assertTrue("expected >=2 R-HSA-5651723 diamond activities, got " + diamonds, diamonds >= 2);
+
+		// the original bare reaction node is gone (replaced by the diamonds)
+		int original = countSolutions(obo
+			+ "select ?t where { GRAPH " + graph + " { "
+			+ "<http://model.geneontology.org/R-HSA-5651723> rdf:type ?t . filter(?t = obo:GO_0003950) } }");
+		assertEquals("original bare R-HSA-5651723 activity must be replaced by diamonds", 0, original);
+
+		// each diamond is enabled_by a UniProt-typed protein (PARP1 P09874, PARP2 Q9UGN5), not a REACTO node
+		int parp1 = countSolutions(obo
+			+ "select ?d where { GRAPH " + graph + " { "
+			+ "?d rdf:type obo:GO_0003950 . ?d obo:RO_0002333 ?enabler . "
+			+ "?enabler rdf:type <http://identifiers.org/uniprot/P09874> . "
+			+ "FILTER(STRSTARTS(STR(?d), \"" + diamondPrefix + "\")) } }");
+		assertTrue("a R-HSA-5651723 diamond must be enabled_by PARP1 (uniprot P09874), got " + parp1, parp1 >= 1);
+		int parp2 = countSolutions(obo
+			+ "select ?d where { GRAPH " + graph + " { "
+			+ "?d rdf:type obo:GO_0003950 . ?d obo:RO_0002333 ?enabler . "
+			+ "?enabler rdf:type <http://identifiers.org/uniprot/Q9UGN5> . "
+			+ "FILTER(STRSTARTS(STR(?d), \"" + diamondPrefix + "\")) } }");
+		assertTrue("a R-HSA-5651723 diamond must be enabled_by PARP2 (uniprot Q9UGN5), got " + parp2, parp2 >= 1);
+
+		// the PARP1,PARP2 set must not be emitted as its REACTO union node
+		int reacto = countSolutions(
+			"prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+			+ "select ?x where { GRAPH " + graph + " { "
+			+ "?x rdf:type <http://purl.obolibrary.org/obo/go/extensions/reacto.owl#REACTO_R-HSA-5649876> } }");
+		assertEquals("PARP1,PARP2 must not be emitted as a REACTO set node", 0, reacto);
+	}
+
+	/**
+	 * Regression test: when a Complex (or Set) is a regulator of a reaction it is
+	 * dropped by the is-small-molecule-regulator gate (inferSmallMoleculeRegulators).
+	 * The complex was exploded into has_part component individuals in the first layer,
+	 * so dropping it must also delete those components - otherwise they are left as
+	 * bare orphan individuals.
+	 *
+	 * In "Heme biosynthesis" (R-HSA-189451): Complex R-HSA-190145 ("8xALAD:Pb2+:Zn2+")
+	 * INHIBITION-regulates reaction R-HSA-189439. Its ALAD protein component
+	 * (UniProtKB_P13716_R-HSA-190145_R-HSA-189439_component) was left orphaned.
+	 */
+	@Test
+	public final void testComplexRegulatorLeavesNoOrphanComponents() {
+		System.out.println("Testing that dropping a Complex/Set regulator leaves no orphan component individuals");
+		String graph = "<http://model.geneontology.org/R-HSA-189451>";
+
+		// Precondition: the regulated reaction is present (guards against a wrong
+		// graph IRI making the assertions below pass vacuously).
+		int reactionTriples = countSolutions(
+			"select ?p ?o where { GRAPH " + graph + " { "
+			+ "<http://model.geneontology.org/R-HSA-189439> ?p ?o . } }");
+		assertTrue("precondition: R-HSA-189439 should be present in " + graph
+			+ " (got " + reactionTriples + " triples)", reactionTriples > 0);
+
+		// Specific: the ALAD component of the dropped complex regulator must be gone.
+		int orphanTriples = countSolutions(
+			"select ?p ?o where { GRAPH " + graph + " { "
+			+ "<http://model.geneontology.org/UniProtKB_P13716_R-HSA-190145_R-HSA-189439_component> ?p ?o . } }");
+		assertEquals("dropped complex regulator's ALAD component must be deleted, not orphaned",
+			0, orphanTriples);
+
+		// Invariant: no exploded *_component individual is left without an incoming
+		// has_part (BFO_0000051) or has_substitutable_entity (RO_0019003) edge.
+		int orphanComponents = countSolutions(
+			"prefix obo: <http://purl.obolibrary.org/obo/> "
+			+ "prefix owl: <http://www.w3.org/2002/07/owl#> "
+			+ "select ?comp where { GRAPH " + graph + " { "
+			+ "?comp a ?t . FILTER(?t != owl:NamedIndividual) . "
+			+ "FILTER(STRENDS(STR(?comp), \"_component\")) . "
+			+ "FILTER NOT EXISTS { ?x obo:BFO_0000051 ?comp . } . "
+			+ "FILTER NOT EXISTS { ?y obo:RO_0019003 ?comp . } } }");
+		assertEquals("no exploded *_component individual may be left orphaned", 0, orphanComponents);
+	}
+
+	/**
+	 * Regression test for the FECH cofactor case. Complex R-HSA-189402
+	 * ("2x(FECH:2Fe-2S cluster)") catalyzes reaction R-HSA-189465 ("FECH binds Fe2+
+	 * to PRIN9 to form heme") via Catalysis10 (ACTIVATION, no activeUnit annotation).
+	 * The complex's only non-protein component, 2Fe-2S (R-ALL-164296), is modeled as a
+	 * bare bp:PhysicalEntity carrying a ChEBI xref rather than a bp:SmallMolecule, so it
+	 * was not stripped and the complex failed to reduce to its single protein FECH
+	 * (UniProt P22830). After the fix the reaction must be enabled_by FECH, not the complex.
+	 */
+	@Test
+	public final void testComplexCofactorReducedToSingleProtein() {
+		System.out.println("Testing that a complex with a bare-PhysicalEntity ChEBI cofactor reduces to its single protein");
+		String graph = "<http://model.geneontology.org/R-HSA-189451>";
+
+		// Precondition: the catalyzed reaction is present (guards against a wrong graph
+		// IRI making the assertions below pass vacuously).
+		int reactionTriples = countSolutions(
+			"select ?p ?o where { GRAPH " + graph + " { "
+			+ "<http://model.geneontology.org/R-HSA-189465> ?p ?o . } }");
+		assertTrue("precondition: R-HSA-189465 should be present in " + graph
+			+ " (got " + reactionTriples + " triples)", reactionTriples > 0);
+
+		// Specific: the reaction must be enabled_by the FECH protein (UniProt P22830).
+		int fechEnabler = countSolutions(
+			"prefix obo: <http://purl.obolibrary.org/obo/> "
+			+ "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+			+ "select ?enabler where { GRAPH " + graph + " { "
+			+ "<http://model.geneontology.org/R-HSA-189465> obo:RO_0002333 ?enabler . "
+			+ "?enabler rdf:type <http://identifiers.org/uniprot/P22830> . } }");
+		assertTrue("R-HSA-189465 should be enabled_by FECH (UniProt P22830) (got " + fechEnabler + ")",
+			fechEnabler > 0);
+
+		// Regression: the reaction must NOT be enabled_by the unreduced complex
+		// (REACTO class for R-HSA-189402).
+		int complexEnabler = countSolutions(
+			"prefix obo: <http://purl.obolibrary.org/obo/> "
+			+ "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+			+ "select ?enabler where { GRAPH " + graph + " { "
+			+ "<http://model.geneontology.org/R-HSA-189465> obo:RO_0002333 ?enabler . "
+			+ "?enabler rdf:type <http://purl.obolibrary.org/obo/go/extensions/reacto.owl#REACTO_R-HSA-189402> . } }");
+		assertEquals("R-HSA-189465 must not be enabled_by the unreduced complex R-HSA-189402",
+			0, complexEnabler);
+	}
+
+	/**
+	 * The SDH complex (R-HSA-70990) catalyzes R-HSA-70994 with no activeUnit annotation and
+	 * has multiple distinct protein subunits, so it must emit as ONE protein-containing
+	 * complex (GO:0032991) whose has_part edges point directly to the 4 distinct UniProt
+	 * subunits (SDHA P31040, SDHB P21912, SDHC Q99643, SDHD O14521). The iron-sulfur
+	 * cofactors (2Fe-2S R-ALL-164296 etc.) must be stripped and no intermediate sub-complex
+	 * individual (R-HSA-70987) may appear.
+	 */
+	@Test
+	public final void testComplexEnablerFlattenedToPCC() {
+		System.out.println("Testing that a multi-subunit complex enabler flattens to one PCC of distinct UniProt proteins");
+		String graph = "<http://model.geneontology.org/R-HSA-71403>";
+		String rxn = "<http://model.geneontology.org/R-HSA-70994>";
+		String obo = "prefix obo: <http://purl.obolibrary.org/obo/> "
+			+ "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> ";
+
+		// Precondition: the catalyzed reaction is present (guards against a wrong graph IRI).
+		int rxnTriples = countSolutions("select ?p ?o where { GRAPH " + graph + " { " + rxn + " ?p ?o . } }");
+		assertTrue("precondition: R-HSA-70994 present in " + graph + " (got " + rxnTriples + ")", rxnTriples > 0);
+
+		// Enabler is exactly one protein-containing complex (GO:0032991).
+		int pccEnabler = countSolutions(obo + "select ?pcc where { GRAPH " + graph + " { "
+			+ rxn + " obo:RO_0002333 ?pcc . ?pcc rdf:type obo:GO_0032991 . } }");
+		assertEquals("R-HSA-70994 must be enabled_by exactly one GO:0032991 PCC (got " + pccEnabler + ")", 1, pccEnabler);
+
+		// The PCC has_part SDHB (UniProt P21912).
+		int sdhb = countSolutions(obo + "select ?sub where { GRAPH " + graph + " { "
+			+ rxn + " obo:RO_0002333 ?pcc . ?pcc rdf:type obo:GO_0032991 . "
+			+ "?pcc obo:BFO_0000051 ?sub . ?sub rdf:type <http://identifiers.org/uniprot/P21912> . } }");
+		assertTrue("PCC must have_part SDHB P21912 (got " + sdhb + ")", sdhb > 0);
+
+		// Exactly 4 distinct UniProt subunits as has_part.
+		int distinctSubunits = countSolutions(obo + "select distinct ?up where { GRAPH " + graph + " { "
+			+ rxn + " obo:RO_0002333 ?pcc . ?pcc rdf:type obo:GO_0032991 . "
+			+ "?pcc obo:BFO_0000051 ?sub . ?sub rdf:type ?up . "
+			+ "FILTER(STRSTARTS(STR(?up), \"http://identifiers.org/uniprot/\")) } }");
+		assertEquals("PCC must have_part the 4 distinct SDH UniProt subunits", 4, distinctSubunits);
+
+		// Cofactor 2Fe-2S (REACTO_R-ALL-164296) must NOT be a has_part of the enabler.
+		int cofactor = countSolutions(obo + "select ?sub where { GRAPH " + graph + " { "
+			+ rxn + " obo:RO_0002333 ?pcc . ?pcc rdf:type obo:GO_0032991 . "
+			+ "?pcc obo:BFO_0000051 ?sub . "
+			+ "?sub rdf:type <http://purl.obolibrary.org/obo/go/extensions/reacto.owl#REACTO_R-ALL-164296> . } }");
+		assertEquals("2Fe-2S cofactor must be stripped from the enabler", 0, cofactor);
+
+		// No intermediate sub-complex: no has_part is itself typed as Complex19 (R-HSA-70987),
+		// and there is no nested has_part-of-has_part under the enabler.
+		int subComplex = countSolutions(obo + "select ?sub where { GRAPH " + graph + " { "
+			+ rxn + " obo:RO_0002333 ?pcc . ?pcc rdf:type obo:GO_0032991 . "
+			+ "?pcc obo:BFO_0000051 ?sub . "
+			+ "?sub rdf:type <http://purl.obolibrary.org/obo/go/extensions/reacto.owl#REACTO_R-HSA-70987> . } }");
+		assertEquals("no intermediate sub-complex (R-HSA-70987) may be a has_part of the enabler", 0, subComplex);
+		int nested = countSolutions(obo + "select ?y where { GRAPH " + graph + " { "
+			+ rxn + " obo:RO_0002333 ?pcc . ?pcc rdf:type obo:GO_0032991 . "
+			+ "?pcc obo:BFO_0000051 ?x . ?x obo:BFO_0000051 ?y . } }");
+		assertEquals("the flattened enabler must have no nested has_part-of-has_part", 0, nested);
+	}
+
+	/**
+	 * When a Catalysis complex enabler flattens to exactly one distinct UniProt protein
+	 * (FECH P22830 in complex R-HSA-189402 catalyzing R-HSA-189465), the reaction must be
+	 * enabled_by that single protein with NO protein-containing-complex emitted, and the
+	 * residual complex controller individual must be deleted (no stray node).
+	 */
+	@Test
+	public final void testComplexEnablerSingleProteinNoResidualNode() {
+		System.out.println("Testing single-protein flatten leaves exactly one enabler and no residual complex node");
+		String graph = "<http://model.geneontology.org/R-HSA-189451>";
+		String rxn = "<http://model.geneontology.org/R-HSA-189465>";
+		String obo = "prefix obo: <http://purl.obolibrary.org/obo/> "
+			+ "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> ";
+
+		// Precondition.
+		int rxnTriples = countSolutions("select ?p ?o where { GRAPH " + graph + " { " + rxn + " ?p ?o . } }");
+		assertTrue("precondition: R-HSA-189465 present (got " + rxnTriples + ")", rxnTriples > 0);
+
+		// Exactly one enabled_by edge, and it is FECH (P22830).
+		int enablers = countSolutions(obo + "select ?en where { GRAPH " + graph + " { "
+			+ rxn + " obo:RO_0002333 ?en . } }");
+		assertEquals("R-HSA-189465 must have exactly one enabled_by edge", 1, enablers);
+		int fech = countSolutions(obo + "select ?en where { GRAPH " + graph + " { "
+			+ rxn + " obo:RO_0002333 ?en . ?en rdf:type <http://identifiers.org/uniprot/P22830> . } }");
+		assertTrue("R-HSA-189465 must be enabled_by FECH P22830 (got " + fech + ")", fech > 0);
+
+		// No residual complex node: once the enabler resolves to the single FECH protein, the
+		// vestigial complex individual (which had_part the active unit) must be deleted, so nothing
+		// has_part the enabler. IRI-independent: binds the actual enabler via enabled_by.
+		// NOTE: this is an end-state guard, not an isolator of the flatten logic — the existing
+		// GoCAM.deleteComplexesWithActiveUnits() also guarantees this deletion, so it cannot be
+		// driven red by toggling the flatten/enabler-decision code alone.
+		int residualParts = countSolutions(obo + "select ?x where { GRAPH " + graph + " { "
+			+ rxn + " obo:RO_0002333 ?en . ?x obo:BFO_0000051 ?en . } }");
+		assertEquals("no residual complex node may have_part the enabler (complex node must be deleted)", 0, residualParts);
 	}
 
 	/**
@@ -1237,6 +1691,58 @@ BP has_part R
 		assertTrue("no typed nodes? "+pathway, n>1);
 	}
 	
+	// Regression for untyped small-molecule inputs from cross-pathway reuse.
+	// Oxaloacetate (R-ALL-113587) is a has_input of the GOT2 transamination
+	// (R-HSA-70613) in "Glutamate and glutamine metabolism" (R-HSA-8964539).
+	// Its only producers (MDH2, PC) live in the Malate-aspartate shuttle, a
+	// different pathway that is not emitted into this model. The old
+	// small-molecule input-reuse shortcut grabbed a bare reference to that
+	// producer's output, leaving the input typed only as owl:NamedIndividual.
+	// Every small-molecule input must carry its CHEBI class instead.
+	@Test
+	public final void testSmallMoleculeInputTypedNotBareViaCrossPathwayReuse() {
+		System.out.println("Testing small-molecule input is typed (not bare via cross-pathway reuse)");
+		String q =
+				"prefix obo: <http://purl.obolibrary.org/obo/> \n" +
+				"prefix owl: <http://www.w3.org/2002/07/owl#> \n" +
+				"SELECT ?input ?type \n" +
+				"WHERE { \n" +
+				"  GRAPH <http://model.geneontology.org/R-HSA-8964539> { \n" +
+				"    <http://model.geneontology.org/R-HSA-70613> obo:RO_0002233 ?input . \n" +
+				"    ?input a ?type . \n" +
+				"    FILTER(STRSTARTS(STR(?input), \"http://model.geneontology.org/R-ALL-113587\")) \n" +
+				"    FILTER(?type != owl:NamedIndividual) \n" +
+				"  } \n" +
+				"}";
+		TupleQueryResult result = null;
+		int n = 0;
+		boolean hasChebi = false;
+		String seenTypes = "";
+		try {
+			result = blaze.runSparqlQuery(q);
+			while (result.hasNext()) {
+				BindingSet bindingSet = result.next();
+				String type = bindingSet.getValue("type").stringValue();
+				seenTypes += type + " ";
+				if (type.startsWith("http://purl.obolibrary.org/obo/CHEBI_")) {
+					hasChebi = true;
+				}
+				n++;
+			}
+		} catch (QueryEvaluationException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				result.close();
+			} catch (QueryEvaluationException e) {
+				e.printStackTrace();
+			}
+		}
+		assertTrue("oxaloacetate input (R-ALL-113587) of R-HSA-70613 is untyped (only owl:NamedIndividual); types found: [" + seenTypes + "]", n > 0);
+		assertTrue("oxaloacetate input (R-ALL-113587) of R-HSA-70613 lacks a CHEBI class type; types found: [" + seenTypes + "]", hasChebi);
+		System.out.println("Done testing small-molecule input typing");
+	}
+
 	@Test
 	public final void testSSSOMbp() {
 		System.out.println("testing sssom BP mapping additions");
@@ -1477,6 +1983,84 @@ BP has_part R
 		assertTrue("Incorrect or complete lack of has_input and has_output given stepDirection for "+reaction_node, n==1);
 	}
 	
+	/**
+	 * Pathway R-HSA-204005: reaction R-HSA-6814833 is catalyzed by complex RAB1:GTP:TBC1D20
+	 * (R-HSA-6814832) = TBC1D20 + [RAB1:GTP -> GTP(stripped) + RAB1 set {RAB1B|RAB1A}], combos=2,
+	 * NO activeUnit. It must become 2 activities, each enabled_by a GO:0032991 PCC has_part exactly
+	 * two proteins: TBC1D20 (Q96BZ9) + one of {RAB1B Q9H0U4, RAB1A P62820}. GTP is stripped.
+	 * Negative guard: R-HSA-5694421 (PP6) HAS an activeUnit, so it must NOT be split.
+	 */
+	@Test
+	public final void testSetInComplexReactionExpanded() {
+		System.out.println("Testing set-in-complex reaction expansion");
+		try {
+			// original un-split reaction node must be gone (it was replaced by the diamond clones)
+			TupleQueryResult orig = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> select ?e where { "
+				+ "<http://model.geneontology.org/R-HSA-6814833> obo:RO_0002333 ?e }");
+			int origN = 0;
+			while (orig.hasNext()) { orig.next(); origN++; }
+			orig.close();
+			assertTrue("original reaction should be split away, enablers on it = " + origN, origN == 0);
+
+			// exactly 2 split activities, each enabled_by a protein-containing complex (GO:0032991)
+			TupleQueryResult res = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> select ?reaction ?pcc where { "
+				+ "?reaction obo:RO_0002333 ?pcc . ?pcc a obo:GO_0032991 . "
+				+ "FILTER(STRSTARTS(STR(?reaction), \"http://model.geneontology.org/R-HSA-6814833_enabled_by\")) }");
+			Set<String> reactions = new HashSet<String>();
+			Set<String> pccs = new HashSet<String>();
+			while (res.hasNext()) {
+				BindingSet b = res.next();
+				reactions.add(b.getValue("reaction").stringValue());
+				pccs.add(b.getValue("pcc").stringValue());
+			}
+			res.close();
+			assertTrue("expected 2 split activities, got " + reactions.size(), reactions.size() == 2);
+			assertTrue("expected 2 distinct PCC enablers, got " + pccs.size(), pccs.size() == 2);
+
+			// both PCCs share TBC1D20 (Q96BZ9) as a has_part protein type.
+			// UniProt class IRIs use GoCAM.uniprot_iri = http://identifiers.org/uniprot/ (full-IRI form,
+			// matching existing tests, e.g. BioPaxtoGOTest.java:1401 <http://identifiers.org/uniprot/P21912>).
+			TupleQueryResult shared = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> select ?pcc where { "
+				+ "?reaction obo:RO_0002333 ?pcc . ?pcc a obo:GO_0032991 . "
+				+ "?pcc obo:BFO_0000051 ?fixed . ?fixed a <http://identifiers.org/uniprot/Q96BZ9> . "
+				+ "FILTER(STRSTARTS(STR(?reaction), \"http://model.geneontology.org/R-HSA-6814833_enabled_by\")) }");
+			Set<String> sharedPccs = new HashSet<String>();
+			while (shared.hasNext()) { sharedPccs.add(shared.next().getValue("pcc").stringValue()); }
+			shared.close();
+			assertTrue("both PCCs must has_part TBC1D20, got " + sharedPccs.size(), sharedPccs.size() == 2);
+
+			// the variable subunit: one PCC has RAB1B (Q9H0U4), the other RAB1A (P62820)
+			for (String acc : new String[] { "Q9H0U4", "P62820" }) {
+				TupleQueryResult v = blaze.runSparqlQuery(
+					"prefix obo: <http://purl.obolibrary.org/obo/> select ?pcc where { "
+					+ "?reaction obo:RO_0002333 ?pcc . ?pcc a obo:GO_0032991 . "
+					+ "?pcc obo:BFO_0000051 ?var . ?var a <http://identifiers.org/uniprot/" + acc + "> . "
+					+ "FILTER(STRSTARTS(STR(?reaction), \"http://model.geneontology.org/R-HSA-6814833_enabled_by\")) }");
+				int n = 0;
+				while (v.hasNext()) { v.next(); n++; }
+				v.close();
+				assertTrue("exactly one PCC must has_part " + acc + ", got " + n, n == 1);
+			}
+
+			// negative guard: PP6 (R-HSA-5694421) HAS an activeUnit annotation, so it is NOT expanded/split
+			TupleQueryResult pp6 = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> select ?reaction where { "
+				+ "?reaction obo:RO_0002333 ?e . "
+				+ "FILTER(STRSTARTS(STR(?reaction), \"http://model.geneontology.org/R-HSA-5694421_enabled_by\")) }");
+			int pp6N = 0;
+			while (pp6.hasNext()) { pp6.next(); pp6N++; }
+			pp6.close();
+			assertTrue("PP6 has an activeUnit and must NOT be split, split clones = " + pp6N, pp6N == 0);
+		} catch (QueryEvaluationException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		System.out.println("Done testing set-in-complex reaction expansion");
+	}
+
 	@Test
 	public final void testReactomeChebiMoleculeIds() {
 		System.out.println("testing ChEBI ID extraction for Reactome small molecules");
@@ -1499,5 +2083,55 @@ BP has_part R
 				"  } \n";
 		int n = runQueryAndGetCount(q);
 		assertTrue("Missing "+reaction_node+" has_input "+input_type+" statement", n==1);
+	}
+
+	/**
+	 * Cap guard: reaction R-HSA-5694527 (controller complex combos=192 > SET_COMBINATION_CAP, no activeUnit)
+	 * must NOT be split, and no individual may be typed with the dropped set's REACTO class (R-HSA-5694244).
+	 */
+	@Test
+	public final void testOverCapComplexDropsReactoSetNode() {
+		System.out.println("Testing over-cap complex drops REACTO set node");
+		try {
+			// not split: no R-HSA-5694527_enabled_by_* clones exist
+			TupleQueryResult split = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> select ?reaction where { "
+				+ "?reaction obo:RO_0002333 ?e . "
+				+ "FILTER(STRSTARTS(STR(?reaction), \"http://model.geneontology.org/R-HSA-5694527_enabled_by\")) }");
+			int splitN = 0;
+			while (split.hasNext()) { split.next(); splitN++; }
+			split.close();
+			assertTrue("over-cap reaction must not be split, clones = " + splitN, splitN == 0);
+
+			// the original reaction node survives (was not replaced) and still has its single flattened enabler
+			TupleQueryResult present = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> select ?e where { "
+				+ "<http://model.geneontology.org/R-HSA-5694527> obo:RO_0002333 ?e }");
+			int presentN = 0;
+			while (present.hasNext()) { present.next(); presentN++; }
+			present.close();
+			assertTrue("original over-cap reaction should keep exactly one flattened enabler, got " + presentN, presentN == 1);
+
+			// the dropped set node is gone from the ENABLER: the over-cap reaction's flattened PCC enabler
+			// has no has_part typed with the set's REACTO class. This assertion is SCOPED to the enabler
+			// (via enabled_by/has_part) and expects 0. Note: as of the "eliminate REACTO IDs" feature,
+			// REACTO-typed participants are deleted from the whole model (deleteReactoTypedIndividuals),
+			// so this set no longer survives as an input/output participant either. Full-IRI form
+			// (hyphenated localname cannot be a CURIE), matching existing tests e.g.
+			// BioPaxtoGOTest.java:1423 <...#REACTO_R-HSA-70987>.
+			TupleQueryResult reacto = blaze.runSparqlQuery(
+				"prefix obo: <http://purl.obolibrary.org/obo/> select ?x where { "
+				+ "<http://model.geneontology.org/R-HSA-5694527> obo:RO_0002333 ?pcc . "
+				+ "?pcc obo:BFO_0000051 ?x . "
+				+ "?x a <http://purl.obolibrary.org/obo/go/extensions/reacto.owl#REACTO_R-HSA-5694244> }");
+			int reactoN = 0;
+			while (reacto.hasNext()) { reacto.next(); reactoN++; }
+			reacto.close();
+			assertTrue("dropped set REACTO node must not be a has_part of the enabler, got " + reactoN, reactoN == 0);
+		} catch (QueryEvaluationException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		System.out.println("Done testing over-cap complex drops REACTO set node");
 	}
 }
